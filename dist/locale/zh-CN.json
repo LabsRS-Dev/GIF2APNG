@@ -1,0 +1,157 @@
+{
+  "routes":{
+    "common":{
+      "title":"常用操作",
+      "menu":{
+        "welcome":{
+          "title": "欢迎使用",
+          "tip": "在线文档，在线交流，最新新闻"
+        },
+        "adjust":{
+          "title": "格式转换",
+          "tip": "转换GIF动画格式"
+        }
+      }
+    },
+    "set":{
+      "title":"关于",
+      "menu":{
+        "about":{
+          "title": "关于我们",
+          "tip": "关于我们的一些信息"
+        }
+      }
+    }
+  },
+  "pages": {
+    "welcome":{
+      "toolbar":{
+        "setting":"设置",
+        "onlineDoc":"在线文档",
+        "onlineRoom": "在线交流",
+        "updateNews": "获取最新新闻"
+      },
+      "task-item":{
+        "onOpenLink": "打开查看"
+      }
+    },
+    "convert":{
+      "toolbar":{
+        "import":"导入图像文件",
+        "importDir":"导入图像目录",
+        "remove":"清空导入",
+        "outputFolder": "选择输出目录",
+        "fix":"开始执行",
+        "chancel":"停止"
+      },
+      "task-item":{
+         "file-name": "名称：",
+         "file-path": "路径：",
+         "file-size": "大小：",
+         "progress": "处理进度：",
+         "setting-plan": "设置",
+         "open-parent-dir": "打开所在目录",
+         "review-in-file": "点击查看"
+      },
+      "plans":{
+        "default":"自定义"
+      },
+      "footbar": {
+        "fileCount": "任务数量",
+        "state": "当前状态",
+        "isRemoveWorking": "正在执行移除",
+        "isWaiting":"空闲",
+        "transferState": "引擎状态",
+        "transferIsNormal": "连接正常",
+        "transferIsFault": "无法连接"
+      },
+      "dialog-import-images":{
+        "title":"请选择要导入的图像文件",
+        "prompt":"导入"
+      },
+      "dialog-import-dir-images":{
+        "title":"请选择要导入的图像文件目录",
+        "prompt":"导入"
+      },
+      "dialog-select-outdir":{
+        "title":"请选择输出目录",
+        "prompt":"选择"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要清空导入的图片信息吗？"
+      },
+      "dialog-config-output":{
+        "title":"设置输出路径",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "path":"输出路径:",
+        "name":"输出名称:",
+        "cover":"是否覆盖原有文件"
+      },
+      "dialog-confirm-stop-fix":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要终止所有操作吗？"
+      },
+      "dialog-exif-confirm-edit":{
+        "title":"EXIF信息设置",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      },
+      "notice-no-items":{
+        "message": "请先导入图像文件，然后再执行处理！"
+      },
+      "notice-no-process":{
+        "message": "请先执行处理，然后再执行输出！"
+      },
+      "welcome":{
+        "description": "操作步骤：",
+        "step1":"Step1: 导入GIF文件或者文件目录（支持拖拽）",
+        "step2":"Step2: 设置文件输出地址",
+        "step3":"Step3: 执行修改",
+        "step4":"Step4: 查看修改结果"
+      },
+      "dialog-popover-confirm-edit":{
+        "title":"图片信息描述",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      }
+    },
+    "abouts":{
+      "header":{
+        "title":"关于"
+      },
+      "licenses":{
+        "title":"许可授权",
+        "content":"版权所有",
+        "service":"服务条款"
+      },
+      "releases":{
+        "title":"发布信息",
+        "notes":"版本信息",
+        "versions":"当前版本:"
+      },
+      "buttons":{
+        "title":"获取使用帮助",
+        "matter":"报告问题"
+      },
+      "updata":{
+        "auto":"自动更新",
+        "remind":"有新版本时提醒我"
+      }
+    }
+  },
+  "_common":{
+    "propertyEditor":{
+      "property": "属性",
+      "value": "属性值"
+    }
+  },
+  "_exif":{
+
+  }
+}

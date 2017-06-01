@@ -1,0 +1,18 @@
+{
+  "name": "gif2apng",
+  "main": "dist/bundle.js",
+  "description": "gif2apng desktop app",
+  "authors": "Romanysoft LAB.",
+  "license": "MIT",
+  "ignore": [
+    "examples",
+    "test",
+    "docs",
+    ".gitignore",
+    ".eslintrc",
+    ".babelrc",
+    "*.json",
+    "*.md",
+    "*.yml"
+  ]
+}

@@ -1,0 +1,45 @@
+.page__convert__task__item {
+  height: rem-calc(120px);
+
+  .ui-alert__content{
+      margin-top: rem-calc(-24px);
+  }
+}
+.page__toolbar{
+  .page__toolbar-app-doc__input-group{
+    display: flex;
+    flex-direction: column;
+    .page__toolbar-app-doc__input-name{
+      display: flex;
+      align-items: center;
+      margin-bottom: rem-calc(14px);
+      .form-control-name{
+        padding: 0;
+        height: rem-calc(32px);
+        font-size: rem-calc(14px);
+        flex: 1;
+      }
+    }
+    .page__toolbar-app-doc__input-browse{
+      display: flex;
+      align-items: center;
+      margin-bottom: rem-calc(14px);
+      .ui-button {
+        padding: 0;
+        border: 1px solid #ccc;
+      }
+      .form-control{
+        padding: 0;
+        height: rem-calc(32px);
+        font-size: rem-calc(14px);
+        flex: 1;
+      }
+    }
+    .page__toolbar-app-doc__input-cover{
+      display: flex;
+      .input-group-cover{
+        margin-left: rem-calc(4px);
+      }
+    }
+  }
+}
