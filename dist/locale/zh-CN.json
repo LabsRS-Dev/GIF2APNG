@@ -88,7 +88,6 @@
         "btnConfirm": "确定",
         "btnDeny": "取消",
         "path":"输出路径:",
-        "name":"输出名称:",
         "cover":"是否覆盖原有文件"
       },
       "dialog-confirm-stop-fix":{

@@ -68,6 +68,12 @@
     z-index: 0;
 }
 
+.ui-button{
+    .ui-button__content{
+        margin: 0 auto;
+    }
+}
+
 
 td,
 th {

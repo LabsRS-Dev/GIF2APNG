@@ -2,7 +2,7 @@
   "name": "gif2apng",
   "main": "dist/bundle.js",
   "description": "gif2apng desktop app",
-  "authors": "Romanysoft LAB.",
+  "authors": "Gmagon",
   "license": "MIT",
   "ignore": [
     "examples",

@@ -41,18 +41,18 @@
                 @close="outputConfigDialog.callbackClose"
                 >
                 <div class="page__toolbar-app-doc__input-group">
-                    <div class="page__toolbar-app-doc__input-name">
-                        <span class="input-group-name">{{ $t('pages.convert.dialog-config-output.name') }}</span>
-                        <input class="form-control-name" type="text">
-                    </div>
                     <div class="page__toolbar-app-doc__input-browse">
                         <span class="input-group-addon">{{ $t('pages.convert.dialog-config-output.path') }}</span>
-                        <input class="form-control" type="text">
+                        <ui-select
+                            :options="outputPathsList"
+                            v-model="outputPathsModel"
+                            >
+                        </ui-select>
                         <ui-button
                             type="secondary"
                             size="small"
                             color="primary"
-                            @click="onOpenSelectOutDir(item)"
+                            @click="onOpenSelectOutDir()"
                             >
                             <i class="fa fa-folder-open fa-lg"></i>
                         </ui-button>
@@ -177,6 +177,7 @@ export default {
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
+            outputPathsModel:'',
             confirmDialog:{
                 ref: 'default',
                 autofocus: 'none',
@@ -236,6 +237,26 @@ export default {
                 {id:'action-do', visiable:!that.isConvertWorking, color:"green", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
+        },
+        outputPathsList(){
+            var that = this
+            var list = []
+            var spl = list.join().toLowerCase()
+            if(list.length<5){
+                    if(spl.indexOf(that.outputPathsModel.toLowerCase()) == -1){
+                        list.push(that.outputPathsModel)
+                    }else{
+                        return
+                    }
+            }else if(list.length = 5){
+                    if(spl.indexOf(that.outputPathsModel.toLowerCase())== -1){
+                            list.splice(0,1)
+                            list.push(that.outputPathsModel)
+                    }else{
+                        return
+                    }
+            }
+            return list
         }
     },
 
@@ -576,7 +597,8 @@ export default {
         onOpenSelectOutDir(dir){
             var that = this
             console.log("-------------------- start location path")
-            BS.b$.revealInFinder(dir)
+            that.outputPathsModel = 'C:\\Users\\GmagonHelper\\Desktop'
+            //BS.b$.revealInFinder(dir)
         }
     },
 
