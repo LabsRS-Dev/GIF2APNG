@@ -37,8 +37,8 @@
     },
     "convert":{
       "toolbar":{
-        "import":"导入图像文件",
-        "importDir":"导入图像目录",
+        "import":"导入GIF动画文件",
+        "importDir":"导入GIF动画目录",
         "remove":"清空导入",
         "outputFolder": "选择输出目录",
         "fix":"开始执行",
@@ -66,11 +66,11 @@
         "transferIsFault": "无法连接"
       },
       "dialog-import-images":{
-        "title":"请选择要导入的图像文件",
+        "title":"请选择要导入的GIF动画文件",
         "prompt":"导入"
       },
       "dialog-import-dir-images":{
-        "title":"请选择要导入的图像文件目录",
+        "title":"请选择要导入的GIF动画文件目录",
         "prompt":"导入"
       },
       "dialog-select-outdir":{
@@ -81,7 +81,7 @@
         "title":"确认操作",
         "btnConfirm": "确定",
         "btnDeny": "取消",
-        "message": "确定要清空导入的图片信息吗？"
+        "message": "确定要清空导入的GIF动画信息吗？"
       },
       "dialog-config-output":{
         "title":"设置输出路径",
@@ -96,26 +96,21 @@
         "btnDeny": "取消",
         "message": "确定要终止所有操作吗？"
       },
-      "dialog-exif-confirm-edit":{
-        "title":"EXIF信息设置",
-        "btnConfirm": "确定",
-        "btnDeny": "取消"
-      },
       "notice-no-items":{
-        "message": "请先导入图像文件，然后再执行处理！"
+        "message": "请先导入GIF动画文件，然后再执行处理！"
       },
       "notice-no-process":{
         "message": "请先执行处理，然后再执行输出！"
       },
       "welcome":{
         "description": "操作步骤：",
-        "step1":"Step1: 导入GIF文件或者文件目录（支持拖拽）",
+        "step1":"Step1: 导入GIF动画文件或者文件目录（支持拖拽）",
         "step2":"Step2: 设置文件输出地址",
-        "step3":"Step3: 执行修改",
-        "step4":"Step4: 查看修改结果"
+        "step3":"Step3: 执行转换",
+        "step4":"Step4: 查看转换结果"
       },
       "dialog-popover-confirm-edit":{
-        "title":"图片信息描述",
+        "title":"GIF动画信息描述",
         "btnConfirm": "确定",
         "btnDeny": "取消"
       }
