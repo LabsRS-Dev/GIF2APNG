@@ -68,9 +68,6 @@ import {SysConfig} from '../../data/sys-config'
 
 
 
-
-
-
 class News {
   constructor(thumb, title, date, description, link) {
     this.id = _.uniqueId('welcome-news-id-')
@@ -116,6 +113,7 @@ export default {
   methods:{
     testNewList(){
       // Test code
+      const newsUrl = 'https://gmagon.com/products/store/gif2apng/data/news.json'
       var that = this
       var list = []
 
@@ -133,10 +131,15 @@ export default {
           })
       }
 
-      _.each(list, function(ele){
-          let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
-          that.newsList.push(newsObj)
+      var $ = Util.util.getJQuery$()
+      $.getJSON(newsUrl, function(data){
+        _.each(data.list, function(ele){
+            let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
+            that.newsList.push(newsObj)
+        })
       })
+
+
     },
     // ------------------------- Style
     getItemStyleClass(item){
