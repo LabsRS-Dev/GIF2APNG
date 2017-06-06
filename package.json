@@ -40,7 +40,7 @@
     "url": "https://github.com/LabsRS-Dev/GIF2APNG/issues"
   },
   "homepage": "https://github.com/LabsRS-Dev/GIF2APNG#readme",
-   "dependencies": {
+  "dependencies": {
     "dove.max.sdk": "^1.0.1",
     "keen-ui": "^1.0.0",
     "vue": "^2.3.3",

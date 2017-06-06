@@ -23,21 +23,36 @@
       .ui-button {
         padding: 0;
         margin-left: rem-calc(5px);
-        height: rem-calc(32px);
-        border: rem-calc(1px) solid #adadad;
+        height: rem-calc(26px);
+        border-radius: rem-calc(5px);
       }
       .ui-select {
         flex: 1;
+        align-items: center;
         margin: 0;
+        margin-left:rem-calc(8px) ;
         padding: 0;
-        height: rem-calc(32px);
+        height: rem-calc(25px);
+        border-radius: rem-calc(5px);
         border: rem-calc(1px) solid #adadad;
         position: relative;
         .ui-select__display{
           border: 0;
+          height: rem-calc(25px);
           .ui-select__dropdown-button{
             margin: 0 auto;
           }
+        }
+        .ui-select-option{
+          height: rem-calc(28px);
+        }
+        .ui-select-option.is-selected{
+          color: rgba(0,0,0,.87);
+          background-color: #fff;
+          font-weight: 400;
+        }
+        .ui-select-option:hover{
+          background-color: $md-blue;
         }
       }
     }
