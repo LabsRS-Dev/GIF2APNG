@@ -27,9 +27,19 @@ const __$p$ = {
   // 针对前端使用者，我要启动后端服务 {启动后，所有数据信息都转向后端服务编码来处理}
   backAgent: new AgentServer(),
   startBackAgent: function () {
+    var that = this
     const agent = this.backAgent
-    agent.active({})
+    agent.active({
+        dropDragConfig: {
+          enable: true,
+          allowTypes: ['*'],
+          handler: function(data) {
+            that.bindOnDropDragHandlerFnc && that.bindOnDropDragHandlerFnc(data)
+          }
+        }
+    })
   },
+  bindOnDropDragHandlerFnc: (data) => {},
 
   // 针对前端使用者，我要启动前端服务，{启动后，可以根据发送信息、接收信息方式与后端服务来交互}
   isRunning: false,
@@ -151,6 +161,9 @@ __$p$.Tools = {
     } else {
       console.warn('Error: Not found the \'' + toolKey + '\' config tool...')
     }
+  },
+  bindOnDropDragHandler: (handler = (data) => {}) => {
+    __$p$.bindOnDropDragHandlerFnc = hander
   }
 }
 
