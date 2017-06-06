@@ -34,12 +34,11 @@ const __$p$ = {
           enable: true,
           allowTypes: ['*'],
           handler: function(data) {
-            that.bindOnDropDragHandlerFnc && that.bindOnDropDragHandlerFnc(data)
+            that.trigger("onDropDragFiles", {data: data})
           }
         }
     })
   },
-  bindOnDropDragHandlerFnc: (data) => {},
 
   // 针对前端使用者，我要启动前端服务，{启动后，可以根据发送信息、接收信息方式与后端服务来交互}
   isRunning: false,
@@ -161,15 +160,17 @@ __$p$.Tools = {
     } else {
       console.warn('Error: Not found the \'' + toolKey + '\' config tool...')
     }
-  },
-  bindOnDropDragHandler: (handler = (data) => {}) => {
-    __$p$.bindOnDropDragHandlerFnc = hander
   }
 }
 
 var TransferClass = Observable.extend(__$p$)
 var Transfer = new TransferClass()
-Transfer.run()
+
+var $ = Util.util.getJQuery$()
+$(document).ready(function(){
+  Transfer.run(true)
+  window.Transfer = Transfer
+})
 
 export {
   Transfer

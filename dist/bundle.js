@@ -27002,8 +27002,17 @@ var __$p$ = {
 
   backAgent: new AgentServer(),
   startBackAgent: function startBackAgent() {
+    var that = this;
     var agent = this.backAgent;
-    agent.active({});
+    agent.active({
+      dropDragConfig: {
+        enable: true,
+        allowTypes: ['*'],
+        handler: function handler(data) {
+          that.trigger("onDropDragFiles", { data: data });
+        }
+      }
+    });
   },
 
   isRunning: false,
@@ -27148,7 +27157,12 @@ __$p$.Tools = {
 
 var TransferClass = _doveMax.Observable.extend(__$p$);
 var Transfer = new TransferClass();
-Transfer.run();
+
+var $ = _doveMax.Util.util.getJQuery$();
+$(document).ready(function () {
+  Transfer.run(true);
+  window.Transfer = Transfer;
+});
 
 exports.Transfer = Transfer;
 
@@ -29003,6 +29017,10 @@ exports.default = {
         _transfer.Transfer.frontAgent.registerOnFinishBuildChannel(function () {
             that.onTransferIsNoraml();
         });
+
+        _transfer.Transfer.bind("onDropDragFiles", function (info) {
+            that.__importFilesOrDir(info.data);
+        });
     },
     mounted: function mounted() {
         this.drawWelcome();
@@ -29142,14 +29160,7 @@ exports.default = {
                     that.taskID2taskObj[taskObj.id] = taskObj;
                 }
             }, function (data) {
-                if (data.success) {
-                    var imageFiles = data.filesArray;
-                    imageFiles.forEach(function (fileObj, dinx) {
-                        var taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr);
-                        that.taskList.push(taskObj);
-                        that.taskID2taskObj[taskObj.id] = taskObj;
-                    });
-                }
+                that.__importFilesOrDir(data);
             });
         },
         onBtnImportDirClick: function onBtnImportDirClick() {
@@ -29235,6 +29246,19 @@ exports.default = {
                     that.stopDo();
                 };
                 dialog.open();
+            }
+        },
+        __importFilesOrDir: function __importFilesOrDir(data) {
+            var that = this;
+            console.log("111111111111");
+            console.dir(data);
+            if (data.success) {
+                var imageFiles = data.filesArray;
+                imageFiles.forEach(function (fileObj, dinx) {
+                    var taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr);
+                    that.taskList.push(taskObj);
+                    that.taskID2taskObj[taskObj.id] = taskObj;
+                });
             }
         },
         startDo: function startDo(outDir) {
@@ -29418,6 +29442,7 @@ exports.default = {
   },
   methods: {
     testNewList: function testNewList() {
+      var newsUrl = 'https://gmagon.com/products/store/gif2apng/data/news.json';
       var that = this;
       var list = [];
 
@@ -29430,9 +29455,12 @@ exports.default = {
         });
       }
 
-      _doveMax._.each(list, function (ele) {
-        var newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link);
-        that.newsList.push(newsObj);
+      var $ = _doveMax.Util.util.getJQuery$();
+      $.getJSON(newsUrl, function (data) {
+        _doveMax._.each(data.list, function (ele) {
+          var newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link);
+          that.newsList.push(newsObj);
+        });
       });
     },
     getItemStyleClass: function getItemStyleClass(item) {
@@ -29544,7 +29572,7 @@ var ToolsMap = {
   'start.modify.exif': { type: ToolsType.WS, cli: 'aiexifcool/edit.image/index', action: 'modifyExifInfo' },
   'stop.modify.exif': { type: ToolsType.WS, cli: 'aiexifcool/edit.image/index', action: 'stopModify' },
 
-  'gif2apng': { type: ToolsType.NTASK, cli: _doveMax.BS.b$.App.getAppPluginDir() + '/gif2apng', command: [], mainThread: false }
+  'gif2apng': { type: ToolsType.NTASK, cli: _doveMax.BS.b$.App.getAppPluginDir() + '/cli-gif2apng', command: [], mainThread: false }
 };
 
 exports.ToolsMap = ToolsMap;

@@ -220,8 +220,8 @@ export default {
             that.onTransferIsNoraml()
         })
 
-        Transfer.Tools.bindOnDropDragHandler(function(data){
-            that.__importFilesOrDir(data)
+        Transfer.bind("onDropDragFiles", function(info){
+            that.__importFilesOrDir(info.data)
         })
     },
 
@@ -495,6 +495,9 @@ export default {
         },
 
         __importFilesOrDir(data){
+            var that = this
+            console.log("111111111111")
+            console.dir(data)
             if(data.success) {
                 var imageFiles = data.filesArray
                 imageFiles.forEach((fileObj, dinx) => {
