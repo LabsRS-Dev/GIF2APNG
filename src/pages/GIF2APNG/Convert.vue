@@ -138,6 +138,8 @@ var baseID = "__page__convert__action__"
 var baseIDIndex = -1
 
 let taskList = [];
+let outputList = [];
+const maxSaveData = 5;
 const taskPrefix = 'convert-page-image-id-' + _.now()
 class Task {
     constructor(thumb, name, path, size){
@@ -178,6 +180,7 @@ export default {
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
             outputPathsModel:'',
+            outputList:outputList,
             confirmDialog:{
                 ref: 'default',
                 autofocus: 'none',
@@ -240,23 +243,18 @@ export default {
         },
         outputPathsList(){
             var that = this
-            var list = []
-            var spl = list.join().toLowerCase()
-            if(list.length<5){
+            var spl = outputList.join().toLowerCase()
+            if(outputList.length < maxSaveData){
                     if(spl.indexOf(that.outputPathsModel.toLowerCase()) == -1){
-                        list.push(that.outputPathsModel)
-                    }else{
-                        return
+                        outputList.push(that.outputPathsModel)
                     }
-            }else if(list.length = 5){
+            }else if(outputList.length = maxSaveData){
                     if(spl.indexOf(that.outputPathsModel.toLowerCase())== -1){
-                            list.splice(0,1)
-                            list.push(that.outputPathsModel)
-                    }else{
-                        return
+                            outputList.splice(0,1)
+                            outputList.push(that.outputPathsModel)
                     }
             }
-            return list
+            return outputList
         }
     },
 
@@ -469,20 +467,10 @@ export default {
             }
 
             console.log("-------------------- call export dir")
-            BS.b$.selectOutDir({
-                title: that.$t('pages.convert.dialog-select-outdir.title'),
-                prompt: that.$t('pages.convert.dialog-select-outdir.prompt'),
-                canCreateDir: true
-            },()=>{
-                that.startDo('D:\\TestResource\\exif_sample_images\\Nikon\\corrupted_output')
-            },(data)=>{
-                if(data.success) {
-                    var outDir = data.filePath
-                    that.startDo(outDir)
-                }
-            })
+            if(that.outputPathsModel==""){
+                that.onBtnOutputFolderClick()
+            }
         },
-
         onBtnStopDoClick(){
             var that = this
 
@@ -597,8 +585,23 @@ export default {
         onOpenSelectOutDir(dir){
             var that = this
             console.log("-------------------- start location path")
-            that.outputPathsModel = 'C:\\Users\\GmagonHelper\\Desktop'
-            //BS.b$.revealInFinder(dir)
+            BS.b$.selectOutDir({
+                title: that.$t('pages.convert.dialog-select-outdir.title'),
+                prompt: that.$t('pages.convert.dialog-select-outdir.prompt'),
+                canCreateDir: true
+            },()=>{
+                var list = []
+                for(let i =0; i < 10; ++i){
+                    list.push("/url/imageDir" + i)
+                }
+                var index = Math.floor((Math.random()*list.length))
+                that.outputPathsModel = list[index].toString()
+            },(data)=>{
+                if(data.success) {
+                    var outDir = data.filePath
+                    that.startDo(outDir)
+                }
+            })
         }
     },
 
