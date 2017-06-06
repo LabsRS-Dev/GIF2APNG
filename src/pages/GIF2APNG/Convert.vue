@@ -219,6 +219,10 @@ export default {
         Transfer.frontAgent.registerOnFinishBuildChannel(function (){
             that.onTransferIsNoraml()
         })
+
+        Transfer.Tools.bindOnDropDragHandler(function(data){
+            that.__importFilesOrDir(data)
+        })
     },
 
     mounted(){
@@ -389,14 +393,15 @@ export default {
                     that.taskID2taskObj[taskObj.id] = taskObj
                 }
             }, function(data){ // Normal code
-                if(data.success) {
-                    var imageFiles = data.filesArray
-                    imageFiles.forEach((fileObj, dinx) => {
-                        let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                        that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
-                    })
-                }
+                that.__importFilesOrDir(data)
+                // if(data.success) {
+                //     var imageFiles = data.filesArray
+                //     imageFiles.forEach((fileObj, dinx) => {
+                //         let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                //         that.taskList.push(taskObj)
+                //         that.taskID2taskObj[taskObj.id] = taskObj
+                //     })
+                // }
             })
         },
 
@@ -486,6 +491,17 @@ export default {
                     that.stopDo()
                 }
                 dialog.open()
+            }
+        },
+
+        __importFilesOrDir(data){
+            if(data.success) {
+                var imageFiles = data.filesArray
+                imageFiles.forEach((fileObj, dinx) => {
+                    let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                    that.taskList.push(taskObj)
+                    that.taskID2taskObj[taskObj.id] = taskObj
+                })
             }
         },
 
