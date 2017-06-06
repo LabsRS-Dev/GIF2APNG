@@ -1,5 +1,5 @@
 import { BS, Observable, Util, _ } from 'dove.max.sdk'
-import { ToolsMap } from './tools_map.js'
+import { ToolsMap, ToolsType } from './tools_map.js'
 
 // -----------------------------------------------------------------
 // 交互处理
@@ -7,6 +7,8 @@ const AgentClient = BS.b$.AgentClient
 const AgentServer = BS.b$.AgentServer
 
 const __$p$ = {
+
+
   // 通用方式来配置单一的服务器模式, 你可以在后端服务覆盖已有的配置信息
   serverConfig: {
     ip: '127.0.0.1', // 127.0.0.1
@@ -37,22 +39,33 @@ const __$p$ = {
     const agent = that.frontAgent
     agent.debug = false
 
-    const wsSocketIO = new agent.Chancel()
-    wsSocketIO.build({
-      type: agent.ChancelType.websocketForNode,
-      ip: that.serverConfig.ip,
-      port: that.serverConfig.port,
-      protocol: that.serverConfig.protocol,
-      reqUrl: '',
-      clientIOType: 'Socket.io.client',
-      debug: false // 是否开启日志功能
-    })
+    const ac = new agent.Chancel()
+    const ac_build_type = agent.ChancelType.websocketForNode
+
+
+    if (agent.ChancelType.websocketForNode === ac_build_type) {
+      ac.build({
+        type: agent.ChancelType.websocketForNode,
+        ip: that.serverConfig.ip,
+        port: that.serverConfig.port,
+        protocol: that.serverConfig.protocol,
+        reqUrl: '',
+        clientIOType: 'Socket.io.client',
+        debug: false // 是否开启日志功能
+      })
+    } else if (agent.ChancelType.nativeFork === ac_build_type) {
+      ac.build({
+        type: agent.ChancelType.nativeFork,
+        debug: true // 是否开启日志功能
+      })
+    }
+
     agent.registerOnFinishBuildChannel(function () {
       console.log('frontAgent is finish build')
       that.isRunning = true
       console.log('__$p$.isRunning = ', that.isRunning)
     })
-    agent.appendChancel(wsSocketIO)
+    agent.appendChancel(ac)
   },
   run: function (startBackAgent = false) {
     console.log('start transfer.js ....')
@@ -77,7 +90,7 @@ __$p$.Common = {
       handler && handler(data)
     }, one)
   },
-  runTask: (cli = '', action = '', options = {}, handler, one = false) => {
+  runWSTask: (cli = '', action = '', options = {}, handler, one = false) => {
     const debugMode = false
     if (debugMode === false) {
       const taskInfo = {
@@ -102,6 +115,27 @@ __$p$.Common = {
     } else {
       handler && handler()
     }
+  },
+  runNativeTask: (cli = '', mainThread = false, options = {}, handler, one = false) => {
+    const debugMode = false
+    if (debugMode === false) {
+      const info = {
+        task_id: options.taskID || _.uniqueId('native-fork-task-'),
+        commands: [{
+          appPath: cli,
+          command: options.command || [],
+          mainThread: mainThread
+        }]
+      }
+
+      __$p$.send(info, data => {
+        if (data.task_id === options.taskID) { // 只处理本任务的返回数据
+          handler && handler(data)
+        }
+      }, one)
+    } else {
+      handler && handler()
+    }
   }
 }
 
@@ -109,7 +143,11 @@ __$p$.Tools = {
   call: (toolKey, options = {}, handler = () => {}, one = false) => {
     const cfg = ToolsMap[toolKey]
     if (cfg) {
-      __$p$.Common.runTask(cfg.cli, cfg.action, options, handler, one)
+      if (cfg.type === ToolsType.WS) {
+        __$p$.Common.runWSTask(cfg.cli, cfg.action, options, handler, one)
+      } else if (cfg.type === ToolsType.NTASK) {
+        __$p$.Common.runNativeTask(cfg.cli, cfg.mainThread, options, handler, one)
+      }
     } else {
       console.warn('Error: Not found the \'' + toolKey + '\' config tool...')
     }
