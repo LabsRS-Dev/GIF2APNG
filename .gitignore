@@ -11,3 +11,7 @@ debug.log
 /server/node_modules
 /server/.vs
 /server/bin
+/dist/bundle.css
+/dist/bundle.css.map
+/dist/bundle.js
+/dist/bundle.js.map
