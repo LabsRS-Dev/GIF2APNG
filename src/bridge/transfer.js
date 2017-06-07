@@ -30,13 +30,13 @@ const __$p$ = {
     var that = this
     const agent = this.backAgent
     agent.active({
-        dropDragConfig: {
-          enable: true,
-          allowTypes: ['*'],
-          handler: function(data) {
-            that.trigger("onDropDragFiles", {data: data})
-          }
+      dropDragConfig: {
+        enable: true,
+        allowTypes: ['*'],
+        handler: function (data) {
+          that.trigger('onDropDragFiles', { data: data })
         }
+      }
     })
   },
 
@@ -145,10 +145,34 @@ __$p$.Common = {
     } else {
       handler && handler()
     }
+  },
+  stopNativeTask: (taskID, command, handler, one = false) => {
+    const debugMode = false
+    if (debugMode === false) {
+      const info = {
+        task_id: taskID || _.uniqueId('native-fork-task-'),
+        commands: command,
+        taskMethodWay: 'sendEvent'
+      }
+
+      __$p$.send(info, data => {
+        if (data.task_id === taskID) { // 只处理本任务的返回数据
+          handler && handler(data)
+        }
+      }, one)
+    } else {
+      handler && handler()
+    }
   }
 }
 
 __$p$.Tools = {
+  /**
+   * @argument {String} toolKey 工具唯一标识
+   * @argument {Object} options 工具传入的参数
+   * @argument {Function} handler 回调函数
+   * @argument {Boolean} one 回调函数的处理是否运行后，删除
+   */
   call: (toolKey, options = {}, handler = () => {}, one = false) => {
     const cfg = ToolsMap[toolKey]
     if (cfg) {
@@ -156,6 +180,8 @@ __$p$.Tools = {
         __$p$.Common.runWSTask(cfg.cli, cfg.action, options, handler, one)
       } else if (cfg.type === ToolsType.NTASK) {
         __$p$.Common.runNativeTask(cfg.cli, cfg.mainThread, options, handler, one)
+      } else if (cfg.type === ToolsType.STOP_NTASK) {
+        __$p$.Common.stopNativeTask(options.taskID, cfg.command, handler, one)
       }
     } else {
       console.warn('Error: Not found the \'' + toolKey + '\' config tool...')
@@ -166,8 +192,11 @@ __$p$.Tools = {
 var TransferClass = Observable.extend(__$p$)
 var Transfer = new TransferClass()
 
+/**
+ * 初始化启动
+ */
 var $ = Util.util.getJQuery$()
-$(document).ready(function(){
+$(document).ready(function () {
   Transfer.run(true)
   window.Transfer = Transfer
 })

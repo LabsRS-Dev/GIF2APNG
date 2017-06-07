@@ -7,7 +7,8 @@ import { BS } from 'dove.max.sdk'
 
 const ToolsType = {
   WS: 'websocket-server',
-  NTASK: 'native-task'
+  NTASK: 'native-task',
+  STOP_NTASK: 'stop-native-task'
 }
 
 
@@ -30,7 +31,8 @@ const ToolsMap = {
 
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  'gif2apng': { type: ToolsType.NTASK, cli: BS.b$.App.getAppPluginDir() + '/cli-gif2apng', command: [], mainThread: false }
+  'gif2apng': { type: ToolsType.NTASK, cli: BS.b$.App.getAppPluginDir() + '/cli-gif2apng', command: [], mainThread: false },
+  'stop.gif2apng': { type: ToolsType.STOP_NTASK, command: ['stop', 'calltask'] }
 }
 
 // export

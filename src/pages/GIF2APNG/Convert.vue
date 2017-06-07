@@ -552,6 +552,82 @@ export default {
             }
         },
 
+        /**
+        * @function __abi__start_Gif2apngTask   调用处理gif转换成apng格式任务
+        * @param  {String/Number} taskID 指定任务ID
+        * @param  {Object} config 调用的配置选项
+        * @param  {Function} handler 回调处理
+        * @return {Object} {this}
+        */
+        __abi__start_Gif2apngTask(taskID, config, handler = (data)=>{}){
+            var that = this
+            const _config = _.extend({
+                src: '',  // 要处理的文件或者目录的路径
+                out: '',  // 输出目录
+                overwrite: false,       // 是否覆盖已有文件
+                compression: '-z1',    // 压缩方式： -z0: zlib compression; -z1: 7zip compression (default); -z2: Zopfli compression
+                iterations: '-i' + 15, // 迭代数量：-i##: number of iterations (default -i15) for 7zip and Zopfli
+                keepPalette: true      // 保持调色信息
+            }, config)
+
+            // 检查必要数值
+            console.assert(taskID)
+            console.assert(BS.b$.App.checkPathIsExist(_config.src))
+            console.assert(BS.b$.App.checkPathIsExist(_config.out))
+
+            var _command = [], 
+                _dest = _config.out
+
+            if (BS.b$.App.checkPathIsFile(_config.src)) { 
+                _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
+            }
+
+            // -- 命令行参数格式化
+            const commandFormat = '['   + 
+                                    '"' + _config.compression  + '",' +
+                                    '"' + _config.iterations  + '",' +
+                                    (_config.overwrite ? '"-ow",' : '') +
+                                    (_config.keepPalette ? '"-kp",' : '') +
+                                    '"%input%","%output%"]'
+            var fm_command = commandFormat
+            fm_command = fm_command.replace(/%input%/g, _config.src)
+            fm_command = fm_command.replace(/%output%/g, _dest)
+            _command = window.eval(fm_command)
+
+            /// call process task
+            Transfer.Tools.call('gif2apng', {
+                taskID: taskID,
+                command: _command
+            }, (data) => {
+                handler && handler(data)
+            })
+
+            return that
+        },
+
+        /**
+        * @function __abi__cancel_Gif2apngTask 调用停止处理gif转换成apng格式任务
+        * @param  {String/Number} taskID 指定任务ID
+        * @param  {Function} handler 回调处理
+        * @return {type} {description}
+        */
+        __abi__cancel_Gif2apngTask(taskID, handler = (data)=>{}){
+            var that = this
+
+            // 检查必要数值
+            console.assert(taskID)
+
+            /// call process task
+            Transfer.Tools.call('stop.gif2apng', {
+                taskID: taskID
+            }, (data) => {
+                handler && handler(data)
+            })
+
+            return that
+        },
+
+
         // for task item
         __removeTaskItem(item, index) {
             var that = this
