@@ -564,10 +564,10 @@ export default {
             const _config = _.extend({
                 src: '',  // 要处理的文件或者目录的路径
                 out: '',  // 输出目录
-                overwrite: false,       // 是否覆盖已有文件
+                overwrite: false,      // 是否覆盖已有文件
                 compression: '-z1',    // 压缩方式： -z0: zlib compression; -z1: 7zip compression (default); -z2: Zopfli compression
                 iterations: '-i' + 15, // 迭代数量：-i##: number of iterations (default -i15) for 7zip and Zopfli
-                keepPalette: true      // 保持调色信息
+                keepPalette: false     // 保持调色信息
             }, config)
 
             // 检查必要数值

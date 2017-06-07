@@ -49,8 +49,11 @@ const __$p$ = {
     agent.debug = false
 
     const ac = new agent.Chancel()
-    const ac_build_type = agent.ChancelType.websocketForNode
 
+    /**
+     * Note: 注意这里影响配置前端的处理方式。
+     */
+    const ac_build_type = agent.ChancelType.nativeFork // agent.ChancelType.websocketForNode
 
     if (agent.ChancelType.websocketForNode === ac_build_type) {
       ac.build({
@@ -147,6 +150,7 @@ __$p$.Common = {
     }
   },
   stopNativeTask: (taskID, command, handler, one = false) => {
+    console.assert(taskID)
     const debugMode = false
     if (debugMode === false) {
       const info = {
