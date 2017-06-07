@@ -5,10 +5,7 @@
     </div>
     <div class="page__about__body">
       <div class="page__about__feedback">
-        <span class="fa fa-stack fa-lg">
-          <i class="fa fa-square-o fa-stack-2x"></i>
-          <i class="fa fa-flag fa-stack-1x"></i>
-        </span>
+        <img :src='imgIcon'>
         <span class="page__about__title__matter">{{appName}}</span>
       </div>
       <div class="page__about__content__button">
@@ -52,6 +49,7 @@
 <script>
 import {UiButton,UiTextbox,UiRadioGroup,UiSwitch} from 'keen-ui'
 import Routes from './../routes.js'
+import IconsRef from '../data/icon.js'
 
 export default {
   data(){
@@ -60,7 +58,8 @@ export default {
         appName:  Routes.SysConfig.appName,
         version:  Routes.SysConfig.version,
         appReleaseDate: Routes.SysConfig.appReleaseDate,
-        companyName:Routes.SysConfig.companyName
+        companyName:Routes.SysConfig.companyName,
+        imgIcon:IconsRef.iconSet.reductIcon
     }
   },
 

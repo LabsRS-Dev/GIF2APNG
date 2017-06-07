@@ -3,7 +3,7 @@
  * @created 2017-5-31 15:17:21
  */
 const SysConfig = {
-  appName: 'GIF2APNG',
+  appName: 'Gif2Apng',
   version: '3.0.0',
   homepage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   docPage: 'https://github.com/LabsRS-Dev/GIF2APNG',
