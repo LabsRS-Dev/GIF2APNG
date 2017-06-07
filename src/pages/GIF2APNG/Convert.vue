@@ -449,7 +449,7 @@ export default {
 
         onBtnDoClick(){
             var that = this
-
+            const cdg = that.outputConfigDialog
             if(that.taskList.length === 0) {
                 return BS.b$.Notice.alert({
                     message: that.$t('pages.convert.notice-no-items.message')
@@ -458,6 +458,7 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.outputPathsModel==""){
+                cdg.callbackConfirm = () => {that.startDo()}
                 that.onBtnOutputFolderClick()
             }else{
                 that.startDo()
