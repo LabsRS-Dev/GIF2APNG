@@ -53,9 +53,6 @@
          "open-parent-dir": "打开所在目录",
          "review-in-file": "点击查看"
       },
-      "plans":{
-        "default":"自定义"
-      },
       "footbar": {
         "fileCount": "任务数量",
         "state": "当前状态",
@@ -138,14 +135,5 @@
         "remind":"有新版本时提醒我"
       }
     }
-  },
-  "_common":{
-    "propertyEditor":{
-      "property": "属性",
-      "value": "属性值"
-    }
-  },
-  "_exif":{
-
   }
 }

@@ -43,7 +43,7 @@ GIF2APNG  GIF格式转换为APNG格式处理工具
 项目地址：（使用`git clone`）
 
 ```shell
-git clone https://github.com/LabsRS-Dev/AiEXifCool.git
+git clone https://github.com/LabsRS-Dev/GIF2APNG.git
 ```
 
 通过`npm`安装本地服务第三方依赖模块(需要已安装[Node.js](https://nodejs.org/))，使用npm安装依赖模块可能会很慢，建议换成[cnpm](http://cnpmjs.org/)

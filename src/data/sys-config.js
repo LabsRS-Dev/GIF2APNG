@@ -4,11 +4,11 @@
  */
 const SysConfig = {
   appName: 'GIF2APNG',
-  version: '1.0.0',
+  version: '3.0.0',
   homepage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   docPage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   companyName:'Gmagon',
-  appReleaseDate:'2017/05/31'
+  appReleaseDate:'2017/06/10'
 }
 
 // export

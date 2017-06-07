@@ -27496,11 +27496,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var SysConfig = {
   appName: 'GIF2APNG',
-  version: '1.0.0',
+  version: '3.0.0',
   homepage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   docPage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   companyName: 'Gmagon',
-  appReleaseDate: '2017/05/31'
+  appReleaseDate: '2017/06/10'
 };
 
 exports.SysConfig = SysConfig;
@@ -29179,14 +29179,7 @@ exports.default = {
                     that.taskID2taskObj[taskObj.id] = taskObj;
                 }
             }, function (data) {
-                if (data.success) {
-                    var imageFiles = data.filesArray;
-                    imageFiles.forEach(function (fileObj, dinx) {
-                        var taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr);
-                        that.taskList.push(taskObj);
-                        that.taskID2taskObj[taskObj.id] = taskObj;
-                    });
-                }
+                that.__importFilesOrDir(data);
             });
         },
         onBtnRemoveAllClick: function onBtnRemoveAllClick() {
@@ -29229,6 +29222,8 @@ exports.default = {
             console.log("-------------------- call export dir");
             if (that.outputPathsModel == "") {
                 that.onBtnOutputFolderClick();
+            } else {
+                that.startDo();
             }
         },
         onBtnStopDoClick: function onBtnStopDoClick() {
@@ -29250,8 +29245,6 @@ exports.default = {
         },
         __importFilesOrDir: function __importFilesOrDir(data) {
             var that = this;
-            console.log("111111111111");
-            console.dir(data);
             if (data.success) {
                 var imageFiles = data.filesArray;
                 imageFiles.forEach(function (fileObj, dinx) {

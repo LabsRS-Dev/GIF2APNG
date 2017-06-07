@@ -394,14 +394,6 @@ export default {
                 }
             }, function(data){ // Normal code
                 that.__importFilesOrDir(data)
-                // if(data.success) {
-                //     var imageFiles = data.filesArray
-                //     imageFiles.forEach((fileObj, dinx) => {
-                //         let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                //         that.taskList.push(taskObj)
-                //         that.taskID2taskObj[taskObj.id] = taskObj
-                //     })
-                // }
             })
         },
 
@@ -421,14 +413,7 @@ export default {
                     that.taskID2taskObj[taskObj.id] = taskObj
                 }
             }, function(data){
-                if(data.success) {
-                    var imageFiles = data.filesArray
-                    imageFiles.forEach((fileObj, dinx) => {
-                        let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                        that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
-                    })
-                }
+                that.__importFilesOrDir(data)
             })
         },
 
@@ -474,6 +459,8 @@ export default {
             console.log("-------------------- call export dir")
             if(that.outputPathsModel==""){
                 that.onBtnOutputFolderClick()
+            }else{
+                that.startDo()
             }
         },
         onBtnStopDoClick(){
@@ -496,8 +483,6 @@ export default {
 
         __importFilesOrDir(data){
             var that = this
-            console.log("111111111111")
-            console.dir(data)
             if(data.success) {
                 var imageFiles = data.filesArray
                 imageFiles.forEach((fileObj, dinx) => {
