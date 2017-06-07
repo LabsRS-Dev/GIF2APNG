@@ -575,15 +575,15 @@ export default {
             console.assert(BS.b$.App.checkPathIsExist(_config.src))
             console.assert(BS.b$.App.checkPathIsExist(_config.out))
 
-            var _command = [], 
+            var _command = [],
                 _dest = _config.out
 
-            if (BS.b$.App.checkPathIsFile(_config.src)) { 
+            if (BS.b$.App.checkPathIsFile(_config.src)) {
                 _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
             }
 
             // -- 命令行参数格式化
-            const commandFormat = '['   + 
+            const commandFormat = '['   +
                                     '"' + _config.compression  + '",' +
                                     '"' + _config.iterations  + '",' +
                                     (_config.overwrite ? '"-ow",' : '') +
@@ -678,8 +678,7 @@ export default {
                 that.outputPathsModel = list[index].toString()
             },(data)=>{
                 if(data.success) {
-                    var outDir = data.filePath
-                    that.startDo(outDir)
+                    that.outputPathsModel = data.filesArray[0].filePath
                 }
             })
         }

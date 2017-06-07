@@ -6,8 +6,8 @@ const iconSet = {
   adjust: 'images/controls.svg',
   remove: 'images/eraser.svg',
   compare: 'images/compare.svg',
-  report: 'images/report.svg'
-
+  report: 'images/report.svg',
+  reductIcon:'images/logo_64x64.png'
 }
 
 // export
