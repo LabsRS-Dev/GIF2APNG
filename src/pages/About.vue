@@ -28,11 +28,6 @@
         <span class="page__about__content__release__new">
           {{$t('pages.abouts.releases.versions')}}{{ version }}<span class="page-about__release__space">({{appReleaseDate}})</span>
         </span>
-        <ui-switch
-            v-model= "switched"
-            >
-            {{$t('pages.abouts.updata.remind')}}
-        </ui-switch>
       </div>
     </div>
     <div class="page__about__content__licenses">

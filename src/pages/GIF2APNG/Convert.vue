@@ -494,61 +494,27 @@ export default {
             }
         },
 
-        startDo(outDir){
+        startDo(){
             var that = this
-
-            var srcImagesMap = {}
-            _.each(that.taskList, (taskObj, index) => {
-                srcImagesMap[taskObj.id] = taskObj.path
-            })
-
-            that.curFixTaskID = _.uniqueId(taskPrefix + 'task-')
-            Transfer.Tools.call('start.modify.exif', {
-                taskID: that.curFixTaskID,
-                data:{
-                    src: srcImagesMap,
-                    outputDir: outDir || BS.b$.App.getTempDir()
-                },
-                lang: Vue.config.lang
-            }, (data) =>{
-                if (data.msg_type === 's_task_exec_running') {
-                    that.isConvertWorking = true
-                }else if (data.msg_type === 's_task_exec_feedback') {
-                    let dataList = data.content
-                    that.isConvertWorking = (dataList.length > 0)
-                    _.each(dataList, (ele) => {
-                        let curImageTaskObj = that.taskID2taskObj[ele.id]
-                        if (curImageTaskObj) {
-                            curImageTaskObj.isworking = ele.progress >= 100 ? false : true
-                            curImageTaskObj.progress = ele.progress >= 100 ? 100: ele.progress
-                            curImageTaskObj.stateInfo.state = ele.state
-                            curImageTaskObj.stateInfo.message = ele.message || ''
-                        }
+            if(taskList.length > 0){
+                _.each(that.taskList, (taskObj, index) => {
+                    that.__abi__start_Gif2apngTask(taskObj.id, {
+                        src: taskObj.path,
+                        out: that.outputPathsModel,
+                        overwrite: false
                     })
-                }else if (data.msg_type === 's_task_exec_result') {
-
-                }
-            })
+                })
+            }
         },
 
         stopDo(notice = true){
             var that = this
             // send stop message to server
-            var srcImagesMap = {}
-            _.each(that.taskList, (taskObj, index) => {
-                // change all item state
-                taskObj.isworking = false
-                // prepare
-                srcImagesMap[taskObj.id] = taskObj.path
-            })
-
             if(!notice) return
-            if(_.keys(srcImagesMap).length > 0 && that.isConvertWorking) {
-                Transfer.Tools.call('stop.modify.exif', {
-                    taskID: that.curFixTaskID,
-                    data:{
-                        src: srcImagesMap
-                    }
+            if(taskList.length > 0 && that.isConvertWorking) {
+                _.each(that.taskList, (taskObj, index) => {
+                    taskObj.isworking = false
+                    that.__abi__cancel_Gif2apngTask(taskObj.id)
                 })
             }
         },
@@ -648,14 +614,7 @@ export default {
 
             if(item.isworking) {
                 // notice to server
-                let srcImagesMap = {}
-                srcImagesMap[item.id] = item.path
-                Transfer.Tools.call('stop.modify.exif', {
-                    taskID: that.curFixTaskID,
-                    data:{
-                        src: srcImagesMap
-                    }
-                })
+                that.__abi__cancel_Gif2apngTask(item.id)
                 that.__removeTaskItem(item, index)
             }else {
                 that.__removeTaskItem(item, index)
