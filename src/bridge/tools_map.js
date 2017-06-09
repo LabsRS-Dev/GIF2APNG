@@ -31,7 +31,7 @@ const ToolsMap = {
 
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  'gif2apng': { type: ToolsType.NTASK, cli: BS.b$.App.getAppPluginDir() + '/cligif2apng', command: [], mainThread: false },
+  'gif2apng': { type: ToolsType.NTASK, cli: BS.b$.App.getAppPluginDir() + '/CLIgif2apng', command: [], mainThread: false },
   'stop.gif2apng': { type: ToolsType.STOP_NTASK, command: ['stop', 'calltask'] }
 }
 
