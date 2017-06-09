@@ -1,0 +1,139 @@
+{
+  "routes":{
+    "common":{
+      "title":"General",         
+      "menu":{
+        "welcome":{
+          "title": "Welcome",
+          "tip": "Online documentation，online community，latest news"
+        },
+        "adjust":{
+          "title": "Convert",
+          "tip": "Convert GIF(.gif) to animated PNG(.png)"
+        }
+      }
+    },
+    "set":{
+      "title":"About",
+      "menu":{
+        "about":{
+          "title": "About us",
+          "tip": "Information about us"
+        }
+      }
+    }
+  },
+  "pages": {
+    "welcome":{
+      "toolbar":{
+        "setting":"Options",
+        "onlineDoc":"Online documentation",
+        "onlineRoom": "Online community",
+        "updateNews": "Latest news"
+      },
+      "task-item":{
+        "onOpenLink": "Open link"
+      }
+    },
+    "convert":{
+      "toolbar":{
+        "import":"Import GIF(.gif) files",
+        "importDir":"Import directory",
+        "remove":"Remove All",
+        "outputFolder": "Output directory",
+        "fix":"Convert",
+        "chancel":"Cancel all"
+      },
+      "task-item":{
+         "file-name": "Name：",
+         "file-path": "Path：",
+         "file-size": "Size：",
+         "progress": "Progress：",
+         "setting-plan": "Settings",
+         "open-parent-dir": "Reveal in Folder",
+         "review-in-file": "Preview"
+      },
+      "footbar": {
+        "fileCount": "Task Count",
+        "state": "Current state",
+        "isRemoveWorking": "removing",
+        "isWaiting":"Waiting",
+        "transferState": "Engine state",
+        "transferIsNormal": "Normal",
+        "transferIsFault": "Fault"
+      },
+      "dialog-import-images":{
+        "title":"Import GIF(.gif) files",
+        "prompt":"Import"
+      },
+      "dialog-import-dir-images":{
+        "title":"Import a directory",
+        "prompt":"Import"
+      },
+      "dialog-select-outdir":{
+        "title":"Select a output directory",
+        "prompt":"Select"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Remove all imported items?"
+      },
+      "dialog-config-output":{
+        "title":"Output directory",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "path":"Path:",
+        "cover":"Overwrite exsisting files?"
+      },
+      "dialog-confirm-stop-fix":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Cancel all converted tasks?"
+      },
+      "notice-no-items":{
+        "message": "Please import GIF files first, then convert!"
+      },
+      "notice-no-process":{
+        "message": "Please convert first, then output!"
+      },
+      "welcome":{
+        "description": "Steps：",
+        "step1":"1: Import GIF(.gif) files or directory (Support drag)",
+        "step2":"2: Set output directory",
+        "step3":"3: Click 'convert' button to run",
+        "step4":"4: Review the convert result"
+      },
+      "dialog-popover-confirm-edit":{
+        "title":"Description of GIF",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      }
+    },
+    "abouts":{
+      "header":{
+        "title":"About"
+      },
+      "licenses":{
+        "title":"License",
+        "content":"All right reserved",
+        "service":"Term of service"
+      },
+      "releases":{
+        "title":"Release",
+        "notes":"Version",
+        "versions":"Current version:"
+      },
+      "buttons":{
+        "title":"Help",
+        "matter":"Support"
+      },
+      "updata":{
+        "auto":"Auto update",
+        "remind":"Remind me if a new version released"
+      }
+    }
+  }
+}

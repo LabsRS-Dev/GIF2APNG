@@ -223,6 +223,32 @@ export default {
         Transfer.bind("onDropDragFiles", function(info){
             that.__importFilesOrDir(info.data)
         })
+
+        //TESTCode
+
+        Transfer['pageConvertTest'] = {
+            updateTaskProcessInfo:(task_id) => {
+                let progressInterval = 0
+                setInterval(() =>{
+                    if(progressInterval<=100){
+                        progressInterval += 5
+                        Transfer.trigger('TestRunGif2apngTask', { data: {
+                            taskID: task_id || that.taskList[0].id,
+                            messagePackage:{
+                            progress:progressInterval,
+                            state: 0
+                            }
+                        }})
+                    }
+                },400)
+            }
+        }
+
+
+        Transfer.bind("TestRunGif2apngTask", function(info){
+            const data = info.data
+            that.__updateInfoWithGif2apngTask(data.taskID, data.messagePackage)
+        })
     },
 
     mounted(){
@@ -381,6 +407,7 @@ export default {
                 ], function(ele){
                     let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
                     that.taskList.push(taskObj)
+                    console.log('taskID-files=', taskObj.id)
                     that.taskID2taskObj[taskObj.id] = taskObj
                 })
 
@@ -410,6 +437,7 @@ export default {
                 for(let i =0; i < 5; ++i){
                     var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
                     that.taskList.push(taskObj)
+                    console.log('taskID-dir=', taskObj.id)
                     that.taskID2taskObj[taskObj.id] = taskObj
                 }
             }, function(data){
@@ -494,6 +522,17 @@ export default {
             }
         },
 
+        __updateInfoWithGif2apngTask(taskID, data) {
+            var that = this
+            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            if (curInfoWithTaskObj) {
+                curInfoWithTaskObj.isworking = data.progress >= 100 ? false : true
+                curInfoWithTaskObj.progress = data.progress >= 100 ? 100: data.progress
+                curInfoWithTaskObj.stateInfo.state = data.state
+                curInfoWithTaskObj.stateInfo.message = data.message || ''
+            }
+        },
+
         startDo(){
             var that = this
             if(taskList.length > 0){
@@ -502,7 +541,9 @@ export default {
                         src: taskObj.path,
                         out: that.outputPathsModel,
                         overwrite: false
-                    })
+                    }, (data) => {
+                        that.__updateInfoWithGif2apngTask(taskObj.id, data)
+                    } )
                 })
             }
         },
@@ -514,7 +555,7 @@ export default {
             if(taskList.length > 0 && that.isConvertWorking) {
                 _.each(that.taskList, (taskObj, index) => {
                     taskObj.isworking = false
-                    that.__abi__cancel_Gif2apngTask(taskObj.id)
+                    that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {})
                 })
             }
         },
@@ -566,7 +607,7 @@ export default {
                 taskID: taskID,
                 command: _command
             }, (data) => {
-                handler && handler(data)
+                 handler && handler(data)
             })
 
             return that
