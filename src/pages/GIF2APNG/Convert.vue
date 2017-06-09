@@ -229,17 +229,38 @@ export default {
         Transfer['pageConvertTest'] = {
             updateTaskProcessInfo:(task_id) => {
                 let progressInterval = 0
-                setInterval(() =>{
-                    if(progressInterval<=100){
+                let progressTask = setInterval(() =>{
+                    let dateInfo  =Math.round(Math.random()*10)
+                    console.log(dateInfo)
+                    if(progressInterval < 100){
                         progressInterval += 5
                         Transfer.trigger('TestRunGif2apngTask', { data: {
                             taskID: task_id || that.taskList[0].id,
                             messagePackage:{
                             progress:progressInterval,
-                            state: 0
                             }
                         }})
-                    }
+                        if(dateInfo > 9){
+                            window.clearInterval(progressTask)
+                            Transfer.trigger('TestRunGif2apngTask', { data: {
+                                taskID: task_id || that.taskList[0].id,
+                                messagePackage:{
+                                progress:progressInterval,
+                                state: -1,
+                                message:'Error'
+                                }
+                            }})
+                        }
+                    }else if(progressInterval = 100){
+                        window.clearInterval(progressTask)
+                        Transfer.trigger('TestRunGif2apngTask', { data: {
+                                taskID: task_id || that.taskList[0].id,
+                                messagePackage:{
+                                state: 1,
+                                message:'Success'
+                                }
+                            }})
+                        }
                 },400)
             }
         }
