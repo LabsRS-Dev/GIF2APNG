@@ -556,14 +556,29 @@ export default {
 
         startDo(){
             var that = this
-            if(taskList.length > 0){
+            if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__start_Gif2apngTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.outputPathsModel,
                         overwrite: false
                     }, (data) => {
-                        that.__updateInfoWithGif2apngTask(taskObj.id, data)
+                        if (data.infoType === 'type_calltask_start'){
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: random(10,90)
+                            })
+                        }else if (data.infoType === 'type_calltask_success'){
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: 100,
+                                state: 1
+                            })
+                        }else if (data.infoType === 'type_calltask_error'){
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: 100,
+                                state: -1,
+                                message: 'error'
+                            })
+                        }
                     } )
                 })
             }
@@ -628,6 +643,7 @@ export default {
                 taskID: taskID,
                 command: _command
             }, (data) => {
+                console.log("--------------aaaaaaa")
                  handler && handler(data)
             })
 

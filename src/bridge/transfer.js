@@ -141,8 +141,12 @@ __$p$.Common = {
       }
 
       __$p$.send(info, data => {
-        if (data.task_id === options.taskID) { // 只处理本任务的返回数据
-          handler && handler(data)
+        try{
+          if (data.queueInfo.id === options.taskID) { // 只处理本任务的返回数据
+            handler && handler(data)
+          }
+        }catch(e){
+          console.error(e)
         }
       }, one)
     } else {
