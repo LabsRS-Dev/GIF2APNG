@@ -132,7 +132,6 @@
                     <div class="ui-toolbar__bottom">
                         <ui-progress-linear
                             :color="getItemProgressStyle(item)"
-                            type="determinate"
                             :progress="item.progress"
                             v-show="getImageProgressShow(item)"
                             :title=" $t('pages.convert.task-item.progress') + item.progress"
