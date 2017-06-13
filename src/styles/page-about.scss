@@ -9,17 +9,29 @@
         margin-bottom: rem-calc(10px);
         .page__about__title__matter{
           margin-left: rem-calc(32px);
-          font-size: rem-calc(18px);
+          font-size: rem-calc(16px);
         }
+    }
+    .page__about__content__button{
+      .ui-button__content{
+        font-size: rem-calc(12px);
+        text-transform: lowercase;
+        text-transform: capitalize;
+      }
     }
     .page__about__content__updata{
         margin-top: rem-calc(20px);
-        font-size: rem-calc(14px);
+        font-size: rem-calc(12px);
+        .page-about__release__overstriking{
+          padding-left: rem-calc(4px);
+          font-weight:bold;
+          font-size: rem-calc(14px);
+        }
         .page-about__release__space{
           padding-left: rem-calc(4px);
         }
         .ui-switch__label-text{
-          font-size: rem-calc(14px);
+          font-size: rem-calc(12px);
           margin-left: rem-calc(5px);
         }
     }
@@ -30,16 +42,13 @@
     min-height: 10%;
     font-size: rem-calc(14px);
     align-items: center;
+    .page-content__homepage{
+      text-decoration:underline;
+      font-size: rem-calc(14px);
+      color:$md-grey-800;
+    }
     .page-about__licenses__space{
       padding-left: rem-calc(2px);
-    }
-    .page__about__content__licenses__service{
-      margin-left:rem-calc(20px);
-      .page-content__terms__service{
-        text-decoration:underline;
-        font-size: rem-calc(12px);
-        color:$md-grey-800;
-      }
     }
   }
 }

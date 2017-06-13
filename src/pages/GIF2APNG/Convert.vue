@@ -101,7 +101,7 @@
                             <ui-icon-button
                                 @click="onOpenParentDir(item.fixOutDir)"
                                 type="secondary"
-                                color="white"
+                                color="black"
                                 size="small"
                                 v-if="item.stateInfo.state > 0"
                                 >
@@ -111,9 +111,9 @@
                             <ui-icon-button
                                 @click="onPreviewFile(item.fixpath)"
                                 type="secondary"
-                                color="white"
+                                color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0"
+                                v-if="item.stateInfo.state > 0 && checkOutputPathIsFile(item.fixpath)"
                                 >
                                 <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.convert.task-item.review-in-file') "></span>
                             </ui-icon-button>
@@ -592,9 +592,15 @@ export default {
             if(data.success) {
                 var imageFiles = data.filesArray
                 imageFiles.forEach((fileObj, dinx) => {
-                    let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                    that.taskList.push(taskObj)
-                    that.taskID2taskObj[taskObj.id] = taskObj
+                    if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
+                        let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                        that.taskList.push(taskObj)
+                        that.taskID2taskObj[taskObj.id] = taskObj
+                    }else{
+                        let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
+                        that.taskList.push(taskObj)
+                        that.taskID2taskObj[taskObj.id] = taskObj
+                    }
                 })
             }
         },
@@ -711,7 +717,7 @@ export default {
 
             /// call process task
             Transfer.Tools.call('gif2apng', {
-                taskID: taskID,
+                taskID: _.uniqueId('onetask') + ',' + taskID,
                 command: _command
             }, (data) => {
                  handler && handler(data)
@@ -795,10 +801,16 @@ export default {
             BS.b$.revealInFinder(dir,(data) => {})
         },
         onPreviewFile(path){
-            var that = this
             BS.b$.previewFile({
                 filePath: path
             },(data) => {})
+        },
+        checkOutputPathIsFile(path){
+            if(BS.b$.App.checkPathIsFile(path)){
+                return true
+            }else {
+                return false
+            }
         }
     },
 

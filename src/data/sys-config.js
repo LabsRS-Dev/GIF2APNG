@@ -8,7 +8,9 @@ const SysConfig = {
   homepage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   docPage: 'https://github.com/LabsRS-Dev/GIF2APNG',
   companyName:'Gmagon',
-  appReleaseDate:'2017/06/10'
+  appReleaseDate:'2017/06/10',
+  companyWebsiteHomepage:'https://gmagon.com',
+  support:'http://gmagon.com/support'
 }
 
 // export

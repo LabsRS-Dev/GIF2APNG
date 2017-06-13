@@ -36,9 +36,15 @@
         border-radius: rem-calc(5px);
         border: rem-calc(1px) solid #adadad;
         position: relative;
+        .ui-select__dropdown{
+            .ui-select-option{
+              font-size: rem-calc(11px);
+            }
+        }
         .ui-select__display{
           border: 0;
           height: rem-calc(25px);
+          font-size: rem-calc(11px);
           .ui-select__dropdown-button{
             margin: 0 auto;
           }

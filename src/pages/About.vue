@@ -13,35 +13,44 @@
             raised
             size="small"
             type="secondary"
+            @click="onHelpBtnClick"
             >
             {{$t('pages.abouts.buttons.title')}}
-          </ui-button>
-          <ui-button
+        </ui-button>
+        <ui-button
             raised
             size="small"
             type="secondary"
+            @click="onSupportBtnClick"
             >
             {{$t('pages.abouts.buttons.matter')}}
         </ui-button>
       </div>
       <div class="page__about__content__updata">
         <span class="page__about__content__release__new">
-          {{$t('pages.abouts.releases.versions')}}{{ version }}<span class="page-about__release__space">({{appReleaseDate}})</span>
+          {{$t('pages.abouts.releases.versions')}}
+          <span class="page-about__release__overstriking">
+            {{ version }}
+          </span>
+          <span class="page-about__release__space">({{appReleaseDate}})</span>
         </span>
       </div>
     </div>
     <div class="page__about__content__licenses">
-        <span>{{$t('pages.abouts.licenses.content')}}<span class="page-about__licenses__space">{{companyName}}</span></span>
-        <div class="page__about__content__licenses__service">
-          <span>{{appName}}
-            <span class="page-about__licenses__space"><a class="page-content__terms__service" target="_blank" href="">{{$t('pages.abouts.licenses.service')}}</a></span>
+        <span>
+          {{$t('pages.abouts.licenses.content')}}
+          <span class="page-about__licenses__space">
+            <a class="page-content__homepage" target="_blank" :href="companyWebsiteHomepage">{{companyName}}</a>
+            <span class="page-content__homepage__company">{{$t('pages.abouts.licenses.company')}}</span>
+            <span class="page-content__homepage__reserved">{{$t('pages.abouts.licenses.reserved')}}</span>
           </span>
-        </div>
+        </span>
     </div>
   </section>
 </template>
 
 <script>
+import { BS, Util, _ } from 'dove.max.sdk'
 import {UiButton,UiTextbox,UiRadioGroup,UiSwitch} from 'keen-ui'
 import Routes from './../routes.js'
 import IconsRef from '../data/icon.js'
@@ -54,7 +63,19 @@ export default {
         version:  Routes.SysConfig.version,
         appReleaseDate: Routes.SysConfig.appReleaseDate,
         companyName:Routes.SysConfig.companyName,
+        companyWebsiteHomepage:Routes.SysConfig.companyWebsiteHomepage,
+        homepage:Routes.SysConfig.homepage,
+        support:Routes.SysConfig.support,
         imgIcon:IconsRef.iconSet.reductIcon
+    }
+  },
+
+  methods:{
+    onHelpBtnClick(){
+      BS.b$.App.open(this.homepage)
+    },
+    onSupportBtnClick(){
+      BS.b$.App.open(this.support)
     }
   },
 

@@ -25,7 +25,7 @@ window.VueI8n = VueI18n
 
 const $ = Util.util.getJQuery$()
 
-const lang = 'zh-CN'
+const lang = 'en-US'
 const langJsonFile = './locale/' + lang + '.json'
 /**
  * 由于ES6 中的Fetch函数，暂时还不能使用Babel转换成ES5标准的，所以统一使用jQuery来处理
