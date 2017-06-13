@@ -93,7 +93,7 @@
                             <strong class="ui-toolbar__top__fileName" :title=" $t('pages.convert.task-item.file-name') +  item.name">
                                 {{ item.name }}
                                 <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.convert.task-item.file-size') +  item.size ">
-                                    ({{ item.size }})
+                                    {{ item.size ? '(' + item.size + ')' : '' }}
                                 </sup>
                             </strong>
                         </div>
@@ -593,11 +593,14 @@ export default {
                 var imageFiles = data.filesArray
                 imageFiles.forEach((fileObj, dinx) => {
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
-                        let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                        // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                        let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                         that.taskList.push(taskObj)
                         that.taskID2taskObj[taskObj.id] = taskObj
                     }else{
-                        let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
+                        // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
+                        let imgPath = BS.b$.App.getFileOrDirIconPath(fileObj.filePath)
+                        let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
                         that.taskList.push(taskObj)
                         that.taskID2taskObj[taskObj.id] = taskObj
                     }
