@@ -97,13 +97,13 @@ export default {
 
   },
   mounted(){
-    this.testNewList()
+    this.getNewList()
   },
   computed: {
     actionList() {
       var that = this
       return [
-        {id:'action-setting', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.setting"},
+      //  {id:'action-setting', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.setting"},
         {id:'action-online-doc', visiable:true, color:"black", icon:"fa fa-book fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.onlineDoc"},
         {id:'action-online-room', visiable:true, color:"black", icon:"fa fa-users fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.onlineRoom"},
         {id:'action-update-news', visiable:true, color:"black", icon:"fa fa-rss fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.updateNews"}
@@ -111,28 +111,13 @@ export default {
     }
   },
   methods:{
-    testNewList(){
+    getNewList(){
       // Test code
       const newsUrl = 'https://gmagon.com/products/store/gif2apng/data/news.json'
       var that = this
-      var list = []
-
-      for(let i =0; i<20; ++i){
-        list.push({
-            title: 'GIF2APNG Ver 1.0.0 publish...',
-            date:'2017年5月31日',
-            description:`
-            GIF2APNG 新产品发布，涉及如下功能：
-            1. 用户界面改进
-            2. 用户产品功能更新
-            3. 修复一些影响处理速度的问题
-            `,
-            link: 'https://www.baidu.com'
-          })
-      }
-
       var $ = Util.util.getJQuery$()
       $.getJSON(newsUrl, function(data){
+        that.newsList = []
         _.each(data.list, function(ele){
             let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
             that.newsList.push(newsObj)
@@ -159,6 +144,10 @@ export default {
             this.onBtnSettingClick()
         }else if (item.id === 'action-online-doc') {
             this.onBtnOnlineDocClick()
+        }else if (item.id === 'action-online-room') {
+            this.onBtnOnlineSupportClick()
+        }else if (item.id === 'action-update-news') {
+            this.getNewList()
         }
     },
 
@@ -169,6 +158,11 @@ export default {
     onBtnOnlineDocClick(){
       console.log(SysConfig.docPage)
       BS.b$.App.open(SysConfig.docPage)
+    },
+
+    onBtnOnlineSupportClick(){
+      console.log(SysConfig.support)
+      BS.b$.App.open(SysConfig.support)
     },
 
     // -------------------------- Page UiButton

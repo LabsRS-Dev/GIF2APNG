@@ -5,8 +5,8 @@
 const SysConfig = {
   appName: 'Gif2Apng',
   version: '3.0.0',
-  homepage: 'https://github.com/LabsRS-Dev/GIF2APNG',
-  docPage: 'https://github.com/LabsRS-Dev/GIF2APNG',
+  homepage: 'https://gmagon.com/products/store/gif2apng/index.htmls',
+  docPage: 'https://gmagon.com/products/store/gif2apng/docs.html',
   companyName:'Gmagon',
   appReleaseDate:'2017/06/10',
   companyWebsiteHomepage:'https://gmagon.com',
