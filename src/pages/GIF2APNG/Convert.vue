@@ -599,6 +599,16 @@ export default {
             }
         },
 
+        __updateTaskObj(taskID, data = {}) {
+            var that = this
+            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            if (curInfoWithTaskObj) {
+                curInfoWithTaskObj = _.extend(curInfoWithTaskObj, data)
+                console.dir(curInfoWithTaskObj)
+            }
+
+        },
+
         __updateInfoWithGif2apngTask(taskID, data) {
             var that = this
             let curInfoWithTaskObj = that.taskID2taskObj[taskID]
@@ -679,8 +689,12 @@ export default {
             var _command = [],
                 _dest = _config.out
 
+            that.__updateTaskObj(taskID, {fixOutDir:_dest})
+
+            // Fix when the task is file obj
             if (BS.b$.App.checkPathIsFile(_config.src)) {
                 _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
+                that.__updateTaskObj(taskID, {fixpath:_dest})
             }
 
             // -- 命令行参数格式化
@@ -778,10 +792,13 @@ export default {
         },
         onOpenParentDir(dir){
             var that = this
-            BS.b$.revealInFinder(dir)
+            BS.b$.revealInFinder(dir,(data) => {})
         },
-        onPreviewFile(dir){
-            BS.b$.previewFile(dir)
+        onPreviewFile(path){
+            var that = this
+            BS.b$.previewFile({
+                filePath: path
+            },(data) => {})
         }
     },
 
