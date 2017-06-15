@@ -1,5 +1,5 @@
 .page-app-doc {
-    
+
     .page__toolbar-app-doc{
         flex: 1;
         min-height: rem-calc(44px);
@@ -15,7 +15,7 @@
                 .ui-modal__header {
                     background: $global-titlebar-background;
                     color: $global-font-color;
-                    
+
                     h1 {
                         font-size: $global-font-size;
                     }
@@ -39,7 +39,7 @@
             min-width: 100%;
             min-height: 80%;
         }
-        
+
         .ui-alert--type-success {
             .ui-alert__body {
                 background: $docs-content__taskitem-background;
@@ -59,7 +59,7 @@
                 .ui-alert__body {
                     border-left: $docs-content__taskitem_success-boder-left;
                 }
-                
+
             }
 
             &.isFixFailed{
@@ -89,6 +89,9 @@
                     flex-direction: row;
                     align-items: center;
 
+                    .ui-toolbar__top__news__title{
+                        margin-left: rem-calc(8px);
+                    }
                     .ui-toolbar__top__fileName{
                         margin-left: rem-calc(4px);
                         user-select: auto !important;
