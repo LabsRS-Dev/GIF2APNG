@@ -1,8 +1,8 @@
 @import './define/imports.scss';
 
 // 模拟macOS的经典配色
-$global-with-titlebar-background: linear-gradient(rgba(233, 233, 233, 1.0), rgba(178, 178, 178, 1.0) 21px, #EDEDED, #EDEDED 23px);
-$global-titlebar-background:  linear-gradient(rgba(233, 233, 233, 1.0), rgba(178, 178, 178, 1.0));
+$global-with-titlebar-background: linear-gradient(rgba(236, 234, 237, 1.0), rgba(215, 213, 216, 1.0) 21px, #EDEDED, #EDEDED 23px);
+$global-titlebar-background:  linear-gradient(rgba(236, 234, 237, 1.0), rgba(215, 213, 216, 1.0));
 $global-background: #EDEDED;
 $global-hover-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7793f5), color-stop(50%,#406df2), color-stop(100%,#275af1));
 $global-font-color: black;
