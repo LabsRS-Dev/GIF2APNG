@@ -13,8 +13,8 @@
 
         <transition name="transition-slide">
             <sidebar class="is-mobile" v-show="showSidebar"></sidebar>
-        </transition>     
-        
+        </transition>
+
         <section class="dove-docs-content">
             <div class="dove-docs-content__toolbar">
                 <div class="dove-docs-content__toolbar-content">
@@ -27,10 +27,18 @@
                         @click="showSidebar = true"
                     ></ui-icon-button>
 
-                    <h1 class="dove-docs-content__toolbar-title">{{ $t($route.meta.title) }}</h1>
-                    <p class="dove-docs-content__toolbar-title__sub"
-                        v-show="$route.meta.tipAsSubTitle"
-                    > >> {{ $t($route.meta.tip) }}</p>
+                    <h1
+                        class="dove-docs-content__toolbar-title"
+                        @mouseenter="autoShowTip()"
+                        @mouseleave="autoShowTip()"
+                        >
+                        {{ $t($route.meta.title) }}
+                    </h1>
+                    <transition name="toolbar-title__sub_fade">
+                        <p class="dove-docs-content__toolbar-title__sub"
+                            v-show="$route.meta.tipAsSubTitle && showTip"
+                        > >> {{ $t($route.meta.tip) }}</p>
+                    </transition>
 
                     <a
                         class="dove-docs-content__toolbar-action"
@@ -53,15 +61,22 @@
     import VueI18n from 'vue-i18n'
     import {UiIcon} from 'keen-ui'
     import Sidebar from './pages/Sidebar.vue'
-    
+
 
     export default {
         data() {
             return {
                 showSidebar: false,
+                showTip: false
             }
         },
 
+        methods:{
+            autoShowTip(){
+                var that = this
+                that.showTip = !that.showTip
+            }
+        },
         components: {
             VueI18n,
             UiIcon,

@@ -16,14 +16,12 @@
     align-items: center;
     flex-shrink: 0;
     z-index: $z-index-toolbar;
-
     border-bottom: $docs-content__toolbar-border-bottom;
 }
 
 .dove-docs-content__toolbar-content {
     margin: 0 auto;
-    width: 100%;
-    // max-width: rem-calc(1092px);
+    width: 100%; // max-width: rem-calc(1092px);
     padding-left: rem-calc(24px);
     padding-right: rem-calc(24px);
     display: flex;
@@ -42,6 +40,20 @@
     font-weight: normal;
     font-size: 1.3rem;
     user-select: none;
+    cursor: pointer;
+}
+
+.toolbar-title__sub_fade-enter-active,
+.toolbar-title__sub_fade-leave-active {
+    transition: opacity .5s;
+}
+
+.toolbar-title__sub_fade-enter,
+.toolbar-title__sub_fade-leave-to
+/* .toolbar-title__sub_fade-leave-active in <2.1.8 */
+
+{
+    opacity: 0
 }
 
 .dove-docs-content__toolbar-title__sub {
@@ -68,12 +80,11 @@
     z-index: 0;
 }
 
-.ui-button{
-    .ui-button__content{
+.ui-button {
+    .ui-button__content {
         margin: 0 auto;
     }
 }
-
 
 td,
 th {
