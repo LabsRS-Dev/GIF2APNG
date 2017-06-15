@@ -26,16 +26,16 @@ const menu = [{
     component: WelcomePage,
     title: 'routes.common.menu.welcome.title',
     tip: 'routes.common.menu.welcome.tip',
-    tipAsSubTitle: false,
+    tipAsSubTitle: true,
     icon: icons.adjust,
     sourceUrl: ''
   }, {
-    path: rootPath + '/adjust',
+    path: rootPath + '/convert',
     show: true,
     component: ConvertPage,
     title: 'routes.common.menu.adjust.title',
     tip: 'routes.common.menu.adjust.tip',
-    tipAsSubTitle: false,
+    tipAsSubTitle: true,
     icon: icons.adjust,
     sourceUrl: ''
   }]
@@ -51,7 +51,7 @@ const menu = [{
     component: AboutPage,
     title: 'routes.set.menu.about.title',
     tip: 'routes.set.menu.about.tip',
-    tipAsSubTitle: false,
+    tipAsSubTitle: true,
     icon: icons.discover,
     sourceUrl: ''
   }]
