@@ -1,0 +1,9 @@
+{
+    "Description": "System bootstrap config",
+	"BootStrapList": [
+		"${BUNDEL_RESOURCE}/public/project.json",
+		"${BUNDEL_RESOURCE}/public/project_mac.json",
+		"${BUNDEL_RESOURCE}/public/project_win.json",
+		"${BUNDEL_RESOURCE}/public/project-aff-qxf.json"
+	]
+}

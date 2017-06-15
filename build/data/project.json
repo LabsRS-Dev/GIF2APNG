@@ -1,0 +1,49 @@
+{
+    "AppExInfoDescription" : "set App other information",
+    "AppExInfo" : {
+        "enableHttpServer" : false,
+        "onlyBuildInServer": false,
+        "enableNativeRate": false,
+
+        "BuyURL": "https://gmagon.com/products/store/gmagon_gif/buy.html",
+        "FAQURL": "https://gmagon.com/products/store/gmagon_gif/faq.html",
+
+        "HomePageURL": "https://gmagon.com/products/store/gmagon_gif/index.html",
+        "DocumentPageURL": "https://gmagon.com/products/store/gmagon_gif/docs.html",
+        "RoadmapPageURL": "https://gmagon.com/products/store/gmagon_gif/roadmap.html",
+        "ReportIssuePageURL": "https://github.com/Gmagon/support/issues/new",
+        "ViewLicensePageURL": "https://gmagon.com/end-user-license-agreement.html",
+        "ReleaseNotesPageURL": "https://gmagon.com/products/store/gmagon_gif/changelog.html",
+        "CheckForUpdatePageURL": "https://gmagon.com/products/store/gmagon_gif/download.html",
+
+        "autoOffset": true,
+        "minSize" : [800, 600],
+        "size" : [1024, 768],
+        "#maxSize" : [800, 360],
+        "hasTitleBar" : true,
+        "hasShadow" : true,
+        "hasTextured" : true,
+        "hasUnifiedTitleAndToolbarWindow" : true,
+        "hasCloseControls" : true,
+        "hasMinimizeControls" : true,
+        "hasResizeControls" : true,
+        "hasToolbarButtonControls" : true,
+        "hideCloseButton" : false,
+        "hideMiniaturizeButton": false,
+        "hideZoomButton" : false,
+        "hideToolbarButton" : false,
+        "hideDocumentIconButton" : false,
+        "hideDocumentVersionsButton" : false,
+        "hideFullScreenButton" : true,
+        "menuHideList" : [
+            {"tag":100,"hide":true},
+            {"tag":200,"hide":false}
+        ],
+        "menuTitleList" : [
+            {"tag":901,"title":"","method":"re", "descript":"About"},
+            {"tag":907,"title":"","method":"re", "descript":"Hide"},
+            {"tag":911,"title":"","method":"re", "descript":"Quit"}
+        ]
+    },
+    "EnableIAP" : false
+}

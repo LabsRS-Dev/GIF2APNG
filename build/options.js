@@ -29,6 +29,7 @@ module.exports = {
         output: {
             main: path.join(__dirname, '..', 'dist'),
             lib: path.join(__dirname, '..', 'lib'),
+            publish: path.join(__dirname, '..', 'dist_public'),
             docs: path.join(__dirname, '..', 'docs')
         },
 

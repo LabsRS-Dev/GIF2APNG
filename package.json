@@ -1,6 +1,6 @@
 {
   "name": "GmagonGif-build",
-  "version": "3.0",
+  "version": "3.0.0",
   "description": "A process GIF animation tool.",
   "main": "dist/bundle.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "compile": "webpack --config ./build/webpack.dist.js --display-error-details --watch",
     "build": "webpack --config ./build/webpack.dist.js",
     "build:all": "npm run build",
+    "publish": "webpack --config ./build/webpack.publish.js",
     "clean": "",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty --ext .js,.vue,.html ./",
     "test": "npm run lint"
@@ -64,6 +65,7 @@
     "babel-preset-stage-2": "^6.22.0",
     "babel-runtime": "^6.23.0",
     "caniuse-db": "^1.0.30000683",
+    "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^3.2.4",
     "css-loader": "^0.25.0",
     "deep-assign": "^2.0.0",
