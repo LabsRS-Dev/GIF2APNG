@@ -1,7 +1,7 @@
 {
   "routes":{
     "common":{
-      "title":"General",         
+      "title":"General",
       "menu":{
         "welcome":{
           "title": "Welcome",
@@ -118,8 +118,10 @@
       },
       "licenses":{
         "title":"License",
-        "content":"All right reserved",
-        "service":"Term of service"
+        "content":"Copyright © 2017",
+        "service":"Term of service",
+        "company":"Inc.",
+        "reserved":"All rights reserved."
       },
       "releases":{
         "title":"Release",

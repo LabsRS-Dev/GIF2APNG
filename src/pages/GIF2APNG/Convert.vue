@@ -44,8 +44,10 @@
                     <div class="page__toolbar-app-doc__input-browse">
                         <span class="input-group-addon">{{ $t('pages.convert.dialog-config-output.path') }}</span>
                         <ui-select
-                            :options="outputPathsList"
+                            :options="onOutputToLocalStorage()"
                             v-model="outputPathsModel"
+
+                            @change="onOutputToLocalStorage()"
                             >
                         </ui-select>
                         <ui-button
@@ -91,9 +93,30 @@
                             <strong class="ui-toolbar__top__fileName" :title=" $t('pages.convert.task-item.file-name') +  item.name">
                                 {{ item.name }}
                                 <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.convert.task-item.file-size') +  item.size ">
-                                    ({{ item.size }})
+                                    {{ item.size ? '(' + item.size + ')' : '' }}
                                 </sup>
                             </strong>
+                        </div>
+                        <div class="ui-toolbar__top__metainfo__toolbar">
+                            <ui-icon-button
+                                @click="onOpenParentDir(item.fixOutDir)"
+                                type="secondary"
+                                color="black"
+                                size="small"
+                                v-if="item.stateInfo.state > 0"
+                                >
+                                <span class="fa fa-folder-open-o fa-lg fa-fw" :title=" $t('pages.convert.task-item.open-parent-dir') "></span>
+                            </ui-icon-button>
+
+                            <ui-icon-button
+                                @click="onPreviewFile(item.fixpath)"
+                                type="secondary"
+                                color="black"
+                                size="small"
+                                v-if="item.stateInfo.state > 0 && checkOutputPathIsFile(item.fixpath)"
+                                >
+                                <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.convert.task-item.review-in-file') "></span>
+                            </ui-icon-button>
                         </div>
                     </div>
                     <div class="ui-toolbar__body">
@@ -109,7 +132,6 @@
                     <div class="ui-toolbar__bottom">
                         <ui-progress-linear
                             :color="getItemProgressStyle(item)"
-                            type="determinate"
                             :progress="item.progress"
                             v-show="getImageProgressShow(item)"
                             :title=" $t('pages.convert.task-item.progress') + item.progress"
@@ -137,6 +159,9 @@ import {Transfer} from '../../bridge/transfer'
 var baseID = "__page__convert__action__"
 var baseIDIndex = -1
 
+const globe_key_storage_outpaths = '__page__convert__storage__outpaths'
+const globe_key_storage_last_select_outpath = '__page__convert__storage_last_select_outpath'
+
 let taskList = [];
 let outputList = [];
 const maxSaveData = 5;
@@ -158,6 +183,8 @@ class Task {
         /// ----- 修改工作的情况
         this.isworking = false;     // 是否正在修改中
         this.progress = 0;          // 修改进度(100为单位)
+        this.fixOutDir = "";        // 指定的修改输出目录
+        this.fixpath = "";          // 修改成功的文件路径
         this.stateInfo = {           // 修改运行状态
             state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败
             message: ""             // 修改结果的描述，如果是错误，描述错误，如果是成功，描述其定义内容
@@ -169,6 +196,7 @@ class Task {
 export default {
 
     data() {
+        var that = this
         console.log("convert.vue call data()")
         return {
             welcomeContentID:'page__convert__welcome__id',
@@ -179,8 +207,8 @@ export default {
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
-            outputPathsModel:'',
-            outputList:outputList,
+            outputPathsModel: that.__getLastSelectOutputPath(),
+            outputList:that.getOutputToLocalStorage(),
             confirmDialog:{
                 ref: 'default',
                 autofocus: 'none',
@@ -291,21 +319,6 @@ export default {
                 {id:'action-do', visiable:!that.isConvertWorking, color:"green", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
-        },
-        outputPathsList(){
-            var that = this
-            var spl = outputList.join().toLowerCase()
-            if(outputList.length < maxSaveData){
-                    if(spl.indexOf(that.outputPathsModel.toLowerCase()) == -1){
-                        outputList.push(that.outputPathsModel)
-                    }
-            }else if(outputList.length = maxSaveData){
-                    if(spl.indexOf(that.outputPathsModel.toLowerCase())== -1){
-                            outputList.splice(0,1)
-                            outputList.push(that.outputPathsModel)
-                    }
-            }
-            return outputList
         }
     },
 
@@ -323,7 +336,49 @@ export default {
 
             // All task list run working
             that.stopDo()
+        },
+        outputPathsList(){
+            var that = this
+            var spl = outputList.join().toLowerCase()
+            if(outputList.length < maxSaveData){
+                    if(spl.indexOf(that.outputPathsModel.toLowerCase()) == -1){
+                        outputList.push(that.outputPathsModel)
+                    }
+            }else if(outputList.length = maxSaveData){
+                    if(spl.indexOf(that.outputPathsModel.toLowerCase())== -1){
+                            outputList.splice(0,1)
+                            outputList.push(that.outputPathsModel)
+                    }
+            }
+            return outputList
+        },
 
+        onOutputToLocalStorage(){
+            var that = this
+            localStorage.setItem(globe_key_storage_outpaths, JSON.stringify(that.outputPathsList()))
+            that.__saveLastSelectOutputPathToLocalStorage()
+            return that.outputPathsList()
+        },
+
+        getOutputToLocalStorage(){
+            if (localStorage.getItem(globe_key_storage_outpaths)){
+                outputList = JSON.parse(localStorage.getItem(globe_key_storage_outpaths))
+            }
+            return outputList
+        },
+
+        // ------------------------- LocalStorage
+        __saveLastSelectOutputPathToLocalStorage(){
+            var that = this
+            localStorage.setItem(globe_key_storage_last_select_outpath, JSON.stringify(that.outputPathsModel || ''))
+        },
+
+        __getLastSelectOutputPath(){
+            let path = ''
+            if (localStorage.getItem(globe_key_storage_last_select_outpath)){
+                path = JSON.parse(localStorage.getItem(globe_key_storage_last_select_outpath))
+            }
+            return path
         },
 
         // ------------------------- Welcome content
@@ -507,7 +562,7 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.outputPathsModel==""){
-                cdg.callbackConfirm = () => {that.startDo()}
+                cdg.callbackConfirm = () => { that.startDo() }
                 that.onBtnOutputFolderClick()
             }else{
                 that.startDo()
@@ -536,11 +591,30 @@ export default {
             if(data.success) {
                 var imageFiles = data.filesArray
                 imageFiles.forEach((fileObj, dinx) => {
-                    let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                    that.taskList.push(taskObj)
-                    that.taskID2taskObj[taskObj.id] = taskObj
+                    if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
+                        // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                        let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                        that.taskList.push(taskObj)
+                        that.taskID2taskObj[taskObj.id] = taskObj
+                    }else{
+                        // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
+                        let imgPath = BS.b$.App.getFileOrDirIconPath(fileObj.filePath)
+                        let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
+                        that.taskList.push(taskObj)
+                        that.taskID2taskObj[taskObj.id] = taskObj
+                    }
                 })
             }
+        },
+
+        __updateTaskObj(taskID, data = {}) {
+            var that = this
+            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            if (curInfoWithTaskObj) {
+                curInfoWithTaskObj = _.extend(curInfoWithTaskObj, data)
+                console.dir(curInfoWithTaskObj)
+            }
+
         },
 
         __updateInfoWithGif2apngTask(taskID, data) {
@@ -565,7 +639,8 @@ export default {
                     }, (data) => {
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: random(10,90)
+                                progress: (Math.floor(Math.random()*10)+1)*10,
+                                state:0
                             })
                         }else if (data.infoType === 'type_calltask_success'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
@@ -622,8 +697,12 @@ export default {
             var _command = [],
                 _dest = _config.out
 
+            that.__updateTaskObj(taskID, {fixOutDir:_dest})
+
+            // Fix when the task is file obj
             if (BS.b$.App.checkPathIsFile(_config.src)) {
                 _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
+                that.__updateTaskObj(taskID, {fixpath:_dest})
             }
 
             // -- 命令行参数格式化
@@ -640,10 +719,9 @@ export default {
 
             /// call process task
             Transfer.Tools.call('gif2apng', {
-                taskID: taskID,
+                taskID: _.uniqueId('onetask') + ',' + taskID,
                 command: _command
             }, (data) => {
-                console.log("--------------aaaaaaa")
                  handler && handler(data)
             })
 
@@ -719,6 +797,22 @@ export default {
                     that.outputPathsModel = data.filesArray[0].filePath
                 }
             })
+        },
+        onOpenParentDir(dir){
+            var that = this
+            BS.b$.revealInFinder(dir,(data) => {})
+        },
+        onPreviewFile(path){
+            BS.b$.previewFile({
+                filePath: path
+            },(data) => {})
+        },
+        checkOutputPathIsFile(path){
+            if(BS.b$.App.checkPathIsFile(path)){
+                return true
+            }else {
+                return false
+            }
         }
     },
 
