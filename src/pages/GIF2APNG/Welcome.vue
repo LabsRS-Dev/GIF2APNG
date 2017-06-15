@@ -125,7 +125,7 @@ export default {
           link: SysConfig.companyWebsiteHomepage
       })
       _.each(list, function(ele){
-          let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
+          let newsObj = new News(ele.thumb || "images/logo_64x64.png", ele.title, ele.date, ele.description, ele.link)
           that.newsList.push(newsObj)
       })
     },
