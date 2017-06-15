@@ -117,7 +117,7 @@ export default {
       var that = this
       var list = []
       list.push({
-          title: 'GIF2APNG Ver2.0 released',
+          title: 'GIF2APNG Ver3.0 released',
           date:'',
           description:`
             Welcome to Gmagon Gif!
