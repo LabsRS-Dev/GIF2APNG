@@ -117,26 +117,26 @@ export default {
       var that = this
       var list = []
       list.push({
-          title: 'GIF2APNG Ver3.0 released',
+          title: SysConfig.appName + '\t' + SysConfig.version ,
           date:'',
           description:`
-            Welcome to Gmagon Gif!
+            Welcome to Gmagon.com
           `,
-          link: 'https://gmagon.com/products/store/gif2apng/data/news.json'
+          link: SysConfig.companyWebsiteHomepage
       })
       _.each(list, function(ele){
-          let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
+          let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
           that.newsList.push(newsObj)
       })
     },
     getNewList(){
       // Test code
-      const newsUrl = 'https://gmagon.com/products/store/gif2apng/data/news.json'
+      const newsUrl = SysConfig.newsDataUrl
       var that = this
       var $ = Util.util.getJQuery$()
       $.getJSON(newsUrl, function(data){
         _.each(data.list, function(ele){
-            let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
+            let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
             that.newsList.push(newsObj)
         })
       })
