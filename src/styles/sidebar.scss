@@ -149,6 +149,7 @@
                 text-decoration: none;
                 color: $sider-menu-item-hover-font-color;
                 background: $sider-menu-item-hover-background;
+                border-radius: rem-calc(5px);
             }
             .ui-icon {
                 font-size: rem-calc(13px);

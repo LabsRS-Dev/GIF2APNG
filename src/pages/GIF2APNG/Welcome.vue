@@ -33,7 +33,7 @@
                         <strong class="ui-toolbar__top__news__title">
                             {{ item.title }}
                             <sup class="ui-toolbar__top__news__date">
-                            ({{ item.date }})
+                            {{ item.date ? '(' + item.date + ')' : '' }}
                             </sup>
                         </strong>
                     </div>
@@ -97,6 +97,7 @@ export default {
 
   },
   mounted(){
+    this.testNewList(),
     this.getNewList()
   },
   computed: {
@@ -111,20 +112,34 @@ export default {
     }
   },
   methods:{
+    testNewList(){
+      // Test code
+      var that = this
+      var list = []
+      list.push({
+          title: 'GIF2APNG Ver2.0 released',
+          date:'',
+          description:`
+            Welcome to Gmagon Gif!
+          `,
+          link: 'https://gmagon.com/products/store/gif2apng/data/news.json'
+      })
+      _.each(list, function(ele){
+          let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
+          that.newsList.push(newsObj)
+      })
+    },
     getNewList(){
       // Test code
       const newsUrl = 'https://gmagon.com/products/store/gif2apng/data/news.json'
       var that = this
       var $ = Util.util.getJQuery$()
       $.getJSON(newsUrl, function(data){
-        that.newsList = []
         _.each(data.list, function(ele){
             let newsObj = new News("images/picture.svg", ele.title, ele.date, ele.description, ele.link)
             that.newsList.push(newsObj)
         })
       })
-
-
     },
     // ------------------------- Style
     getItemStyleClass(item){
