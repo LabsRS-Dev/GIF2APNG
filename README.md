@@ -1,14 +1,8 @@
 # GIF2APNG
 GIF2APNG  GIF格式转换为APNG格式处理工具
 
-用Vue.js、Vue-router、Vue-i18n、Keen-ui、Webpack、Webpack-dev-server 和 dove.max.sdk 编写的针对macOS系统(苹果操作系统)的工具类软件。
-将会像我们其他类产品一样，发布到苹果应用商店中，进行销售！ ^_^
 
 > 如果对您有帮助，您可以点右上角 "Star" 支持一下 谢谢！ ^_^
-
-
-<p><a href="//wpa.qq.com/msgrd?v=3&uin=34314687&site=qq&menu=yes">QQ交流 <strong> 34314687 </strong></a></p>
-
 
 
 ##### 环境
@@ -34,10 +28,6 @@ GIF2APNG  GIF格式转换为APNG格式处理工具
 
 > [es6-babel](https://babeljs.io/docs/learn-es2015/)
 
----
-### 截图
-
-![screen](./docs/assets/screen.gif)
 
 ### 安装
 项目地址：（使用`git clone`）

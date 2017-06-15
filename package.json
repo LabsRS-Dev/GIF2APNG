@@ -10,7 +10,7 @@
     "compile": "webpack --config ./build/webpack.dist.js --display-error-details --watch",
     "build": "webpack --config ./build/webpack.dist.js",
     "build:all": "npm run build",
-    "publish": "webpack --config ./build/webpack.publish.js",
+    "publish": "npm run build && webpack --config ./build/webpack.publish.js",
     "clean": "",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty --ext .js,.vue,.html ./",
     "test": "npm run lint"

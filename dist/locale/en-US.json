@@ -14,10 +14,10 @@
       }
     },
     "set":{
-      "title":"About",
+      "title":"Common",
       "menu":{
         "about":{
-          "title": "About us",
+          "title": "About",
           "tip": "Information about us"
         }
       }
