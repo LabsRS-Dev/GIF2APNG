@@ -92,6 +92,7 @@
     "style-loader": "^0.16.1",
     "tether-drop": "^1.4.2",
     "tether-tooltip": "^1.2.0",
+    "url-loader": "^0.5.9",
     "vue-hot-reload-api": "^2.0.11",
     "vue-loader": "^10.3.0",
     "vue-style-loader": "^2.0.4",
