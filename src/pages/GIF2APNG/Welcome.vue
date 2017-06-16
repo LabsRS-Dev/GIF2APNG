@@ -67,7 +67,7 @@ import {Transfer} from '../../bridge/transfer'
 import {SysConfig} from '../../data/sys-config'
 
 
-let store_newsList = []
+var store_newsList = []
 class News {
   constructor(thumb, title, date, description, link) {
     this.id = _.uniqueId('welcome-news-id-')
