@@ -67,7 +67,7 @@ import {Transfer} from '../../bridge/transfer'
 import {SysConfig} from '../../data/sys-config'
 
 
-
+let newsList = []
 class News {
   constructor(thumb, title, date, description, link) {
     this.id = _.uniqueId('welcome-news-id-')
@@ -84,21 +84,26 @@ class News {
     }
   }
 }
-
+///
+var hasInited = false;     // 是否初始过
 ////////////////////////////////////////////////////////
 
 export default {
   data(){
     return {
-      newsList: []
+      newsList: newsList
     }
   },
   beforeCreate(){
 
   },
   mounted(){
-    this.initFirstNews()
-    this.getNewList()
+    var that = this
+    if(!hasInited){
+      hasInited = true
+      that.initFirstNews()
+      that.getNewList()
+    }
   },
   computed: {
     actionList() {
@@ -113,6 +118,7 @@ export default {
   },
   methods:{
     initFirstNews(){
+      console.log('initFirstNews')
       var that = this
       var list = []
       list.push({
