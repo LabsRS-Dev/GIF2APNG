@@ -97,7 +97,7 @@ export default {
 
   },
   mounted(){
-    this.testNewList(),
+    this.initFirstNews()
     this.getNewList()
   },
   computed: {
@@ -112,8 +112,7 @@ export default {
     }
   },
   methods:{
-    testNewList(){
-      // Test code
+    initFirstNews(){
       var that = this
       var list = []
       list.push({
@@ -130,11 +129,12 @@ export default {
       })
     },
     getNewList(){
-      // Test code
-      const newsUrl = SysConfig.newsDataUrl
       var that = this
+      const newsUrl = SysConfig.newsDataUrl
       var $ = Util.util.getJQuery$()
       $.getJSON(newsUrl, function(data){
+        that.newsList = []
+        that.initFirstNews()
         _.each(data.list, function(ele){
             let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
             that.newsList.push(newsObj)

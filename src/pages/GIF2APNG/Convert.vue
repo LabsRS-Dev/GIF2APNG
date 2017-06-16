@@ -586,22 +586,37 @@ export default {
             }
         },
 
+        __findTaskObjExistWithPath(filePath){
+            var that = this
+            var found = false
+            _.each(that.taskList, function(taskObj, index){
+                if (taskObj.path === filePath)
+                return found = true
+            })
+
+            return found
+        },
+
         __importFilesOrDir(data){
             var that = this
             if(data.success) {
                 var imageFiles = data.filesArray
-                imageFiles.forEach((fileObj, dinx) => {
+                _.each(imageFiles,(fileObj, dinx) => {
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                        let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                        that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
+                        if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
+                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                            that.taskList.push(taskObj)
+                            that.taskID2taskObj[taskObj.id] = taskObj
+                        }
                     }else{
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
                         let imgPath = BS.b$.App.getFileOrDirIconPath(fileObj.filePath)
-                        let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
-                        that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
+                        if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
+                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
+                            that.taskList.push(taskObj)
+                            that.taskID2taskObj[taskObj.id] = taskObj
+                        }
                     }
                 })
             }

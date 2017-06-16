@@ -32,6 +32,7 @@ const __$p$ = {
     agent.active({
       dropDragConfig: {
         enable: true,
+        enableDir: true,
         allowTypes: ['*'],
         handler: function (data) {
           that.trigger('onDropDragFiles', { data: data })
