@@ -28,22 +28,29 @@ const config = merge(base, {
         }),
 
         // Set the production environment
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"production"'
-            }
-        }),
+        // new webpack.DefinePlugin({
+        //     'process.env': {
+        //         NODE_ENV: '"production"'
+        //     }
+        // }),
 
-        // Minify with dead-code elimination
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            }
-        })
+        // // Minify with dead-code elimination
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false
+        //     }
+        // })
     ]
 });
 
+// Fix /// <reference path="" />
+// config.resolve.modules.push(options.paths.resolve('node_modules'))
+
 // First item in module.rules array is Vue
+// config.module.rules[0].options.loaders = {
+//     scss: 'vue-style-loader!css-loader!sass-loader'
+// };
+
 config.module.rules[0].options.loaders = {
     scss: ExtractTextPlugin.extract({
         use: 'css-loader!sass-loader',
@@ -62,6 +69,9 @@ config.module.rules.push({
         fallback: 'style-loader'
     })
 });
+
+
+
 
 module.exports = config;
 
