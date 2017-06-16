@@ -67,7 +67,7 @@ import {Transfer} from '../../bridge/transfer'
 import {SysConfig} from '../../data/sys-config'
 
 
-let newsList = []
+let store_newsList = []
 class News {
   constructor(thumb, title, date, description, link) {
     this.id = _.uniqueId('welcome-news-id-')
@@ -91,7 +91,7 @@ var hasInited = false;     // 是否初始过
 export default {
   data(){
     return {
-      newsList: newsList
+      newsList: store_newsList
     }
   },
   beforeCreate(){
@@ -133,6 +133,7 @@ export default {
           let newsObj = new News(ele.thumb || "images/logo_64x64.png", ele.title, ele.date, ele.description, ele.link)
           that.newsList.push(newsObj)
       })
+      store_newsList = that.newsList
     },
     getNewList(){
       var that = this
@@ -145,6 +146,7 @@ export default {
             let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
             that.newsList.push(newsObj)
         })
+        store_newsList = that.newsList
       })
     },
     // ------------------------- Style
