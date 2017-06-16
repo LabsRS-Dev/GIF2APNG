@@ -192,6 +192,9 @@ class Task {
     }
 }
 
+////
+var hasInited = false;     // 是否初始过
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -239,65 +242,68 @@ export default {
     beforeCreate(){
         var that = this
         console.log('Convert.vue beforeCreate')
+        if (!hasInited){
+            console.log('Convert.vue beforeCreate inited')
+            hasInited = true
+            Transfer.frontAgent.registerOnChannelFault(function () {
+                that.onTransferIsFault()
+            })
 
-        Transfer.frontAgent.registerOnChannelFault(function () {
-            that.onTransferIsFault()
-        })
+            Transfer.frontAgent.registerOnFinishBuildChannel(function (){
+                that.onTransferIsNoraml()
+            })
 
-        Transfer.frontAgent.registerOnFinishBuildChannel(function (){
-            that.onTransferIsNoraml()
-        })
+            Transfer.bind("onDropDragFiles", function(info){
+                that.__importFilesOrDir(info.data)
+            })
 
-        Transfer.bind("onDropDragFiles", function(info){
-            that.__importFilesOrDir(info.data)
-        })
+            //TESTCode
 
-        //TESTCode
-
-        Transfer['pageConvertTest'] = {
-            updateTaskProcessInfo:(task_id) => {
-                let progressInterval = 0
-                let progressTask = setInterval(() =>{
-                    let dateInfo  =Math.round(Math.random()*10)
-                    console.log(dateInfo)
-                    if(progressInterval < 100){
-                        progressInterval += 5
-                        Transfer.trigger('TestRunGif2apngTask', { data: {
-                            taskID: task_id || that.taskList[0].id,
-                            messagePackage:{
-                            progress:progressInterval,
-                            }
-                        }})
-                        if(dateInfo > 9){
-                            window.clearInterval(progressTask)
+            Transfer['pageConvertTest'] = {
+                updateTaskProcessInfo:(task_id) => {
+                    let progressInterval = 0
+                    let progressTask = setInterval(() =>{
+                        let dateInfo  =Math.round(Math.random()*10)
+                        console.log(dateInfo)
+                        if(progressInterval < 100){
+                            progressInterval += 5
                             Transfer.trigger('TestRunGif2apngTask', { data: {
                                 taskID: task_id || that.taskList[0].id,
                                 messagePackage:{
                                 progress:progressInterval,
-                                state: -1,
-                                message:'Error'
                                 }
                             }})
-                        }
-                    }else if(progressInterval = 100){
-                        window.clearInterval(progressTask)
-                        Transfer.trigger('TestRunGif2apngTask', { data: {
-                                taskID: task_id || that.taskList[0].id,
-                                messagePackage:{
-                                state: 1,
-                                message:'Success'
-                                }
-                            }})
-                        }
-                },400)
+                            if(dateInfo > 9){
+                                window.clearInterval(progressTask)
+                                Transfer.trigger('TestRunGif2apngTask', { data: {
+                                    taskID: task_id || that.taskList[0].id,
+                                    messagePackage:{
+                                    progress:progressInterval,
+                                    state: -1,
+                                    message:'Error'
+                                    }
+                                }})
+                            }
+                        }else if(progressInterval = 100){
+                            window.clearInterval(progressTask)
+                            Transfer.trigger('TestRunGif2apngTask', { data: {
+                                    taskID: task_id || that.taskList[0].id,
+                                    messagePackage:{
+                                    state: 1,
+                                    message:'Success'
+                                    }
+                                }})
+                            }
+                    },400)
+                }
             }
+
+
+            Transfer.bind("TestRunGif2apngTask", function(info){
+                const data = info.data
+                that.__updateInfoWithGif2apngTask(data.taskID, data.messagePackage)
+            })
         }
-
-
-        Transfer.bind("TestRunGif2apngTask", function(info){
-            const data = info.data
-            that.__updateInfoWithGif2apngTask(data.taskID, data.messagePackage)
-        })
     },
 
     mounted(){
