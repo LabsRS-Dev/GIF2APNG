@@ -660,7 +660,7 @@ export default {
                     }, (data) => {
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: (Math.floor(Math.random()*10)+1)*10,
+                                progress: 50,
                                 state:0
                             })
                         }else if (data.infoType === 'type_calltask_success'){
