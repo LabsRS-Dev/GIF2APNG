@@ -723,7 +723,7 @@ export default {
             // Fix when the task is file obj
             if (BS.b$.App.checkPathIsFile(_config.src)) {
                 _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
-                that.__updateTaskObj(taskID, {fixpath:_dest})
+                that.__updateTaskObj(taskID, {fixOutDir:_dest, fixpath:_dest})
             }
 
             // -- 命令行参数格式化
