@@ -44,10 +44,8 @@
                     <div class="page__toolbar-app-doc__input-browse">
                         <span class="input-group-addon">{{ $t('pages.convert.dialog-config-output.path') }}</span>
                         <ui-select
-                            :options="onOutputToLocalStorage()"
-                            v-model="outputPathsModel"
-
-                            @change="onOutputToLocalStorage()"
+                            :options="availableOutputPathList"
+                            v-model="lastOutputPath"
                             >
                         </ui-select>
                         <ui-button
@@ -61,7 +59,7 @@
                     </div>
                     <div class="page__toolbar-app-doc__input-cover">
                         <ui-checkbox
-                            v-model="checkBox"
+                            v-model="enableOverWriteOutput"
                             >
                         </ui-checkbox>
                         <span class="input-group-cover">{{ $t('pages.convert.dialog-config-output.cover') }}</span>
@@ -159,12 +157,7 @@ import {Transfer} from '../../bridge/transfer'
 var baseID = "__page__convert__action__"
 var baseIDIndex = -1
 
-const globe_key_storage_outpaths = '__page__convert__storage__outpaths'
-const globe_key_storage_last_select_outpath = '__page__convert__storage_last_select_outpath'
 
-let taskList = [];
-let outputList = [];
-const maxSaveData = 5;
 const taskPrefix = 'convert-page-image-id-' + _.now()
 class Task {
     constructor(thumb, name, path, size){
@@ -181,7 +174,8 @@ class Task {
         };
 
         /// ----- 修改工作的情况
-        this.isworking = false;     // 是否正在修改中
+        this.associatedTransferTaskIds = [];  // 关联到TransferTaskId,真正执行TaskIDs
+        this.isWorking = false;     // 是否正在修改中
         this.progress = 0;          // 修改进度(100为单位)
         this.fixOutDir = "";        // 指定的修改输出目录
         this.fixpath = "";          // 修改成功的文件路径
@@ -192,8 +186,54 @@ class Task {
     }
 }
 
+var taskList = []
+
+//// 与设置相关的处理
+class Settings {
+    static key = "convert-page-settings"
+
+    static instance = null
+    static shareInstance(){
+        if (!Settings.instance){
+            Settings.instance = new Settings()
+        }
+        return Settings.instance
+    }
+
+    constructor(){
+        this.data = {
+            outputPaths: [],
+            lastSelectOutputPath: "",
+            enableOverwriteOutput: false,
+            maxSaveOutputPathCount: 5
+        }
+    }
+
+    restore(){
+        var ls = window.localStorage
+        var local = {}
+        if(ls){
+            var str = ls.getItem(Settings.key)
+            if(_.isString(str)){
+                local = JSON.parse(str)
+                this.data = _.extend(this.data, local)
+            }
+        }
+    }
+
+    save(){
+        var ls = window.localStorage;
+        if(ls){
+            ls.setItem(Settings.key, JSON.stringify(this.data))
+        }
+    }
+}
+
+var $LS$ = Settings.shareInstance()
+
+
 ////
-var hasInited = false;     // 是否初始过
+var hasInited = false     // 是否初始过
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
@@ -201,17 +241,20 @@ export default {
     data() {
         var that = this
         console.log("convert.vue call data()")
+
         return {
             welcomeContentID:'page__convert__welcome__id',
             planSelectModel: '',
             taskList: taskList,
-            checkBox:false,
+            enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
+
             taskID2taskObj: {},
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
-            outputPathsModel: that.__getLastSelectOutputPath(),
-            outputList:that.getOutputToLocalStorage(),
+            lastOutputPath: $LS$.data.lastSelectOutputPath,
+            availableOutputPathList: $LS$.data.outputPaths,
+
             confirmDialog:{
                 ref: 'default',
                 autofocus: 'none',
@@ -242,6 +285,9 @@ export default {
     beforeCreate(){
         var that = this
         console.log('Convert.vue beforeCreate')
+        // restore settings
+        $LS$.restore()
+        // init handlers
         if (!hasInited){
             console.log('Convert.vue beforeCreate inited')
             hasInited = true
@@ -311,7 +357,9 @@ export default {
     },
 
     beforeDestroy() {
+        console.log('Convert.vue beforeDestroy()')
         clearInterval(this.progressInterval);
+        this.saveOutputSettings()
     },
 
     computed:{
@@ -343,48 +391,27 @@ export default {
             // All task list run working
             that.stopDo()
         },
-        outputPathsList(){
-            var that = this
-            var spl = outputList.join().toLowerCase()
-            if(outputList.length < maxSaveData){
-                    if(spl.indexOf(that.outputPathsModel.toLowerCase()) == -1){
-                        outputList.push(that.outputPathsModel)
-                    }
-            }else if(outputList.length = maxSaveData){
-                    if(spl.indexOf(that.outputPathsModel.toLowerCase())== -1){
-                            outputList.splice(0,1)
-                            outputList.push(that.outputPathsModel)
-                    }
-            }
-            return outputList
-        },
-
-        onOutputToLocalStorage(){
-            var that = this
-            localStorage.setItem(globe_key_storage_outpaths, JSON.stringify(that.outputPathsList()))
-            that.__saveLastSelectOutputPathToLocalStorage()
-            return that.outputPathsList()
-        },
-
-        getOutputToLocalStorage(){
-            if (localStorage.getItem(globe_key_storage_outpaths)){
-                outputList = JSON.parse(localStorage.getItem(globe_key_storage_outpaths))
-            }
-            return outputList
-        },
 
         // ------------------------- LocalStorage
-        __saveLastSelectOutputPathToLocalStorage(){
+        saveOutputSettings(){
             var that = this
-            localStorage.setItem(globe_key_storage_last_select_outpath, JSON.stringify(that.outputPathsModel || ''))
+
+            console.assert(_.isString(that.lastOutputPath))
+            console.assert(_.isBoolean(that.enableOverWriteOutput))
+ 
+            $LS$.data.enableOverwriteOutput = that.enableOverWriteOutput
+            $LS$.data.lastSelectOutputPath = that.lastOutputPath
+            $LS$.data.outputPaths = that.availableOutputPathList
+
+            $LS$.save()
         },
 
-        __getLastSelectOutputPath(){
-            let path = ''
-            if (localStorage.getItem(globe_key_storage_last_select_outpath)){
-                path = JSON.parse(localStorage.getItem(globe_key_storage_last_select_outpath))
-            }
-            return path
+        resetOutputSettings(){
+            var that = this
+
+            that.enableOverWriteOutput = $LS$.data.enableOverwriteOutput
+            that.lastOutputPath = $LS$.data.lastSelectOutputPath
+            that.availableOutputPathList = $LS$.data.outputPaths
         },
 
         // ------------------------- Welcome content
@@ -449,7 +476,7 @@ export default {
         },
 
         getImageProgressShow(item) {
-            return item.isworking
+            return item.isWorking
         },
 
         // -------------------------- Tool bar
@@ -549,10 +576,17 @@ export default {
         onBtnOutputFolderClick(){
             var that = this
             console.log("-------------------- call output dir")
+
+            console.dir(that.availableOutputPathList)
+
             const cdg = that.outputConfigDialog
             cdg.title = that.$t('pages.convert.dialog-config-output.title')
             cdg.confirmButtonText = that.$t('pages.convert.dialog-config-output.btnConfirm')
             cdg.denyButtonText = that.$t('pages.convert.dialog-config-output.btnDeny')
+            cdg.callbackConfirm = () => { that.saveOutputSettings() }
+            cdg.callbackDeny = () => { that.resetOutputSettings() }
+            cdg.callbackClose = () => { that.resetOutputSettings() }
+
             var dialog = that.$refs[cdg.ref]
             dialog.open()
         },
@@ -567,8 +601,11 @@ export default {
             }
 
             console.log("-------------------- call export dir")
-            if(that.outputPathsModel==""){
-                cdg.callbackConfirm = () => { that.startDo() }
+            if(that.lastOutputPath==""){
+                cdg.callbackConfirm = () => { 
+                    cdg.callbackConfirm && cdg.callbackConfirm()
+                    that.startDo() 
+                }
                 that.onBtnOutputFolderClick()
             }else{
                 that.startDo()
@@ -628,11 +665,12 @@ export default {
             }
         },
 
-        __updateTaskObj(taskID, data = {}) {
+        __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {
             var that = this
             let curInfoWithTaskObj = that.taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj = _.extend(curInfoWithTaskObj, data)
+                extendHandler && extendHandler(curInfoWithTaskObj)
                 console.dir(curInfoWithTaskObj)
             }
 
@@ -642,11 +680,24 @@ export default {
             var that = this
             let curInfoWithTaskObj = that.taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
-                curInfoWithTaskObj.isworking = data.progress >= 100 ? false : true
+                curInfoWithTaskObj.isWorking = data.progress >= 100 ? false : true
                 curInfoWithTaskObj.progress = data.progress >= 100 ? 100: data.progress
                 curInfoWithTaskObj.stateInfo.state = data.state
                 curInfoWithTaskObj.stateInfo.message = data.message || ''
             }
+        },
+
+        __checkTaskStateInfo(){
+            var that = this
+            var state = false
+            _.each(that.taskList, (taskObj, index) => {
+                if (taskObj.isWorking){
+                    state = true
+                    return false
+                }
+            })
+
+            that.isConvertWorking = state
         },
 
         startDo(){
@@ -655,8 +706,8 @@ export default {
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__start_Gif2apngTask(taskObj.id, {
                         src: taskObj.path,
-                        out: that.outputPathsModel,
-                        overwrite: false
+                        out: that.lastOutputPath,
+                        overwrite: that.enableOverWriteOutput || false
                     }, (data) => {
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
@@ -675,6 +726,8 @@ export default {
                                 message: 'error'
                             })
                         }
+                        // check converting
+                        that.__checkTaskStateInfo()
                     } )
                 })
             }
@@ -686,8 +739,16 @@ export default {
             if(!notice) return
             if(taskList.length > 0 && that.isConvertWorking) {
                 _.each(that.taskList, (taskObj, index) => {
-                    taskObj.isworking = false
-                    that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {})
+                    that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
+                        // check converting
+                        if (data.infoType === 'type_calltask_cancel'){
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: 200,
+                                state:0
+                            })
+                        }
+                        that.__checkTaskStateInfo()
+                    })
                 })
             }
         },
@@ -718,12 +779,13 @@ export default {
             var _command = [],
                 _dest = _config.out
 
-            that.__updateTaskObj(taskID, {fixOutDir:_dest})
+            const transferTaskID =  _.uniqueId('onetask') + ',' + taskID
+            that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // Fix when the task is file obj
             if (BS.b$.App.checkPathIsFile(_config.src)) {
                 _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
-                that.__updateTaskObj(taskID, {fixOutDir:_dest, fixpath:_dest})
+                that.__updateTaskObj(taskID, {fixOutDir:_dest, fixpath:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
             }
 
             // -- 命令行参数格式化
@@ -740,7 +802,7 @@ export default {
 
             /// call process task
             Transfer.Tools.call('gif2apng', {
-                taskID: _.uniqueId('onetask') + ',' + taskID,
+                taskID: transferTaskID,
                 command: _command
             }, (data) => {
                  handler && handler(data)
@@ -760,13 +822,17 @@ export default {
 
             // 检查必要数值
             console.assert(taskID)
-
-            /// call process task
-            Transfer.Tools.call('stop.gif2apng', {
-                taskID: taskID
-            }, (data) => {
-                handler && handler(data)
+            
+            let curTaskObj = that.taskID2taskObj[taskID]
+            _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
+                /// call process task
+                Transfer.Tools.call('stop.gif2apng', {
+                    taskID: transferTaskId
+                }, (data) => {
+                    handler && handler(data)
+                })
             })
+            curTaskObj.associatedTransferTaskIds = []
 
             return that
         },
@@ -775,7 +841,7 @@ export default {
         // for task item
         __removeTaskItem(item, index) {
             var that = this
-            item.isworking = false;
+            item.isWorking = false;
             // TODO：remove it from taskList
             item.progress = 0
             item.stateInfo = 0
@@ -789,19 +855,32 @@ export default {
             console.log('item: ', item, 'index: ', index)
             var that = this
 
-            if(item.isworking) {
+            if(item.isWorking) {
                 // notice to server
                 that.__abi__cancel_Gif2apngTask(item.id)
-                that.__removeTaskItem(item, index)
-            }else {
-                that.__removeTaskItem(item, index)
             }
 
+            that.__removeTaskItem(item, index)
         },
 
+        __autoUpdateAvailableOutputPathList(path){
+            var that = this
+            var specList = that.availableOutputPathList
+            if (_.isString(path) && path !== "") {
+                if (specList.indexOf(path) == -1){
+                    specList.unshift(path)
+                    if (specList.length > $LS$.data.maxSaveOutputPathCount) {
+                        specList.splice($LS$.data.maxSaveOutputPathCount, 1)
+                    }
+                }
+            }
+            console.log("-------------------- __autoUpdateAvailableOutputPathList")
+            console.dir(that.availableOutputPathList)
+        },
         onOpenSelectOutDir(dir){
             var that = this
             console.log("-------------------- start location path")
+        
             BS.b$.selectOutDir({
                 title: that.$t('pages.convert.dialog-select-outdir.title'),
                 prompt: that.$t('pages.convert.dialog-select-outdir.prompt'),
@@ -812,10 +891,12 @@ export default {
                     list.push("/url/imageDir" + i)
                 }
                 var index = Math.floor((Math.random()*list.length))
-                that.outputPathsModel = list[index].toString()
+                that.lastOutputPath = list[index].toString()
+                that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
             },(data)=>{
                 if(data.success) {
-                    that.outputPathsModel = data.filesArray[0].filePath
+                    that.lastOutputPath = data.filesArray[0].filePath
+                    that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
                 }
             })
         },

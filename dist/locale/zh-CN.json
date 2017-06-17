@@ -56,6 +56,7 @@
       "footbar": {
         "fileCount": "任务数量",
         "state": "当前状态",
+        "isConvertWorking":"运行中",
         "isRemoveWorking": "正在执行移除",
         "isWaiting":"空闲",
         "transferState": "引擎状态",
