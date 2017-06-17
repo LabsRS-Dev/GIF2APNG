@@ -55,12 +55,12 @@
       },
       "footbar": {
         "fileCount": "Task Count",
-        "state": "Current state",
-        "isRemoveWorking": "removing",
-        "isWaiting":"Waiting",
-        "transferState": "Engine state",
-        "transferIsNormal": "Normal",
-        "transferIsFault": "Fault"
+        "state": "Task State",
+        "isRemoveWorking": "Removing",
+        "isWaiting":"Idle",
+        "transferState": "Engine State",
+        "transferIsNormal": "Online",
+        "transferIsFault": "Offline"
       },
       "dialog-import-images":{
         "title":"Import GIF(.gif) files",
