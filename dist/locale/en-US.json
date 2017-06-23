@@ -7,7 +7,11 @@
           "title": "Welcome",
           "tip": "Online documentation，online community，latest news"
         },
-        "adjust":{
+        "discover":{
+          "title":"Discover",
+          "tip":"Scan the online GIF file, support online search, download"
+        },
+        "convert":{
           "title": "Convert",
           "tip": "Convert GIF(.gif) to animated PNG(.png)"
         }
@@ -33,6 +37,22 @@
       },
       "task-item":{
         "onOpenLink": "Open link"
+      },
+      "options":{
+        "language":"Language settings:"
+      },
+      "dialog-config-output":{
+        "title":"Setting language",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      }
+    },
+    "discover":{
+      "toolbar":{
+        "recommendation":"recommendation",
+        "classification":"classification",
+        "pictureMaterial": "picture material",
+        "topRanking": "top ranking"
       }
     },
     "convert":{
@@ -87,6 +107,13 @@
         "btnDeny": "Cancel",
         "path":"Path:",
         "cover":"Overwrite exsisting files?"
+      },
+      "dialog-config-preview":{
+        "title":"Preview info",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "before":"Gif",
+        "after":"Apng"
       },
       "dialog-confirm-stop-fix":{
         "title":"Confirm",

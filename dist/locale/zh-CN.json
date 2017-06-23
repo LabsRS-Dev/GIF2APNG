@@ -7,7 +7,11 @@
           "title": "欢迎使用",
           "tip": "在线文档，在线交流，最新新闻"
         },
-        "adjust":{
+        "discover":{
+          "title":"发现",
+          "tip":"浏览在线Gif文件,支持查找以及下载"
+        },
+        "convert":{
           "title": "格式转换",
           "tip": "转换GIF动画格式"
         }
@@ -33,6 +37,22 @@
       },
       "task-item":{
         "onOpenLink": "打开查看"
+      },
+      "options":{
+        "language":"语言设置:"
+      },
+      "dialog-config-output":{
+        "title":"设置语言环境",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      }
+    },
+    "discover":{
+      "toolbar":{
+        "recommendation":"推荐",
+        "classification":"分类",
+        "pictureMaterial": "素材",
+        "topRanking": "热门"
       }
     },
     "convert":{
@@ -87,6 +107,13 @@
         "btnDeny": "取消",
         "path":"输出路径:",
         "cover":"是否覆盖原有文件"
+      },
+      "dialog-config-preview":{
+        "title":"信息预览",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "before":"Gif",
+        "after":"Apng"
       },
       "dialog-confirm-stop-fix":{
         "title":"确认操作",

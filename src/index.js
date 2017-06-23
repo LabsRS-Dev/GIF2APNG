@@ -11,8 +11,9 @@ import { BS, Util, _ } from 'dove.max.sdk'
 // /----------- Components
 import App from './App.vue'
 import KeenUI from 'keen-ui'
-import Routes from './routes.js'
+import Routes from './routes'
 
+import { languageConfiguration } from './extern.js'
 
 // Allow inspection, even in production mode
 Vue.config.devtools = true
@@ -25,68 +26,9 @@ window.VueI8n = VueI18n
 
 const $ = Util.util.getJQuery$()
 
-const lang = 'en-US'
-const langJsonFile = './locale/' + lang + '.json'
-/**
- * 由于ES6 中的Fetch函数，暂时还不能使用Babel转换成ES5标准的，所以统一使用jQuery来处理
- * 参考：
- * 1. https://www.npmjs.com/package/isomorphic-fetch
- * 2. https://www.npmjs.com/package/fetch-polyfill
- */
-function ___useES6Fetch (lang, cb) {
-  Vue.locale(lang, () => {
-    return fetch(langJsonFile, {
-      method: 'get',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then(res => {
-      return res.json()
-    }).then(json => {
-      if (Object.keys(json).length === 0) {
-        return Promise.reject(new Error('locale empty !!'))
-      }
-      return Promise.resolve(json)
-    }).catch(err => {
-      console.error(err)
-      return Promise.reject()
-    })
-  }, () => {
-    console.log('set lang....')
-    Vue.config.lang = lang
-    cb()
-  })
-}
-
-function ___useJQueryGet (lang, cb) {
-  $.getJSON(langJsonFile, json => {
-    console.log('set lang....')
-    Vue.config.lang = lang
-    const locales = {}
-    locales[lang] = json
-
-    cb(new VueI18n({
-      locale: lang,
-      messages: locales
-    }))
-  }).fail(err => {
-    console.error(err)
-    cb(new VueI18n({
-      locale: 'en-us',
-      messages: {}
-    }))
-  })
-}
-
-function main () {
-  const bUseES6Fetch = false
-  if (bUseES6Fetch) {
-    ___useES6Fetch(lang, startApp)
-  } else {
-    ___useJQueryGet(lang, startApp)
-  }
-}
+const languageList = BS.b$.App.getCompatibleWebkitLanguageList()
+const localLanguagePackList = ['en-US','zh-CN']
+const lang = _.intersection(languageList,localLanguagePackList).toString()
 
 function startApp (i18nObj) {
   // Use KeenUI
@@ -114,6 +56,15 @@ function startApp (i18nObj) {
 
   document.title = Routes.SysConfig.appName
   app.$mount('#app')
+}
+
+function main () {
+  const bUseES6Fetch = false
+  if (bUseES6Fetch) {
+    languageConfiguration.___useES6Fetch(lang, startApp)
+  } else {
+    languageConfiguration.___useJQueryGet(lang, startApp)
+  }
 }
 
 $(document).ready(() => {

@@ -28,6 +28,34 @@
     align-items: center;
     user-select: none;
 }
+.dove-docs-content__toolbar-search{
+    display: flex;
+    margin-right: rem-calc(36px);
+    align-items:center;
+    border-radius:rem-calc(6px);
+    .ui-textbox{
+        margin: 0;
+        width: rem-calc(200px);
+        height: rem-calc(30px);
+        border:rem-calc(1px) solid;
+        border-top-left-radius: rem-calc(8px);
+        border-bottom-left-radius: rem-calc(8px);
+        .ui-textbox__input{
+            font-size: rem-calc(12px);
+            height: rem-calc(30px);
+            border-bottom-style: none;
+        }
+    }
+    .ui-icon-button {
+        border:1px solid;
+        height: rem-calc(30px);
+        border-left: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: rem-calc(8px);
+        border-bottom-right-radius: rem-calc(8px);
+    }
+}
 
 .ui-icon-button.dove-docs-content__toolbar-menu-button {
     margin-right: rem-calc(16px);

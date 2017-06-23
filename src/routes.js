@@ -5,6 +5,7 @@ import ConvertPage from './pages/GIF2APNG/Convert.vue'
 import { SysConfig } from './data/sys-config.js'
 // /GIF2APNG
 import WelcomePage from './pages/GIF2APNG/Welcome.vue'
+import DiscoverPage from './pages/GIF2APNG/Discover.vue'
 
 // Config SystemConfig
 const icons = IconsRef.iconSet
@@ -30,11 +31,20 @@ const menu = [{
     icon: icons.adjust,
     sourceUrl: ''
   }, {
+    path: rootPath + '/Discover',
+    show: true,
+    component: DiscoverPage,
+    title: 'routes.common.menu.discover.title',
+    tip: 'routes.common.menu.discover.tip',
+    tipAsSubTitle: true,
+    icon: icons.adjust,
+    sourceUrl: ''
+  },{
     path: rootPath + '/convert',
     show: true,
     component: ConvertPage,
-    title: 'routes.common.menu.adjust.title',
-    tip: 'routes.common.menu.adjust.tip',
+    title: 'routes.common.menu.convert.title',
+    tip: 'routes.common.menu.convert.tip',
     tipAsSubTitle: true,
     icon: icons.adjust,
     sourceUrl: ''

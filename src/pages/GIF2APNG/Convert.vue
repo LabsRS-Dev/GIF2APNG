@@ -66,6 +66,29 @@
                     </div>
                 </div>
             </ui-confirm>
+
+            <ui-confirm
+                :autofocus="previewConfirmDialog.autofocus"
+                :confirm-button-text="previewConfirmDialog.confirmButtonText"
+                :deny-button-text="previewConfirmDialog.denyButtonText"
+                :ref="previewConfirmDialog.ref"
+                :title="previewConfirmDialog.title"
+
+                @confirm="previewConfirmDialog.callbackConfirm"
+                @deny="previewConfirmDialog.callbackDeny"
+                @open="previewConfirmDialog.callbackOpen"
+                @close="previewConfirmDialog.callbackClose"
+                >
+                <div class="page__toolbar-app-doc__preview__info">
+                    <div class="page__toolbar-app-doc__preview__info__image">
+                        <img :src="beforePath" width="64" height="64" viewBox="0 0 64 64" />
+                        <span class="preview__info__image__before">{{ $t('pages.convert.dialog-config-preview.before') }}</span>
+                        <img :src="afterPath" width="64" height="64" viewBox="0 0 64 64" />
+                        <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-preview.after') }}</span>
+                    </div>
+                    <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
+                </div>
+            </ui-confirm>
         </div>
 
         <div class="page__examples page__examples-app-doc">
@@ -107,7 +130,7 @@
                             </ui-icon-button>
 
                             <ui-icon-button
-                                @click="onPreviewFile(item.fixpath)"
+                                @click="onPreviewFile(item)"
                                 type="secondary"
                                 color="black"
                                 size="small"
@@ -153,6 +176,7 @@
 import { BS, Util, _ } from 'dove.max.sdk'
 import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox} from 'keen-ui'
 import {Transfer} from '../../bridge/transfer'
+import echarts from "echarts"
 
 var baseID = "__page__convert__action__"
 var baseIDIndex = -1
@@ -234,20 +258,23 @@ var $LS$ = Settings.shareInstance()
 
 ////
 var hasInited = false     // 是否初始过
-
+///////  预览
+var beforePath = ''      // 原图片地址
+var afterPath = ''       //修改后图片地址
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
     data() {
         var that = this
         console.log("convert.vue call data()")
-
         return {
             welcomeContentID:'page__convert__welcome__id',
+            openEchartsId:'info_echart_id',
+            beforePath:beforePath,
+            afterPath:afterPath,
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
-
             taskID2taskObj: {},
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
@@ -269,6 +296,17 @@ export default {
             },
             outputConfigDialog:{
                 ref: 'outputConfigDialog',
+                autofocus: 'none',
+                confirmButtonText: 'Confirm',
+                denyButtonText: 'Deny',
+                title: '',
+                callbackConfirm: ()=>{},
+                callbackDeny: ()=>{},
+                callbackOpen: ()=>{},
+                callbackClose: ()=>{},
+            },
+            previewConfirmDialog:{
+                ref: 'previewConfirmDialog',
                 autofocus: 'none',
                 confirmButtonText: 'Confirm',
                 denyButtonText: 'Deny',
@@ -398,7 +436,7 @@ export default {
 
             console.assert(_.isString(that.lastOutputPath))
             console.assert(_.isBoolean(that.enableOverWriteOutput))
- 
+
             $LS$.data.enableOverwriteOutput = that.enableOverWriteOutput
             $LS$.data.lastSelectOutputPath = that.lastOutputPath
             $LS$.data.outputPaths = that.availableOutputPathList
@@ -502,35 +540,35 @@ export default {
             var that = this
 
             console.log("-------------------- call import files")
-            // call bs
-            BS.b$.importFiles({
-                title: this.$t('pages.convert.dialog-import-images.title'),
-                prompt: this.$t('pages.convert.dialog-import-images.prompt'),
-                allowMulSelection: true,
-                types:[] // Note: too many formats
-            }, function(){ // Test code
-                // Test[1]: Windows 本地实际数据
-                _.each([
-                    {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB'},
-                    {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
-                ], function(ele){
-                    let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
-                    that.taskList.push(taskObj)
-                    console.log('taskID-files=', taskObj.id)
-                    that.taskID2taskObj[taskObj.id] = taskObj
+                // call bs
+                BS.b$.importFiles({
+                    title: this.$t('pages.convert.dialog-import-images.title'),
+                    prompt: this.$t('pages.convert.dialog-import-images.prompt'),
+                    allowMulSelection: true,
+                    types:[] // Note: too many formats
+                }, function(){ // Test code
+                    // Test[1]: Windows 本地实际数据
+                    _.each([
+                        {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB'},
+                        {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
+                    ], function(ele){
+                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
+                        that.taskList.push(taskObj)
+                        console.log('taskID-files=', taskObj.id)
+                        that.taskID2taskObj[taskObj.id] = taskObj
+                    })
+
+                    return
+
+                    // Test[2]: 测试很多的情况下的列表展示
+                    for (let i =0; i < 50; ++i){
+                        let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
+                        that.taskList.push(taskObj)
+                        that.taskID2taskObj[taskObj.id] = taskObj
+                    }
+                }, function(data){ // Normal code
+                    that.__importFilesOrDir(data)
                 })
-
-                return
-
-                // Test[2]: 测试很多的情况下的列表展示
-                for (let i =0; i < 50; ++i){
-                    let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
-                    that.taskList.push(taskObj)
-                    that.taskID2taskObj[taskObj.id] = taskObj
-                }
-            }, function(data){ // Normal code
-                that.__importFilesOrDir(data)
-            })
         },
 
         onBtnImportDirClick(){
@@ -602,9 +640,9 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.lastOutputPath==""){
-                cdg.callbackConfirm = () => { 
+                cdg.callbackConfirm = () => {
                     cdg.callbackConfirm && cdg.callbackConfirm()
-                    that.startDo() 
+                    that.startDo()
                 }
                 that.onBtnOutputFolderClick()
             }else{
@@ -644,10 +682,12 @@ export default {
             var that = this
             if(data.success) {
                 var imageFiles = data.filesArray
+                var checkFileExt
                 _.each(imageFiles,(fileObj, dinx) => {
+                    checkFileExt = BS.b$.App.getFileExt(fileObj.filePath).toLowerCase()
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                        if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
+                        if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
                             let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                             that.taskList.push(taskObj)
                             that.taskID2taskObj[taskObj.id] = taskObj
@@ -822,7 +862,7 @@ export default {
 
             // 检查必要数值
             console.assert(taskID)
-            
+
             let curTaskObj = that.taskID2taskObj[taskID]
             _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
                 /// call process task
@@ -880,7 +920,7 @@ export default {
         onOpenSelectOutDir(dir){
             var that = this
             console.log("-------------------- start location path")
-        
+
             BS.b$.selectOutDir({
                 title: that.$t('pages.convert.dialog-select-outdir.title'),
                 prompt: that.$t('pages.convert.dialog-select-outdir.prompt'),
@@ -896,7 +936,7 @@ export default {
             },(data)=>{
                 if(data.success) {
                     that.lastOutputPath = data.filesArray[0].filePath
-                    that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
+                        that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
                 }
             })
         },
@@ -904,10 +944,80 @@ export default {
             var that = this
             BS.b$.revealInFinder(dir,(data) => {})
         },
-        onPreviewFile(path){
-            BS.b$.previewFile({
-                filePath: path
-            },(data) => {})
+        onPreviewFile(item){
+            var that = this
+            const cdg = that.previewConfirmDialog
+            cdg.title = that.$t('pages.convert.dialog-config-preview.title')
+            cdg.confirmButtonText = that.$t('pages.convert.dialog-config-preview.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.convert.dialog-config-preview.btnDeny')
+            var dialog = that.$refs[cdg.ref]
+            dialog.open()
+            that.drawLineChart(item)
+            that.openBeforeModificationThumb(item)
+            that.openAfterModificationThumb(item)
+        },
+        ///// 转化为KB/////////////////////////
+        bytesToSize(bytes) {
+                var k = 1000
+                var i = Math.floor(Math.log(bytes) / Math.log(k))
+                return (bytes / Math.pow(k, i))
+            },
+        //  信息对比绘制////////////////////////////////////////////////////////////////////////////////////////////////
+        drawLineChart(item){
+            var that = this
+            var myChart = echarts.init(document.getElementById('info_echart_id'))
+            var beforeSize = BS.b$.App.fileSizeAtPath(item.path)
+            var afterSize = BS.b$.App.fileSizeAtPath(item.fixpath)
+            var beforeSizeBytes = parseInt(beforeSize)
+            var afterSizeBytes = parseInt(afterSize)
+            var beforeModificationSize = that.bytesToSize(beforeSizeBytes)
+            var afterModificationSize = that.bytesToSize(afterSizeBytes)
+            myChart.setOption({
+                title: {
+                    text: '数据对比图'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer :{
+                        type : 'shadow'
+                    }
+                },
+                legend: {
+                    data:['.Gif','.Apng']
+                },
+                xAxis: {
+                    type : 'category',
+                    data: ['文件大小']
+                },
+                yAxis: {
+                    type : 'value',
+                    axisLabel: {
+                        formatter:'{value}KB',
+                        textStyle:{
+                            fontSize:'10'
+                        }
+                    }
+                },
+                series: [{
+                    name: '.Gif',
+                    type: 'bar',
+                    data: [beforeModificationSize]
+                },{
+                    name: '.Apng',
+                    type: 'bar',
+                    data: [afterModificationSize]
+                }]
+            })
+        },
+        openBeforeModificationThumb(item){
+            var that = this
+            that.beforePath = "file://" + item.path
+            return that.beforePath
+        },
+        openAfterModificationThumb(item){
+            var that = this
+            that.afterPath =  "file://" + item.fixpath
+            return that.afterPath
         },
         checkOutputPathIsFile(path){
             if(BS.b$.App.checkPathIsFile(path)){

@@ -12,6 +12,28 @@
                 >
                     <span :class="item.icon" :title="$t(item.tooltip)"></span>
             </ui-icon-button>
+
+            <ui-confirm
+                :autofocus="optionsConfigDialog.autofocus"
+                :confirm-button-text="optionsConfigDialog.confirmButtonText"
+                :deny-button-text="optionsConfigDialog.denyButtonText"
+                :ref="optionsConfigDialog.ref"
+                :title="optionsConfigDialog.title"
+
+                @confirm="optionsConfigDialog.callbackConfirm"
+                @deny="optionsConfigDialog.callbackDeny"
+                @open="optionsConfigDialog.callbackOpen"
+                @close="optionsConfigDialog.callbackClose"
+                >
+                <div class="page__toolbar-app-doc__options">
+                    <span class="page__toolbar-app-doc__options__language">{{ $t('pages.welcome.options.language') }}</span>
+                    <ui-select
+                        :options="availableLanguageList"
+                        v-model="lastLanguageSetting"
+                        >
+                    </ui-select>
+                </div>
+            </ui-confirm>
     </div>
     <div class="page__examples page__examples-app-doc">
       <div class="page__app__welcome">
@@ -65,6 +87,7 @@ import { BS, Util, _ } from 'dove.max.sdk'
 import {UiIcon, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear} from 'keen-ui';
 import {Transfer} from '../../bridge/transfer'
 import {SysConfig} from '../../data/sys-config'
+import { languageConfiguration } from '../../extern.js'
 
 
 var store_newsList = []
@@ -84,6 +107,46 @@ class News {
     }
   }
 }
+
+//// 与设置相关的处理
+class Settings {
+    static key = "welcome-page-settings"
+
+    static instance = null
+    static shareInstance(){
+        if (!Settings.instance){
+            Settings.instance = new Settings()
+        }
+        return Settings.instance
+    }
+
+    constructor(){
+        this.data = {
+            lastSelectLanguage: ""
+        }
+    }
+
+    restore(){
+        var ls = window.localStorage
+        var local = {}
+        if(ls){
+            var str = ls.getItem(Settings.key)
+            if(_.isString(str)){
+                local = JSON.parse(str)
+                this.data = _.extend(this.data, local)
+            }
+        }
+    }
+
+    save(){
+        var ls = window.localStorage;
+        if(ls){
+            ls.setItem(Settings.key, JSON.stringify(this.data))
+        }
+    }
+}
+
+var $LS$ = Settings.shareInstance()
 ///
 var hasInited = false;     // 是否初始过
 ////////////////////////////////////////////////////////
@@ -91,11 +154,24 @@ var hasInited = false;     // 是否初始过
 export default {
   data(){
     return {
-      newsList: store_newsList
+      newsList: store_newsList,
+      lastLanguageSetting: $LS$.data.lastSelectLanguage,
+      availableLanguageList: languageConfiguration.languageInfoMap(),
+      optionsConfigDialog:{
+          ref: 'optionsConfigDialog',
+          autofocus: 'none',
+          confirmButtonText: 'Confirm',
+          denyButtonText: 'Deny',
+          title: '',
+          callbackConfirm: ()=>{},
+          callbackDeny: ()=>{},
+          callbackOpen: ()=>{},
+          callbackClose: ()=>{},
+      }
     }
   },
   beforeCreate(){
-
+      $LS$.restore()
   },
   mounted(){
     var that = this
@@ -109,7 +185,7 @@ export default {
     actionList() {
       var that = this
       return [
-        // {id:'action-setting', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.setting"},
+        {id:'action-setting', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.setting"},
         {id:'action-online-doc', visiable:true, color:"black", icon:"fa fa-book fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.onlineDoc"},
         {id:'action-online-room', visiable:true, color:"black", icon:"fa fa-users fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.onlineRoom"},
         {id:'action-update-news', visiable:true, color:"black", icon:"fa fa-rss fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.updateNews"}
@@ -175,7 +251,54 @@ export default {
     },
 
     onBtnSettingClick(){
+      var that = this
+      console.log("-------------------- call options dir")
+      const cdg = that.optionsConfigDialog
+      cdg.title = that.$t('pages.welcome.dialog-config-output.title')
+      cdg.confirmButtonText = that.$t('pages.welcome.dialog-config-output.btnConfirm')
+      cdg.denyButtonText = that.$t('pages.welcome.dialog-config-output.btnDeny')
+      cdg.callbackConfirm = () => { that.saveLanguageSettings() }
+      cdg.callbackDeny = () => { that.resetLanguageSettings() }
+      cdg.callbackClose = () => { that.resetLanguageSettings() }
+      var dialog = that.$refs[cdg.ref]
+      dialog.open()
+    },
+    __switchLanguageSettings(){
+        var that = this
+        var languageInfo = BS.b$.App.getCompatibleGoogleLanguageInfo().local
+        var infoKeys =  Object.getOwnPropertyNames(languageInfo)
+        var languageMap = BS.b$.App.nativeApple2WebKitLanguageMap
+        var mapKeys = Object.getOwnPropertyNames(languageMap)
+        var localLanguagePackList = ['en-US','zh-CN']
+        var langInfo
+        var lastLangInfo
+        var valueList = []
+        for(var i = 0;i<infoKeys.length;i++){
+            if(languageInfo[infoKeys[i]] == that.lastLanguageSetting){
+                langInfo = infoKeys[i]
+                break;
+            }
+        }
+        for(var i = 0;i<mapKeys.length;i++){
+            valueList = languageMap[mapKeys[i]]
+            if(valueList.indexOf(langInfo) > -1){
+                 lastLangInfo = _.intersection(valueList,localLanguagePackList).toString()
+                break;
+            }
+        }
+        return lastLangInfo
+    },
 
+    saveLanguageSettings(){
+        var that = this
+        $LS$.data.lastSelectLanguage = that.lastLanguageSetting
+        $LS$.save()
+        var switchLanguageMap = that.__switchLanguageSettings()
+        languageConfiguration.switchLanguage(switchLanguageMap)
+    },
+    resetLanguageSettings(){
+        var that = this
+        that.lastLanguageSetting = $LS$.data.lastSelectLanguage
     },
 
     onBtnOnlineDocClick(){

@@ -48,6 +48,26 @@
                         v-if="$route.meta.sourceUrl"
                     >View Source</a>
                 </div>
+                <div
+                    class="dove-docs-content__toolbar-search"
+                    v-if="$route.path == '/' + appName +'/Discover'"
+                    >
+                    <ui-textbox
+                        v-model="searchContent"
+                        >
+                    </ui-textbox>
+                    <ui-icon-button
+                        @click="onToolBtnClick(index,item)"
+                        :type="item.type"
+                        :size="item.size"
+                        :color="item.color"
+                        :key= "item.id"
+                        v-if="item.visiable"
+                        v-for="item, index in actionList"
+                        >
+                            <span :class="item.icon"></span>
+                    </ui-icon-button>
+                </div>
             </div>
 
             <div class="dove-docs-content__page-content" ref="pageContent">
@@ -59,7 +79,8 @@
 
 <script>
     import VueI18n from 'vue-i18n'
-    import {UiIcon} from 'keen-ui'
+    import {UiIcon,UiIconButton,UiTextbox} from 'keen-ui'
+    import { SysConfig } from './data/sys-config.js'
     import Sidebar from './pages/Sidebar.vue'
 
 
@@ -67,7 +88,18 @@
         data() {
             return {
                 showSidebar: false,
-                showTip: false
+                showTip: false,
+                searchContent:'',
+                appName:SysConfig.appName
+            }
+        },
+
+        computed: {
+            actionList() {
+            var that = this
+            return [
+                {id:'action-search', visiable:true, color:"black", icon:"fa fa-search fa-lg fa-fw", size:"small", type:"secondary"}
+            ]
             }
         },
 
@@ -75,11 +107,23 @@
             autoShowTip(){
                 var that = this
                 that.showTip = !that.showTip
+            },
+            onToolBtnClick(index,item){
+
+                if(item.id === 'action-search') {
+                    this.onSearchBtnClick()
+                }
+            },
+            onSearchBtnClick(){
+                var that = this
+                console.log(that.searchContent)
             }
         },
         components: {
             VueI18n,
             UiIcon,
+            UiIconButton,
+            UiTextbox,
             Sidebar
         },
 
