@@ -1,0 +1,11 @@
+.page__toolbar-app-doc{
+  .ui-tabs__header{
+    .ui-tab-header-item{
+      width: 25%;
+      .ui-tab-header-item__text{
+        font-size: rem-calc(14px);
+        text-transform:capitalize;
+      }
+    }
+  }
+}

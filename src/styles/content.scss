@@ -30,31 +30,79 @@
 }
 .dove-docs-content__toolbar-search{
     display: flex;
-    margin-right: rem-calc(36px);
     align-items:center;
-    border-radius:rem-calc(6px);
+    overflow: hidden;
+    position: relative;
+    margin-right: rem-calc(10px);
     .ui-textbox{
         margin: 0;
-        width: rem-calc(200px);
-        height: rem-calc(30px);
-        border:rem-calc(1px) solid;
-        border-top-left-radius: rem-calc(8px);
-        border-bottom-left-radius: rem-calc(8px);
+        width: rem-calc(400px);
+        height: rem-calc(27px);
+        border: 1px solid;
+        border-radius:rem-calc(5px);
         .ui-textbox__input{
-            font-size: rem-calc(12px);
-            height: rem-calc(30px);
-            border-bottom-style: none;
+            display: inline-flex;
+            position: relative;
+            height: rem-calc(27px);
+            border: none;
+            outline: none;
+            letter-spacing: inherit;
+            font-size: rem-calc(13px);
+            font-family: inherit;
         }
     }
-    .ui-icon-button {
-        border:1px solid;
-        height: rem-calc(30px);
-        border-left: 0;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: rem-calc(8px);
-        border-bottom-right-radius: rem-calc(8px);
+    .search__placeholder__icon,
+    .search__placeholder__content,
+    .search__placeholder__icon__left,
+    .search__placeholder__content__left{
+        position: absolute;
+        height: rem-calc(27px);
+        display: flex;
+        pointer-events: none;
+        overflow: hidden;
+        opacity: 0.3;
+        align-items: center;
     }
+   .search__placeholder__icon{
+       width: rem-calc(22px);
+       margin-right: rem-calc(12px);
+       margin-left: rem-calc(105px);
+   }
+   .search__placeholder__content{
+       font-size: rem-calc(13px);
+       white-space: nowrap;
+       margin-left: rem-calc(127px);
+   }
+///////////////////////
+   .search__placeholder__icon__left{
+       width: rem-calc(22px);
+       margin-right: rem-calc(12px);
+   }
+   .search__placeholder__content__left{
+       font-size: rem-calc(13px);
+       white-space: nowrap;
+       margin-left: rem-calc(22px);
+   }
+}
+.icon-slide-fade-enter-active{
+    transition: all .3s ease;
+}
+.icon-slide-fade-leave-active {
+    transition: all .3s ease;
+}
+.icon-slide-fade-enter,
+.icon-slide-fade-leave-active{
+    transform: translateX(-100px);
+}
+.content-slide-fade-enter-active{
+    transition: all .3s ease;
+}
+.content-slide-fade-leave-active {
+    transition: all .3s ease;
+}
+.content-slide-fade-enter,
+.content-slide-fade-leave-active{
+    transform: translateX(-105px);
 }
 
 .ui-icon-button.dove-docs-content__toolbar-menu-button {

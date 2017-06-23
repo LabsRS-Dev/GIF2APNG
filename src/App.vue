@@ -52,24 +52,22 @@
                     class="dove-docs-content__toolbar-search"
                     v-if="$route.path == '/' + appName +'/Discover'"
                     >
-                    <ui-textbox
-                        v-model="searchContent"
-                        >
-                    </ui-textbox>
-                    <ui-icon-button
-                        @click="onToolBtnClick(index,item)"
-                        :type="item.type"
-                        :size="item.size"
-                        :color="item.color"
-                        :key= "item.id"
-                        v-if="item.visiable"
-                        v-for="item, index in actionList"
-                        >
-                            <span :class="item.icon"></span>
-                    </ui-icon-button>
+                        <ui-textbox
+                            v-model="searchContent"
+                            @focus="startMoveing()"
+                            @blur="startMoveing()"
+                            >
+                        </ui-textbox>
+                        <transition name="icon-slide-fade" mode="out-in">
+                            <span class="search__placeholder__icon" v-if="moveingIcon"><i class="fa fa-search fa-lg fa-fw"></i></span>
+                        </transition>
+                        <transition name="content-slide-fade" mode="out-in">
+                            <span class="search__placeholder__content" v-if="moveingIcon">{{$t('routes.common.search')}}</span>
+                        </transition>
+                        <span class="search__placeholder__icon__left"  v-if="!moveingIcon"><i class="fa fa-search fa-lg fa-fw"></i></span>
+                        <span class="search__placeholder__content__left"  v-if="!moveingIcon">{{$t('routes.common.search')}}</span>
                 </div>
             </div>
-
             <div class="dove-docs-content__page-content" ref="pageContent">
                 <router-view></router-view>
             </div>
@@ -79,7 +77,7 @@
 
 <script>
     import VueI18n from 'vue-i18n'
-    import {UiIcon,UiIconButton,UiTextbox} from 'keen-ui'
+    import {UiIcon,UiButton,UiIconButton,UiTextbox} from 'keen-ui'
     import { SysConfig } from './data/sys-config.js'
     import Sidebar from './pages/Sidebar.vue'
 
@@ -90,17 +88,13 @@
                 showSidebar: false,
                 showTip: false,
                 searchContent:'',
-                appName:SysConfig.appName
+                appName:SysConfig.appName,
+                moveingIcon:true,
             }
         },
 
         computed: {
-            actionList() {
-            var that = this
-            return [
-                {id:'action-search', visiable:true, color:"black", icon:"fa fa-search fa-lg fa-fw", size:"small", type:"secondary"}
-            ]
-            }
+
         },
 
         methods:{
@@ -108,20 +102,15 @@
                 var that = this
                 that.showTip = !that.showTip
             },
-            onToolBtnClick(index,item){
-
-                if(item.id === 'action-search') {
-                    this.onSearchBtnClick()
-                }
-            },
-            onSearchBtnClick(){
+            startMoveing(){
                 var that = this
-                console.log(that.searchContent)
+                that.moveingIcon = !that.moveingIcon
             }
         },
         components: {
             VueI18n,
             UiIcon,
+            UiButton,
             UiIconButton,
             UiTextbox,
             Sidebar

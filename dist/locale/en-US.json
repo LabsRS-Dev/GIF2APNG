@@ -2,6 +2,7 @@
   "routes":{
     "common":{
       "title":"General",
+      "search":"Search",
       "menu":{
         "welcome":{
           "title": "Welcome",

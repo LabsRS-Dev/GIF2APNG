@@ -2,6 +2,7 @@
   "routes":{
     "common":{
       "title":"常用操作",
+      "search":"搜索",
       "menu":{
         "welcome":{
           "title": "欢迎使用",
