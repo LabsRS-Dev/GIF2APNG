@@ -1,4 +1,7 @@
 .page__toolbar-app-doc{
+  .ui-tabs{
+    margin: 0;
+  }
   .ui-tabs__header{
     .ui-tab-header-item{
       width: 25%;
@@ -7,5 +10,8 @@
         text-transform:capitalize;
       }
     }
+  }
+  .ui-tabs__body{
+    padding: 0;
   }
 }

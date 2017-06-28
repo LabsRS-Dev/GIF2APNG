@@ -52,20 +52,16 @@
                     class="dove-docs-content__toolbar-search"
                     v-if="$route.path == '/' + appName +'/Discover'"
                     >
-                        <ui-textbox
-                            v-model="searchContent"
-                            @focus="startMoveing()"
-                            @blur="startMoveing()"
-                            >
-                        </ui-textbox>
-                        <transition name="icon-slide-fade" mode="out-in">
-                            <span class="search__placeholder__icon" v-if="moveingIcon"><i class="fa fa-search fa-lg fa-fw"></i></span>
-                        </transition>
-                        <transition name="content-slide-fade" mode="out-in">
-                            <span class="search__placeholder__content" v-if="moveingIcon">{{$t('routes.common.search')}}</span>
-                        </transition>
-                        <span class="search__placeholder__icon__left"  v-if="!moveingIcon"><i class="fa fa-search fa-lg fa-fw"></i></span>
-                        <span class="search__placeholder__content__left"  v-if="!moveingIcon">{{$t('routes.common.search')}}</span>
+                        <div class="toolbar-search-wrap toolbar-search-desktop toolbar-search-light">
+                            <input class="toolbar-search-input" type='text' placeholder='Search'>
+                            <div class='toolbar-search-actions'>
+                                <button class='toolbar-search-clear' @click="onClearInputValue()"></button>
+                            </div>
+                            <div class="dove-docs-content__toolbar-search__placeholder">
+                                <div class="search__placeholder__icon"><i class="fa fa-search fa-lg fa-fw"></i></div>
+                                <div class="search__placeholder__content">{{$t('routes.common.search')}}</div>
+                            </div>
+                        </div>
                 </div>
             </div>
             <div class="dove-docs-content__page-content" ref="pageContent">
@@ -80,16 +76,14 @@
     import {UiIcon,UiButton,UiIconButton,UiTextbox} from 'keen-ui'
     import { SysConfig } from './data/sys-config.js'
     import Sidebar from './pages/Sidebar.vue'
-
+    import { BS, Util, _ } from 'dove.max.sdk'
 
     export default {
         data() {
             return {
                 showSidebar: false,
                 showTip: false,
-                searchContent:'',
-                appName:SysConfig.appName,
-                moveingIcon:true,
+                appName:SysConfig.appName
             }
         },
 
@@ -102,9 +96,9 @@
                 var that = this
                 that.showTip = !that.showTip
             },
-            startMoveing(){
+            onClearInputValue(){
                 var that = this
-                that.moveingIcon = !that.moveingIcon
+                document.querySelector('.toolbar-search-clear').parentNode.previousElementSibling.value = ''
             }
         },
         components: {

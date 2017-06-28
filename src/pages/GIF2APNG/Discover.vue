@@ -15,6 +15,9 @@
         </ui-tab>
       </ui-tabs>
     </div>
+    <div class="page__examples page__examples-app-doc">
+
+    </div>
   </section>
 </template>
 
@@ -47,7 +50,7 @@ export default {
       return [
         {id:'action-recommendation', visiable:true, tooltip:"pages.discover.toolbar.recommendation"},
         {id:'action-classification', visiable:true, tooltip:"pages.discover.toolbar.classification"},
-        {id:'action-material', visiable:true, tooltip:"pages.discover.toolbar.pictureMaterial"},
+        {id:'action-material',visiable:true, tooltip:"pages.discover.toolbar.pictureMaterial"},
         {id:'action-hot', visiable:true, tooltip:"pages.discover.toolbar.topRanking"}
       ]
     }
@@ -69,15 +72,20 @@ export default {
       }
     },
     onBtnRecommendationClick(){
+      var that = this
+      console.log("---------------")
 
     },
     onBtnClassificationClick(){
+      var that = this
 
     },
     onBtnPictureMaterialClick(){
+      var that = this
 
     },
     onBtnTopRankingClick(){
+      var that = this
 
     }
   },
