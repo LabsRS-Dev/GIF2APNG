@@ -50,7 +50,7 @@
                 </div>
                 <div
                     class="dove-docs-content__toolbar-search"
-                    v-if="$route.path == '/' + appName +'/Discover'"
+                    v-if="$route.path.match(/Find/)"
                     >
                         <div class="toolbar-search-wrap toolbar-search-desktop toolbar-search-light">
                             <input class="toolbar-search-input" type='text' placeholder='Search'>
