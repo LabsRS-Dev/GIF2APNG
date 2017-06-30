@@ -50,10 +50,10 @@
     },
     "discover":{
       "toolbar":{
-        "recommendation":"recommendation",
-        "classification":"classification",
-        "pictureMaterial": "picture material",
-        "topRanking": "top ranking"
+        "recommendation":"Recommendation",
+        "classification":"Classification",
+        "pictureMaterial": "Picture Material",
+        "topRanking": "Top Ranking"
       }
     },
     "convert":{

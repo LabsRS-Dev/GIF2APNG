@@ -1,17 +1,60 @@
-.page__toolbar-app-doc{
-  .ui-tabs{
+.page__toolbar-app-doc__children__router{
+  display: flex;
+  min-height: 100%;
+  border-bottom: 1px solid rgb(225,225,226);
+  dl{
+    display: flex;
+    flex:1;
+    min-height: 100%;
+    align-items: center;
     margin: 0;
-  }
-  .ui-tabs__header{
-    .ui-tab-header-item{
-      width: 25%;
-      .ui-tab-header-item__text{
+    a{
+      min-width: 25%;
+      min-height: 100%;
+      display: flex;
+      text-decoration: none;
+      outline: none;
+      dd{
+        margin: 0;
+        width: 100%;
         font-size: rem-calc(14px);
-        text-transform:capitalize;
+        color: black;
+        display: flex;
+        justify-content:center;
+        align-items: center;
+      }
+      dd:hover{
+        color: $md-blue;
+        cursor: pointer;
+      }
+      dd.choosed{
+        border-bottom: 2px solid $md-blue;
+        color: $md-blue;
       }
     }
   }
-  .ui-tabs__body{
-    padding: 0;
-  }
+}
+.page__toolbar-app-doc__children__router__content{
+  min-height: 100%;
+  min-width: 100%;
+}
+
+
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #F5F5F5;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  border-radius: 10px;
+  background-color: rgb(245,245,247);
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgb(225,225,226);
+  background-color: rgb(225,225,226);
 }

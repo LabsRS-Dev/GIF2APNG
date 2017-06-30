@@ -9,12 +9,19 @@
               <router-link to="/Gmagon Gif/Find/topRank"><dd :class="{choosed: topName =='topRank'}">{{$t("pages.discover.toolbar.topRanking")}}</dd></router-link>
           </dl>
         </div>
-        <router-view></router-view>
+      </div>
+      <div class="page__examples page__examples-app-doc">
+        <div class="page__toolbar-app-doc__children__router__content">
+          <router-view></router-view>
+        </div>
       </div>
   </section>
 </template>
 <script>
 ////////////////////////////////////////////////////////
+
+//
+var hasInited = false;
 
 export default {
   name:'navigation',
