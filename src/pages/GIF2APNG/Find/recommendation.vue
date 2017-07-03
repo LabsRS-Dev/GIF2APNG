@@ -101,7 +101,6 @@
                     {fileName: 'gif004', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif'},
                     {fileName: 'gif005', fileImage:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif'},
                     {fileName: 'gif006', fileImage:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif'},
-                    {fileName: 'gif007', fileImage:'http://wayqq.cn/article/UploadPic/2015-9/20159192240617578.gif'},
                     {fileName: 'gif008', fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif'},
                     {fileName: 'gif009', fileImage:'https://media.giphy.com/media/5yydxkVxY9tcc/giphy.gif'}
                 ],function(ele){
