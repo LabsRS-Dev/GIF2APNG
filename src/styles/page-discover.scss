@@ -1,7 +1,7 @@
 .page__toolbar-app-doc__children__router{
   display: flex;
   min-height: 100%;
-  border-bottom: 1px solid rgb(225,225,226);
+  border-bottom: 1px solid $md-grey-300;
   dl{
     display: flex;
     flex:1;
@@ -57,4 +57,27 @@
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgb(225,225,226);
   background-color: rgb(225,225,226);
+}
+
+.children__recommendation__showImage__imageCover{
+  .showImage__imageCover__viewCount{
+    position: absolute;
+    width:100%;
+    height: rem-calc(25px);
+    top:0;
+    right:0;
+    color: white;
+    text-align: right;
+    line-height: rem-calc(25px);
+    background: -webkit-linear-gradient(right , rgba(100,100,100,0.5), rgba(256,256,256,0));
+    .showImage__imageCover__viewCount__icon{
+      .fa-lg{
+        font-size: rem-calc(14px);
+        vertical-align:5%;
+      }
+    }
+    .showImage__imageCover__viewCount__content{
+      margin:0 rem-calc(5px) 0 rem-calc(2px);
+    }
+  }
 }
