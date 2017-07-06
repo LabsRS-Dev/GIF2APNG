@@ -2,7 +2,7 @@
     <div class="children__router__content__classification">
         <div class="children__router__content__classification__label">
             <div class="children__router__content__classification__label__input">
-                <a ref="triggerPopover" class="label__popover__trigger">{{app1}}</a>
+                <a ref="triggerPopover" class="label__popover__trigger">{{labelButton}}</a>
                 <span class="label__popover__sort"><i class="fa fa-sort-desc fa-lg"></i></span>
                 <ui-popover class="label__popover__custom" trigger="triggerPopover">
                     <div class="label__popover__custom__title">{{app2}}</div>
@@ -33,7 +33,7 @@
             <span class ="children__router__content__classification__hot__label">{{app4}}</span>
             <div class ="children__router__content__classification__hot__all">
                 <div class="children__router__content__classification__hot__content" v-for="ele in hotList">
-                    <span class="children__router__content__classification__hot__text">{{ele.name}}</span>
+                    <span class="children__router__content__classification__hot__text" @click="getLabelChange(ele)">{{ele.name}}</span>
                 </div>
             </div>
         </div>
@@ -79,11 +79,11 @@
     export default{
         data(){
             return{
+                labelButton:"所有类型",
                 app1:"所有类型",
                 app2:"选择标签",
                 app3:"HOT",
                 app4:"热门标签:",
-                //cheackButtonSwitch:false,
                 labelList:labelList,
                 hotList:hotList,
                 hotLabelList:{},
@@ -171,6 +171,10 @@
                 }else {
                     return false
                 }
+            },
+            getLabelChange(ele){
+                var that = this
+                that.labelButton = ele.name
             },
             getCheckAllTagStyle(){
                 var that = this

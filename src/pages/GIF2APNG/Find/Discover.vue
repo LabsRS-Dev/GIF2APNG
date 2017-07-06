@@ -20,9 +20,6 @@
 <script>
 ////////////////////////////////////////////////////////
 
-//
-var hasInited = false;
-
 export default {
   name:'navigation',
   computed: {
