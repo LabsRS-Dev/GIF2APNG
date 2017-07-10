@@ -1,5 +1,5 @@
 <template>
-    <dd class="children__recommendation__showImage__imageCover" @click="">
+    <dd class="children__recommendation__showImage__imageCover" @click="$router.push({path:'/Find/imagelist/'+url})">
       <div class="showImage__imageCover__viewCount">
         <span class="showImage__imageCover__viewCount__icon"><i class="fa fa-eye fa-lg"></i></span>
         <span class="showImage__imageCover__viewCount__content">{{viewCount}}</span>
@@ -22,6 +22,9 @@ export default {
     },
     viewCount: {
       default: 0
+    },
+    url:{
+      default:''
     },
     image:String
   },

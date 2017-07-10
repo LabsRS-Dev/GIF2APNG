@@ -1,0 +1,93 @@
+.children__router__content__material{
+  display: flex;
+  flex-direction:column;
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  a{
+    text-decoration: none;
+  }
+}
+.children__router__content__material__label{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height:rem-calc(40px);
+}
+.children__router__content__material__label__input{
+  margin-left:2%;
+  display: flex;
+  height:rem-calc(30px);
+  border: 1px solid $md-grey-300;
+  border-radius: rem-calc(5px);
+  justify-content:center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+.children__router__content__material__hot{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height:rem-calc(28px);
+  .children__router__content__material__hot__label{
+    margin-left:2%;
+    font-size: rem-calc(14px);
+  }
+  .children__router__content__material__hot__all{
+    display: flex;
+    overflow: hidden;
+    .children__router__content__material__hot__content{
+      font-size: rem-calc(14px);
+      width: rem-calc(80px);
+      height: rem-calc(20px);
+      text-align: center;
+      border-left: rem-calc(1px) solid $md-grey-300;
+      margin-left:rem-calc(-1px);
+      .children__router__content__material__hot__text{
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.children__router__content__material__content{
+  display: flex;
+  width: 100%;
+  flex-wrap:wrap;
+  dl{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: space-around;
+    width: 100%;
+    height: 100%;
+    .children__recommendation__showImage__imageCover{
+        display: inline-block;
+        height: rem-calc(260px);
+        flex:0 0 18%;
+        margin: 1%;
+        font-size: rem-calc(12px);
+        line-height: 1.4;
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        border: 1px solid $md-grey-300;
+        img{
+          width:100%;
+          height: rem-calc(220px);
+          font-size: rem-calc(12px);
+        }
+        .showImage__imageCover__introduce{
+          position: absolute;
+          bottom: 0;
+          width:100%;
+          height: rem-calc(38px);
+          font-size: rem-calc(14px);
+          margin: 0 rem-calc(5px);
+        }
+    }
+  }
+}
+
+
