@@ -12,6 +12,7 @@ import { BS, Util, _ } from 'dove.max.sdk'
 import App from './App.vue'
 import KeenUI from 'keen-ui'
 import Routes from './routes'
+import http from 'vue-resource'
 
 import { languageConfiguration } from './extern.js'
 
@@ -29,6 +30,10 @@ const $ = Util.util.getJQuery$()
 const languageList = BS.b$.App.getCompatibleWebkitLanguageList()
 const localLanguagePackList = ['en-US','zh-CN']
 const lang = _.intersection(languageList,localLanguagePackList).toString()
+
+////
+Vue.use(http)
+Vue.http.options.emulateJSON = true
 
 function startApp (i18nObj) {
   // Use KeenUI

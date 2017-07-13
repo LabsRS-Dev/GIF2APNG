@@ -11,7 +11,10 @@ import Recommendation from './pages/GIF2APNG/Find/recommendation.vue'
 import Classification from './pages/GIF2APNG/Find/classification.vue'
 import Material from './pages/GIF2APNG/Find/material.vue'
 import TopRank from './pages/GIF2APNG/Find/topRank.vue'
-
+import ImageList from './pages/GIF2APNG/Find/ImageList.vue'
+import ImgFileList from './pages/GIF2APNG/Find/imgFileList.vue'
+import Discuss from './pages/GIF2APNG/Find/discuss.vue'
+import Collector from './pages/GIF2APNG/Find/collector.vue'
 // Config SystemConfig
 const icons = IconsRef.iconSet
 const rootPath = '/' + SysConfig.appName
@@ -61,6 +64,26 @@ const menu = [{
           {
             path: 'topRank',
             component: TopRank
+          }
+      ]
+    },
+    {
+      path: rootPath + '/Find/ImageList/:id',
+      show: false,
+      component: ImageList,
+      children:[
+          {
+            name:'ImageList',
+            path: 'imgFileList',
+            component: ImgFileList
+          },
+          {
+            path: 'discuss',
+            component: Discuss
+          },
+          {
+            path: 'collector',
+            component: Collector
           }
       ]
     },{
@@ -159,6 +182,8 @@ const routes = menu.reduce((paths, section) => {
     if(menuItem.children) {
       menuItem.children.map(childItem => {
         _children.push({
+          name: childItem.name || '',
+          redirect: childItem.redirect || '',
           path: childItem.path,
           component: childItem.component,
           parentPath:menuItem.path,
@@ -170,6 +195,7 @@ const routes = menu.reduce((paths, section) => {
       })
     }
     return {
+      name:menuItem.name || '',
       path: menuItem.path,
       redirect: menuItem.redirect || '',
       component: menuItem.component,

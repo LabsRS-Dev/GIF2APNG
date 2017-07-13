@@ -198,6 +198,11 @@ __$p$.Tools = {
   }
 }
 
+__$p$.http = {
+
+}
+
+
 var TransferClass = Observable.extend(__$p$)
 var Transfer = new TransferClass()
 

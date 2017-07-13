@@ -6,7 +6,7 @@
         <div class="children__router__content__recommendation__showImage">
             <span class ="children__router__content__recommendation__showImage__title">个性推荐</span>
             <dl>
-                <image-cover :img-src="item.image" :introduce="item.introduce" :viewCount="item.viewCount" :url="item.urlPostfix" v-for="item in imageList" v-show="$route.path.match(/recommendation/)"></image-cover>
+                <image-cover :imageName="item.name" :img-src="item.image" :introduce="item.introduce" :viewCount="item.viewCount" :url="item.urlPostfix" v-for="item in imageList" v-show="$route.path.match(/recommendation/)"></image-cover>
             </dl>
         </div>
     </div>
@@ -104,8 +104,8 @@
                     {fileName: 'gif004', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'1050W',urlPostfix:'bbbbb'},
                     {fileName: 'gif005', fileImage:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'5W',urlPostfix:'ddddqqqw'},
                     {fileName: 'gif006', fileImage:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'20W',urlPostfix:'sdsdsda'},
-                    {fileName: 'gif008', fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'80W',urlPostfix:'fffggr'},
-                    {fileName: 'gif009', fileImage:'https://media.giphy.com/media/5yydxkVxY9tcc/giphy.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'100W',urlPostfix:'ddddffeffff'}
+                    {fileName: 'gif007', fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'80W',urlPostfix:'fffggr'},
+                    {fileName: 'gif008', fileImage:'https://media.giphy.com/media/5yydxkVxY9tcc/giphy.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileViewCount:'100W',urlPostfix:'ddddffeffff'}
                 ],function(ele){
                     let imageObj = new Listbox(ele.fileName,ele.fileImage,ele.fileIntroduce,ele.fileViewCount,ele.urlPostfix)
                     that.imageList.push(imageObj)

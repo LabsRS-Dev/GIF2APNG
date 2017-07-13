@@ -1,5 +1,5 @@
 <template>
-    <dd class="children__recommendation__showImage__imageCover" @click="$router.push({path:'/Find/imagelist/'+url})">
+  <dd class="children__recommendation__showImage__imageCover" @click="$router.push({name:'ImageList', params: { id : url, attributes:{img: imgSrc}}})">
       <div class="showImage__imageCover__viewCount">
         <span class="showImage__imageCover__viewCount__icon"><i class="fa fa-eye fa-lg"></i></span>
         <span class="showImage__imageCover__viewCount__content">{{viewCount}}</span>
@@ -12,7 +12,6 @@
 
 
 export default {
-  name: 'image-cover',
   props: {
     imgSrc: {
       required: true
@@ -26,7 +25,7 @@ export default {
     url:{
       default:''
     },
-    image:String
+    imageName:String
   },
   data () {
     return {
