@@ -153,7 +153,7 @@
           {fileName: '愿岁月静好，现世安稳', fileImage:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileTag:'宠物',fileBrowse:74,fileDownload:28,fileShare:27,fileCollect:73},
           {fileName: '愿岁月静好，现世安稳', fileImage:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileTag:'蜡烛',fileBrowse:12,fileDownload:80,fileShare:79,fileCollect:21},
           {fileName: '愿岁月静好，现世安稳', fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileTag:'遗失',fileBrowse:46,fileDownload:54,fileShare:53,fileCollect:47},
-          {fileName: '愿岁月静好，现世安稳', fileImage:'https://media.giphy.com/media/5yydxkVxY9tcc/giphy.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileTag:'笑容',fileBrowse:18,fileDownload:82,fileShare:81,fileCollect:19}
+          {fileName: '愿岁月静好，现世安稳', fileImage:'http://img.zcool.cn/community/01d579578e4bed0000018c1b7c42ab.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.',fileTag:'笑容',fileBrowse:18,fileDownload:82,fileShare:81,fileCollect:19}
         ],function(ele){
               let imageObj = new Listbox(ele.fileName,ele.fileImage,ele.fileIntroduce,ele.fileBrowse,ele.fileDownload,ele.fileShare,ele.fileCollect,ele.fileTag)
               that.imageList.push(imageObj)

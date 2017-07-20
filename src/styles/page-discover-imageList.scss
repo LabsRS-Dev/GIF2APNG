@@ -139,6 +139,12 @@
         text-shadow: rem-calc(1px) rem-calc(1px) rem-calc(3px) rgba(0,0,0,0.3);
         margin: rem-calc(10px);
       }
+      .imageList__router__content__image__browse__message__icon{
+        img{
+          max-width: 50vw;
+          max-height: 40vh;
+        }
+      }
     }
   }
 }

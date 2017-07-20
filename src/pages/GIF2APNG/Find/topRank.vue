@@ -80,7 +80,7 @@
                     {fileName: 'gif005', fileThumb:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileBrowse:74,fileDownload:28,fileShare:27,fileCollect:73},
                     {fileName: 'gif006', fileThumb:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileBrowse:12,fileDownload:80,fileShare:79,fileCollect:21},
                     {fileName: 'gif007', fileThumb:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileBrowse:46,fileDownload:54,fileShare:53,fileCollect:47},
-                    {fileName: 'gif008', fileThumb:'https://media.giphy.com/media/5yydxkVxY9tcc/giphy.gif',fileBrowse:18,fileDownload:82,fileShare:81,fileCollect:19},
+                    {fileName: 'gif008', fileThumb:'http://img.zcool.cn/community/01d579578e4bed0000018c1b7c42ab.gif',fileBrowse:18,fileDownload:82,fileShare:81,fileCollect:19},
                     {fileName: 'gif009', fileThumb:'http://bbs.uc.cn/data/attachment/forum/month_0807/20080706_d162e4910d0a301fb136NkPw7m39KEOc.gif',fileBrowse:5,fileDownload:95,fileShare:94,fileCollect:6},
                     {fileName: 'gif010', fileThumb:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileBrowse:2,fileDownload:98,fileShare:97,fileCollect:3},
                     {fileName: 'gif011', fileThumb:'http://worldcup.sznews.com/humor/attachement/gif/site3/20140721/4487fcd7fc661537068e36.gif',fileBrowse:33,fileDownload:67,fileShare:66,fileCollect:34},
@@ -88,7 +88,7 @@
                     {fileName: 'gif013', fileThumb:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileBrowse:35,fileDownload:65,fileShare:64,fileCollect:36},
                     {fileName: 'gif014', fileThumb:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileBrowse:88,fileDownload:22,fileShare:21,fileCollect:89},
                     {fileName: 'gif015', fileThumb:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileBrowse:54,fileDownload:46,fileShare:45,fileCollect:55},
-                    {fileName: 'gif016', fileThumb:'https://media.giphy.com/media/5yydxkVxY9tcc/giphy.gif',fileBrowse:82,fileDownload:18,fileShare:17,fileCollect:83}
+                    {fileName: 'gif016', fileThumb:'http://img.zcool.cn/community/01d579578e4bed0000018c1b7c42ab.gif',fileBrowse:82,fileDownload:18,fileShare:17,fileCollect:83}
                 ],function(ele){
                     let rankObj = new Rank(ele.fileName,ele.fileThumb,ele.fileBrowse,ele.fileDownload,ele.fileShare,ele.fileCollect)
                     that.topRankList.push(rankObj)

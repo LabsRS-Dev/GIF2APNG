@@ -144,6 +144,13 @@
         "btnDeny": "取消"
       }
     },
+    "search":{
+      "dialog-confirm":{
+        "title":"预览",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      }
+    },
     "abouts":{
       "header":{
         "title":"关于"

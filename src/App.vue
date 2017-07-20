@@ -54,6 +54,7 @@
                     >
                         <div class="toolbar-search-wrap toolbar-search-desktop toolbar-search-light">
                             <input class="toolbar-search-input"
+                                id="inputID"
                                 type='text' placeholder='Search'
                                 @focus="showHotSearch=true"
                                 @blur="showHotSearch=false"
@@ -183,6 +184,8 @@ var $LS$ = Search.shareResult()
                     }
                     that.searchInputValue(that.inputValue)
                     that.saveSearchInputValue()
+                    var input = document.getElementById("inputID")
+                    input.blur()
                     return false
                 }
             },

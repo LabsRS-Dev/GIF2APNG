@@ -144,6 +144,13 @@
         "btnDeny": "Cancel"
       }
     },
+    "search":{
+      "dialog-confirm":{
+        "title":"Preview",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      }
+    },
     "abouts":{
       "header":{
         "title":"About"
