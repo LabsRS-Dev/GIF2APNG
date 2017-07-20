@@ -46,7 +46,7 @@
             :class="getItemStyleClass(item)"
             :type="item.style.type"
             v-show="item.style.show"
-            :key="item"
+            :key="item.id"
             v-for="item, index in newsList">
             <div class="page__examples-app-doc__item">
                 <div class="ui-toolbar__top">

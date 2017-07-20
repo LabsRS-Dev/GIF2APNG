@@ -29,12 +29,15 @@
     user-select: none;
 }
 .dove-docs-content__toolbar-search{
+    display: flex;
+    flex-direction: column;
+    position: relative;
     .toolbar-search-wrap{
         display: flex;
         align-items:center;
         overflow: hidden;
         position: relative;
-        padding: rem-calc(10px);
+        padding:0 rem-calc(10px);
         width: rem-calc(320px);
         height: rem-calc(30px);
     }
@@ -148,11 +151,47 @@
             align-items: center;
             white-space: nowrap;
     }
+    .dove-docs-content__toolbar-search__hotSearch{
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        border-radius: rem-calc(5px);
+        top: rem-calc(40px);
+        left: rem-calc(10px);
+        width:rem-calc(300px);
+        height: rem-calc(260px);
+        border: rem-calc(1px) solid $md-grey-300;
+        background: white;
+        overflow: auto;
+        flex-shrink: 0;
+        .dove-docs-content__toolbar-search__hotSearch__title{
+            height:rem-calc(30px);
+            line-height: rem-calc(30px);
+            padding-left: rem-calc(22px);
+            border-bottom: rem-calc(1px) solid $md-grey-300;
+        }
+        .dove-docs-content__toolbar-search__hotSearch__content{
+            display: flex;
+            flex-direction: row;
+            flex-shrink: 0;
+            height:rem-calc(30px);
+            line-height: rem-calc(30px);
+            padding-left: rem-calc(22px);
+            cursor: pointer;
+            &:hover{
+                background-color: $md-blue-200;
+                border-radius: rem-calc(5px);
+            }
+            .hotSearch__content__name{
+                margin-left: rem-calc(10px);
+            }
+        }
+    }
 }
 /* If in focus, left align placeholder */
 .toolbar-search-input:focus ~ .dove-docs-content__toolbar-search__placeholder,
 .toolbar-search-input:not(:placeholder-shown)~.dove-docs-content__toolbar-search__placeholder{
-    margin-left:  rem-calc(10px);
+    margin-left: rem-calc(10px);
     transform: translateX(0%);
 }
 /* If there is content, show placeholder text */

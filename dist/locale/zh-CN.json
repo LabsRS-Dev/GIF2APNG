@@ -2,7 +2,6 @@
   "routes":{
     "common":{
       "title":"常用操作",
-      "search":"搜索",
       "menu":{
         "welcome":{
           "title": "欢迎使用",
@@ -15,6 +14,10 @@
         "convert":{
           "title": "格式转换",
           "tip": "转换GIF动画格式"
+        },
+        "search":{
+          "title":"搜索或者输入名称",
+          "info":"搜索记录"
         }
       }
     },

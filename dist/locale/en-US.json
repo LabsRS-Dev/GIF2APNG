@@ -2,7 +2,6 @@
   "routes":{
     "common":{
       "title":"General",
-      "search":"Search",
       "menu":{
         "welcome":{
           "title": "Welcome",
@@ -15,6 +14,10 @@
         "convert":{
           "title": "Convert",
           "tip": "Convert GIF(.gif) to animated PNG(.png)"
+        },
+        "search":{
+          "title":"Search or enter name",
+          "info":"Search record"
         }
       }
     },

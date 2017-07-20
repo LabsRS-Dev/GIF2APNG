@@ -15,6 +15,10 @@ import ImageList from './pages/GIF2APNG/Find/ImageList.vue'
 import ImgFileList from './pages/GIF2APNG/Find/imgFileList.vue'
 import Discuss from './pages/GIF2APNG/Find/discuss.vue'
 import Collector from './pages/GIF2APNG/Find/collector.vue'
+///
+import Seek from './pages/GIF2APNG/Search/Seek.vue'
+import Single from './pages/GIF2APNG/Search/Single.vue'
+import Album from './pages/GIF2APNG/Search/Album.vue'
 // Config SystemConfig
 const icons = IconsRef.iconSet
 const rootPath = '/' + SysConfig.appName
@@ -85,6 +89,21 @@ const menu = [{
             path: 'collector',
             component: Collector
           }
+      ]
+    },{
+      path:rootPath + '/Search',
+      show:false,
+      component:Seek,
+      children:[
+        {
+            name:'Single',
+            path: 'Single',
+            component:Single
+        },{
+            name:'Album',
+            path: 'Album',
+            component:Album
+        }
       ]
     },{
       path: rootPath + '/convert',
