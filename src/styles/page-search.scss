@@ -15,6 +15,11 @@
         }
       }
     }
+    .page__children__router__content__single__pagination{
+        display: flex;
+        width: 100%;
+        justify-content: center;
+      }
     .page__children__router__content__single__content{
       display: flex;
       flex-direction: row;
@@ -76,6 +81,11 @@
   .page__children__router__content__album{
     display: flex;
     flex-direction: column;
+    .page__children__router__content__album__pagination{
+      display: flex;
+      width: 100%;
+      justify-content: center;
+    }
     .page__children__router__content__album__content{
       display: flex;
       flex-direction: row;

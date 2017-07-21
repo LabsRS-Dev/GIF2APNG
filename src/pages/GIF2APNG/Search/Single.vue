@@ -16,7 +16,7 @@
             <img :src="imagePreview">
           </div>
       </ui-confirm>
-      <div class="page__children__router__content__single__content" v-for='item in singleList'>
+      <div class="page__children__router__content__single__content" v-for='item in paginationList'>
         <div class="page__single__content__thumb">
           <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" @click='getEnlargeFigureImage(item)'/>
         </div>
@@ -40,16 +40,22 @@
             </ui-icon-button>
         </div>
       </div>
+      <div class="page__children__router__content__single__pagination">
+        <pagination :total="total" :display="display" :current-page='current' @pagechange="pagechange"></pagination>
+      </div>
     </div>
 </template>
 <script>
 
   import { BS, Util, _ } from 'dove.max.sdk'
   import { UiIconButton,UiConfirm} from 'keen-ui'
+  import Pagination from './pagination.vue'
 
   var singleList = [];
   var hasInited = false;
   var imagePreview = '';
+  var total;
+  var paginationList = [];
 
   const singlePrefix = 'children-single-image-id-' + _.now()
   class Eattedit {
@@ -80,6 +86,10 @@
             callbackOpen: ()=>{},
             callbackClose: ()=>{}
         },
+        total: total,       // 记录总条数
+        display: 16,        // 每页显示条数
+        current: 1,         // 当前的页数
+        paginationList:paginationList
       }
     },
     mounted(){
@@ -119,11 +129,45 @@
               {fileName: 'gif021', fileSize:'905KB',fileDimension:'180x240',fileImage:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
               {fileName: 'gif022', fileSize:'3.8MB',fileDimension:'180x240',fileImage:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
               {fileName: 'gif023', fileSize:'2.1MB',fileDimension:'180x240',fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif024', fileSize:'1.2MB',fileDimension:'192x256',fileImage:'http://img.zcool.cn/community/01d579578e4bed0000018c1b7c42ab.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'}
+              {fileName: 'gif024', fileSize:'1.2MB',fileDimension:'192x256',fileImage:'http://img.zcool.cn/community/01d579578e4bed0000018c1b7c42ab.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif010', fileSize:'2.3MB',fileDimension:'135x180',fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
+              {fileName: 'gif012', fileSize:'1.7MB',fileDimension:'192x256',fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'}
           ],function(ele){
               let singleObj = new Eattedit(ele.fileName,ele.fileSize,ele.fileDimension,ele.fileImage,ele.fileIntroduce)
               that.singleList.push(singleObj)
           })
+          that.total = that.singleList.length
+          that.paginationList = that.singleList.slice(0, that.display)
           return singleList
       },
       getDataInfo(type){
@@ -140,11 +184,20 @@
           var dialog = that.$refs[cdg.ref]
           that.imagePreview = item.thumb
           dialog.open()
+      },
+      pagechange(currentPage){
+          var that = this
+          console.log(currentPage)
+          let page = currentPage
+          let curLimit = that.display
+          that.paginationList = that.singleList.slice(curLimit * (page-1), curLimit * page )
+          return paginationList
       }
     },
     components:{
       UiIconButton,
-      UiConfirm
+      UiConfirm,
+      Pagination
     }
   }
 </script>

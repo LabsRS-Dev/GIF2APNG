@@ -1,0 +1,41 @@
+ .pagination {
+  overflow: hidden;
+  display: flex;
+  margin: 0 auto;
+  height: rem-calc(50px);
+  li {
+    display: flex;
+    width: rem-calc(30px);
+    height: rem-calc(30px);
+    border-radius: rem-calc(5px);
+    margin: rem-calc(3px);
+    padding: 0;
+    list-style-type:none;
+    border: rem-calc(1px) solid $md-grey-300;
+    :hover {
+      background-color: $md-blue;
+      a{
+        color: #fff;
+      }
+    }
+    a {
+      width: 100%;
+      height: 100%;
+      color: $md-grey;
+      text-align: center;
+      line-height: rem-calc(30px);
+      font-size: rem-calc(12px);
+      border-radius: rem-calc(5px);
+      text-decoration: none;
+      i{
+        vertical-align:0;
+      }
+    }
+  }
+  .active {
+    background-color: $md-blue;
+    a {
+      color: #fff;
+    }
+  }
+ }
