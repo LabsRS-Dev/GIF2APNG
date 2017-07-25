@@ -17,7 +17,7 @@
                                 <span class="label__popover__custom__content__category__title">{{item.name}}</span>
                             </div>
                             <div class="label__popover__custom__content__category__tag">
-                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event)">
+                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event)" @mousedown="getCheckTagValue(el)">
                                     <span class="label__popover__custom__content__content">{{el.name}}</span>
                                     <span class="label__popover__custom__content__tag__space"></span>
                                     <span class="label__popover__custom__content__tag__select"><i class="fa fa-check fa-lg"></i></span>
@@ -232,6 +232,10 @@
                 var $ = Util.util.getJQuery$()
                 $(event.target).css('opacity','1')
                 $(event.target).next().css('opacity','1')
+            },
+            getCheckTagValue(el){
+                var that = this
+                that.labelButton = el.name
             },
             pagechange(currentPage){
                 var that = this

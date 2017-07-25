@@ -47,7 +47,7 @@
                                     class="dove-docs-sidebar__menu-li" exact
                                     v-for="item in section.menu">
                                     <router-link
-                                        class="dove-docs-sidebar__menu-item" exact
+                                        class="dove-docs-sidebar__menu-item"
                                         :to="item.path"
                                         v-if="item.show"
                                         :title="$t(item.tip)"

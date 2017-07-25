@@ -98,6 +98,9 @@
           hasInited = true
           that.getSingleListInfo()
       }
+    },
+    activated(){
+      var that = this
       that.getDataInfo(that.singleList.length)
     },
     computed:{

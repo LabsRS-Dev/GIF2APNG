@@ -73,7 +73,7 @@
                             <div class="dove-docs-content__toolbar-search__hotSearch__title">
                                 <span class="hotSearch__title__name">{{$t('routes.common.menu.search.info')}}</span>
                             </div>
-                            <div class="dove-docs-content__toolbar-search__hotSearch__content" v-for="(item,index) in searchRecordList" @click="chooseInputValue(item)">
+                            <div class="dove-docs-content__toolbar-search__hotSearch__content" v-for="(item,index) in searchRecordList" @mousedown="chooseInputValue(item)">
                                 <span class="hotSearch__content__number">{{index + 1}}</span>
                                 <span class="hotSearch__content__name">{{item}}</span>
                             </div>
@@ -81,7 +81,9 @@
                 </div>
             </div>
             <div class="dove-docs-content__page-content" ref="pageContent">
-                <router-view :params="inputValue"></router-view>
+                <keep-alive>
+                    <router-view :params="inputValue"></router-view>
+                </keep-alive>
             </div>
         </section>
   </div>
@@ -164,7 +166,7 @@ var $LS$ = Search.shareResult()
             },
             onClearInputValue(){
                 var that = this
-                document.querySelector('.toolbar-search-clear').parentNode.previousElementSibling.value = ''
+                that.lastInputValue = ''
             },
             getInputValues(e){
                 var that = this

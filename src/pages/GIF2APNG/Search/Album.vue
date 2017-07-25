@@ -67,6 +67,9 @@
           hasInited = true
           that.getAlbumListInfo()
       }
+    },
+    activated(){
+      var that = this
       that.getDataInfo(that.albumList.length)
     },
     computed:{

@@ -51,9 +51,12 @@ const menu = [{
       tipAsSubTitle: true,
       icon: icons.adjust,
       sourceUrl: '',
-      redirect:rootPath + '/Find/recommendation',
+      redirect:{name:'Recommendation'},
       children:[
           {
+            name:'Recommendation',
+            tipAsSubTitle: true,
+            tip: 'routes.common.menu.discover.tip',
             path: 'recommendation',
             component: Recommendation
           },
@@ -208,7 +211,9 @@ const routes = menu.reduce((paths, section) => {
           parentPath:menuItem.path,
           meta: {
             section: section.title,
-            title: menuItem.title
+            title: menuItem.title,
+            tip: menuItem.tip,
+            tipAsSubTitle: menuItem.tipAsSubTitle || false
           }
         })
       })

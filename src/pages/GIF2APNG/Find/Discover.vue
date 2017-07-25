@@ -12,7 +12,9 @@
       </div>
       <div class="page__examples page__examples-app-doc">
         <div class="page__toolbar-app-doc__children__router__content">
-          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
         </div>
       </div>
   </section>
