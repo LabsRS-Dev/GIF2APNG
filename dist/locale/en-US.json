@@ -56,7 +56,21 @@
         "recommendation":"Recommendation",
         "classification":"Classification",
         "pictureMaterial": "Picture Material",
-        "topRanking": "Top Ranking"
+        "topRanking": "Top Ranking",
+        "import-share":"Share",
+        "import-collect":"Collect",
+        "import-download":"Download"
+      },
+      "dialog-confirm":{
+        "title":"Preview",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      },
+      "task-item":{
+        "types":"All Types",
+        "select":"Select Label Group",
+        "hot":"HOT",
+        "label":"Hot Tags:"
       }
     },
     "convert":{
@@ -145,10 +159,21 @@
       }
     },
     "search":{
+      "toolbar":{
+        "import-share":"Share",
+        "import-collect":"Collect",
+        "import-download":"Download"
+      },
       "dialog-confirm":{
         "title":"Preview",
         "btnConfirm": "OK",
         "btnDeny": "Cancel"
+      },
+      "content":{
+        "search":"Search",
+        "find":",found about",
+        "img":"Images",
+        "collection":"Image Collection"
       }
     },
     "abouts":{

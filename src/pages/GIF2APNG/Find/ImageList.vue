@@ -1,6 +1,5 @@
 <template>
   <section  class="page page-app-doc">
-    <div class="page__toolbar page__toolbar-app-doc">
       <div class="page__toolbar-app-doc__imageList__router__head">
         <img :src="route_params.image" class="imageList__router__head__imageCover">
         <div class="imageList__router__head__content">
@@ -36,7 +35,6 @@
             <router-view></router-view>
           </div>
       </div>
-    </div>
   </section>
 </template>
 

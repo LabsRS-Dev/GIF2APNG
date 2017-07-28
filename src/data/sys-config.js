@@ -11,7 +11,9 @@ const SysConfig = {
   companyName: 'Gmagon',
   appReleaseDate: '2017/06/16',
   companyWebsiteHomepage: 'https://gmagon.com',
-  support: 'http://gmagon.com/support'
+  support: 'http://gmagon.com/support',
+  //apiHost: 'https://api.gmagon.com/plugin/gif/api',
+  apiHost: 'http://192.168.3.6:5000/plugin/gif/api'
 }
 
 // export

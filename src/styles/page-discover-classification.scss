@@ -90,11 +90,11 @@
       font-size: rem-calc(12px);
       line-height: 1.4;
       position: relative;
-      cursor: pointer;
       overflow: hidden;
       border: rem-calc(1px) solid $md-grey-300;
       img{
         width:100%;
+        cursor: pointer;
         height: rem-calc(250px);
         font-size: rem-calc(12px);
       }
@@ -103,10 +103,17 @@
         bottom: 0;
         width:100%;
         height: rem-calc(48px);
-        font-size: rem-calc(14px);
+        font-size: rem-calc(12px);
         margin: 0 rem-calc(5px);
       }
     }
+  }
+  .children__router__content__classification__loading{
+    display: flex;
+    width: 100%;
+    height: rem-calc(440px);
+    justify-content: center;
+    align-items: center;
   }
   .children__router__content__classification__pagination{
     display: flex;
@@ -116,7 +123,7 @@
 }
 
 .ui-popover.label__popover__custom{
-  width:rem-calc(540px);
+  width:rem-calc(600px);
   border-radius: rem-calc(5px);
   margin-top: rem-calc(5px);
   display: flex;
@@ -133,7 +140,7 @@
   .label__popover__custom__content{
     display:flex;
     flex-direction: column;
-    height: 450px;
+    height: rem-calc(500px);
     overflow:auto;
     .label__popover__custom__content__all{
         display: flex;
@@ -175,7 +182,7 @@
       flex-shrink: 0;
       .label__popover__custom__content__category__icon{
         display: flex;
-        width: rem-calc(100px);
+        width: rem-calc(120px);
         .label__popover__custom__content__category__title{
           font-size: rem-calc(14px);
           line-height: rem-calc(32px);
@@ -184,11 +191,11 @@
       .label__popover__custom__content__category__tag{
         display: flex;
         flex-wrap:wrap;
-        width: rem-calc(390px);
+        width: rem-calc(430px);
         cursor: pointer;
         .label__popover__custom__content__category__tag__all{
           display: flex;
-          width:20%;
+          width:25%;
           flex-direction: row;
           flex-shrink: 0;
           margin:rem-calc(-0.5px);

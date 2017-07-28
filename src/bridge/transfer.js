@@ -1,5 +1,7 @@
 import { BS, Observable, Util, _ } from 'dove.max.sdk'
-import { ToolsMap, ToolsType } from './tools_map.js'
+import { ToolsMap, ToolsType, ServerAPIMap } from './tools_map.js'
+
+
 
 // -----------------------------------------------------------------
 // 交互处理
@@ -199,7 +201,59 @@ __$p$.Tools = {
 }
 
 __$p$.http = {
+   useTest: false,
+   sub_call:function (api, type, options={}, handler=() =>{}, cfg) {
+        const baseConfig = {
+          url: api,
+          data: JSON.stringify(options),
+          method: type,
+          dataType:"json",
+          complete: function(jqXHR, status){},
+          error: function(jqXHR, status, error){},
+          success: function(data, status, jqXHR){
+            handler && handler(data)
+          }
+        }
+        var config = _.extend(baseConfig, {
+          contentType: 'application/json'
+        })
+        $.ajax(config)
+   },
+   call: function(apiKey, options = {}, handler = () =>{}, testHandler =()=>{}){
+     var t$ = this
+     if (t$.useTest) {
+        testHandler && testHandler()
+        console.log('http test...')
+        return
+     }
 
+     const $ = Util.util.getJQuery$()
+     const cfg = ServerAPIMap[apiKey]
+     if (cfg) {
+        t$.sub_call(cfg.api, cfg.type, options, handler)
+     }else{
+       console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+     }
+   },
+   callEx: function(apiKey, extend={}, options={}, handler = () =>{}, testHandler =()=>{}){
+      var t$ = this
+      if (t$.useTest) {
+        testHandler && testHandler()
+        console.log('http test...')
+        return
+      }
+
+      const $ = Util.util.getJQuery$()
+      const cfg = ServerAPIMap[apiKey]
+      var extObj = _.extend({
+        url:''
+      }, extend)
+      if (cfg) {
+         t$.sub_call(cfg.api + extObj.url, cfg.type, options, handler)
+      }else{
+        console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+      }
+    }
 }
 
 

@@ -56,7 +56,21 @@
         "recommendation":"推荐",
         "classification":"分类",
         "pictureMaterial": "素材",
-        "topRanking": "热门"
+        "topRanking": "热门",
+        "import-share":"分享",
+        "import-collect":"收藏",
+        "import-download":"下载"
+      },
+      "dialog-confirm":{
+        "title":"预览",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      },
+      "task-item":{
+        "types":"所有类型",
+        "select":"选择标签",
+        "hot":"HOT",
+        "label":"热门标签:"
       }
     },
     "convert":{
@@ -145,10 +159,21 @@
       }
     },
     "search":{
+      "toolbar":{
+        "import-share":"分享",
+        "import-collect":"收藏",
+        "import-download":"下载"
+      },
       "dialog-confirm":{
         "title":"预览",
         "btnConfirm": "确定",
         "btnDeny": "取消"
+      },
+      "content":{
+        "search":"搜索",
+        "find":",共找到",
+        "img":"图片",
+        "collection":"图集"
       }
     },
     "abouts":{

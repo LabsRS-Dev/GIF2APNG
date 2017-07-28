@@ -10,6 +10,8 @@
         align-items: center;
         justify-content: center;
         img{
+          border: 1px solid $md-grey-300;
+          border-radius: rem-calc(8px);
           max-width: 40vw;
           max-height: 40vh;
         }

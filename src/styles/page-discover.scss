@@ -1,3 +1,10 @@
+.page__toolbar-app-doc__searchname{
+  color:$md-blue;
+  font-style: 400;
+}
+.page__toolbar-app-doc__space{
+  margin:0 rem-calc(2.5px);
+}
 .page__toolbar-app-doc__children__router{
   display: flex;
   min-height: 100%;
@@ -69,7 +76,7 @@
     color: white;
     text-align: right;
     line-height: rem-calc(25px);
-    background: -webkit-linear-gradient(right , rgba(100,100,100,0.5), rgba(256,256,256,0));
+    background: -webkit-linear-gradient(right , rgba(100,100,100,0.8), rgba(256,256,256,0));
     .showImage__imageCover__viewCount__icon{
       .fa-lg{
         font-size: rem-calc(14px);
