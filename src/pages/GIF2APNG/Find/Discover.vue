@@ -6,7 +6,7 @@
               <router-link to="/Gmagon Gif/Find/recommendation"><dd :class="{choosed: topName =='recommendation'}">{{$t("pages.discover.toolbar.recommendation")}}</dd></router-link>
               <router-link to="/Gmagon Gif/Find/classification"><dd :class="{choosed: topName =='classification'}">{{$t("pages.discover.toolbar.classification")}}</dd></router-link>
               <router-link to="/Gmagon Gif/Find/material"><dd :class="{choosed: topName =='material'}">{{$t("pages.discover.toolbar.pictureMaterial")}}</dd></router-link>
-              <router-link to="/Gmagon Gif/Find/topRank"><dd :class="{choosed: topName =='topRank'}">{{$t("pages.discover.toolbar.topRanking")}}</dd></router-link>
+              <!-- <router-link to="/Gmagon Gif/Find/topRank"><dd :class="{choosed: topName =='topRank'}">{{$t("pages.discover.toolbar.topRanking")}}</dd></router-link> -->
           </dl>
         </div>
       </div>

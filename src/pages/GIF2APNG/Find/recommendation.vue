@@ -1,7 +1,10 @@
 <template>
     <div class="children__router__content__recommendation">
         <div class="children__router__content__recommendation__slideshow">
-            <slider v-bind="setting"></slider>
+            <swiper :options="swiperOption" ref="mySwiper">
+                <swiper-slide v-for="ele in imageList"><img :src="ele.image"></swiper-slide>
+                <div class="swiper-pagination" slot="pagination"></div>
+            </swiper>
         </div>
         <div class="children__router__content__recommendation__showImage">
             <span class ="children__router__content__recommendation__showImage__title">个性推荐</span>
@@ -13,7 +16,7 @@
 </template>
 <script>
     import ImageCover from './imageCover.vue'
-    import Slider from 'vue-image-scroll'
+    import { swiper, swiperSlide } from 'vue-awesome-swiper'
     import { BS, Util, _ } from 'dove.max.sdk'
 
     const taskPrefix = 'children-recommendation-image-id-' + _.now()
@@ -35,56 +38,27 @@
         data(){
             return{
                 imageList:imageList,
-                setting: {
-                    styleObject: {
-                        width: '750',
-                        height: '250',
-                        marginLeft:'auto',
-                        marginRight:'auto'
-                    },
-                    image: [
-                    {
-                        src: 'http://images.missyuan.com/attachments/day_071229/20071229_cb2e4ccb1dfe4ea90fbefoPTVXxYlZ4x.gif',
-                        tagName: '活动',
-                        tagStyle: {
-                        backgroundColor: 'blue'
-                        }
-                    },
-                    {
-                        src: 'http://userimage3.360doc.com/13/0319/17/9331441_201303191739590068.gif',
-                        tagName: '活动',
-                        tagStyle: {
-                        backgroundColor: 'blue'
-                        }
-                    },
-                    {
-                        src: 'http://image101.360doc.cn/DownloadImg/2016/12/0108/85789533_8.gif',
-                        tagName: '活动',
-                        tagStyle: {
-                        backgroundColor: 'blue'
-                        }
-                    },
-                    {
-                        src: 'http://pic.962.net/up/2013-2/2013022510023730088.gif',
-                        tagName: '活动',
-                        tagStyle: {
-                        backgroundColor: 'blue'
-                        }
-                    },
-                    {
-                        src: 'http://img1.ph.126.net/GEJEx0n3nUp16KlNcAIPog==/6598226452889567098.gif',
-                        tagName: '活动',
-                        tagStyle: {
-                        backgroundColor: 'blue'
-                        }
+                swiperOption: {
+                    notNextTick: true,
+                    pagination: '.swiper-pagination',
+                    effect: 'coverflow',
+                    grabCursor: true,
+                    centeredSlides: true,
+                    slidesPerView: 'auto',
+                    coverflow: {
+                        rotate: 50,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 1,
+                        slideShadows : true
                     }
-                    ],
-                    interval: 4000,
-                    imgStyle: {
-                        borderRadius: '20px'
-                    },
-                    autoRoll: true
                 }
+            }
+        },
+        computed: {
+            swiper() {
+                var that = this
+                return that.$refs.mySwiper.swiper
             }
         },
         mounted(){
@@ -92,6 +66,8 @@
             if(!hasInited){
                 hasInited = true
                 that.drawImageCover()
+                that.swiper.slideTo(3, 1000, false)
+
             }
         },
         methods:{
@@ -115,7 +91,8 @@
         },
         components:{
             ImageCover,
-            Slider
+            swiper,
+            swiperSlide
         }
     }
 </script>

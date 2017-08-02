@@ -72,7 +72,7 @@
                 <dd class="children__recommendation__showImage__imageCover" v-for="item in labelList">
                     <div class="showImage__imageCover__viewCount">
                         <span class="showImage__imageCover__viewCount__icon"><i class="fa fa-eye fa-lg"></i></span>
-                        <span class="showImage__imageCover__viewCount__content">{{item.viewCount}}</span>
+                        <span class="showImage__imageCover__viewCount__content">{{item.previewCount}}</span>
                     </div>
                     <img :src="item.image" @click="getItemsEnlargeFigureImage(item)" @mouseenter="autoShowButton($event)" @mouseleave="autoDisplayButton($event)">
                     <div class="showImage__imageCover__viewCount__button" @mouseenter="autoShowButtonAgain($event)" @mouseleave="autoDisplayButtonAgain($event)">
@@ -110,12 +110,12 @@
 
     const imgPrefix = 'children-material-image-id-' + _.now()
     class Label {
-        constructor(name, image,introduce,viewCount){
+        constructor(name, image,introduce,previewCount){
             this.id = _.uniqueId(imgPrefix);
             this.name = name;                  // 图像名称
             this.image = image;                // 图像的路径
             this.introduce = introduce;        // 图片的描述
-            this.viewCount = viewCount;        // 图片浏览次数
+            this.previewCount = previewCount;        // 图片浏览次数
         }
     }
     /////
@@ -153,12 +153,8 @@
                 hotLabelList:{},
                 materialList:materialList,
                 imagePreview:imagePreview,
-                img1Icon:IconsRef.iconSet.discover,
-                img2Icon:IconsRef.iconSet.report,
-                img3Icon:IconsRef.iconSet.adjust,
-                img4Icon:IconsRef.iconSet.compare,
-                total: total,       // 记录总条数
-                display: 25,        // 每页显示条数
+                total: total,             // 记录总条数
+                display: 20,              // 每页显示条数
                 current: current,         // 当前的页数
                 showLoading:false,
                 itemsConfirmDialog:{
@@ -189,13 +185,13 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.items',{"page":1},(info) => {
+                Transfer.http.call('get.items',{"page":1,"per_page":20},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
-                        var fileViewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,fileViewCount)
+                        var filePreviewCount = ele.preview_quantity
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -222,7 +218,7 @@
                     tagsArr.push(cdg)
                 })
                 let tagsLists = _.flatten(tagsArr,true)
-                let labelArr = _.sortBy(tagsLists,'download').reverse().slice(0,10)
+                let labelArr = _.sortBy(tagsLists,'download').reverse().slice(0,8)
                 _.each(labelArr,(ele) => {
                     that.hotList.push(ele)
                 })
@@ -253,13 +249,13 @@
                 that.$refs.popover.close()
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.call('get.items',{"page":1},(info) => {
+                Transfer.http.call('get.items',{"page":1,"per_page":20},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
-                        var fileViewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,fileViewCount)
+                        var filePreviewCount = ele.preview_quantity
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -312,33 +308,35 @@
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":curPage},(info) => {
+                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":that.curPage,"per_page":20},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
-                        var fileViewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,fileViewCount)
+                        var filePreviewCount = ele.preview_quantity
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
                     that.total = info.paginate.total
+                    that.current = curPage
                 })
             },
             pagechange(currentPage){
                 var that = this
+                that.current = currentPage
                 if (current_logic_page == LPage.TagPage) {
-                    that.__UpdateTheDataList(click_logic_page, currentPage)
+                    that.__UpdateTheDataList(click_logic_page, that.current)
                 }else {
                     that.labelList.length = 0
                     that.showLoading = false
-                    Transfer.http.call('get.items',{"page":currentPage},(info) => {
+                    Transfer.http.call('get.items',{"page":that.current,"per_page":20},(info) => {
                         _.each(info.data,function(ele){
                             var fileName = ele.name
                             var fileImage = ele.url
                             var fileIntroduce = ele.description
-                            var fileViewCount = ele.preview_quantity
-                            let labelObj = new Label(fileName,fileImage,fileIntroduce,fileViewCount)
+                            var filePreviewCount = ele.preview_quantity
+                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
                             that.labelList.push(labelObj)
                         })
                         that.showLoading = !that.showLoading

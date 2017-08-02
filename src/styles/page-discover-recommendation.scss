@@ -7,7 +7,23 @@
   .children__router__content__recommendation__slideshow{
       margin-top:rem-calc(10px);
       width: 100%;
-      height: 100%;
+      height: 40vh;
+      .swiper-container{
+        width: 100%;
+        height: 40vh;
+        .swiper-slide{
+          background-position: center;
+          background-size: cover;
+          width: 60%;
+          height: 100%;
+          border-radius: rem-calc(20px);
+          img{
+            width: 100%;
+            height: 100%;
+            border-radius: rem-calc(20px);
+          }
+        }
+      }
   }
   .children__router__content__recommendation__showImage{
     display: flex;
@@ -28,28 +44,39 @@
       height: 100%;
       .children__recommendation__showImage__imageCover{
         display: inline-block;
-        height: rem-calc(260px);
         flex:0 0 18%;
         margin: 1%;
         font-size: rem-calc(12px);
         line-height: 1.4;
         position: relative;
-        cursor: pointer;
         overflow: hidden;
         border: 1px solid $md-grey-300;
         img{
           width:100%;
-          height: rem-calc(220px);
-          font-size: rem-calc(12px);
+          cursor: pointer;
+          position: absolute;
+          top: 0;
+          height: 85%;
         }
         .showImage__imageCover__introduce{
           position: absolute;
           bottom: 0;
           width:100%;
-          height: rem-calc(38px);
-          font-size: rem-calc(14px);
+          height: 15%;
+          font-size: rem-calc(12px);
           margin: 0 rem-calc(5px);
+          overflow: hidden;
+          word-break: keep-all;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
+      }
+      .children__recommendation__showImage__imageCover::before{
+        content: "";
+        display: inline-block;
+        padding-bottom: 150%;
+        width: .1px;
+        vertical-align: middle;
       }
     }
   }

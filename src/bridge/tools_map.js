@@ -58,6 +58,8 @@ const ServerAPIMap = {
 
   'get.sets':{api: SysConfig.apiHost + '/v1.0.0/sets',type: ServerAPIType.POST},
   'get.sets_tag_id':{api: SysConfig.apiHost + '/v1.0.0/sets_by_tag_id/',type: ServerAPIType.POST},
+///////获取图集内单个图片的数据
+  'get.sets_items_order':{api: SysConfig.apiHost + '/v1.0.0/sets_items_order/',type: ServerAPIType.GET},
 
 //////记录图片数据
   'get.items_download':{api: SysConfig.apiHost + '/v1.0.0/items_download',type: ServerAPIType.PSOT},

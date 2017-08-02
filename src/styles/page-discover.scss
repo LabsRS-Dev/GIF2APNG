@@ -76,6 +76,7 @@
     color: white;
     text-align: right;
     line-height: rem-calc(25px);
+    z-index: 10;
     background: -webkit-linear-gradient(right , rgba(100,100,100,0.8), rgba(256,256,256,0));
     .showImage__imageCover__viewCount__icon{
       .fa-lg{

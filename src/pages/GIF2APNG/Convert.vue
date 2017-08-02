@@ -100,7 +100,7 @@
             <ui-alert
                 :class="getItemStyleClass(item)"
                 :type="item.style.type"
-                :key="item"
+                :key="item.id"
                 removeIcon
 
                 @dismiss="onRemoveTaskItem(item, index)"

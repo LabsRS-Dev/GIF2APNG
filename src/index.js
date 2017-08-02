@@ -13,6 +13,7 @@ import App from './App.vue'
 import KeenUI from 'keen-ui'
 import Routes from './routes'
 import http from 'vue-resource'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 
 import { languageConfiguration } from './extern.js'
 
@@ -38,6 +39,9 @@ Vue.http.options.emulateJSON = true
 function startApp (i18nObj) {
   // Use KeenUI
   Vue.use(KeenUI)
+
+  // Use VueAwesomeSwiper
+  Vue.use(VueAwesomeSwiper)
 
   // Use router
   Vue.use(VueRouter)

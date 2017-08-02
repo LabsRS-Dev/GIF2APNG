@@ -34,10 +34,11 @@
         display: flex;
         align-items: center;
         cursor: pointer;
-        width: 10%;
+        width: 15%;
         height: 100%;
         justify-content: center;
         border-right: 1px solid $md-grey-300;
+        flex-shrink: 0;
         img{
           border-radius: rem-calc(5px);
         }
@@ -50,6 +51,7 @@
         border-right: 1px solid $md-grey-300;
         justify-content: center;
         align-items: center;
+        flex-shrink: 0;
       }
       .page__single__content__dimension{
         display: flex;
@@ -62,7 +64,7 @@
       }
       .page__single__content__introduce{
         display: flex;
-        width: 55%;
+        width: 50%;
         height: 100%;
         padding: rem-calc(10px);
         align-items: center;
@@ -99,7 +101,8 @@
       .page__album__content__thumb{
         display: flex;
         align-items: center;
-        width: 10%;
+        width: 15%;
+        flex-shrink: 0;
         cursor: pointer;
         height: 100%;
         justify-content: center;
@@ -116,10 +119,11 @@
         border-right: 1px solid $md-grey-300;
         justify-content: center;
         align-items: center;
+        flex-shrink: 0;
       }
       .page__album__content__introduce{
         display: flex;
-        width: 70%;
+        width: 65%;
         height: 100%;
         padding: rem-calc(10px);
         align-items: center;
