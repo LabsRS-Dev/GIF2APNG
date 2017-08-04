@@ -50,7 +50,7 @@
                 </div>
                 <div
                     class="dove-docs-content__toolbar-search"
-                    v-if="$route.path.match(/Find/) || $route.path.match(/Search/)"
+                    v-if="$route.path.match(/Find/)"
                     >
                         <div class="toolbar-search-wrap toolbar-search-desktop toolbar-search-light">
                             <input class="toolbar-search-input"
@@ -82,7 +82,7 @@
             </div>
             <div class="dove-docs-content__page-content" ref="pageContent">
                 <keep-alive>
-                    <router-view :inputValue="inputValue"></router-view>
+                    <router-view :inputValue="inputValue" :singleInfo="singleInfo" :albumInfo="albumInfo" :key="key"></router-view>
                 </keep-alive>
             </div>
         </section>
@@ -138,6 +138,8 @@ class Search {
 }
 
 var $LS$ = Search.shareResult()
+var singleInfo;
+var albumInfo;
 
     export default {
         data() {
@@ -148,7 +150,9 @@ var $LS$ = Search.shareResult()
                 appName:SysConfig.appName,
                 searchRecordList:$LS$.data.searchList,
                 lastInputValue:$LS$.data.lastSelectInputValue,
-                inputValue:''
+                inputValue:'',
+                singleInfo:singleInfo,
+                albumInfo:albumInfo
             }
         },
         beforeCreate(){
@@ -184,7 +188,7 @@ var $LS$ = Search.shareResult()
                             that.lastInputValue = ''
                         }
                     }
-                    that.searchInputValue(that.inputValue)
+                    that.searchInputValue()
                     that.saveSearchInputValue()
                     var input = document.getElementById("inputID")
                     input.blur()
@@ -193,7 +197,20 @@ var $LS$ = Search.shareResult()
             },
             searchInputValue(){
                 var that = this
-                that.$router.push({name:'Single'})
+                var stt_tmp = "description like '%" +that.inputValue+ "%'"
+                var tmp_where = {
+                    "where": stt_tmp,
+                    "page" :1,
+                    "per_page":20
+                }
+                let path = that.$route.path
+                Transfer.http.call('get.data_items',tmp_where,(info) => {
+                    that.singleInfo = info
+                    that.$router.push({name:'Single'})
+                })
+                Transfer.http.call('get.data_sets',tmp_where,(info) => {
+                    that.albumInfo = info
+                })
             },
             saveSearchInputValue(){
                 var  that = this
@@ -204,15 +221,24 @@ var $LS$ = Search.shareResult()
                 var that = this
                 that.lastInputValue = item
                 that.inputValue = item
-                that.searchInputValue(that.inputValue)
+                that.searchInputValue()
             }
         },
         computed: {
             topName() {
-                let path = this.$route.path
+                var that = this
+                let path = that.$route.path
                 path = path.substr(path.lastIndexOf('/') + 1)
                 return path
-            }
+            },
+            // key() {
+            //     let path = this.$route.path
+            //     if (path.match(/Search/) && this.inputValue !== '') {
+            //         return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
+            //     } else {
+            //         return
+            //     }
+            // }
         },
         components: {
             VueI18n,

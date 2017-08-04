@@ -17,7 +17,7 @@
       <div class="page__examples page__examples-app-doc">
         <div class="page__toolbar-app-doc__children__router__content">
           <keep-alive>
-            <router-view @data-info="getDataInfo" :getValue="inputValue"></router-view>
+            <router-view @data-info="getDataInfo" :getValue="inputValue" :singleInfo="singleInfo" :albumInfo="albumInfo"></router-view>
           </keep-alive>
         </div>
       </div>
@@ -26,7 +26,7 @@
 <script>
   var dataType;
   export default{
-    props: ['inputValue'],
+    props: ['inputValue','singleInfo','albumInfo'],
     data(){
       return{
         dataType:dataType,

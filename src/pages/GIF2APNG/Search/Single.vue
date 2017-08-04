@@ -55,8 +55,8 @@
   import VLoading from '../Find/loading.vue'
 
   var singleList = [];
-  var hasInited = false;
   var imagePreview = '';
+  var hasInited = false ;
   var total;
   var current;
   var dataType;
@@ -66,7 +66,7 @@
       constructor(name,image,size,dimension,thumb,introduce){
           this.id = _.uniqueId(singlePrefix);
           this.name = name;                  // 图片名称
-          this.image = image;                  // 图片名称
+          this.image = image;                // 图片名称
           this.size = size;                  // 图片大小
           this.thumb = thumb;                // 图片缩略图
           this.introduce = introduce;        // 图片简介
@@ -75,7 +75,7 @@
   }
 
   export default{
-    props: ['getValue'],
+    props:['getValue','singleInfo'],
     data(){
       return{
         singleList:singleList,
@@ -101,28 +101,20 @@
     mounted(){
       var that = this
       if(!hasInited){
-          hasInited = true
-          var stt_tmp = "description like '%" +that.getValue+ "%'"
-          var tmp_where = {
-              "where": stt_tmp,
-              "page" :1,
-              "per_page":that.display
-          }
-          Transfer.http.call('get.data_items',tmp_where,(info) => {
-              console.log(info)
-              _.each(info.data,function(ele){
-              var fileName = ele.name
-              var fileImage = ele.url
-              var fileSize = ele.size
-              var fileThumb = ele.thumb
-              var fileIntroduce = ele.description
-              var fileDimension = ele.dimensions
-              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
-              that.singleList.push(singleObj)
-              })
-              that.showLoading = !that.showLoading
-              that.total = info.paginate.total
-          })
+        hasInited = true
+        console.log(that.singleInfo)
+        _.each(that.singleInfo.data,function(ele){
+          var fileName = ele.name
+          var fileImage = ele.url
+          var fileSize = ele.size
+          var fileThumb = ele.thumb
+          var fileIntroduce = ele.description
+          var fileDimension = ele.dimensions
+          let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
+          that.singleList.push(singleObj)
+        })
+        that.showLoading = !that.showLoading
+        that.total = that.singleInfo.paginate.total
       }
     },
     activated(){
@@ -157,7 +149,6 @@
       },
       pagechange(currentPage){
           var that = this
-          console.log(currentPage)
           that.current = currentPage
           that.singleList.length = 0
           var stt_tmp = "description like '%" +that.getValue+ "%'"
@@ -167,7 +158,6 @@
               "per_page":that.display
           }
           Transfer.http.call('get.data_items',tmp_where,(info) => {
-              console.log(info)
               _.each(info.data,function(ele){
               var fileName = ele.name
               var fileImage = ele.url

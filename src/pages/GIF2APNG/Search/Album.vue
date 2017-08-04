@@ -43,6 +43,7 @@
   var hasInited = false;
   var total;
   var current;
+  var dataType;
 
   const albumPrefix = 'children-album-image-id-' + _.now()
   class Eattedit {
@@ -55,11 +56,11 @@
   }
 
   export default{
-    props: ['getValue'],
+    props:['getValue','albumInfo'],
     data(){
       return{
         albumList:albumList,
-        dataType:0,
+        dataType:dataType,
         total: total,       // 记录总条数
         display: 20,        // 每页显示条数
         current: current,         // 当前的页数
@@ -70,24 +71,16 @@
       var that = this
       if(!hasInited){
           hasInited = true
-          var stt_tmp = "description like '%" +that.getValue+ "%'"
-          var tmp_where = {
-              "where": stt_tmp,
-              "page" :1,
-              "per_page":that.display
-          }
-          Transfer.http.call('get.data_sets',tmp_where,(info) => {
-              console.log(info)
-              _.each(info.data,function(ele){
-              var fileName = ele.name
-              var fileThumb = ele.thumb
-              var fileIntroduce = ele.description
-              let albumObj = new Eattedit(fileName,fileThumb,fileIntroduce)
-              that.albumList.push(albumObj)
-              })
-              that.showLoading = !that.showLoading
-              that.total = info.paginate.total
-          })
+          console.log(that.albumInfo)
+        _.each(that.albumInfo.data,function(ele){
+          var fileName = ele.name
+          var fileThumb = ele.thumb
+          var fileIntroduce = ele.description
+          let albumObj = new Eattedit(fileName,fileThumb,fileIntroduce)
+          that.albumList.push(albumObj)
+        })
+        that.showLoading = !that.showLoading
+        that.total = that.albumInfo.paginate.total
       }
     },
     activated(){
