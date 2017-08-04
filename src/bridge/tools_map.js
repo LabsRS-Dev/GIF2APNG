@@ -49,7 +49,7 @@ const ServerAPIMap = {
   'get.data_categories_tags_item':{api: SysConfig.apiHost + '/v1.0.0/get_all_categories_tags_for_item',type: ServerAPIType.GET},
   'get.data_categories_tags_set':{api: SysConfig.apiHost + '/v1.0.0/get_all_categories_tags_for_set',type: ServerAPIType.GET},
   'get.data_tags':{api: SysConfig.apiHost + '/v1.0.0/data_tags',type: ServerAPIType.GET},
-  'get.data_sets':{api: SysConfig.apiHost + '/v1.0.0/data_sets',type: ServerAPIType.GET},
+  'get.data_sets':{api: SysConfig.apiHost + '/v1.0.0/data_sets',type: ServerAPIType.POST},
   'get.data_items':{api: SysConfig.apiHost + '/v1.0.0/data_items',type: ServerAPIType.POST},
 
   'get.items':{api: SysConfig.apiHost + '/v1.0.0/items',type: ServerAPIType.POST},
@@ -60,18 +60,20 @@ const ServerAPIMap = {
   'get.sets_tag_id':{api: SysConfig.apiHost + '/v1.0.0/sets_by_tag_id/',type: ServerAPIType.POST},
 ///////获取图集内单个图片的数据
   'get.sets_items_order':{api: SysConfig.apiHost + '/v1.0.0/sets_items_order/',type: ServerAPIType.GET},
+///////获取轮播图数据
+  'get.data_sys_push':{api: SysConfig.apiHost + '/v1.0.0/data_sys_push',type: ServerAPIType.POST},
 
 //////记录图片数据
-  'get.items_download':{api: SysConfig.apiHost + '/v1.0.0/items_download',type: ServerAPIType.PSOT},
-  'get.items_preview':{api: SysConfig.apiHost + '/v1.0.0/items_preview',type: ServerAPIType.PSOT},
-  'get.items_collection':{api: SysConfig.apiHost + '/v1.0.0/items_collection',type: ServerAPIType.PSOT},
-  'get.items_share':{api: SysConfig.apiHost + '/v1.0.0/items_share',type: ServerAPIType.PSOT},
+  'get.items_download':{api: SysConfig.apiHost + '/v1.0.0/items_download',type: ServerAPIType.POST},
+  'get.items_preview':{api: SysConfig.apiHost + '/v1.0.0/items_preview',type: ServerAPIType.POST},
+  'get.items_collection':{api: SysConfig.apiHost + '/v1.0.0/items_collection',type: ServerAPIType.POST},
+  'get.items_share':{api: SysConfig.apiHost + '/v1.0.0/items_share',type: ServerAPIType.POST},
 
 //////记录图集数据
-  'get.sets_download':{api: SysConfig.apiHost + '/v1.0.0/sets_download',type: ServerAPIType.PSOT},
-  'get.sets_preview':{api: SysConfig.apiHost + '/v1.0.0/sets_preview',type: ServerAPIType.PSOT},
-  'get.sets_collection':{api: SysConfig.apiHost + '/v1.0.0/sets_collection',type: ServerAPIType.PSOT},
-  'get.sets_share':{api: SysConfig.apiHost + '/v1.0.0/sets_share',type: ServerAPIType.PSOT}
+  'get.sets_download':{api: SysConfig.apiHost + '/v1.0.0/sets_download',type: ServerAPIType.POST},
+  'get.sets_preview':{api: SysConfig.apiHost + '/v1.0.0/sets_preview',type: ServerAPIType.POST},
+  'get.sets_collection':{api: SysConfig.apiHost + '/v1.0.0/sets_collection',type: ServerAPIType.POST},
+  'get.sets_share':{api: SysConfig.apiHost + '/v1.0.0/sets_share',type: ServerAPIType.POST}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

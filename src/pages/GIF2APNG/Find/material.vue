@@ -185,7 +185,7 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.items',{"page":1,"per_page":20},(info) => {
+                Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
@@ -249,7 +249,7 @@
                 that.$refs.popover.close()
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.call('get.items',{"page":1,"per_page":20},(info) => {
+                Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
@@ -308,7 +308,7 @@
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":that.curPage,"per_page":20},(info) => {
+                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":that.curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
@@ -330,7 +330,7 @@
                 }else {
                     that.labelList.length = 0
                     that.showLoading = false
-                    Transfer.http.call('get.items',{"page":that.current,"per_page":20},(info) => {
+                    Transfer.http.call('get.items',{"page":that.current,"per_page":that.display},(info) => {
                         _.each(info.data,function(ele){
                             var fileName = ele.name
                             var fileImage = ele.url

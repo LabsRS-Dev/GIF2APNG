@@ -135,7 +135,7 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.sets',{"page":1,"per_page":20},(info) => {
+                Transfer.http.call('get.sets',{"page":1,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.thumb
@@ -193,14 +193,17 @@
                 that.$refs.popover.close()
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.call('get.sets',{"page":1,"per_page":20},(info) => {
+                Transfer.http.call('get.sets',{"page":1,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.thumb
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
+                        var fileShareCount = ele.share_quantity
+                        var fileDownloadCount = ele.download_quantity
+                        var fileCollectionCount = ele.collection_quantity
                         var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -223,13 +226,17 @@
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":that.curPage,"per_page":20},(info) => {
+                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":that.curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.thumb
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                        var fileShareCount = ele.share_quantity
+                        var fileDownloadCount = ele.download_quantity
+                        var fileCollectionCount = ele.collection_quantity
+                        var fileUrlPostfix = ele.id
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -245,14 +252,17 @@
                 }else {
                     that.labelList.length = 0
                     that.showLoading = false
-                    Transfer.http.call('get.sets',{"page":that.current,"per_page":20},(info) => {
+                    Transfer.http.call('get.sets',{"page":that.current,"per_page":that.display},(info) => {
                         _.each(info.data,function(ele){
                             var fileName = ele.name
                             var fileImage = ele.thumb
                             var fileIntroduce = ele.description
                             var filePreviewCount = ele.preview_quantity
+                            var fileShareCount = ele.share_quantity
+                            var fileDownloadCount = ele.download_quantity
+                            var fileCollectionCount = ele.collection_quantity
                             var fileUrlPostfix = ele.id
-                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                             that.labelList.push(labelObj)
                         })
                         that.showLoading = !that.showLoading

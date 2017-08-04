@@ -215,7 +215,8 @@ __$p$.http = {
           }
         }
         var config = _.extend(baseConfig, {
-          contentType: 'application/json'
+          contentType: 'application/json',
+          crossDomain: true
         })
         $.ajax(config)
    },

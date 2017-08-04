@@ -5,7 +5,7 @@
   height: 100%;
   position: relative;
   .children__router__content__recommendation__slideshow{
-      margin-top:rem-calc(10px);
+      margin:rem-calc(15px) 0;
       width: 100%;
       height: 40vh;
       .swiper-container{
@@ -16,13 +16,19 @@
           background-size: cover;
           width: 60%;
           height: 100%;
-          border-radius: rem-calc(20px);
           img{
             width: 100%;
             height: 100%;
             border-radius: rem-calc(20px);
           }
         }
+      }
+      .children__router__content__recommendation__slideshow__loading{
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
       }
   }
   .children__router__content__recommendation__showImage{
@@ -78,6 +84,13 @@
         width: .1px;
         vertical-align: middle;
       }
+    }
+    .children__router__content__recommendation__showImage__loading{
+      display: flex;
+      width: 100%;
+      height: 25vh;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

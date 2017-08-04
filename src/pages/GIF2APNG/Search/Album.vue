@@ -1,8 +1,8 @@
 <template>
     <div class="page__children__router__content__album">
-      <div class="page__children__router__content__album__content" v-for='item in paginationList'>
+      <div class="page__children__router__content__album__content" v-for='item in albumList' v-show="showLoading">
         <div class="page__album__content__thumb">
-          <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" />
+          <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" @click=''/>
         </div>
         <div class="page__album__content__info">
           <span class="page__album__content__info__name">{{item.name}}</span>
@@ -24,7 +24,10 @@
             </ui-icon-button>
         </div>
       </div>
-        <div class="page__children__router__content__album__pagination">
+      <div class="page__children__router__content__album__loading" v-show="!showLoading">
+        <v-loading></v-loading>
+      </div>
+      <div class="page__children__router__content__album__pagination" v-show="showLoading && total > display">
         <pagination :total="total" :display="display" :current-page='current' @pagechange="pagechange"></pagination>
       </div>
     </div>
@@ -34,11 +37,12 @@
   import { BS, Util, _ } from 'dove.max.sdk'
   import { UiIconButton} from 'keen-ui'
   import Pagination from './pagination.vue'
+  import VLoading from '../Find/loading.vue'
 
   var albumList = [];
   var hasInited = false;
   var total;
-  var paginationList = [];
+  var current;
 
   const albumPrefix = 'children-album-image-id-' + _.now()
   class Eattedit {
@@ -51,21 +55,39 @@
   }
 
   export default{
+    props: ['getValue'],
     data(){
       return{
         albumList:albumList,
         dataType:0,
         total: total,       // 记录总条数
-        display: 16,        // 每页显示条数
-        current: 1,         // 当前的页数
-        paginationList:paginationList
+        display: 20,        // 每页显示条数
+        current: current,         // 当前的页数
+        showLoading:false
       }
     },
     mounted(){
       var that = this
       if(!hasInited){
           hasInited = true
-          that.getAlbumListInfo()
+          var stt_tmp = "description like '%" +that.getValue+ "%'"
+          var tmp_where = {
+              "where": stt_tmp,
+              "page" :1,
+              "per_page":that.display
+          }
+          Transfer.http.call('get.data_sets',tmp_where,(info) => {
+              console.log(info)
+              _.each(info.data,function(ele){
+              var fileName = ele.name
+              var fileThumb = ele.thumb
+              var fileIntroduce = ele.description
+              let albumObj = new Eattedit(fileName,fileThumb,fileIntroduce)
+              that.albumList.push(albumObj)
+              })
+              that.showLoading = !that.showLoading
+              that.total = info.paginate.total
+          })
       }
     },
     activated(){
@@ -83,64 +105,6 @@
       }
     },
     methods:{
-      getAlbumListInfo(){
-          var that = this
-          _.each([
-              {fileName: 'gif009', fileImage:'http://bbs.uc.cn/data/attachment/forum/month_0807/20080706_d162e4910d0a301fb136NkPw7m39KEOc.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif011', fileImage:'http://worldcup.sznews.com/humor/attachement/gif/site3/20140721/4487fcd7fc661537068e36.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif013', fileImage:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif014', fileImage:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif015', fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif016', fileImage:'http://img.zcool.cn/community/01d579578e4bed0000018c1b7c42ab.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif017', fileImage:'http://bbs.uc.cn/data/attachment/forum/month_0807/20080706_d162e4910d0a301fb136NkPw7m39KEOc.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif018', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif019', fileImage:'http://worldcup.sznews.com/humor/attachement/gif/site3/20140721/4487fcd7fc661537068e36.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif020', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif021', fileImage:'http://images6.fanpop.com/image/photos/35300000/cal-cal-calum-hood-35346616-180-240.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif022', fileImage:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Candle-light-animated.gif/180px-Candle-light-animated.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif023', fileImage:'http://img0.pconline.com.cn/pconline/1404/08/4571216_2012043023524670421_thumb.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif010', fileImage:'http://i5.bbs.fd.zol-img.com.cn/t_s240x240/g3/M0A/08/05/Cg-4V1Celt6ICLZpAAUPtUKK9n4AABhHwP51s8ABQ_N875.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'},
-              {fileName: 'gif012', fileImage:'http://ww3.sinaimg.cn/bmiddle/6331b8ebgw1eglth1kwv4g205c074u0x.gif',fileIntroduce:'掬水月在手,弄花香满衣,云在青天水在瓶.'}
-          ],function(ele){
-              let albumObj = new Eattedit(ele.fileName,ele.fileImage,ele.fileIntroduce)
-              that.albumList.push(albumObj)
-          })
-          that.total = that.albumList.length
-          that.paginationList = that.albumList.slice(0, that.display)
-          return albumList
-      },
       getDataInfo(type){
         var that = this
         that.dataType = type
@@ -149,15 +113,32 @@
       pagechange(currentPage){
           var that = this
           console.log(currentPage)
-          let page = currentPage
-          let curLimit = that.display
-          that.paginationList = that.albumList.slice(curLimit * (page-1), curLimit * page )
-          return paginationList
+          that.current = currentPage
+          that.albumList.length = 0
+          var stt_tmp = "description like '%" +that.getValue+ "%'"
+          var tmp_where = {
+              "where": stt_tmp,
+              "page" :that.current,
+              "per_page":that.display
+          }
+          Transfer.http.call('get.data_sets',tmp_where,(info) => {
+              console.log(info)
+              _.each(info.data,function(ele){
+              var fileName = ele.name
+              var fileThumb = ele.thumb
+              var fileIntroduce = ele.description
+              let albumObj = new Eattedit(fileName,fileThumb,fileIntroduce)
+              that.albumList.push(albumObj)
+              })
+              that.showLoading = !that.showLoading
+              that.total = info.paginate.total
+          })
       }
     },
     components:{
       UiIconButton,
-      Pagination
+      Pagination,
+      VLoading
     }
   }
 </script>

@@ -81,6 +81,13 @@
         }
       }
     }
+    .page__children__router__content__single__loading{
+      display: flex;
+      width: 100%;
+      height: 80vh;
+      justify-content: center;
+      align-items: center;
+    }
   }
   .page__children__router__content__album{
     display: flex;
@@ -139,6 +146,13 @@
           margin: 0 rem-calc(5px);
         }
       }
+    }
+    .page__children__router__content__album__loading{
+      display: flex;
+      width: 100%;
+      height: 80vh;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

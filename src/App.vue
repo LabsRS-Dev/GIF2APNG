@@ -82,7 +82,7 @@
             </div>
             <div class="dove-docs-content__page-content" ref="pageContent">
                 <keep-alive>
-                    <router-view :params="inputValue"></router-view>
+                    <router-view :inputValue="inputValue"></router-view>
                 </keep-alive>
             </div>
         </section>
@@ -203,6 +203,8 @@ var $LS$ = Search.shareResult()
             chooseInputValue(item){
                 var that = this
                 that.lastInputValue = item
+                that.inputValue = item
+                that.searchInputValue(that.inputValue)
             }
         },
         computed: {
