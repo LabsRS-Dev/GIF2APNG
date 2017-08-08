@@ -8,7 +8,7 @@
                 :color="item.color"
                 :key="item.id"
                 v-if="item.visiable"
-                v-for="item, index in actionList"
+                v-for="(item, index) in actionList"
                 >
                     <span :class="item.icon" :title="$t(item.tooltip)"></span>
             </ui-icon-button>
@@ -47,7 +47,8 @@
             :type="item.style.type"
             v-show="item.style.show"
             :key="item.id"
-            v-for="item, index in newsList">
+            v-for="(item, index) in newsList"
+            >
             <div class="page__examples-app-doc__item">
                 <div class="ui-toolbar__top">
                     <div class="ui-toolbar__top__metainfo">

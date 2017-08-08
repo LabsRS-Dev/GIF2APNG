@@ -32,7 +32,7 @@
                 <ul class="dove-docs-sidebar__menu">
 
                     <!--from menu-->
-                    <li class="dove-docs-sidebar__menu-section" v-for="section in menu">
+                    <li class="dove-docs-sidebar__menu-section" v-for="section in menu" :key="section.id">
                         <!--<div class="dove-docs-sidebar__menu-section-header">{{ section.title }}</div>-->
 
                         <ui-collapsible class="dove-docs-sidebar__menu-section-header"
@@ -45,7 +45,9 @@
                             <ul class="dove-docs-sidebar__menu-section-links">
                                 <li
                                     class="dove-docs-sidebar__menu-li" exact
-                                    v-for="item in section.menu">
+                                    v-for="item in section.menu"
+                                    :key="item.id"
+                                    >
                                     <router-link
                                         class="dove-docs-sidebar__menu-item"
                                         :to="item.path"

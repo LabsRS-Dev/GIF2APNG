@@ -6,6 +6,7 @@ import { SysConfig } from './data/sys-config.js'
 import WelcomePage from './pages/GIF2APNG/Welcome.vue'
 import DiscoverPage from './pages/GIF2APNG/Find/Discover.vue'
 import ConvertPage from './pages/GIF2APNG/Convert.vue'
+import ResizePage from './pages/GIF2APNG/Resize.vue'
 ///
 import Recommendation from './pages/GIF2APNG/Find/recommendation.vue'
 import Classification from './pages/GIF2APNG/Find/classification.vue'
@@ -114,6 +115,15 @@ const menu = [{
       component: ConvertPage,
       title: 'routes.common.menu.convert.title',
       tip: 'routes.common.menu.convert.tip',
+      tipAsSubTitle: true,
+      icon: icons.adjust,
+      sourceUrl: ''
+    },{
+      path: rootPath + '/resize',
+      show: true,
+      component: ResizePage,
+      title: 'routes.common.menu.resize.title',
+      tip: 'routes.common.menu.resize.tip',
       tipAsSubTitle: true,
       icon: icons.adjust,
       sourceUrl: ''

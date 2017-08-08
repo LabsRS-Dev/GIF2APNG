@@ -1,6 +1,6 @@
 <template>
         <div class="imageList__router__content__image__browse__info">
-            <div class="imageList__router__content__image__browse__message" v-for="item in formList">
+            <div class="imageList__router__content__image__browse__message" v-for="item in formList" :key="item.id">
                 <span class="imageList__router__content__image__browse__message__name">{{item.introduce}}</span>
                 <span class="imageList__router__content__image__browse__message__icon"><img :src="item.image"></img></span>
             </div>

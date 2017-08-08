@@ -42,7 +42,7 @@
                 >
                 <div class="page__toolbar-app-doc__input-group">
                     <div class="page__toolbar-app-doc__input-browse">
-                        <span class="input-group-addon">{{ $t('pages.convert.dialog-config-output.path') }}</span>
+                        <span class="input-group-addon">{{ $t('pages.resize.dialog-config-output.path') }}</span>
                         <ui-select
                             :options="availableOutputPathList"
                             v-model="lastOutputPath"
@@ -62,7 +62,7 @@
                             v-model="enableOverWriteOutput"
                             >
                         </ui-checkbox>
-                        <span class="input-group-cover">{{ $t('pages.convert.dialog-config-output.cover') }}</span>
+                        <span class="input-group-cover">{{ $t('pages.resize.dialog-config-output.cover') }}</span>
                     </div>
                 </div>
             </ui-confirm>
@@ -82,9 +82,9 @@
                 <div class="page__toolbar-app-doc__preview__info">
                     <div class="page__toolbar-app-doc__preview__info__image">
                         <img :src="beforePath" width="64" height="64" viewBox="0 0 64 64" />
-                        <span class="preview__info__image__before">{{ $t('pages.convert.dialog-config-preview.before') }}</span>
+                        <span class="preview__info__image__before">{{ $t('pages.resize.dialog-config-preview.before') }}</span>
                         <img :src="afterPath" width="64" height="64" viewBox="0 0 64 64" />
-                        <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-preview.after') }}</span>
+                        <span class="preview__info__image__afrer">{{ $t('pages.resize.dialog-config-preview.after') }}</span>
                     </div>
                     <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
                 </div>
@@ -111,9 +111,9 @@
                     <div class="ui-toolbar__top">
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
-                            <strong class="ui-toolbar__top__fileName" :title=" $t('pages.convert.task-item.file-name') +  item.name">
+                            <strong class="ui-toolbar__top__fileName" :title=" $t('pages.resize.task-item.file-name') +  item.name">
                                 {{ item.name }}
-                                <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.convert.task-item.file-size') +  item.size ">
+                                <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.resize.task-item.file-size') +  item.size ">
                                     {{ item.size ? '(' + item.size + ')' : '' }}
                                 </sup>
                             </strong>
@@ -126,7 +126,7 @@
                                 size="small"
                                 v-if="item.stateInfo.state > 0"
                                 >
-                                <span class="fa fa-folder-open-o fa-lg fa-fw" :title=" $t('pages.convert.task-item.open-parent-dir') "></span>
+                                <span class="fa fa-folder-open-o fa-lg fa-fw" :title=" $t('pages.resize.task-item.open-parent-dir') "></span>
                             </ui-icon-button>
 
                             <ui-icon-button
@@ -136,7 +136,7 @@
                                 size="small"
                                 v-if="item.stateInfo.state > 0 && checkOutputPathIsFile(item.fixpath)"
                                 >
-                                <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.convert.task-item.review-in-file') "></span>
+                                <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.resize.task-item.review-in-file') "></span>
                             </ui-icon-button>
                         </div>
                     </div>
@@ -148,14 +148,14 @@
                             >
                             {{ item.stateInfo.message }}
                         </span>
-                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.convert.task-item.file-path') + item.path">{{ item.path }}</span>
+                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.resize.task-item.file-path') + item.path">{{ item.path }}</span>
                     </div>
                     <div class="ui-toolbar__bottom">
                         <ui-progress-linear
                             :color="getItemProgressStyle(item)"
                             :progress="item.progress"
                             v-show="getImageProgressShow(item)"
-                            :title=" $t('pages.convert.task-item.progress') + item.progress"
+                            :title=" $t('pages.resize.task-item.progress') + item.progress"
                             >
                         </ui-progress-linear>
                     </div>
@@ -163,11 +163,11 @@
             </ui-alert>
         </div>
 
-        <div :class=" ['page__footbar page__footbar-app-doc', {transferNormal: transferIsNormal}, {working: isConvertWorking}]" v-if="taskList.length >= 0">
-            <span>{{ $t('pages.convert.footbar.fileCount') }} : {{ taskList.length }} </span>
-            <span>{{ $t('pages.convert.footbar.state') }} : {{ isConvertWorking ? $t('pages.convert.footbar.isConvertWorking') : $t('pages.convert.footbar.isWaiting') }} </span>
-            <i :class="[isConvertWorking ? 'fa fa-spinner fa-spin fa-lg fa-fw':'fa fa-lg fa-fw' ]"/></i>
-            <span>{{ $t('pages.convert.footbar.transferState') }} : {{ transferIsNormal ? $t('pages.convert.footbar.transferIsNormal') : $t('pages.convert.footbar.transferIsFault') }} </span>
+        <div :class=" ['page__footbar page__footbar-app-doc', {transferNormal: transferIsNormal}, {working: isResizeWorking}]" v-if="taskList.length >= 0">
+            <span>{{ $t('pages.resize.footbar.fileCount') }} : {{ taskList.length }} </span>
+            <span>{{ $t('pages.resize.footbar.state') }} : {{ isResizeWorking ? $t('pages.resize.footbar.isResizeWorking') : $t('pages.resize.footbar.isWaiting') }} </span>
+            <i :class="[isResizeWorking ? 'fa fa-spinner fa-spin fa-lg fa-fw':'fa fa-lg fa-fw' ]"/></i>
+            <span>{{ $t('pages.resize.footbar.transferState') }} : {{ transferIsNormal ? $t('pages.resize.footbar.transferIsNormal') : $t('pages.resize.footbar.transferIsFault') }} </span>
         </div>
     </section>
 </template>
@@ -178,11 +178,11 @@ import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAl
 import {Transfer} from '../../bridge/transfer'
 import echarts from "echarts"
 
-var baseID = "__page__convert__action__"
+var baseID = "__page__resize__action__"
 var baseIDIndex = -1
 
 
-const taskPrefix = 'convert-page-image-id-' + _.now()
+const taskPrefix = 'resize-page-image-id-' + _.now()
 class Task {
     constructor(thumb, name, path, size){
         this.id = _.uniqueId(taskPrefix);
@@ -214,7 +214,7 @@ var taskList = []
 
 //// 与设置相关的处理
 class Settings {
-    static key = "convert-page-settings"
+    static key = "resize-page-settings"
 
     static instance = null
     static shareInstance(){
@@ -266,9 +266,9 @@ export default {
 
     data() {
         var that = this
-        console.log("convert.vue call data()")
+        console.log("Resize.vue call data()")
         return {
-            welcomeContentID:'page__convert__welcome__id',
+            welcomeContentID:'page__resize__welcome__id',
             openEchartsId:'info_echart_id',
             beforePath:beforePath,
             afterPath:afterPath,
@@ -276,7 +276,7 @@ export default {
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
             taskID2taskObj: {},
-            isConvertWorking: false,
+            isResizeWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
             lastOutputPath: $LS$.data.lastSelectOutputPath,
@@ -322,12 +322,12 @@ export default {
 
     beforeCreate(){
         var that = this
-        console.log('Convert.vue beforeCreate')
+        console.log('Resize.vue beforeCreate')
         // restore settings
         $LS$.restore()
         // init handlers
         if (!hasInited){
-            console.log('Convert.vue beforeCreate inited')
+            console.log('Resize.vue beforeCreate inited')
             hasInited = true
             Transfer.frontAgent.registerOnChannelFault(function () {
                 that.onTransferIsFault()
@@ -395,7 +395,7 @@ export default {
     },
 
     beforeDestroy() {
-        console.log('Convert.vue beforeDestroy()')
+        console.log('Resize.vue beforeDestroy()')
         clearInterval(this.progressInterval);
         this.saveOutputSettings()
     },
@@ -404,12 +404,12 @@ export default {
         actionList() {
            var that = this
            return [
-                {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.import"},
-                {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importDir"},
-                {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.remove"},
-                {id:'action-outputFolder', visiable:true, color:"primary", icon:"fa fa-folder fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
-                {id:'action-do', visiable:!that.isConvertWorking, color:"green", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
-                {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
+                {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.import"},
+                {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.importDir"},
+                {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.remove"},
+                {id:'action-outputFolder', visiable:true, color:"primary", icon:"fa fa-folder fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.outputFolder"},
+                {id:'action-do', visiable:!that.isResizeWorking, color:"green", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.fix"},
+                {id:'action-stop', visiable:that.isResizeWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.chancel"}
            ]
         }
     },
@@ -424,7 +424,7 @@ export default {
         onTransferIsFault(){
             var that = this
             that.transferIsNormal = false
-            that.isConvertWorking = false
+            that.isResizeWorking = false
 
             // All task list run working
             that.stopDo()
@@ -472,11 +472,11 @@ export default {
                 })
 
                 // 创建一个文字盒子
-                var description = s.text('12%', '16%', that.$t('pages.convert.welcome.description'))
-                var step1 = s.text('15%', '26%', that.$t('pages.convert.welcome.step1'))
-                var step2 = s.text('15%', '36%', that.$t('pages.convert.welcome.step2'))
-                var step3 = s.text('15%', '46%', that.$t('pages.convert.welcome.step3'))
-                var step4 = s.text('15%', '56%', that.$t('pages.convert.welcome.step4'))
+                var description = s.text('12%', '16%', that.$t('pages.resize.welcome.description'))
+                var step1 = s.text('15%', '26%', that.$t('pages.resize.welcome.step1'))
+                var step2 = s.text('15%', '36%', that.$t('pages.resize.welcome.step2'))
+                var step3 = s.text('15%', '46%', that.$t('pages.resize.welcome.step3'))
+                var step4 = s.text('15%', '56%', that.$t('pages.resize.welcome.step4'))
 
                 // 修饰一下文字
                 description.attr({
@@ -488,7 +488,7 @@ export default {
 
         // ------------------------- Style
         getItemStyleClass(item){
-            var _styleClass = ['page__convert__task__item']
+            var _styleClass = ['page__resize__task__item']
             if (item.stateInfo) {
 
                 if (item.stateInfo.state < 0) {
@@ -542,8 +542,8 @@ export default {
             console.log("-------------------- call import files")
                 // call bs
                 BS.b$.importFiles({
-                    title: this.$t('pages.convert.dialog-import-images.title'),
-                    prompt: this.$t('pages.convert.dialog-import-images.prompt'),
+                    title: this.$t('pages.resize.dialog-import-images.title'),
+                    prompt: this.$t('pages.resize.dialog-import-images.prompt'),
                     allowMulSelection: true,
                     types:[] // Note: too many formats
                 }, function(){ // Test code
@@ -577,8 +577,8 @@ export default {
             console.log("-------------------- call import dir")
             // call bs
             BS.b$.selectDir({
-                title: this.$t('pages.convert.dialog-import-dir-images.title'),
-                prompt: this.$t('pages.convert.dialog-import-dir-images.prompt'),
+                title: this.$t('pages.resize.dialog-import-dir-images.title'),
+                prompt: this.$t('pages.resize.dialog-import-dir-images.prompt'),
                 allowMulSelection: true
             }, function(){
                 for(let i =0; i < 5; ++i){
@@ -597,10 +597,10 @@ export default {
 
             if(that.taskList.length > 0) {
                 const cdg = that.confirmDialog
-                cdg.title = that.$t('pages.convert.dialog-confirm-remove-all.title')
-                cdg.content = that.$t('pages.convert.dialog-confirm-remove-all.message')
-                cdg.confirmButtonText = that.$t('pages.convert.dialog-confirm-remove-all.btnConfirm')
-                cdg.denyButtonText = that.$t('pages.convert.dialog-confirm-remove-all.btnDeny')
+                cdg.title = that.$t('pages.resize.dialog-confirm-remove-all.title')
+                cdg.content = that.$t('pages.resize.dialog-confirm-remove-all.message')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-remove-all.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-remove-all.btnDeny')
 
                 var dialog = that.$refs[cdg.ref]
                 cdg.callbackConfirm = () =>{
@@ -618,9 +618,9 @@ export default {
             console.dir(that.availableOutputPathList)
 
             const cdg = that.outputConfigDialog
-            cdg.title = that.$t('pages.convert.dialog-config-output.title')
-            cdg.confirmButtonText = that.$t('pages.convert.dialog-config-output.btnConfirm')
-            cdg.denyButtonText = that.$t('pages.convert.dialog-config-output.btnDeny')
+            cdg.title = that.$t('pages.resize.dialog-config-output.title')
+            cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
             cdg.callbackConfirm = () => { that.saveOutputSettings() }
             cdg.callbackDeny = () => { that.resetOutputSettings() }
             cdg.callbackClose = () => { that.resetOutputSettings() }
@@ -634,7 +634,7 @@ export default {
             const cdg = that.outputConfigDialog
             if(that.taskList.length === 0) {
                 return BS.b$.Notice.alert({
-                    message: that.$t('pages.convert.notice-no-items.message')
+                    message: that.$t('pages.resize.notice-no-items.message')
                 })
             }
 
@@ -652,12 +652,12 @@ export default {
         onBtnStopDoClick(){
             var that = this
 
-            if(that.isConvertWorking) {
+            if(that.isResizeWorking) {
                 const cdg = that.confirmDialog
-                cdg.title = that.$t('pages.convert.dialog-confirm-stop-fix.title')
-                cdg.content = that.$t('pages.convert.dialog-confirm-stop-fix.message')
-                cdg.confirmButtonText = that.$t('pages.convert.dialog-confirm-stop-fix.btnConfirm')
-                cdg.denyButtonText = that.$t('pages.convert.dialog-confirm-stop-fix.btnDeny')
+                cdg.title = that.$t('pages.resize.dialog-confirm-stop-fix.title')
+                cdg.content = that.$t('pages.resize.dialog-confirm-stop-fix.message')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-stop-fix.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-stop-fix.btnDeny')
 
                 var dialog = that.$refs[cdg.ref]
                 cdg.callbackConfirm = () =>{
@@ -737,7 +737,7 @@ export default {
                 }
             })
 
-            that.isConvertWorking = state
+            that.isResizeWorking = state
         },
 
         startDo(){
@@ -777,7 +777,7 @@ export default {
             var that = this
             // send stop message to server
             if(!notice) return
-            if(taskList.length > 0 && that.isConvertWorking) {
+            if(taskList.length > 0 && that.isResizeWorking) {
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
                         // check converting
@@ -922,8 +922,8 @@ export default {
             console.log("-------------------- start location path")
 
             BS.b$.selectOutDir({
-                title: that.$t('pages.convert.dialog-select-outdir.title'),
-                prompt: that.$t('pages.convert.dialog-select-outdir.prompt'),
+                title: that.$t('pages.resize.dialog-select-outdir.title'),
+                prompt: that.$t('pages.resize.dialog-select-outdir.prompt'),
                 canCreateDir: true
             },()=>{
                 var list = []
@@ -947,9 +947,9 @@ export default {
         onPreviewFile(item){
             var that = this
             const cdg = that.previewConfirmDialog
-            cdg.title = that.$t('pages.convert.dialog-config-preview.title')
-            cdg.confirmButtonText = that.$t('pages.convert.dialog-config-preview.btnConfirm')
-            cdg.denyButtonText = that.$t('pages.convert.dialog-config-preview.btnDeny')
+            cdg.title = that.$t('pages.resize.dialog-config-preview.title')
+            cdg.confirmButtonText = that.$t('pages.resize.dialog-config-preview.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.resize.dialog-config-preview.btnDeny')
             var dialog = that.$refs[cdg.ref]
             dialog.open()
             that.drawLineChart(item)

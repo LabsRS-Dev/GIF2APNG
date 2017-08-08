@@ -28,6 +28,30 @@
     display: flex;
     align-items: center;
     user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.dove-docs-content__toolbar-button{
+    display: flex;
+    margin-right: rem-calc(10px);
+    .dove-docs-content__toolbar-button__icon{
+        display: flex;
+        width:rem-calc(25px);
+        height: rem-calc(25px);
+        border: rem-calc(1px) solid $md-grey-400;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .Backward{
+        border-top-left-radius: rem-calc(5px);
+        border-bottom-left-radius: rem-calc(5px);
+    }
+    .Forward{
+        border-top-right-radius: rem-calc(5px);
+        border-bottom-right-radius:  rem-calc(5px);
+    }
 }
 .dove-docs-content__toolbar-search{
     display: flex;

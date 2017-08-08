@@ -15,6 +15,10 @@
           "title": "格式转换",
           "tip": "转换GIF动画格式"
         },
+        "resize":{
+          "title": "格式转换",
+          "tip": "转换GIF动画格式以及改变尺寸"
+        },
         "search":{
           "title":"搜索或者输入名称",
           "info":"搜索记录"
@@ -95,6 +99,91 @@
         "fileCount": "任务数量",
         "state": "当前状态",
         "isConvertWorking":"运行中",
+        "isRemoveWorking": "正在执行移除",
+        "isWaiting":"空闲",
+        "transferState": "引擎状态",
+        "transferIsNormal": "连接正常",
+        "transferIsFault": "无法连接"
+      },
+      "dialog-import-images":{
+        "title":"请选择要导入的GIF动画文件",
+        "prompt":"导入"
+      },
+      "dialog-import-dir-images":{
+        "title":"请选择要导入的GIF动画文件目录",
+        "prompt":"导入"
+      },
+      "dialog-select-outdir":{
+        "title":"请选择输出目录",
+        "prompt":"选择"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要清空导入的GIF动画信息吗？"
+      },
+      "dialog-config-output":{
+        "title":"设置输出路径",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "path":"输出路径:",
+        "cover":"是否覆盖原有文件"
+      },
+      "dialog-config-preview":{
+        "title":"信息预览",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "before":"Gif",
+        "after":"Apng"
+      },
+      "dialog-confirm-stop-fix":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要终止所有操作吗？"
+      },
+      "notice-no-items":{
+        "message": "请先导入GIF动画文件，然后再执行处理！"
+      },
+      "notice-no-process":{
+        "message": "请先执行处理，然后再执行输出！"
+      },
+      "welcome":{
+        "description": "操作步骤：",
+        "step1":"Step1: 导入GIF动画文件或者文件目录（支持拖拽）",
+        "step2":"Step2: 设置文件输出地址",
+        "step3":"Step3: 执行转换",
+        "step4":"Step4: 查看转换结果"
+      },
+      "dialog-popover-confirm-edit":{
+        "title":"GIF动画信息描述",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      }
+    },
+    "resize":{
+      "toolbar":{
+        "import":"导入GIF动画文件",
+        "importDir":"导入GIF动画目录",
+        "remove":"清空导入",
+        "outputFolder": "选择输出目录",
+        "fix":"开始执行",
+        "chancel":"停止"
+      },
+      "task-item":{
+         "file-name": "名称：",
+         "file-path": "路径：",
+         "file-size": "大小：",
+         "progress": "处理进度：",
+         "setting-plan": "设置",
+         "open-parent-dir": "打开所在目录",
+         "review-in-file": "点击查看"
+      },
+      "footbar": {
+        "fileCount": "任务数量",
+        "state": "当前状态",
+        "isResizeWorking":"运行中",
         "isRemoveWorking": "正在执行移除",
         "isWaiting":"空闲",
         "transferState": "引擎状态",

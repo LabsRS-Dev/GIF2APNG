@@ -16,7 +16,7 @@
             <img :src="imagePreview">
           </div>
       </ui-confirm>
-      <div class="page__children__router__content__single__content" v-for='item in singleList' v-show="showLoading">
+      <div class="page__children__router__content__single__content" v-for='item in singleList' v-show="showLoading" :key="item.id">
         <div class="page__single__content__thumb">
           <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" @click='getEnlargeFigureImage(item)'/>
         </div>
@@ -59,7 +59,6 @@
   var hasInited = false ;
   var total;
   var current;
-  var dataType;
 
   const singlePrefix = 'children-single-image-id-' + _.now()
   class Eattedit {
@@ -75,12 +74,17 @@
   }
 
   export default{
-    props:['getValue','singleInfo'],
+    props:{
+        getValue:String,
+        getBus:{
+          type: Object,
+          default: null
+        }
+    },
     data(){
       return{
         singleList:singleList,
         imagePreview:imagePreview,
-        dataType:dataType,
         enlargeConfirmDialog:{
             ref: 'enlargeConfirmDialog',
             autofocus: 'none',
@@ -102,24 +106,24 @@
       var that = this
       if(!hasInited){
         hasInited = true
-        console.log(that.singleInfo)
-        _.each(that.singleInfo.data,function(ele){
-          var fileName = ele.name
-          var fileImage = ele.url
-          var fileSize = ele.size
-          var fileThumb = ele.thumb
-          var fileIntroduce = ele.description
-          var fileDimension = ele.dimensions
-          let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
-          that.singleList.push(singleObj)
-        })
-        that.showLoading = !that.showLoading
-        that.total = that.singleInfo.paginate.total
+        if(that.getBus){
+          that.getBus.$on('to-single-data',function(in_data){
+            that.singleList.length = 0
+            _.each(in_data.data,function(ele){
+              var fileName = ele.name
+              var fileImage = ele.url
+              var fileSize = ele.size
+              var fileThumb = ele.thumb
+              var fileIntroduce = ele.description
+              var fileDimension = ele.dimensions
+              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
+              that.singleList.push(singleObj)
+            })
+            that.total = in_data.paginate.total
+          })
+          that.showLoading = !that.showLoading
+        }
       }
-    },
-    activated(){
-      var that = this
-      that.getDataInfo(that.singleList.length)
     },
     computed:{
       actionList() {
@@ -132,11 +136,6 @@
       }
     },
     methods:{
-      getDataInfo(type){
-        var that = this
-        that.dataType = type
-        that.$emit('data-info', type)
-      },
       getEnlargeFigureImage(item){
           var that = this
           const cdg = that.enlargeConfirmDialog
@@ -150,6 +149,7 @@
       pagechange(currentPage){
           var that = this
           that.current = currentPage
+          that.showLoading = false
           that.singleList.length = 0
           var stt_tmp = "description like '%" +that.getValue+ "%'"
           var tmp_where = {

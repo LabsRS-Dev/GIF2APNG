@@ -14,7 +14,7 @@
                 :title = "item.name"
                 raised
                 v-if="item.visiable"
-                v-for="item, index in actionList"
+                v-for="(item, index) in actionList"
                 >
                   <span :class="item.icon"></span>
             </ui-icon-button>

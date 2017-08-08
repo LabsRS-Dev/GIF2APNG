@@ -2,7 +2,7 @@
     <div class="children__router__content__recommendation">
         <div class="children__router__content__recommendation__slideshow">
             <swiper :options="swiperOption" ref="mySwiper" v-show="showSlideLoading">
-                <swiper-slide v-for="ele in slideList"><img :src="ele.thumb"></swiper-slide>
+                <swiper-slide v-for="ele in slideList" :key="ele.id"><img :src="ele.thumb"></swiper-slide>
                 <div class="swiper-pagination" slot="pagination"></div>
             </swiper>
             <div class="children__router__content__recommendation__slideshow__loading" v-show="!showSlideLoading">
@@ -18,6 +18,7 @@
                     :shareCount="item.shareCount" :downloadCount="item.downloadCount"
                     :collectionCount="item.collectionCount" :url="item.urlPostfix"
                     v-for="item in imageList" v-show="$route.path.match(/recommendation/)"
+                    :key="item.id"
                     >
                 </image-cover>
             </dl>
@@ -124,7 +125,6 @@
                         }
                         //format the where = options {}
                         Transfer.http.call('get.data_sets', tmp_where,(info) => {
-                            console.log(info)
                             _.each(info.data,function(ele){
                                 var fileName = ele.name
                                 var fileImage = ele.thumb

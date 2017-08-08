@@ -24,7 +24,7 @@
                     :title="$t(item.tooltip)"
                     raised
                     v-if="item.visiable"
-                    v-for="item, index in actionList"
+                    v-for="(item, index) in actionList"
                     >
                     <span :class="item.icon"></span>
                 </ui-icon-button>
@@ -41,13 +41,13 @@
                             <span class="label__popover__custom__content__title">{{$t('pages.discover.task-item.types')}}</span>
                             <span class="label__popover__custom__content__select"><i class="fa fa-check fa-lg"></i></span>
                         </div>
-                        <div class="label__popover__custom__content__category" v-for="item in materialList">
+                        <div class="label__popover__custom__content__category" v-for="item in materialList" :key="item.id">
                             <div class="label__popover__custom__content__category__icon">
                                 <img :src="item.thumb" width="32" height="32" viewBox="0 0 32 32" />
                                 <span class="label__popover__custom__content__category__title">{{item.name}}</span>
                             </div>
                             <div class="label__popover__custom__content__category__tag">
-                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event,el)">
+                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event,el)" :key="el.id">
                                     <span class="label__popover__custom__content__content">{{el.name}}</span>
                                     <span class="label__popover__custom__content__tag__space"></span>
                                     <span class="label__popover__custom__content__tag__select"><i class="fa fa-check fa-lg"></i></span>
@@ -62,14 +62,14 @@
         <div class="children__router__content__material__hot">
             <span class ="children__router__content__material__hot__label">{{$t('pages.discover.task-item.label')}}</span>
             <div class ="children__router__content__material__hot__all">
-                <div class="children__router__content__material__hot__content" v-for="ele in hotList">
+                <div class="children__router__content__material__hot__content" v-for="ele in hotList" :key="ele.id">
                     <span class="children__router__content__material__hot__text" @click="getLabelChange(ele)">{{ele.name}}</span>
                 </div>
             </div>
         </div>
         <div class="children__router__content__material__content">
             <dl v-show="showLoading">
-                <dd class="children__recommendation__showImage__imageCover" v-for="item in labelList">
+                <dd class="children__recommendation__showImage__imageCover" v-for="item in labelList" :key="item.id">
                     <div class="showImage__imageCover__viewCount">
                         <span class="showImage__imageCover__viewCount__icon"><i class="fa fa-eye fa-lg"></i></span>
                         <span class="showImage__imageCover__viewCount__content">{{item.previewCount}}</span>
@@ -84,7 +84,7 @@
                             :title="$t(item.tooltip)"
                             raised
                             v-if="item.visiable"
-                            v-for="item, index in actionList"
+                            v-for="(item, index) in actionList"
                             >
                             <span :class="item.icon"></span>
                         </ui-icon-button>
@@ -243,6 +243,8 @@
             getCheckAllTagStyle(){
                 var that = this
                 var $ = Util.util.getJQuery$()
+                $('.label__popover__custom__content__tag__space').css('opacity','0')
+                $('.label__popover__custom__content__tag__select').css('opacity','0')
                 $('.label__popover__custom__content__title').css('border','1px solid #2196f3')
                 $('.label__popover__custom__content__select').css('opacity','1')
                 that.labelButton = that.$t('pages.discover.task-item.types')
@@ -266,8 +268,12 @@
             getCheckTagStyle($event,ele){
                 var that = this
                 var $ = Util.util.getJQuery$()
+                $("span").filter(".label__popover__custom__content__tag__space").css('opacity','0')
+                $("span").filter(".label__popover__custom__content__tag__select").css('opacity','0')
                 $(event.target).css('opacity','1')
                 $(event.target).next().css('opacity','1')
+                $('.label__popover__custom__content__title').css('border','1px solid #e0e0e0')
+                $('.label__popover__custom__content__select').css('opacity','0')
                 current_logic_page = LPage.TagPage
                 click_logic_page = ele.id
                 that.labelButton = ele.name

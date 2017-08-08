@@ -15,6 +15,10 @@
           "title": "Convert",
           "tip": "Convert GIF(.gif) to animated PNG(.png)"
         },
+        "resize":{
+          "title": "Resize",
+          "tip": "Convert GIF(.gif) to animated PNG(.png) and resize"
+        },
         "search":{
           "title":"Search or enter name",
           "info":"Search record"
@@ -95,6 +99,91 @@
         "fileCount": "Task Count",
         "state": "Task State",
         "isConvertWorking":"Running",
+        "isRemoveWorking": "Removing",
+        "isWaiting":"Idle",
+        "transferState": "Engine State",
+        "transferIsNormal": "Online",
+        "transferIsFault": "Offline"
+      },
+      "dialog-import-images":{
+        "title":"Import GIF(.gif) files",
+        "prompt":"Import"
+      },
+      "dialog-import-dir-images":{
+        "title":"Import a directory",
+        "prompt":"Import"
+      },
+      "dialog-select-outdir":{
+        "title":"Select a output directory",
+        "prompt":"Select"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Remove all imported items?"
+      },
+      "dialog-config-output":{
+        "title":"Output directory",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "path":"Path:",
+        "cover":"Overwrite exsisting files?"
+      },
+      "dialog-config-preview":{
+        "title":"Preview info",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "before":"Gif",
+        "after":"Apng"
+      },
+      "dialog-confirm-stop-fix":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Cancel all converted tasks?"
+      },
+      "notice-no-items":{
+        "message": "Please import GIF files first, then convert!"
+      },
+      "notice-no-process":{
+        "message": "Please convert first, then output!"
+      },
+      "welcome":{
+        "description": "Steps：",
+        "step1":"1: Import GIF(.gif) files or directory (Support drag)",
+        "step2":"2: Set output directory",
+        "step3":"3: Click 'convert' button to run",
+        "step4":"4: Review the convert result"
+      },
+      "dialog-popover-confirm-edit":{
+        "title":"Description of GIF",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      }
+    },
+    "resize":{
+      "toolbar":{
+        "import":"Import GIF(.gif) files",
+        "importDir":"Import directory",
+        "remove":"Remove All",
+        "outputFolder": "Output directory",
+        "fix":"Convert",
+        "chancel":"Cancel all"
+      },
+      "task-item":{
+         "file-name": "Name：",
+         "file-path": "Path：",
+         "file-size": "Size：",
+         "progress": "Progress：",
+         "setting-plan": "Settings",
+         "open-parent-dir": "Reveal in Folder",
+         "review-in-file": "Preview"
+      },
+      "footbar": {
+        "fileCount": "Task Count",
+        "state": "Task State",
+        "isResizeWorking":"Running",
         "isRemoveWorking": "Removing",
         "isWaiting":"Idle",
         "transferState": "Engine State",
