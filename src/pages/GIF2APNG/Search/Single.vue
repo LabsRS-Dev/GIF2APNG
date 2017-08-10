@@ -27,15 +27,15 @@
         <div class="page__single__content__introduce"><span>{{item.introduce}}</span></div>
         <div class="page__single__content__handle__icon">
             <ui-icon-button
-                @click="onToolBtnClick(item)"
-                :type="item.type"
-                :size="item.size"
-                :color="item.color"
-                :key="item.id"
-                v-if="item.visiable"
-                v-for="item in actionList"
+                @click="getWritePermission(ele,item.imgID)"
+                :type="ele.type"
+                :size="ele.size"
+                :color="ele.color"
+                :key="ele.id"
+                v-if="ele.visiable"
+                v-for="ele in actionList"
                 >
-                  <span :class="item.icon" :title="$t(item.tooltip)"></span>
+                  <span :class="ele.icon" :title="$t(ele.tooltip)"></span>
             </ui-icon-button>
         </div>
       </div>
@@ -62,14 +62,19 @@
 
   const singlePrefix = 'children-single-image-id-' + _.now()
   class Eattedit {
-      constructor(name,image,size,dimension,thumb,introduce){
+      constructor(name,image,size,dimension,thumb,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
           this.id = _.uniqueId(singlePrefix);
-          this.name = name;                  // 图片名称
-          this.image = image;                // 图片名称
-          this.size = size;                  // 图片大小
-          this.thumb = thumb;                // 图片缩略图
-          this.introduce = introduce;        // 图片简介
-          this.dimension = dimension;        // 图片尺寸
+          this.name = name;                              // 图片名称
+          this.image = image;                            // 图片名称
+          this.size = size;                              // 图片大小
+          this.thumb = thumb;                            // 图片缩略图
+          this.introduce = introduce;                    // 图片简介
+          this.dimension = dimension;                    // 图片尺寸
+          this.previewCount = previewCount;              // 图片浏览次数
+          this.downloadCount = downloadCount;            // 图片下载次数
+          this.shareCount = shareCount;                  // 图片分享次数
+          this.collectionCount = collectionCount;        // 图片收藏次数
+          this.imgID = imgID;                            // 图片自身ID   
       }
   }
 
@@ -116,7 +121,12 @@
               var fileThumb = ele.thumb
               var fileIntroduce = ele.description
               var fileDimension = ele.dimensions
-              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
+              var filePreviewCount = ele.preview_quantity
+              var fileDownloadCount = ele.download_quantity
+              var fileShareCount = ele.share_quantity
+              var fileCollectionCount = ele.collection_quantity
+              var fileImgID = ele.id
+              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
               that.singleList.push(singleObj)
             })
             that.total = in_data.paginate.total
@@ -136,8 +146,28 @@
       }
     },
     methods:{
+      getWritePermission(ele,imgID){
+        var that = this
+        if(ele.id === 'action-download') {
+            that.getDownloadCountWritePermission(imgID)
+        }
+      },
+      getDownloadCountWritePermission(imgID){
+        var that = this
+        //////////////////////////////////////////   记录下载次数
+        let machineCode = BS.b$.App.getSerialNumber()
+        Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":imgID},(info) => {
+            console.log('记录成功')
+        })
+      },
       getEnlargeFigureImage(item){
           var that = this
+          //////////////////////////////////////////   记录浏览次数
+          let machineCode = BS.b$.App.getSerialNumber()
+          Transfer.http.call('get.items_preview',{"machine_id":machineCode,"id":item.imgID},(info) => {
+              console.log('记录成功')
+          })
+
           const cdg = that.enlargeConfirmDialog
           cdg.title = that.$t('pages.search.dialog-confirm.title')
           cdg.confirmButtonText = that.$t('pages.search.dialog-confirm.btnConfirm')
@@ -163,9 +193,14 @@
               var fileImage = ele.url
               var fileSize = ele.size
               var fileThumb = ele.thumb
-              var fileIntroduce = ele.description
+              var fileIntroduce = ele.descriptions
               var fileDimension = ele.dimensions
-              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
+              var filePreviewCount = ele.preview_quantity
+              var fileDownloadCount = ele.download_quantity
+              var fileShareCount = ele.share_quantity
+              var fileCollectionCount = ele.collection_quantity
+              var fileImgID = ele.id
+              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
               that.singleList.push(singleObj)
               })
               that.showLoading = !that.showLoading

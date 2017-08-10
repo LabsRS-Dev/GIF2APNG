@@ -106,10 +106,11 @@
     var hasInited = false;
     var total;
     var current;
+    var labelButton;
     export default{
         data(){
             return{
-                labelButton:"所有类型",
+                labelButton:labelButton,
                 labelList:labelList,
                 hotList:hotList,
                 hotLabelList:{},
@@ -136,22 +137,7 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.sets',{"page":1,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileImage = ele.thumb
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        var fileShareCount = ele.share_quantity
-                        var fileDownloadCount = ele.download_quantity
-                        var fileCollectionCount = ele.collection_quantity
-                        var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                })
+                that.getCheckAllTagStyle()
             }
         },
         methods:{
@@ -233,7 +219,7 @@
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":that.curPage,"per_page":that.display},(info) => {
+                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.thumb

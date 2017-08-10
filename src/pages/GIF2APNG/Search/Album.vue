@@ -2,7 +2,10 @@
     <div class="page__children__router__content__album">
       <div class="page__children__router__content__album__content" v-for='item in albumList' v-show="showLoading" :key="item.id">
         <div class="page__album__content__thumb">
-          <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" @click="$router.push({name:'ImageList',params:{id:item.urlPostfix,attributes:{img:item.image,name:item.name,introduce:item.introduce,browse:item.previewCount,share:item.shareCount,download:item.downloadCount,collection:item.collectionCount}}})"/>
+          <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" 
+            @click="$router.push({name:'ImageList',params:{id:item.urlPostfix,attributes:{img:item.image,name:item.name,introduce:item.introduce,browse:item.previewCount,share:item.shareCount,download:item.downloadCount,collection:item.collectionCount}}})"
+            @mousedown="registrationPreviewCount(item.urlPostfix)"
+            />
         </div>
         <div class="page__album__content__info">
           <span class="page__album__content__info__name">{{item.name}}</span>
@@ -12,15 +15,15 @@
         </div>
         <div class="page__album__content__handle__icon">
             <ui-icon-button
-                @click="onToolBtnClick(item)"
-                :type="item.type"
-                :size="item.size"
-                :color="item.color"
-                :key="item.id"
-                v-if="item.visiable"
-                v-for="item in actionList"
+                @click="getWritePermission(ele,item.urlPostfix)"
+                :type="ele.type"
+                :size="ele.size"
+                :color="ele.color"
+                :key="ele.id"
+                v-if="ele.visiable"
+                v-for="ele in actionList"
                 >
-                  <span :class="item.icon" :title="$t(item.tooltip)"></span>
+                  <span :class="ele.icon" :title="$t(ele.tooltip)"></span>
             </ui-icon-button>
         </div>
       </div>
@@ -114,6 +117,28 @@ export default{
     }
   },
   methods:{
+      getWritePermission(ele,urlPostfix){
+        var that = this
+        if(ele.id === 'action-download') {
+            that.getDownloadCountWritePermission(urlPostfix)
+        }
+      },
+      getDownloadCountWritePermission(urlPostfix){
+        var that = this
+        //////////////////////////////////////////   记录下载次数
+        let machineCode = BS.b$.App.getSerialNumber()
+        Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":urlPostfix},(info) => {
+            console.log('记录成功')
+        })
+      },
+    registrationPreviewCount (urlPostfix){
+      var that = this
+      ////////////////////////////////////////////   记录浏览次数
+      let machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call('get.sets_preview',{"machine_id":machineCode,"id":urlPostfix},(info) => {
+        console.log('记录成功')
+      })
+    },
     pagechange(currentPage){
         var that = this
         console.log(currentPage)

@@ -17,7 +17,7 @@
 
         <section class="dove-docs-content">
             <div class="dove-docs-content__toolbar">
-                <div class="dove-docs-content__toolbar-content">
+                <!-- <div class="dove-docs-content__toolbar-content">
                     <ui-icon-button
                         class="dove-docs-content__toolbar-menu-button"
                         color="white"
@@ -27,7 +27,7 @@
                         @click="showSidebar = true"
                     ></ui-icon-button>
 
-                    <h1
+                    <h1 
                         class="dove-docs-content__toolbar-title"
                         @mouseenter="autoShowTip()"
                         @mouseleave="autoShowTip()"
@@ -47,6 +47,13 @@
                         :href="'https://github.com/JosephusPaye/Keen-UI/blob/master/' + $route.meta.sourceUrl"
                         v-if="$route.meta.sourceUrl"
                     >View Source</a>
+                </div> -->
+                <div 
+                    class="dove-docs-content__toolbar-button"
+                    v-if="$route.path.match(/Find/) || $route.path.match(/Search/)"
+                    >
+                        <span class="dove-docs-content__toolbar-button__icon Backward" @click="$router.go(-1)"><i class="fa fa-angle-left fa-lg fa-fw"></i></span>
+                        <span class="dove-docs-content__toolbar-button__icon Forward" @click="$router.go(1)"><i class="fa fa-angle-right fa-lg fa-fw"></i></span>
                 </div>
                 <div
                     class="dove-docs-content__toolbar-search"
@@ -79,13 +86,6 @@
                             </div>
                         </div>
                 </div>
-                <div 
-                    class="dove-docs-content__toolbar-button"
-                    v-if="$route.path.match(/Find/) || $route.path.match(/Search/)"
-                    >
-                        <span class="dove-docs-content__toolbar-button__icon Backward" @click="$router.go(-1)"><i class="fa fa-angle-left fa-lg fa-fw"></i></span>
-                        <span class="dove-docs-content__toolbar-button__icon Forward" @click="$router.go(1)"><i class="fa fa-angle-right fa-lg fa-fw"></i></span>
-                </div>
             </div>
             <div class="dove-docs-content__page-content" ref="pageContent">
                 <keep-alive>
@@ -93,6 +93,7 @@
                 </keep-alive>
             </div>
         </section>
+        <div id="cover" class="dove-docs-cover" v-show="showCover && certificate"><span class="dove-docs-cover-content">{{$t('routes.common.cover')}}</span></div>
   </div>
 </template>
 
@@ -153,6 +154,7 @@ var albumInfo;
 var inputValueInfo;
 var dataType;
 var hasInited = false ;
+var certificate;   /////// 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
 
 export default {
     data() {
@@ -160,6 +162,7 @@ export default {
             showSidebar: false,
             showHotSearch:false,
             showTip: false,
+            showCover:false,
             appName:SysConfig.appName,
             searchRecordList:$LS$.data.searchList,
             lastInputValue:$LS$.data.lastSelectInputValue,
@@ -184,11 +187,11 @@ export default {
             hasInited = true
             let machineCode = BS.b$.App.getSerialNumber()
             Transfer.http.call('registered.machine_code',{"op":"create","where":{"id":machineCode},"data":{"id":machineCode}},(info) => {
-                console.log(info)
                 Transfer.http.call('get.users',{"op":"create","where":{"machine_id":machineCode},"data":{"machine_id":machineCode}},(info) => {
-                    console.log(info)
+                    console.log('机器码注册完成')
                 })
             })
+            that.certificate = BS.b$.App.getIsNeedCertificate() //true;    /////// 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
         }
     },
     methods:{
@@ -259,6 +262,17 @@ export default {
             path = path.substr(path.lastIndexOf('/') + 1)
             return path
         }
+    },
+    watch:{
+        topName() {
+            var that = this
+            let path = that.$route.path
+            if(path.match(/Find/) || path.match(/resize/)){
+                that.showCover = true
+            }else{
+                that.showCover = false
+            }
+        }       
     },
     components: {
         VueI18n,

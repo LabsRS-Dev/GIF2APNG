@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="children__router__content__recommendation__showImage">
-            <span class ="children__router__content__recommendation__showImage__title">个性推荐</span>
+            <span class ="children__router__content__recommendation__showImage__title">{{$t('pages.discover.recommend.types')}}</span>
             <dl v-show="showImgLoading">
                 <image-cover
                     :imageName="item.name" :img-src="item.image"

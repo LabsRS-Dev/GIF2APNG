@@ -17,16 +17,16 @@
             </div>
             <div class="children__router__content__material__content__button">
                 <ui-icon-button
-                    @click=""
-                    :type="item.type"
-                    :size="item.size"
-                    :key="item.id"
-                    :title="$t(item.tooltip)"
+                    @click="getWritePermission(ele, imageID)"
+                    :type="ele.type"
+                    :size="ele.size"
+                    :key="ele.id"
+                    :title="$t(ele.tooltip)"
                     raised
-                    v-if="item.visiable"
-                    v-for="(item, index) in actionList"
+                    v-if="ele.visiable"
+                    v-for="ele in actionList"
                     >
-                    <span :class="item.icon"></span>
+                    <span :class="ele.icon"></span>
                 </ui-icon-button>
             </div>
         </ui-confirm>
@@ -77,16 +77,16 @@
                     <img :src="item.image" @click="getItemsEnlargeFigureImage(item)" @mouseenter="autoShowButton($event)" @mouseleave="autoDisplayButton($event)">
                     <div class="showImage__imageCover__viewCount__button" @mouseenter="autoShowButtonAgain($event)" @mouseleave="autoDisplayButtonAgain($event)">
                         <ui-icon-button
-                            @click=""
-                            :type="item.type"
-                            :size="item.size"
-                            :key="item.id"
-                            :title="$t(item.tooltip)"
+                            @click="getWritePermission(ele, item.imgID)"
+                            :type="ele.type"
+                            :size="ele.size"
+                            :key="ele.id"
+                            :title="$t(ele.tooltip)"
                             raised
-                            v-if="item.visiable"
-                            v-for="(item, index) in actionList"
+                            v-if="ele.visiable"
+                            v-for="ele in actionList"
                             >
-                            <span :class="item.icon"></span>
+                            <span :class="ele.icon"></span>
                         </ui-icon-button>
                     </div>
                     <span class="showImage__imageCover__introduce">{{item.introduce}}</span>
@@ -110,12 +110,16 @@
 
     const imgPrefix = 'children-material-image-id-' + _.now()
     class Label {
-        constructor(name, image,introduce,previewCount){
+        constructor(name, image,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
             this.id = _.uniqueId(imgPrefix);
-            this.name = name;                  // 图像名称
-            this.image = image;                // 图像的路径
-            this.introduce = introduce;        // 图片的描述
-            this.previewCount = previewCount;        // 图片浏览次数
+            this.name = name;                              // 图像名称
+            this.image = image;                            // 图像的路径
+            this.introduce = introduce;                    // 图片的描述
+            this.previewCount = previewCount;              // 图片浏览次数
+            this.downloadCount = downloadCount;            // 图片下载次数
+            this.shareCount = shareCount;                  // 图片分享次数
+            this.collectionCount = collectionCount;        // 图片收藏次数
+            this.imgID = imgID;                            // 图片自身ID            
         }
     }
     /////
@@ -144,15 +148,18 @@
     var total;
     var current ;
     var imagePreview ='';
+    var imageID;
+    var labelButton;
     export default{
         data(){
             return{
-                labelButton:"所有类型",
+                labelButton:labelButton,
                 labelList:labelList,
                 hotList:hotList,
                 hotLabelList:{},
                 materialList:materialList,
                 imagePreview:imagePreview,
+                imageID:imageID,
                 total: total,             // 记录总条数
                 display: 20,              // 每页显示条数
                 current: current,         // 当前的页数
@@ -185,31 +192,54 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileImage = ele.url
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                })
+                that.getCheckAllTagStyle()
             }
         },
         computed:{
             actionList() {
                 var that = this
                 return [
-                    {id:'action-share',name:'分享', visiable:true, icon:"fa fa-share-square-o fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-share"},
-                    {id:'action-collect',name:'收藏', visiable:true, icon:"fa fa-user-plus fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-collect"},
+                    //{id:'action-share',name:'分享', visiable:true, icon:"fa fa-share-square-o fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-share"},
+                    //{id:'action-collect',name:'收藏', visiable:true, icon:"fa fa-user-plus fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-collect"},
                     {id:'action-download', name:'下载',visiable:true, icon:"fa fa-download fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-download"}
                 ]
             }
         },
         methods:{
+            getWritePermission(ele, imgID){
+                var that = this
+                if(ele.id === 'action-share') {
+                    that.getShareCountWritePermission(imgID)
+                }else if (ele.id === 'action-collect') {
+                    that.getCollectCountWritePermission(imgID)
+                }else if (ele.id === 'action-download') {
+                    that.getDownloadCountWritePermission(imgID)
+                }
+            },
+            getShareCountWritePermission(imgID){
+                var that = this
+                //////////////////////////////////////////   记录分享次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_share',{"machine_id":machineCode,"id":imgID},(info) => {
+                    console.log('记录成功')
+                })
+            },
+            getCollectCountWritePermission(imgID){
+                var that = this
+                //////////////////////////////////////////   记录收藏次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_collection',{"machine_id":machineCode,"id":imgID},(info) => {
+                    console.log('记录成功')
+                })
+            },
+            getDownloadCountWritePermission(imgID){
+                var that = this
+                //////////////////////////////////////////   记录下载次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":imgID},(info) => {
+                    console.log('记录成功')
+                })
+            },
             getHotLabelList(){
                 var that = this
                 var tagsArr = []
@@ -257,7 +287,11 @@
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                        var fileDownloadCount = ele.download_quantity
+                        var fileShareCount = ele.share_quantity
+                        var fileCollectionCount = ele.collection_quantity
+                        var fileImgID = ele.id
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -302,25 +336,37 @@
             },
             getItemsEnlargeFigureImage(item){
                 var that = this
+
+                //////////////////////////////////////////   记录浏览次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_preview',{"machine_id":machineCode,"id":item.imgID},(info) => {
+                    console.log('记录成功')
+                })
+
                 const cdg = that.itemsConfirmDialog
                 cdg.title = that.$t('pages.discover.dialog-confirm.title')
                 cdg.confirmButtonText = that.$t('pages.discover.dialog-confirm.btnConfirm')
                 cdg.denyButtonText = that.$t('pages.discover.dialog-confirm.btnDeny')
                 var dialog = that.$refs[cdg.ref]
                 that.imagePreview = item.image
+                that.imageID = item.imgID
                 dialog.open()
             },
             __UpdateTheDataList(el, curPage){
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":that.curPage,"per_page":that.display},(info) => {
+                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                        var fileDownloadCount = ele.download_quantity
+                        var fileShareCount = ele.share_quantity
+                        var fileCollectionCount = ele.collection_quantity
+                        var fileImgID = ele.id
+                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -342,7 +388,11 @@
                             var fileImage = ele.url
                             var fileIntroduce = ele.description
                             var filePreviewCount = ele.preview_quantity
-                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                            var fileDownloadCount = ele.download_quantity
+                            var fileShareCount = ele.share_quantity
+                            var fileCollectionCount = ele.collection_quantity
+                            var fileImgID = ele.id
+                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                             that.labelList.push(labelObj)
                         })
                         that.showLoading = !that.showLoading

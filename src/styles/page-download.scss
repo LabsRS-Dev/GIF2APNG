@@ -1,0 +1,40 @@
+.page__toolbar-app-doc__download__router{
+  display: flex;
+  min-height: 100%;
+  border-bottom: 1px solid $md-grey-300;
+  dl{
+    display: flex;
+    flex:1;
+    min-height: 100%;
+    align-items: center;
+    margin: 0;
+    a{
+      min-width: 33%;
+      min-height: 100%;
+      display: flex;
+      text-decoration: none;
+      outline: none;
+      dd{
+        margin: 0;
+        width: 100%;
+        font-size: rem-calc(14px);
+        color: black;
+        display: flex;
+        justify-content:center;
+        align-items: center;
+      }
+      dd:hover{
+        color: $md-blue;
+        cursor: pointer;
+      }
+      dd.choosed{
+        border-bottom: 2px solid $md-blue;
+        color: $md-blue;
+      }
+    }
+  }
+}
+.page__toolbar-app-doc__download__router__content{
+  min-height: 100%;
+  min-width: 100%;
+}

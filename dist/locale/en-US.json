@@ -2,6 +2,7 @@
   "routes":{
     "common":{
       "title":"General",
+      "cover":"Sorry, this feature is only available for our subscribers. Please subscribe it first!",
       "menu":{
         "welcome":{
           "title": "Welcome",
@@ -22,6 +23,10 @@
         "search":{
           "title":"Search or enter name",
           "info":"Search record"
+        },
+        "download":{
+          "title":"Download",
+          "tip":"User downloads of images and collection of management"
         }
       }
     },
@@ -75,6 +80,12 @@
         "select":"Select Label Group",
         "hot":"HOT",
         "label":"Hot Tags:"
+      },
+      "recommend":{
+        "types":"Recommendation"
+      },
+      "image-list":{
+        "title":"Description:"
       }
     },
     "convert":{
@@ -265,6 +276,12 @@
         "collection":"Image Collection"
       }
     },
+    "download":{
+      "content":{
+        "img":"Downloaded Images",
+        "collection":"Downloaded ImgCollection"
+      }      
+    },
     "abouts":{
       "header":{
         "title":"About"
@@ -288,6 +305,11 @@
       "updata":{
         "auto":"Auto update",
         "remind":"Remind me if a new version released"
+      },
+      "certificate":{
+        "title":"Certificate:",
+        "valid":"Valid Certificate",
+        "invalid":"Invalid Certificate"
       }
     }
   }

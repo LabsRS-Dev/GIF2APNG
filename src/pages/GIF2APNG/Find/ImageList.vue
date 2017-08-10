@@ -6,21 +6,21 @@
           <span class="imageList__router__head__content__title">{{route_params.name}}</span>
           <div class="imageList__router__head__content__button">
             <ui-icon-button
-                @click=""
-                :type="item.type"
-                :size="item.size"
-                :color="item.color"
-                :key="item.id"
-                :title = "item.name"
+                @click="getWritePermission(ele, route_params.id)"
+                :type="ele.type"
+                :size="ele.size"
+                :color="ele.color"
+                :key="ele.id"
+                :title = "ele.name"
                 raised
-                v-if="item.visiable"
-                v-for="(item, index) in actionList"
+                v-if="ele.visiable"
+                v-for="ele in actionList"
                 >
-                  <span :class="item.icon"></span>
+                  <span :class="ele.icon"></span>
             </ui-icon-button>
           </div>
-          <div class="imageList__router__head__content__tags"><span class="imageList__router__head__content__tags__title">标签:</span>{{route_params.tag}}</div>
-          <div class="imageList__router__head__content__introduce"><span class="imageList__router__head__content__introduce__title">简介:</span>{{route_params.introduce}}</div>
+          <!-- <div class="imageList__router__head__content__tags"><span class="imageList__router__head__content__tags__title">标签:</span>{{route_params.tag}}</div> -->
+          <div class="imageList__router__head__content__introduce"><span class="imageList__router__head__content__introduce__title">{{$t('pages.discover.image-list.title')}}</span>{{route_params.introduce}}</div>
         </div>
       </div>
       <div class="page__toolbar-app-doc__imageList__router__content">
@@ -65,7 +65,6 @@
       }
     },
     beforeRouteEnter (to, from, next) {
-        console.log(to)
         next((vm) => {
             vm.route_params.browse = to.params.attributes.browse
             vm.route_params.download = to.params.attributes.download
@@ -106,10 +105,10 @@
         actionList() {
            var that = this
            return [
-                {id:'action-browse',name:'浏览', visiable:true, color:"black", icon:"fa fa-eye fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.browse},
-                {id:'action-share',name:'分享', visiable:true, color:"black", icon:"fa fa-share-square-o fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.share},
-                {id:'action-collect',name:'收藏', visiable:true, color:"black", icon:"fa fa-user-plus fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.collect},
-                {id:'action-download', name:'下载',visiable:true, color:"black", icon:"fa fa-download fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.download}
+                //{id:'action-browse',name:'浏览', visiable:true, color:"black", icon:"fa fa-eye fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.browse},
+                //{id:'action-share',name:'分享', visiable:true, color:"black", icon:"fa fa-share-square-o fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.share},
+                //{id:'action-collect',name:'收藏', visiable:true, color:"black", icon:"fa fa-user-plus fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.collect},
+                {id:'action-download', name:'download',visiable:true, color:"black", icon:"fa fa-download fa-lg fa-fw", size:"large", type:"secondary",time:that.route_params.download}
            ]
         },
         topName() {
@@ -120,6 +119,40 @@
         }
     },
     methods:{
+      getWritePermission(ele, setsID){
+          var that = this
+          if(ele.id === 'action-share') {
+              that.getShareCountWritePermission(setsID)
+          }else if (ele.id === 'action-collect') {
+              that.getCollectCountWritePermission(setsID)
+          }else if (ele.id === 'action-download') {
+              that.getDownloadCountWritePermission(setsID)
+          }
+      },
+      getShareCountWritePermission(setsID){
+          var that = this
+          //////////////////////////////////////////   记录分享次数
+          let machineCode = BS.b$.App.getSerialNumber()
+          Transfer.http.call('get.sets_share',{"machine_id":machineCode,"id":setsID},(info) => {
+              console.log('记录成功')
+          })
+      },
+      getCollectCountWritePermission(setsID){
+          var that = this
+          //////////////////////////////////////////   记录收藏次数
+          let machineCode = BS.b$.App.getSerialNumber()
+          Transfer.http.call('get.sets_collection',{"machine_id":machineCode,"id":setsID},(info) => {
+              console.log('记录成功')
+          })
+      },
+      getDownloadCountWritePermission(setsID){
+          var that = this
+          //////////////////////////////////////////   记录下载次数
+          let machineCode = BS.b$.App.getSerialNumber()
+          Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":setsID},(info) => {
+              console.log('记录成功')
+          })
+      },
       getLoadingInfo(showLoading){
         var that = this
         that.showLoading = showLoading

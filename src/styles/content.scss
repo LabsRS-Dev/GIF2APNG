@@ -7,7 +7,32 @@
     background: $docs-content-background;
     color: $docs-content-font-color;
 }
-
+.dove-docs-cover{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    height: 100vh;
+    left: rem-calc(200px); 
+    top: 0; 
+    right: 0; 
+    bottom: 0;
+    background-color:#000;
+    background:rgba(0,0,0,0.6) ;
+    z-index:100;
+    /* 过渡效果 */
+    transition: all .25s;
+    overflow: hidden;
+    .dove-docs-cover-content{
+        padding: rem-calc(10px);
+        background:#333;
+        border-radius: rem-calc(10px);
+        color: #aaa;
+        font-size: rem-calc(18px);
+        width: 40vw;
+        white-space: normal;
+    }
+}
 .dove-docs-content__toolbar {
     height: $docs-content__toolbar-height;
     background: $docs-content__toolbar-background;
@@ -15,6 +40,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-shrink: 0;
     z-index: $z-index-toolbar;
     border-bottom: $docs-content__toolbar-border-bottom;
@@ -34,7 +60,7 @@
 }
 .dove-docs-content__toolbar-button{
     display: flex;
-    margin-right: rem-calc(10px);
+    margin-left: rem-calc(5px);
     .dove-docs-content__toolbar-button__icon{
         display: flex;
         width:rem-calc(25px);

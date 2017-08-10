@@ -140,7 +140,9 @@
             margin:0 rem-calc(5px);
           }
           .ui-icon-button:hover{
-            background-color: rgba(0,0,0,0);
+            background-color: rgba(0,0,0,0.5);
+            width: rem-calc(30px);
+            height: rem-calc(30px);
           }
           .ui-icon-button__icon{
             color:$md-blue-500;

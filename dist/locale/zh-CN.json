@@ -2,6 +2,7 @@
   "routes":{
     "common":{
       "title":"常用操作",
+      "cover":"很抱歉,该功能为本产品订阅功能,请您先注册订阅后再使用该功能!",
       "menu":{
         "welcome":{
           "title": "欢迎使用",
@@ -22,6 +23,10 @@
         "search":{
           "title":"搜索或者输入名称",
           "info":"搜索记录"
+        },
+        "download":{
+          "title":"下载管理",
+          "info":"用户下载的图片以及图集的管理"
         }
       }
     },
@@ -75,6 +80,12 @@
         "select":"选择标签",
         "hot":"HOT",
         "label":"热门标签:"
+      },
+      "recommend":{
+        "types":"个性推荐"
+      },
+      "image-list":{
+        "title":"简介:"
       }
     },
     "convert":{
@@ -265,6 +276,12 @@
         "collection":"图集"
       }
     },
+    "download":{
+      "content":{
+        "img":"已下载图片",
+        "collection":"已下载图集"
+      }      
+    },
     "abouts":{
       "header":{
         "title":"关于"
@@ -288,6 +305,11 @@
       "updata":{
         "auto":"自动更新",
         "remind":"有新版本时提醒我"
+      },
+      "certificate":{
+        "title":"证书:",
+        "valid":"有效证书",
+        "invalid":"无效证书"
       }
     }
   }
