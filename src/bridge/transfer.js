@@ -10,8 +10,6 @@ import {
   ServerAPIMap
 } from './tools_map.js'
 
-
-
 // -----------------------------------------------------------------
 // 交互处理
 const AgentClient = BS.b$.AgentClient

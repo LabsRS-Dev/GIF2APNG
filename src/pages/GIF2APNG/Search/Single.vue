@@ -27,7 +27,7 @@
         <div class="page__single__content__introduce"><span>{{item.introduce}}</span></div>
         <div class="page__single__content__handle__icon">
             <ui-icon-button
-                @click="getWritePermission(ele,item.imgID)"
+                @click="getWritePermission(ele,item)"
                 :type="ele.type"
                 :size="ele.size"
                 :color="ele.color"
@@ -53,7 +53,8 @@
   import { UiIconButton,UiConfirm} from 'keen-ui'
   import Pagination from './pagination.vue'
   import VLoading from '../Find/loading.vue'
-
+  import { DownloadHandler } from '../../../data/downlaod-manager'
+  
   var singleList = [];
   var imagePreview = '';
   var hasInited = false ;
@@ -146,19 +147,20 @@
       }
     },
     methods:{
-      getWritePermission(ele,imgID){
+      getWritePermission(ele,item){
         var that = this
         if(ele.id === 'action-download') {
-            that.getDownloadCountWritePermission(imgID)
+            that.getDownloadCountWritePermission(item)
         }
       },
-      getDownloadCountWritePermission(imgID){
+      getDownloadCountWritePermission(item){
         var that = this
         //////////////////////////////////////////   记录下载次数
         let machineCode = BS.b$.App.getSerialNumber()
-        Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":imgID},(info) => {
+        Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":item.imgID},(info) => {
             console.log('记录成功')
         })
+        DownloadHandler.add(item)
       },
       getEnlargeFigureImage(item){
           var that = this

@@ -277,10 +277,41 @@
       }
     },
     "download":{
+      "toolbar":{
+        "remove":"Remove All",
+        "outputFolder": "Output directory",
+        "redownload":"Re-Download all",
+        "redownloadFailed":"Re-Download the failed downloads"
+      },
       "content":{
         "img":"Downloaded Images",
         "collection":"Downloaded ImgCollection"
-      }      
+      },
+      "dialog-config-output":{
+        "title":"Output directory",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "path":"Path:",
+        "cover":"Overwrite exsisting files?"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Remove all imported items?"
+      },
+      "dialog-select-outdir":{
+        "title":"Select a output directory",
+        "prompt":"Select"
+      },
+      "welcome":{
+        "description": "No download of GIF images, go to download ~ ",
+        "step1":"Button action: ",
+        "step2":"Button 1: Set output directory",
+        "step3":"Button 2: Remove download directory",
+        "step4":"Button 3: Re-Download all the GIF images",
+        "step5":"Button 4: Re-Download the failed GIF images"
+      }       
     },
     "abouts":{
       "header":{

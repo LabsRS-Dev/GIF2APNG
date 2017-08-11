@@ -277,9 +277,40 @@
       }
     },
     "download":{
+      "toolbar":{
+        "remove":"清空列表",
+        "outputFolder": "选择输出目录",
+        "redownload":"重新下载全部",
+        "redownloadFailed":"重新下载那些下载失败的内容"
+      },
       "content":{
         "img":"已下载图片",
         "collection":"已下载图集"
+      },
+      "dialog-config-output":{
+        "title":"设置输出路径",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "path":"输出路径:",
+        "cover":"是否覆盖原有文件"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要清空导入的GIF动画信息吗？"
+      },
+      "dialog-select-outdir":{
+        "title":"请选择输出目录",
+        "prompt":"选择"
+      },
+      "welcome":{
+        "description": "还没有下载的GIF图片哦,快去下载吧~",
+        "step1":"按钮作用：",
+        "step2":"按钮1: 设置输出地址",
+        "step3":"按钮2: 清空下载目录",
+        "step4":"按钮3: 重新下载所有GIF图片",
+        "step5":"按钮4: 重新下载下载失败的GIF图片"
       }      
     },
     "abouts":{

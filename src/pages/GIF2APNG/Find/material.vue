@@ -77,7 +77,7 @@
                     <img :src="item.image" @click="getItemsEnlargeFigureImage(item)" @mouseenter="autoShowButton($event)" @mouseleave="autoDisplayButton($event)">
                     <div class="showImage__imageCover__viewCount__button" @mouseenter="autoShowButtonAgain($event)" @mouseleave="autoDisplayButtonAgain($event)">
                         <ui-icon-button
-                            @click="getWritePermission(ele, item.imgID)"
+                            @click="getWritePermission(ele, item)"
                             :type="ele.type"
                             :size="ele.size"
                             :key="ele.id"
@@ -107,19 +107,23 @@
     import {UiPopover,UiConfirm,UiIconButton} from 'keen-ui'
     import IconsRef from '../../../data/icon.js'
     import VLoading from './loading.vue'
+    import Vue from 'vue'
+    import { DownloadHandler } from '../../../data/downlaod-manager'
 
     const imgPrefix = 'children-material-image-id-' + _.now()
     class Label {
-        constructor(name, image,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
+        constructor(name,thumb,size,image,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
             this.id = _.uniqueId(imgPrefix);
             this.name = name;                              // 图像名称
+            this.thumb = thumb;                            // 图像缩略图
+            this.size = size;                              // 图像的大小
             this.image = image;                            // 图像的路径
             this.introduce = introduce;                    // 图片的描述
             this.previewCount = previewCount;              // 图片浏览次数
             this.downloadCount = downloadCount;            // 图片下载次数
             this.shareCount = shareCount;                  // 图片分享次数
             this.collectionCount = collectionCount;        // 图片收藏次数
-            this.imgID = imgID;                            // 图片自身ID            
+            this.imgID = imgID;                            // 图片自身ID       
         }
     }
     /////
@@ -206,39 +210,40 @@
             }
         },
         methods:{
-            getWritePermission(ele, imgID){
+            getWritePermission(ele, item){
                 var that = this
                 if(ele.id === 'action-share') {
-                    that.getShareCountWritePermission(imgID)
+                    that.getShareCountWritePermission(item)
                 }else if (ele.id === 'action-collect') {
-                    that.getCollectCountWritePermission(imgID)
+                    that.getCollectCountWritePermission(item)
                 }else if (ele.id === 'action-download') {
-                    that.getDownloadCountWritePermission(imgID)
+                    that.getDownloadCountWritePermission(item)
                 }
             },
-            getShareCountWritePermission(imgID){
+            getShareCountWritePermission(item){
                 var that = this
                 //////////////////////////////////////////   记录分享次数
                 let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_share',{"machine_id":machineCode,"id":imgID},(info) => {
+                Transfer.http.call('get.items_share',{"machine_id":machineCode,"id":item.imgID},(info) => {
                     console.log('记录成功')
                 })
             },
-            getCollectCountWritePermission(imgID){
+            getCollectCountWritePermission(item){
                 var that = this
                 //////////////////////////////////////////   记录收藏次数
                 let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_collection',{"machine_id":machineCode,"id":imgID},(info) => {
+                Transfer.http.call('get.items_collection',{"machine_id":machineCode,"id":item.imgID},(info) => {
                     console.log('记录成功')
                 })
             },
-            getDownloadCountWritePermission(imgID){
+            getDownloadCountWritePermission(item){
                 var that = this
                 //////////////////////////////////////////   记录下载次数
                 let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":imgID},(info) => {
+                Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":item.imgID},(info) => {
                     console.log('记录成功')
                 })
+                DownloadHandler.add(item)
             },
             getHotLabelList(){
                 var that = this
@@ -284,6 +289,8 @@
                 Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
+                        var fileThumb = ele.thumb
+                        var fileSize = ele.size
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
@@ -291,7 +298,7 @@
                         var fileShareCount = ele.share_quantity
                         var fileCollectionCount = ele.collection_quantity
                         var fileImgID = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
+                        let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -349,7 +356,7 @@
                 cdg.denyButtonText = that.$t('pages.discover.dialog-confirm.btnDeny')
                 var dialog = that.$refs[cdg.ref]
                 that.imagePreview = item.image
-                that.imageID = item.imgID
+                that.imageID = item
                 dialog.open()
             },
             __UpdateTheDataList(el, curPage){
@@ -359,6 +366,8 @@
                 Transfer.http.callEx('get.items_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
+                        var fileThumb = ele.thumb
+                        var fileSize = ele.size
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
@@ -366,7 +375,7 @@
                         var fileShareCount = ele.share_quantity
                         var fileCollectionCount = ele.collection_quantity
                         var fileImgID = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
+                        let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -385,6 +394,8 @@
                     Transfer.http.call('get.items',{"page":that.current,"per_page":that.display},(info) => {
                         _.each(info.data,function(ele){
                             var fileName = ele.name
+                            var fileThumb = ele.thumb
+                            var fileSize = ele.size
                             var fileImage = ele.url
                             var fileIntroduce = ele.description
                             var filePreviewCount = ele.preview_quantity
@@ -392,7 +403,7 @@
                             var fileShareCount = ele.share_quantity
                             var fileCollectionCount = ele.collection_quantity
                             var fileImgID = ele.id
-                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
+                            let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                             that.labelList.push(labelObj)
                         })
                         that.showLoading = !that.showLoading

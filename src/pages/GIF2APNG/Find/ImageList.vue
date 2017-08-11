@@ -6,7 +6,7 @@
           <span class="imageList__router__head__content__title">{{route_params.name}}</span>
           <div class="imageList__router__head__content__button">
             <ui-icon-button
-                @click="getWritePermission(ele, route_params.id)"
+                @click="getWritePermission(ele, route_params)"
                 :type="ele.type"
                 :size="ele.size"
                 :color="ele.color"
@@ -45,6 +45,7 @@
   import { BS, Util, _ } from 'dove.max.sdk'
   import {UiButton,UiIconButton} from 'keen-ui'
   import VLoading from './loading.vue'
+  import { DownloadAlbum } from '../../../data/downlaod-manager'
 
   var imageList = [];
   export default{
@@ -58,6 +59,7 @@
           share:'',
           collect:'',
           image: '',
+          imgUrl:'',
           name: '',
           introduce: '',
           id: ''
@@ -73,6 +75,7 @@
             vm.route_params.name = to.params.attributes.name
             vm.route_params.introduce = to.params.attributes.introduce
             vm.route_params.image = to.params.attributes.img
+            vm.route_params.imgUrl = to.params.attributes.imgUrl
             vm.route_params.id = to.params.id
             vm.imageList.push({
               browse:vm.route_params.browse,
@@ -82,6 +85,7 @@
               name:vm.route_params.name,
               introduce:vm.route_params.introduce,
               image:vm.route_params.image,
+              imgUrl:vm.route_params.imgUrl,
               id:vm.route_params.id
             })
             return
@@ -97,6 +101,7 @@
           that.route_params.name = ele.name
           that.route_params.introduce = ele.introduce
           that.route_params.image = ele.image
+          that.route_params.imgUrl = to.params.attributes.imgUrl
           that.route_params.id = ele.id
         })
         next()
@@ -119,39 +124,40 @@
         }
     },
     methods:{
-      getWritePermission(ele, setsID){
+      getWritePermission(ele, item){
           var that = this
           if(ele.id === 'action-share') {
-              that.getShareCountWritePermission(setsID)
+              that.getShareCountWritePermission(item)
           }else if (ele.id === 'action-collect') {
-              that.getCollectCountWritePermission(setsID)
+              that.getCollectCountWritePermission(item)
           }else if (ele.id === 'action-download') {
-              that.getDownloadCountWritePermission(setsID)
+              that.getDownloadCountWritePermission(item)
           }
       },
-      getShareCountWritePermission(setsID){
+      getShareCountWritePermission(item){
           var that = this
           //////////////////////////////////////////   记录分享次数
           let machineCode = BS.b$.App.getSerialNumber()
-          Transfer.http.call('get.sets_share',{"machine_id":machineCode,"id":setsID},(info) => {
+          Transfer.http.call('get.sets_share',{"machine_id":machineCode,"id":item.id},(info) => {
               console.log('记录成功')
           })
       },
-      getCollectCountWritePermission(setsID){
+      getCollectCountWritePermission(item){
           var that = this
           //////////////////////////////////////////   记录收藏次数
           let machineCode = BS.b$.App.getSerialNumber()
-          Transfer.http.call('get.sets_collection',{"machine_id":machineCode,"id":setsID},(info) => {
+          Transfer.http.call('get.sets_collection',{"machine_id":machineCode,"id":item.id},(info) => {
               console.log('记录成功')
           })
       },
-      getDownloadCountWritePermission(setsID){
+      getDownloadCountWritePermission(item){
           var that = this
           //////////////////////////////////////////   记录下载次数
           let machineCode = BS.b$.App.getSerialNumber()
-          Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":setsID},(info) => {
+          Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":item.id},(info) => {
               console.log('记录成功')
           })
+          DownloadAlbum.add(item)
       },
       getLoadingInfo(showLoading){
         var that = this

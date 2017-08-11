@@ -15,7 +15,7 @@
         </div>
         <div class="page__album__content__handle__icon">
             <ui-icon-button
-                @click="getWritePermission(ele,item.urlPostfix)"
+                @click="getWritePermission(ele,item)"
                 :type="ele.type"
                 :size="ele.size"
                 :color="ele.color"
@@ -117,17 +117,17 @@ export default{
     }
   },
   methods:{
-      getWritePermission(ele,urlPostfix){
+      getWritePermission(ele,item){
         var that = this
         if(ele.id === 'action-download') {
-            that.getDownloadCountWritePermission(urlPostfix)
+            that.getDownloadCountWritePermission(item)
         }
       },
-      getDownloadCountWritePermission(urlPostfix){
+      getDownloadCountWritePermission(item){
         var that = this
         //////////////////////////////////////////   记录下载次数
         let machineCode = BS.b$.App.getSerialNumber()
-        Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":urlPostfix},(info) => {
+        Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":item.urlPostfix},(info) => {
             console.log('记录成功')
         })
       },

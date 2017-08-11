@@ -13,7 +13,7 @@
             <span class ="children__router__content__recommendation__showImage__title">{{$t('pages.discover.recommend.types')}}</span>
             <dl v-show="showImgLoading">
                 <image-cover
-                    :imageName="item.name" :img-src="item.image"
+                    :imageName="item.name" :img-src="item.image" :img-url="item.imgUrl"
                     :introduce="item.introduce" :previewCount="item.previewCount"
                     :shareCount="item.shareCount" :downloadCount="item.downloadCount"
                     :collectionCount="item.collectionCount" :url="item.urlPostfix"
@@ -37,10 +37,11 @@
 
     const taskPrefix = 'children-recommendation-image-id-' + _.now()
     class Listbox {
-        constructor(name, image,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
+        constructor(name, image,imgUrl,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
             this.id = _.uniqueId(taskPrefix);
             this.name = name;                        // 图像文件名称
-            this.image = image;                      // 图像文件的路径
+            this.image = image;                      // 图像文件的缩略图
+            this.imgUrl = imgUrl;                    // 图像文件的路径
             this.introduce = introduce;              // 图片文件的描述
             this.previewCount = previewCount;        // 图片文件浏览次数
             this.shareCount = shareCount;            // 图片文件分享次数
@@ -128,13 +129,14 @@
                             _.each(info.data,function(ele){
                                 var fileName = ele.name
                                 var fileImage = ele.thumb
+                                var fileImgUrl = ele.url
                                 var fileIntroduce = ele.description
                                 var filePreviewCount = ele.preview_quantity
                                 var fileShareCount = ele.share_quantity
                                 var fileDownloadCount = ele.download_quantity
                                 var fileCollectionCount = ele.collection_quantity
                                 var fileUrlPostfix = ele.id
-                                let imageObj = new Listbox(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
+                                let imageObj = new Listbox(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                                 that.imageList.push(imageObj)
                             })
                         })

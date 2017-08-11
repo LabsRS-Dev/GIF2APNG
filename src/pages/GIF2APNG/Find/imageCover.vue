@@ -1,6 +1,6 @@
 <template>
   <dd class="children__recommendation__showImage__imageCover"
-    @click="$router.push({name:'ImageList', params:{id:url,attributes:{img:imgSrc,name:imageName,introduce:introduce,browse:previewCount,share:shareCount,download:downloadCount,collection:collectionCount}}})"
+    @click="$router.push({name:'ImageList', params:{id:url,attributes:{img:imgSrc,imgUrl:imgUrl,name:imageName,introduce:introduce,browse:previewCount,share:shareCount,download:downloadCount,collection:collectionCount}}})"
     @mousedown="registrationPreviewCount()"
     >
       <div class="showImage__imageCover__viewCount">
@@ -17,6 +17,9 @@
 export default {
   props: {
     imgSrc: {
+      required: true
+    },
+    imgUrl:{
       required: true
     },
     introduce: {
