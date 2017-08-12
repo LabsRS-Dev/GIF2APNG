@@ -6,7 +6,7 @@
           <span class="imageList__router__head__content__title">{{route_params.name}}</span>
           <div class="imageList__router__head__content__button">
             <ui-icon-button
-                @click="getWritePermission(ele, route_params)"
+                @click="getWritePermission(ele,route_params.id,imageList)"
                 :type="ele.type"
                 :size="ele.size"
                 :color="ele.color"
@@ -124,40 +124,42 @@
         }
     },
     methods:{
-      getWritePermission(ele, item){
-          var that = this
-          if(ele.id === 'action-share') {
-              that.getShareCountWritePermission(item)
-          }else if (ele.id === 'action-collect') {
-              that.getCollectCountWritePermission(item)
-          }else if (ele.id === 'action-download') {
-              that.getDownloadCountWritePermission(item)
-          }
+      getWritePermission(ele, index,item){
+            var that = this
+            if(ele.id === 'action-share') {
+                that.getShareCountWritePermission(index,item)
+            }else if (ele.id === 'action-collect') {
+                that.getCollectCountWritePermission(index,item)
+            }else if (ele.id === 'action-download') {
+                that.getDownloadCountWritePermission(index,item)
+            }
       },
-      getShareCountWritePermission(item){
+      getShareCountWritePermission(index,item){
           var that = this
           //////////////////////////////////////////   记录分享次数
           let machineCode = BS.b$.App.getSerialNumber()
-          Transfer.http.call('get.sets_share',{"machine_id":machineCode,"id":item.id},(info) => {
+          Transfer.http.call('get.sets_share',{"machine_id":machineCode,"id":index},(info) => {
               console.log('记录成功')
           })
       },
-      getCollectCountWritePermission(item){
+      getCollectCountWritePermission(index,item){
           var that = this
           //////////////////////////////////////////   记录收藏次数
           let machineCode = BS.b$.App.getSerialNumber()
-          Transfer.http.call('get.sets_collection',{"machine_id":machineCode,"id":item.id},(info) => {
+          Transfer.http.call('get.sets_collection',{"machine_id":machineCode,"id":index},(info) => {
               console.log('记录成功')
           })
       },
-      getDownloadCountWritePermission(item){
+      getDownloadCountWritePermission(index,item){
           var that = this
           //////////////////////////////////////////   记录下载次数
           let machineCode = BS.b$.App.getSerialNumber()
-          Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":item.id},(info) => {
+          Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":index},(info) => {
               console.log('记录成功')
           })
-          DownloadAlbum.add(item)
+          var unique = _.uniq(item,true,function(ele){return ele.id})  ///  去除数组中id相同的重叠项
+          DownloadAlbum.add(unique)
+          that.imageList.length = 0
       },
       getLoadingInfo(showLoading){
         var that = this

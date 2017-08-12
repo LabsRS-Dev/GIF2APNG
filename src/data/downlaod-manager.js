@@ -30,28 +30,27 @@ const __$g$ = {
 }
 
 const __$m$ = {
-  dataList: [],
+  eventBus: new Vue(),
+  data: [],
   find: function () {
   },
   getAll: function () {
-    var t$ = this
-    return t$.dataList
+    return this.data
   },
   add: function (opt) {
-    var t$ = this
-    var index = _.findIndex(t$.dataList, opt, true)
-    if (index == -1) {
-      t$.dataList.push(opt)
-    }
-    console.log(t$.dataList)
+    _.each(opt, (ele) => {
+      var index = _.findIndex(this.data, ele, true)
+      if (index == -1) {
+        this.data.push(ele)
+      }
+    })
+    console.log(this.data)
   },
   remove: function (index) {
-    var t$ = this
-    t$.dataList.splice(index, 1)
+    this.data.splice(index, 1)
   },
   removeAll: function (opt) {
-    var t$ = this
-    t$.dataList.length = 0
+    this.data.length = 0
   },
   update: function (opt) {
   }

@@ -145,12 +145,13 @@
   ////
   const downPrefix = 'convert-page-image-id-' + _.now()
   class Down {
-      constructor(thumb, name, image,introduce){
+      constructor(thumb, name, image,introduce,imgID){
         this.id = _.uniqueId(downPrefix);
         this.thumb = thumb;                            // 图片文件缩略图
         this.name = name;                              // 图片文件名称
         this.image = image;                            // 图片文件的路径
         this.introduce = introduce;                    // 图片文件的描述
+        this.imgID = imgID;                            // 图片文件的id
 
         /// ----- 展示样式相关
         this.style = {
@@ -158,15 +159,14 @@
             type: "success"
         };
 
-        /// ----- 修改工作的情况
-        this.associatedTransferTaskIds = [];  // 关联到TransferTaskId,真正执行TaskIDs
-        this.isWorking = false;     // 是否正在修改中
-        this.progress = 0;          // 修改进度(100为单位)
-        this.fixOutDir = "";        // 指定的修改输出目录
-        this.fixpath = "";          // 修改成功的文件路径
-        this.stateInfo = {          // 修改运行状态
-            state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败
-            message: ""             // 修改结果的描述，如果是错误，描述错误，如果是成功，描述其定义内容
+        /// ----- 下载的情况
+        this.isWorking = false;                         // 是否正在下载中
+        this.progress = 0;                              // 下载进度(100为单位)
+        this.fixOutDir = "";                            // 指定的下载输出目录
+        this.fixpath = "";                              // 下载成功的文件路径
+        this.stateInfo = {                              // 下载运行状态
+            state: 0,                                   // 下载是否成功 0. 没有修改， 1，修改成功， -1修改失败
+            message: ""                                 // 下载结果的描述，如果是错误，描述错误，如果是成功，描述其定义内容
         }
       }
   }
@@ -220,6 +220,7 @@
         enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
         lastOutputPath: $LS$.data.lastSelectOutputPath,
         availableOutputPathList: $LS$.data.outputPaths,
+        downloadID2downloadObj:{},
         confirmDialog:{
             ref: 'default',
             autofocus: 'none',
@@ -429,16 +430,37 @@
             var downloadMgr = DownloadAlbum.getAll()
             console.log(downloadMgr)
             _.each(downloadMgr,(ele) => {
-                var index = _.findIndex(that.downloadList, {image:ele.imgUrl}, true)
+                var index = _.findIndex(that.downloadList, {imgID:ele.id}, true)
                 if (index == -1) {
                     var fileName = ele.name
                     var fileThumb = ele.image
                     var fileImage = ele.imgUrl
                     var fileIntroduce = ele.introduce
-                    let downloadObj = new Down(fileThumb,fileName,fileImage,fileIntroduce)
+                    var fileImgID = ele.id
+                    let downloadObj = new Down(fileThumb,fileName,fileImage,fileIntroduce,fileImgID)
                     that.downloadList.push(downloadObj)
+                    that.downloadID2downloadObj[downloadObj.id] = downloadObj
+                    const cdg = that.outputConfigDialog
+                    if(that.lastOutputPath == ""){
+                        that.onBtnOutputFolderClick()
+                        cdg.callbackConfirm = () => {
+                            that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
+                        }
+                    }else {
+                        that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
+                    }
                 }
             })
+        },
+        __updateInfoWithGifDownload(downloadID, data){
+            var that = this
+            let curInfoWithDownloadObj = that.downloadID2downloadObj[downloadID]
+            if (curInfoWithDownloadObj) {
+                curInfoWithDownloadObj.isWorking = data.progress >= 100 ? false : true
+                curInfoWithDownloadObj.progress = data.progress >= 100 ? 100: data.progress
+                curInfoWithDownloadObj.stateInfo.state = data.state
+                curInfoWithDownloadObj.stateInfo.message = data.message || ''
+            }
         },
         onRemoveTaskItem(item, index){
             var that = this
@@ -451,7 +473,7 @@
             item.isWorking = false;
             // TODO：remove it from downloadList
             item.progress = 0
-            item.stateInfo = 0
+            item.stateInfo.state = 0
 
             // remove from downloadList
             that.downloadList.splice(index, 1)
@@ -468,11 +490,18 @@
         checkOutputPathIsFile(){
 
         },
-        getItemProgressStyle(){
+        getItemProgressStyle(item){
+            var that = this
+            var progressStyle = 'black' // item.stateInfo.state === 0
+            if (item.stateInfo) {
+                if (item.stateInfo.state < 0) progressStyle = 'accent'
+                if (item.stateInfo.state > 0) progressStyle = 'primary'
+            }
 
+            return progressStyle
         },
-        getImageProgressShow(){
-
+        getImageProgressShow(item){
+            return item.isWorking
         }
     },
     watch:{
