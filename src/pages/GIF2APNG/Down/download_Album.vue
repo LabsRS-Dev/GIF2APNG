@@ -248,8 +248,9 @@
     },
     mounted(){
         var that = this
+        var downloadMgr = DownloadAlbum.getAll()
         that.drawWelcome()
-        if (!hasInited){
+        if (!hasInited && downloadMgr.length !== 0){
             hasInited = true
             that.getDownloadListInfo()
         }
@@ -362,7 +363,9 @@
             cdg.title = that.$t('pages.download.dialog-config-output.title')
             cdg.confirmButtonText = that.$t('pages.download.dialog-config-output.btnConfirm')
             cdg.denyButtonText = that.$t('pages.download.dialog-config-output.btnDeny')
-            cdg.callbackConfirm = () => { that.saveOutputSettings() }
+            cdg.callbackConfirm = () => { that.saveOutputSettings()
+                                          that.getDownloadList() 
+                                        }
             cdg.callbackDeny = () => { that.resetOutputSettings() }
             cdg.callbackClose = () => { that.resetOutputSettings() }
 
@@ -425,10 +428,9 @@
             console.log("-------------------- __autoUpdateAvailableOutputPathList")
             console.dir(that.availableOutputPathList)
         },
-        getDownloadListInfo(){
+        getDownloadList(){
             var that = this
             var downloadMgr = DownloadAlbum.getAll()
-            console.log(downloadMgr)
             _.each(downloadMgr,(ele) => {
                 var index = _.findIndex(that.downloadList, {imgID:ele.id}, true)
                 if (index == -1) {
@@ -440,17 +442,26 @@
                     let downloadObj = new Down(fileThumb,fileName,fileImage,fileIntroduce,fileImgID)
                     that.downloadList.push(downloadObj)
                     that.downloadID2downloadObj[downloadObj.id] = downloadObj
-                    const cdg = that.outputConfigDialog
-                    if(that.lastOutputPath == ""){
-                        that.onBtnOutputFolderClick()
-                        cdg.callbackConfirm = () => {
-                            that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
-                        }
-                    }else {
-                        that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
-                    }
+                    that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
                 }
             })
+        },
+        getDownloadListInfo(){
+            var that = this
+            const cdg = that.outputConfigDialog
+            // if(that.downloadList.length === 0) {
+            //     return BS.b$.Notice.alert({
+            //         message: that.$t('pages.convert.notice-no-items.message')
+            //     })
+            // }
+            if(that.lastOutputPath == ""){
+                cdg.callbackConfirm = () => {
+                    cdg.callbackConfirm && cdg.callbackConfirm()
+                }
+                that.onBtnOutputFolderClick()
+            }else {
+                that.getDownloadList()
+            }
         },
         __updateInfoWithGifDownload(downloadID, data){
             var that = this
@@ -508,7 +519,8 @@
         '$route'(to,from){
           var that = this
           let path = that.$route.path
-          if(path.match(/Download_Album/)){
+          let downloadMgr = DownloadAlbum.getAll()
+          if(path.match(/Download_Album/) && downloadMgr.length !== 0){
             that.getDownloadListInfo()
           }
         }
