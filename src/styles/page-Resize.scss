@@ -1,0 +1,72 @@
+.page__toolbar-app-doc__change-dimensions{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .page__toolbar-app-doc__change-dimensions__content{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    .page__toolbar-app-doc__change-dimensions__size{
+      display: flex;
+      flex-direction: column;
+      width: 55%;
+      .page__toolbar-app-doc__change-dimensions__width{
+        display: flex;
+        flex-direction: row;
+        margin: rem-calc(5px) 0;
+        align-items: center;
+        input{
+          width: 40%;
+          height: rem-calc(28px);
+          border-radius: rem-calc(5px);
+          margin: 0 rem-calc(5px);
+          padding-left: rem-calc(5px);
+        }        
+      }
+      .page__toolbar-app-doc__change-dimensions__height{
+        display: flex;
+        flex-direction: row; 
+        margin: rem-calc(5px) 0;
+        align-items: center;
+        input{
+          width: 40%;
+          height: rem-calc(28px);
+          border-radius: rem-calc(5px);
+          margin: 0 rem-calc(5px);
+          padding-left: rem-calc(5px);
+        }        
+      }
+    }
+    .page__toolbar-app-doc__change-dimensions__setting{
+      display: flex;
+      flex-direction: row;
+      margin-top: rem-calc(5px);
+      padding-top: rem-calc(5px);
+      width: 45%;
+      height: rem-calc(80px);  
+      border-left: rem-calc(2px) solid $md-grey-400;   
+      align-items: flex-start;
+      .ui-checkbox{
+        margin: 0 rem-calc(10px) 0 rem-calc(25px);
+      }
+    }
+  }
+  .page__toolbar-app-doc__change-dimensions__adjust{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: rem-calc(30px);  
+    align-items: flex-end;
+    .change-dimensions__adjust__percentage{
+      margin-bottom:rem-calc(5px);
+      margin-right: rem-calc(5px);
+    }
+    .change-dimensions__adjust__maximum{
+      margin-bottom:rem-calc(5px);
+      margin-left: rem-calc(5px);
+    }
+    input{
+      width: 60%;
+    }
+  }
+}

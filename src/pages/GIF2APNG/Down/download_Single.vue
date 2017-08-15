@@ -142,6 +142,7 @@
   import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox} from 'keen-ui'
   import Vue from 'vue'
   import {DownloadHandler} from '../../../data/downlaod-manager'
+  import {Transfer} from '../../../bridge/transfer'
   ////
   var downloadList = [];
   var hasInited = false;     // 是否初始过
@@ -176,7 +177,7 @@
   }
   //// 与设置相关的处理
   class Settings {
-      static key = "download-page-settings"
+      static key = "download-single-page-settings"
 
       static instance = null
       static shareInstance(){
@@ -225,6 +226,7 @@
         lastOutputPath: $LS$.data.lastSelectOutputPath,
         availableOutputPathList: $LS$.data.outputPaths,
         downloadID2downloadObj:{},
+        progressInterval: null,  // 进度条轮询
         confirmDialog:{
             ref: 'default',
             autofocus: 'none',
@@ -250,6 +252,54 @@
         }
       }
     },
+    beforeCreate(){
+        var that = this
+        console.log('Download_Single.vue beforeCreate')
+        // restore settings
+        $LS$.restore()
+        Transfer['pageDownloadSingleTest'] = {
+            updateTaskProcessInfo:(task_id) => {
+                let progressInterval = 0
+                let progressTask = setInterval(() =>{
+                    let dateInfo  = Math.round(Math.random()*10)
+                    console.log(dateInfo)
+                    if(progressInterval < 100){
+                        progressInterval += 10
+                        Transfer.trigger('TestRunGifDownloadTask', { data: {
+                            taskID: task_id,
+                            messagePackage:{
+                            progress:progressInterval,
+                            }
+                        }})
+                        if(dateInfo > 9){
+                            window.clearInterval(progressTask)
+                            Transfer.trigger('TestRunGifDownloadTask', { data: {
+                                taskID: task_id,
+                                messagePackage:{
+                                progress:progressInterval,
+                                state: -1,
+                                message:'Error'
+                                }
+                            }})
+                        }
+                    }else if(progressInterval = 100){
+                        window.clearInterval(progressTask)
+                        Transfer.trigger('TestRunGifDownloadTask', { data: {
+                                taskID: task_id,
+                                messagePackage:{
+                                state: 1,
+                                message:'Success'
+                                }
+                            }})
+                        }
+                },400)
+            }
+        }
+        Transfer.bind("TestRunGifDownloadTask", function(info){
+            const data = info.data
+            that.__updateInfoWithGifDownload(data.taskID, data.messagePackage)
+        })       
+    },
     mounted(){
         var that = this
         var downloadMgr = DownloadHandler.getAll()
@@ -260,6 +310,8 @@
         }
     },
     beforeDestroy() {
+      console.log('Download_Single.vue beforeDestroy()')
+      clearInterval(this.progressInterval);
       this.saveOutputSettings()
     },
     computed:{
@@ -352,10 +404,18 @@
             }
         },
         onBtnRedownloadClick(){
-
+            var that = this
+            _.each(that.downloadList,(ele)=>{
+                that.__updateInfoWithGifDownload(ele.id, {progress: 10,state:0})
+            })
         },
         onBtnRedownloadFailedClick(){
-
+            var that = this
+            _.each(that.downloadList,(ele)=>{
+                if(ele.stateInfo.state == -1){
+                    that.__updateInfoWithGifDownload(ele.id, {progress: 10,state:0})
+                }
+            })
         },
         onBtnOutputFolderClick(){
             var that = this
@@ -367,9 +427,7 @@
             cdg.title = that.$t('pages.download.dialog-config-output.title')
             cdg.confirmButtonText = that.$t('pages.download.dialog-config-output.btnConfirm')
             cdg.denyButtonText = that.$t('pages.download.dialog-config-output.btnDeny')
-            cdg.callbackConfirm = () => { that.saveOutputSettings() 
-                                          that.getDownloadList()
-                                        }
+            cdg.callbackConfirm = () => { that.saveOutputSettings() }
             cdg.callbackDeny = () => { that.resetOutputSettings() }
             cdg.callbackClose = () => { that.resetOutputSettings() }
 
@@ -453,6 +511,7 @@
                     let downloadObj = new Down(fileThumb,fileName,fileImage,fileSize,fileIntroduce,fileImgID)
                     that.downloadList.push(downloadObj)
                     that.downloadID2downloadObj[downloadObj.id] = downloadObj
+                    console.log('singleID-files=', downloadObj.id)
                     that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
                 }
             })
@@ -460,16 +519,11 @@
         getDownloadListInfo(){
             var that = this
             const cdg = that.outputConfigDialog
-            // if(that.downloadList.length === 0) {
-            //     return BS.b$.Notice.alert({
-            //         message: that.$t('pages.convert.notice-no-items.message')
-            //     })
-            // }
             if(that.lastOutputPath == ""){
-                cdg.callbackConfirm = () => {
-                    cdg.callbackConfirm && cdg.callbackConfirm()
-                }
-                that.onBtnOutputFolderClick()   
+                that.lastOutputPath = BS.b$.App.getLocalDownloadDir()
+                $LS$.data.lastSelectOutputPath = that.lastOutputPath
+                $LS$.save()
+                that.getDownloadList()   
             }else {
                 that.getDownloadList()
             }
@@ -504,13 +558,17 @@
             DownloadHandler.remove(info)
         },
         onOpenParentDir(){
-
+            BS.b$.revealInFinder(dir,(data) => {})
         },
         onPreviewFile(){
 
         },
-        checkOutputPathIsFile(){
-
+        checkOutputPathIsFile(path){
+            if(BS.b$.App.checkPathIsFile(path)){
+                return true
+            }else {
+                return false
+            }
         },
         getItemProgressStyle(item){
             var that = this
@@ -547,7 +605,7 @@
       UiSelect,
       UiConfirm,
       UiProgressLinear,
-      UiCheckbox      
+      UiCheckbox 
     }
   }
 </script>

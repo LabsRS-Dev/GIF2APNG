@@ -39,7 +39,7 @@ const __$m$ = {
   },
   add: function (opt) {
     _.each(opt, (ele) => {
-      var index = _.findIndex(this.data, ele, true)
+      var index = _.findIndex(this.data, { id: ele.id }, true)
       if (index == -1) {
         this.data.push(ele)
       }

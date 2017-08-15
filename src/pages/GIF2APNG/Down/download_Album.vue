@@ -143,7 +143,7 @@
   var downloadList = [];
   var hasInited = false;     // 是否初始过
   ////
-  const downPrefix = 'convert-page-image-id-' + _.now()
+  const downPrefix = 'download-page-album-id-' + _.now()
   class Down {
       constructor(thumb, name, image,introduce,imgID){
         this.id = _.uniqueId(downPrefix);
@@ -172,7 +172,7 @@
   }
   //// 与设置相关的处理
   class Settings {
-      static key = "download-page-settings"
+      static key = "download-album-page-settings"
 
       static instance = null
       static shareInstance(){
@@ -245,6 +245,54 @@
             callbackClose: ()=>{},
         }
       }
+    },
+    beforeCreate(){
+        var that = this
+        console.log('Download_Album.vue beforeCreate')
+        // restore settings
+        $LS$.restore()
+        Transfer['pageDownloadAblumTest'] = {
+            updateTaskProcessInfo:(task_id) => {
+                let progressInterval = 0
+                let progressTask = setInterval(() =>{
+                    let dateInfo  = Math.round(Math.random()*10)
+                    console.log(dateInfo)
+                    if(progressInterval < 100){
+                        progressInterval += 10
+                        Transfer.trigger('TestRunGifDownloadTask', { data: {
+                            taskID: task_id,
+                            messagePackage:{
+                            progress:progressInterval,
+                            }
+                        }})
+                        if(dateInfo > 9){
+                            window.clearInterval(progressTask)
+                            Transfer.trigger('TestRunGifDownloadTask', { data: {
+                                taskID: task_id,
+                                messagePackage:{
+                                progress:progressInterval,
+                                state: -1,
+                                message:'Error'
+                                }
+                            }})
+                        }
+                    }else if(progressInterval = 100){
+                        window.clearInterval(progressTask)
+                        Transfer.trigger('TestRunGifDownloadTask', { data: {
+                                taskID: task_id,
+                                messagePackage:{
+                                state: 1,
+                                message:'Success'
+                                }
+                            }})
+                        }
+                },400)
+            }
+        }
+        Transfer.bind("TestRunGifDownloadTask", function(info){
+            const data = info.data
+            that.__updateInfoWithGifDownload(data.taskID, data.messagePackage)
+        })       
     },
     mounted(){
         var that = this
@@ -348,10 +396,19 @@
             }
         },
         onBtnRedownloadClick(){
-
+            var that = this
+            _.each(that.downloadList,(ele)=>{
+                that.__updateInfoWithGifDownload(ele.id, {progress: 10,state:0})
+            })
         },
         onBtnRedownloadFailedClick(){
-
+            var that = this
+            console.log(that.downloadList)
+            _.each(that.downloadList,(ele)=>{
+                if(ele.stateInfo.state == -1){
+                    that.__updateInfoWithGifDownload(ele.id, {progress: 10,state:0})
+                }
+            })
         },
         onBtnOutputFolderClick(){
             var that = this
@@ -442,6 +499,7 @@
                     let downloadObj = new Down(fileThumb,fileName,fileImage,fileIntroduce,fileImgID)
                     that.downloadList.push(downloadObj)
                     that.downloadID2downloadObj[downloadObj.id] = downloadObj
+                    console.log('albumID-files=', downloadObj.id)
                     that.__updateInfoWithGifDownload(downloadObj.id, {progress: 10,state:0})
                 }
             })
@@ -449,16 +507,11 @@
         getDownloadListInfo(){
             var that = this
             const cdg = that.outputConfigDialog
-            // if(that.downloadList.length === 0) {
-            //     return BS.b$.Notice.alert({
-            //         message: that.$t('pages.convert.notice-no-items.message')
-            //     })
-            // }
             if(that.lastOutputPath == ""){
-                cdg.callbackConfirm = () => {
-                    cdg.callbackConfirm && cdg.callbackConfirm()
-                }
-                that.onBtnOutputFolderClick()
+                that.lastOutputPath = BS.b$.App.getLocalDownloadDir()
+                $LS$.data.lastSelectOutputPath = that.lastOutputPath
+                $LS$.save()
+                that.getDownloadList()   
             }else {
                 that.getDownloadList()
             }
@@ -493,13 +546,17 @@
             DownloadAlbum.remove(info)
         },
         onOpenParentDir(){
-
+            BS.b$.revealInFinder(dir,(data) => {})
         },
         onPreviewFile(){
 
         },
-        checkOutputPathIsFile(){
-
+        checkOutputPathIsFile(path){
+            if(BS.b$.App.checkPathIsFile(path)){
+                return true
+            }else {
+                return false
+            }
         },
         getItemProgressStyle(item){
             var that = this

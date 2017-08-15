@@ -21,7 +21,7 @@
           <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" @click='getEnlargeFigureImage(item)'/>
         </div>
         <div class="page__single__content__info">
-          <span class="page__single__content__info__size">{{item.size}}</span>
+          <span class="page__single__content__info__size">{{item.size + 'MB'}}</span>
         </div>
         <div class="page__single__content__dimension"><span>{{item.dimension}}</span></div>
         <div class="page__single__content__introduce"><span>{{item.introduce}}</span></div>
@@ -118,7 +118,7 @@
             _.each(in_data.data,function(ele){
               var fileName = ele.name
               var fileImage = ele.url
-              var fileSize = ele.size
+              var fileSize = that.bytesToSize(ele.size)
               var fileThumb = ele.thumb
               var fileIntroduce = ele.description
               var fileDimension = ele.dimensions
@@ -152,6 +152,12 @@
         if(ele.id === 'action-download') {
             that.getDownloadCountWritePermission(item)
         }
+      },
+      ///// 转化为MB,并且只保留两位小数/////////////////////////
+      bytesToSize(bytes) {
+              var k = 1000
+              var i = Math.floor(Math.log(bytes) / Math.log(k))
+              return (bytes / Math.pow(k, i)).toFixed(2)
       },
       getDownloadCountWritePermission(item){
         var that = this
@@ -193,7 +199,7 @@
               _.each(info.data,function(ele){
               var fileName = ele.name
               var fileImage = ele.url
-              var fileSize = ele.size
+              var fileSize = that.bytesToSize(ele.size)
               var fileThumb = ele.thumb
               var fileIntroduce = ele.descriptions
               var fileDimension = ele.dimensions

@@ -29,6 +29,49 @@
             </ui-confirm>
 
             <ui-confirm
+                :autofocus="changeConfigDialog.autofocus"
+                :confirm-button-text="changeConfigDialog.confirmButtonText"
+                :deny-button-text="changeConfigDialog.denyButtonText"
+                :ref="changeConfigDialog.ref"
+                :title="changeConfigDialog.title"
+
+                @confirm="changeConfigDialog.callbackConfirm"
+                @deny="changeConfigDialog.callbackDeny"
+                @open="changeConfigDialog.callbackOpen"
+                @close="changeConfigDialog.callbackClose"
+                >
+                <div class="page__toolbar-app-doc__change-dimensions">
+                    <div class="page__toolbar-app-doc__change-dimensions__content">
+                        <div class="page__toolbar-app-doc__change-dimensions__size">
+                            <div class="page__toolbar-app-doc__change-dimensions__width">
+                                <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
+                                <input type="number" v-model.number ="curWidth" @keyup="ValidateWidthNumber(curWidth)" @blur="changeInputActive()">
+                                <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
+                            </div>
+                            <div class="page__toolbar-app-doc__change-dimensions__height">
+                                <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
+                                <input type="number" v-model.number ="curHeight" @keyup="ValidateHeightNumber(curHeight)" @blur="changeInputActive()">
+                                <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
+                            </div>
+                        </div>
+                        <div class="page__toolbar-app-doc__change-dimensions__setting">
+                            <ui-checkbox
+                                v-model="enableMaintainAspectRatio"
+                                @blur="getCheckboxActive()"
+                                >
+                            </ui-checkbox>
+                            <span class="change-dimensions__setting">{{ $t('pages.resize.dialog-config-change.setting') }}</span>                            
+                        </div>
+                    </div>
+                    <div class="page__toolbar-app-doc__change-dimensions__adjust">
+                        <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
+                        <input type="range" min="1" max="200" v-model.number="percentage" class="aaaaaaaaaaaaaaaaaaaaaa">
+                        <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
+                    </div>
+                </div>
+            </ui-confirm>
+
+            <ui-confirm
                 :autofocus="outputConfigDialog.autofocus"
                 :confirm-button-text="outputConfigDialog.confirmButtonText"
                 :deny-button-text="outputConfigDialog.denyButtonText"
@@ -56,7 +99,7 @@
                             >
                             <i class="fa fa-folder-open fa-lg"></i>
                         </ui-button>
-                    </div>
+                    </div>                    
                     <div class="page__toolbar-app-doc__input-cover">
                         <ui-checkbox
                             v-model="enableOverWriteOutput"
@@ -120,6 +163,15 @@
                         </div>
                         <div class="ui-toolbar__top__metainfo__toolbar">
                             <ui-icon-button
+                                @click="onChangeImageSize(item)"
+                                type="secondary"
+                                color="black"
+                                size="small"
+                                >
+                                <span class="fa fa-exchange fa-lg fa-fw" :title=" $t('pages.resize.task-item.change-size') "></span>
+                            </ui-icon-button>
+
+                            <ui-icon-button
                                 @click="onOpenParentDir(item.fixOutDir)"
                                 type="secondary"
                                 color="black"
@@ -174,7 +226,7 @@
 
 <script>
 import { BS, Util, _ } from 'dove.max.sdk'
-import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox} from 'keen-ui'
+import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox} from 'keen-ui'
 import {Transfer} from '../../bridge/transfer'
 import echarts from "echarts"
 
@@ -184,12 +236,14 @@ var baseIDIndex = -1
 
 const taskPrefix = 'resize-page-image-id-' + _.now()
 class Task {
-    constructor(thumb, name, path, size){
+    constructor(thumb, name, path, size, dimensions){
         this.id = _.uniqueId(taskPrefix);
         this.thumb = thumb;   // 缩略图
         this.name = name;     // 图像文件名称
         this.path = path;     // 图像文件的路径
         this.size = size;     // 图像文件的存储大小
+        ////----- 图片尺寸相关相关
+        this.dimensions = dimensions
 
         /// ----- 展示样式相关
         this.style = {
@@ -203,7 +257,7 @@ class Task {
         this.progress = 0;          // 修改进度(100为单位)
         this.fixOutDir = "";        // 指定的修改输出目录
         this.fixpath = "";          // 修改成功的文件路径
-        this.stateInfo = {           // 修改运行状态
+        this.stateInfo = {          // 修改运行状态
             state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败
             message: ""             // 修改结果的描述，如果是错误，描述错误，如果是成功，描述其定义内容
         }
@@ -261,17 +315,28 @@ var hasInited = false     // 是否初始过
 ///////  预览
 var beforePath = ''      // 原图片地址
 var afterPath = ''       //修改后图片地址
+//////
+var inputActive;         // 输入框是否处于激活状态
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
     data() {
         var that = this
+        var defaultSides = 100
+        var stats = Array.apply(null, { length: defaultSides }).map(function () { return 100 })
         console.log("Resize.vue call data()")
         return {
             welcomeContentID:'page__resize__welcome__id',
             openEchartsId:'info_echart_id',
             beforePath:beforePath,
             afterPath:afterPath,
+            curWidth:0,
+            curHeight:0,
+            defaultCurWidth:0,
+            defaultCurHeight:0,
+            stats : stats,
+            percentage:defaultSides,
+            enableMaintainAspectRatio:true,
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -293,6 +358,17 @@ export default {
                 callbackDeny: ()=>{},
                 callbackOpen: ()=>{},
                 callbackClose: ()=>{}
+            },            
+            changeConfigDialog:{
+                ref: 'changeConfigDialog',
+                autofocus: 'none',
+                confirmButtonText: 'Confirm',
+                denyButtonText: 'Deny',
+                title: '',
+                callbackConfirm: ()=>{},
+                callbackDeny: ()=>{},
+                callbackOpen: ()=>{},
+                callbackClose: ()=>{},
             },
             outputConfigDialog:{
                 ref: 'outputConfigDialog',
@@ -343,14 +419,14 @@ export default {
 
             //TESTCode
 
-            Transfer['pageConvertTest'] = {
+            Transfer['pageResizeTest'] = {
                 updateTaskProcessInfo:(task_id) => {
                     let progressInterval = 0
                     let progressTask = setInterval(() =>{
                         let dateInfo  =Math.round(Math.random()*10)
                         console.log(dateInfo)
                         if(progressInterval < 100){
-                            progressInterval += 5
+                            progressInterval += 10
                             Transfer.trigger('TestRunGif2apngTask', { data: {
                                 taskID: task_id || that.taskList[0].id,
                                 messagePackage:{
@@ -549,10 +625,10 @@ export default {
                 }, function(){ // Test code
                     // Test[1]: Windows 本地实际数据
                     _.each([
-                        {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB'},
-                        {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
+                        {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB',fileDimensions:{data:{width:250,height:150}}},
+                        {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB',fileDimensions:{data:{width:512,height:512}}}
                     ], function(ele){
-                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
+                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
                         that.taskList.push(taskObj)
                         console.log('taskID-files=', taskObj.id)
                         that.taskID2taskObj[taskObj.id] = taskObj
@@ -940,6 +1016,53 @@ export default {
                 }
             })
         },
+        onChangeImageSize(item){
+            var  that = this
+            const cdg = that.changeConfigDialog
+            cdg.title = that.$t('pages.resize.dialog-config-change.title')
+            cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
+            cdg.callbackConfirm = () => {}
+            cdg.callbackDeny = () => {}
+            cdg.callbackClose = () => {}
+
+            var dialog = that.$refs[cdg.ref]
+            console.log(item)
+            that.curWidth = item.dimensions.data.width
+            that.curHeight = item.dimensions.data.height
+            that.defaultCurWidth = item.dimensions.data.width
+            that.defaultCurHeight = item.dimensions.data.height
+            dialog.open()
+        },
+        ValidateWidthNumber(value){
+            var that = this
+            // if((/^[^0](\d{1,3})?$/).test(value)){                
+            // }
+            // return false
+            that.inputActive = 10
+            that.curWidth = value
+            that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
+            that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)
+        },
+        ValidateHeightNumber(value){
+            var that = this
+            // if((/^[^0](\d{1,3})?$/).test(value)){                
+            // }
+            // return false
+            that.inputActive = 100
+            that.curHeight = value
+            that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
+            that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)
+        },
+        changeInputActive(){
+            var that = this
+            that.inputActive = 0
+        },
+        getCheckboxActive(){
+            var that = this 
+            var $ = Util.util.getJQuery$()
+            // $(".aaaaaaaaaaaaaaaaaaaaaa").attr("disabled","disabled")
+        },
         onOpenParentDir(dir){
             var that = this
             BS.b$.revealInFinder(dir,(data) => {})
@@ -1027,7 +1150,40 @@ export default {
             }
         }
     },
+    watch:{
+        percentage(newSides, oldSides){
+            if(this.inputActive == 10 || this.inputActive == 100){
+                var sidesDifference = newSides - oldSides
+                if (sidesDifference > 0) {
+                    for (var i = 1; i <= sidesDifference; i++) {
+                        this.stats.push(100)
+                    }
 
+                } else {
+                    var absoluteSidesDifference = Math.abs(sidesDifference)
+                    for (var i = 1; i <= absoluteSidesDifference; i++) {
+                        this.stats.shift()
+                    }
+                }                
+            } else {
+                var sidesDifference = newSides - oldSides
+                if (sidesDifference > 0) {
+                    for (var i = 1; i <= sidesDifference; i++) {
+                        this.stats.push(100)
+                    }
+                    this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
+                    this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
+                } else {
+                    var absoluteSidesDifference = Math.abs(sidesDifference)
+                    for (var i = 1; i <= absoluteSidesDifference; i++) {
+                        this.stats.shift()
+                    }
+                    this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
+                    this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
+                }                
+            }
+        }
+    },
     components: {
         UiIcon,
         UiTabs,
@@ -1039,7 +1195,8 @@ export default {
         UiSelect,
         UiConfirm,
         UiProgressLinear,
-        UiCheckbox
+        UiCheckbox,
+        UiTextbox
     }
 }
 </script>

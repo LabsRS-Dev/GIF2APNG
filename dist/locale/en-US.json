@@ -189,7 +189,8 @@
          "progress": "Progress：",
          "setting-plan": "Settings",
          "open-parent-dir": "Reveal in Folder",
-         "review-in-file": "Preview"
+         "review-in-file": "Preview",
+         "change-size":"Change the Image Size"
       },
       "footbar": {
         "fileCount": "Task Count",
@@ -225,6 +226,14 @@
         "btnDeny": "Cancel",
         "path":"Path:",
         "cover":"Overwrite exsisting files?"
+      },
+      "dialog-config-change":{
+        "title":"Adjust the image size",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "percentage":"Percentage:",
+        "pixel":"PX",
+        "setting":"Preserve Aspect Ratio"
       },
       "dialog-config-preview":{
         "title":"Preview info",

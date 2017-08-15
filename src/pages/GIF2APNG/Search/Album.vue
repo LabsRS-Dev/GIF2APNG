@@ -2,8 +2,8 @@
     <div class="page__children__router__content__album">
       <div class="page__children__router__content__album__content" v-for='item in albumList' v-show="showLoading" :key="item.id">
         <div class="page__album__content__thumb">
-          <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" 
-            @click="$router.push({name:'ImageList',params:{id:item.urlPostfix,attributes:{img:item.image,name:item.name,introduce:item.introduce,browse:item.previewCount,share:item.shareCount,download:item.downloadCount,collection:item.collectionCount}}})"
+          <img :src="item.image" width="64" height="64" viewBox="0 0 64 64" 
+            @click="$router.push({name:'ImageList',params:{id:item.urlPostfix,attributes:{img:item.imgUrl,name:item.name,introduce:item.introduce,browse:item.previewCount,share:item.shareCount,download:item.downloadCount,collection:item.collectionCount}}})"
             @mousedown="registrationPreviewCount(item.urlPostfix)"
             />
         </div>
@@ -41,6 +41,7 @@ import { BS, Util, _ } from 'dove.max.sdk'
 import { UiIconButton} from 'keen-ui'
 import Pagination from './pagination.vue'
 import VLoading from '../Find/loading.vue'
+import { DownloadAlbum } from '../../../data/downlaod-manager'
 
 var albumList = [];
 var hasInited = false;
@@ -49,11 +50,11 @@ var current;
 
 const albumPrefix = 'children-album-image-id-' + _.now()
 class Eattedit {
-    constructor(name,thumb,image,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
+    constructor(name,image,imgUrl,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
         this.id = _.uniqueId(albumPrefix);
         this.name = name;                        // 图集名称
-        this.thumb = thumb;                      // 图集缩略图
-        this.image = image;                      // 图集展示图像
+        this.image = image;                      // 图集缩略图
+        this.imgUrl = imgUrl;                    // 图集展示图像
         this.introduce = introduce;              // 图集简介
         this.previewCount = previewCount;        // 图片文件浏览次数
         this.shareCount = shareCount;            // 图片文件分享次数
@@ -89,15 +90,15 @@ export default{
           that.albumList.length = 0
           _.each(in_data.data,function(ele){
           var fileName = ele.name
-          var fileThumb = ele.thumb
-          var fileImage = ele.url
+          var fileImage = ele.thumb
+          var fileImgUrl = ele.url
           var fileIntroduce = ele.description
           var filePreviewCount = ele.preview_quantity
           var fileShareCount = ele.share_quantity
           var fileDownloadCount = ele.download_quantity
           var fileCollectionCount = ele.collection_quantity
           var fileUrlPostfix = ele.id
-          let albumObj = new Eattedit(fileName,fileThumb,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
+          let albumObj = new Eattedit(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
           that.albumList.push(albumObj)
           })
           that.total = in_data.paginate.total
@@ -130,6 +131,20 @@ export default{
         Transfer.http.call('get.sets_download',{"machine_id":machineCode,"id":item.urlPostfix},(info) => {
             console.log('记录成功')
         })
+        console.log(item)
+        let unique = []
+        unique.push({
+          browse:item.previewCount,
+          download:item.downloadCount,
+          share:item.shareCount,
+          collect:item.collectionCount,
+          name:item.name,
+          introduce:item.introduce,
+          image:item.image,
+          imgUrl:item.imgUrl,
+          id:item.urlPostfix
+        })
+        DownloadAlbum.add(unique)
       },
     registrationPreviewCount (urlPostfix){
       var that = this
@@ -155,15 +170,15 @@ export default{
             console.log(info)
             _.each(info.data,function(ele){
             var fileName = ele.name
-            var fileThumb = ele.thumb
-            var fileImage = ele.url
+            var fileImage = ele.thumb
+            var fileImgUrl = ele.url
             var fileIntroduce = ele.description
             var filePreviewCount = ele.preview_quantity
             var fileShareCount = ele.share_quantity
             var fileDownloadCount = ele.download_quantity
             var fileCollectionCount = ele.collection_quantity
             var fileUrlPostfix = ele.id
-            let albumObj = new Eattedit(fileName,fileThumb,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
+            let albumObj = new Eattedit(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
             that.albumList.push(albumObj)
             })
             that.showLoading = !that.showLoading

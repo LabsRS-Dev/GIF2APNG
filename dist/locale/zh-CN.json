@@ -189,7 +189,8 @@
          "progress": "处理进度：",
          "setting-plan": "设置",
          "open-parent-dir": "打开所在目录",
-         "review-in-file": "点击查看"
+         "review-in-file": "点击查看",
+         "change-size":"转换图片尺寸"
       },
       "footbar": {
         "fileCount": "任务数量",
@@ -225,6 +226,14 @@
         "btnDeny": "取消",
         "path":"输出路径:",
         "cover":"是否覆盖原有文件"
+      },
+      "dialog-config-change":{
+        "title":"调节图片尺寸",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "percentage":"百分比:",
+        "pixel":"像素",
+        "setting":"锁定宽高比"
       },
       "dialog-config-preview":{
         "title":"信息预览",
