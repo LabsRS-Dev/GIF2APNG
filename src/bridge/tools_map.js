@@ -77,7 +77,35 @@ const ToolsMap = {
   'stop.gif2apng': {
     type: ToolsType.STOP_NTASK,
     command: ['stop', 'calltask']
+  },
+
+  // ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // gif 图像文件尺寸改变
+  'resize_gif': {
+    type: ToolsType.NTASK,
+    cli: BS.b$.App.getAppPluginDir() + 'cli_img_resize',
+    command: [],
+    mainThread: false
+  },
+  'stop.resie_gif': {
+    type: ToolsType.STOP_NTASK,
+    command: ['stop', 'calltask']
+  },
+
+  // //////////////////////////////////////////////////////////////////////////////////////////////////
+  // 文件下载器
+  'downloader': {
+    type: ToolsType.NTASK,
+    cli: BS.b$.App.getAppPluginDir() + 'curl',
+    command: [],
+    mainThread: false
+  },
+  'stop.downloader': {
+    type: ToolsType.STOP_NTASK,
+    command: ['stop', 'calltask']
   }
+
+
 }
 
 //
@@ -137,28 +165,28 @@ const ServerAPIMap = {
     api: SysConfig.apiHost + '/v1.0.0/sets_by_tag_id/',
     type: ServerAPIType.POST
   },
-  ///////获取图集内单个图片的数据
+  // /////获取图集内单个图片的数据
   'get.sets_items_order': {
     api: SysConfig.apiHost + '/v1.0.0/sets_items_order/',
     type: ServerAPIType.GET
   },
-  ///////获取轮播图数据
+  // /////获取轮播图数据
   'get.data_sys_push': {
     api: SysConfig.apiHost + '/v1.0.0/data_sys_push',
     type: ServerAPIType.POST
   },
-  //////注册机器码
+  // ////注册机器码
   'registered.machine_code': {
     api: SysConfig.userMachine + '/v1.0.0/machines',
     type: ServerAPIType.POST
   },
-  /////注册用户机器码
+  // ///注册用户机器码
   'get.users': {
     api: SysConfig.apiHost + '/v1.0.0/data_user',
     type: ServerAPIType.POST
   },
 
-  //////记录图片数据
+  // ////记录图片数据
   'get.items_download': {
     api: SysConfig.apiHost + '/v1.0.0/items_download',
     type: ServerAPIType.POST
@@ -176,7 +204,7 @@ const ServerAPIMap = {
     type: ServerAPIType.POST
   },
 
-  //////记录图集数据
+  // ////记录图集数据
   'get.sets_download': {
     api: SysConfig.apiHost + '/v1.0.0/sets_download',
     type: ServerAPIType.POST
@@ -195,7 +223,7 @@ const ServerAPIMap = {
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // export
 export {

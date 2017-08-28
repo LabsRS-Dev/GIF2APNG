@@ -44,6 +44,8 @@
   "dependencies": {
     "caniuse-db": "^1.0.30000715",
     "dove.max.sdk": "^1.1.14",
+    "echarts": "^3.7.0",
+    "http-server": "^0.10.0",
     "keen-ui": "^1.0.0",
     "vue": "^2.4.2",
     "vue-awesome-swiper": "^2.6.2",
