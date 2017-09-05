@@ -265,6 +265,7 @@ class Task {
 }
 
 var taskList = []
+var taskID2taskObj =  {}
 
 //// 与设置相关的处理
 class Settings {
@@ -633,7 +634,7 @@ export default {
                         let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
                         that.taskList.push(taskObj)
                         console.log('taskID-files=', taskObj.id)
-                        that.taskID2taskObj[taskObj.id] = taskObj
+                        taskID2taskObj[taskObj.id] = taskObj
                     })
 
                     return
@@ -642,7 +643,7 @@ export default {
                     for (let i =0; i < 50; ++i){
                         let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
                         that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
+                        taskID2taskObj[taskObj.id] = taskObj
                     }
                 }, function(data){ // Normal code
                     that.__importFilesOrDir(data)
@@ -663,7 +664,7 @@ export default {
                     var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
                     that.taskList.push(taskObj)
                     console.log('taskID-dir=', taskObj.id)
-                    that.taskID2taskObj[taskObj.id] = taskObj
+                    taskID2taskObj[taskObj.id] = taskObj
                 }
             }, function(data){
                 that.__importFilesOrDir(data)
@@ -768,7 +769,7 @@ export default {
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
                             let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                             that.taskList.push(taskObj)
-                            that.taskID2taskObj[taskObj.id] = taskObj
+                            taskID2taskObj[taskObj.id] = taskObj
                         }
                     }else{
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
@@ -776,7 +777,7 @@ export default {
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
                             let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
                             that.taskList.push(taskObj)
-                            that.taskID2taskObj[taskObj.id] = taskObj
+                            taskID2taskObj[taskObj.id] = taskObj
                         }
                     }
                 })
@@ -785,7 +786,7 @@ export default {
 
         __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {
             var that = this
-            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj = _.extend(curInfoWithTaskObj, data)
                 extendHandler && extendHandler(curInfoWithTaskObj)
@@ -796,7 +797,7 @@ export default {
 
         __updateInfoWithGif2apngTask(taskID, data) {
             var that = this
-            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj.isWorking = data.progress >= 100 ? false : true
                 curInfoWithTaskObj.progress = data.progress >= 100 ? 100: data.progress
@@ -822,7 +823,7 @@ export default {
             var that = this
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_Gif2apngTask(taskObj.id, {
+                    that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput || false
@@ -872,21 +873,20 @@ export default {
         },
 
         /**
-        * @function __abi__start_Gif2apngTask   调用处理gif转换成apng格式任务
+        * @function __abi__start_ResizeGifTask   调用处理gif转换成apng格式任务
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Object} config 调用的配置选项
         * @param  {Function} handler 回调处理
         * @return {Object} {this}
         */
-        __abi__start_Gif2apngTask(taskID, config, handler = (data)=>{}){
+        __abi__start_ResizeGifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
                 src: '',  // 要处理的文件或者目录的路径
                 out: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
-                compression: '-z1',    // 压缩方式： -z0: zlib compression; -z1: 7zip compression (default); -z2: Zopfli compression
-                iterations: '-i' + 15, // 迭代数量：-i##: number of iterations (default -i15) for 7zip and Zopfli
-                keepPalette: false     // 保持调色信息
+                width: 100, // resize 后的宽度
+                height: 0,  // resize 后的高度，0 为只适应按照原宽度比
             }, config)
 
             // 检查必要数值
@@ -894,36 +894,38 @@ export default {
             console.assert(BS.b$.App.checkPathIsExist(_config.src))
             console.assert(BS.b$.App.checkPathIsExist(_config.out))
 
-            var _command = [],
-                _dest = _config.out
+            var _command = []
 
-            const transferTaskID =  _.uniqueId('onetask') + ',' + taskID
-            that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
+            that.__updateTaskObj(taskID, {fixOutDir:_config.out}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
-            // Fix when the task is file obj
-            if (BS.b$.App.checkPathIsFile(_config.src)) {
-                _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
-                that.__updateTaskObj(taskID, {fixOutDir:_dest, fixpath:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
-            }
+            // -- 声明输出json的路径
+            var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
 
             // -- 命令行参数格式化
-            const commandFormat = '['   +
-                                    '"' + _config.compression  + '",' +
-                                    '"' + _config.iterations  + '",' +
-                                    (_config.overwrite ? '"-ow",' : '') +
-                                    (_config.keepPalette ? '"-kp",' : '') +
-                                    '"%input%","%output%"]'
+            const commandFormat = '["-cfg=%input%"]'
             var fm_command = commandFormat
-            fm_command = fm_command.replace(/%input%/g, _config.src)
-            fm_command = fm_command.replace(/%output%/g, _dest)
+            fm_command = fm_command.replace(/%input%/g, jsonFilePath)
             _command = window.eval(fm_command)
 
-            /// call process task
-            Transfer.Tools.call('gif2apng', {
-                taskID: transferTaskID,
-                command: _command
-            }, (data) => {
-                 handler && handler(data)
+            //DEBUG
+            console.log("jsonfile = ", jsonFilePath)
+
+            // -- 生成json文件
+            const jsonData = JSON.stringify({
+                tasks: [_config]
+            })
+            BS.b$.Binary.createTextFile({
+                filePath: jsonFilePath,
+                text: jsonData
+            }, function(){
+                /// call process task
+                Transfer.Tools.call('resize_gif', {
+                    taskID: transferTaskID,
+                    command: _command
+                }, (data) => {
+                    handler && handler(data)
+                })
             })
 
             return that
@@ -941,10 +943,10 @@ export default {
             // 检查必要数值
             console.assert(taskID)
 
-            let curTaskObj = that.taskID2taskObj[taskID]
+            let curTaskObj = taskID2taskObj[taskID]
             _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
                 /// call process task
-                Transfer.Tools.call('stop.gif2apng', {
+                Transfer.Tools.call('stop.resie_gif', {
                     taskID: transferTaskId
                 }, (data) => {
                     handler && handler(data)
@@ -963,7 +965,7 @@ export default {
             // TODO：remove it from taskList
             item.progress = 0
             item.stateInfo = 0
-            that.taskID2taskObj[item.id] = null
+            taskID2taskObj[item.id] = null
 
             // remove from taskList
             that.taskList.splice(index, 1)
