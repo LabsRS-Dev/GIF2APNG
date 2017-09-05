@@ -104,8 +104,6 @@ const ToolsMap = {
     type: ToolsType.STOP_NTASK,
     command: ['stop', 'calltask']
   }
-
-
 }
 
 //
