@@ -45,12 +45,12 @@
                         <div class="page__toolbar-app-doc__change-dimensions__size">
                             <div class="page__toolbar-app-doc__change-dimensions__width">
                                 <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                                <input type="number" v-model.number ="curWidth" @keyup="ValidateWidthNumber(curWidth)" @blur="changeInputActive()">
+                                <input type="number" v-model.number ="inputWidth" @keyup="ValidateWidthNumber(inputWidth)" @blur="changeInputActive()">
                                 <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                             <div class="page__toolbar-app-doc__change-dimensions__height">
                                 <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                                <input type="number" v-model.number ="curHeight" @keyup="ValidateHeightNumber(curHeight)" @blur="changeInputActive()">
+                                <input type="number" v-model.number ="inputHeight" @keyup="ValidateHeightNumber(inputHeight)" @blur="changeInputActive()">
                                 <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                     </div>
                     <div class="page__toolbar-app-doc__change-dimensions__adjust">
                         <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                        <input type="range" min="1" max="200" v-model.number="percentage" class="aaaaaaaaaaaaaaaaaaaaaa">
+                        <input type="range" min="1" max="200" v-model.number="percentage" class="sliderRange">
                         <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
                     </div>
                 </div>
@@ -317,6 +317,8 @@ var beforePath = ''      // 原图片地址
 var afterPath = ''       //修改后图片地址
 //////
 var inputActive;         // 输入框是否处于激活状态
+var inputWidth;          // 输入框显示宽度
+var inputHeight;         // 输入框显示高度
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -1018,13 +1020,14 @@ export default {
         },
         onChangeImageSize(item){
             var  that = this
+            var $ = Util.util.getJQuery$()
             const cdg = that.changeConfigDialog
             cdg.title = that.$t('pages.resize.dialog-config-change.title')
             cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
             cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
-            cdg.callbackConfirm = () => {}
-            cdg.callbackDeny = () => {}
-            cdg.callbackClose = () => {}
+            cdg.callbackConfirm = () => { that.recordedDataValue() }
+            cdg.callbackDeny = () => { that.reductionPercentValue() }
+            cdg.callbackClose = () => { that.reductionPercentValue() }
 
             var dialog = that.$refs[cdg.ref]
             console.log(item)
@@ -1032,7 +1035,18 @@ export default {
             that.curHeight = item.dimensions.data.height
             that.defaultCurWidth = item.dimensions.data.width
             that.defaultCurHeight = item.dimensions.data.height
+            $('.sliderRange').css('background-size', that.percentage/2 +'% 100%' )
+            that.inputWidth = Math.round(that.curWidth)
+            that.inputHeight = Math.round(that.curHeight)
             dialog.open()
+        },
+        recordedDataValue(){
+            var that = this
+            that.percentage = 100
+        },
+        reductionPercentValue(){
+            var that = this
+            that.percentage = 100
         },
         ValidateWidthNumber(value){
             var that = this
@@ -1042,6 +1056,7 @@ export default {
             that.inputActive = 10
             that.curWidth = value
             that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
+            that.inputHeight = Math.round(that.curHeight)
             that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)
         },
         ValidateHeightNumber(value){
@@ -1052,6 +1067,7 @@ export default {
             that.inputActive = 100
             that.curHeight = value
             that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
+            that.inputWidth = Math.round(that.curWidth)
             that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)
         },
         changeInputActive(){
@@ -1061,7 +1077,7 @@ export default {
         getCheckboxActive(){
             var that = this 
             var $ = Util.util.getJQuery$()
-            // $(".aaaaaaaaaaaaaaaaaaaaaa").attr("disabled","disabled")
+            // $(".sliderRange").attr("disabled","disabled")
         },
         onOpenParentDir(dir){
             var that = this
@@ -1152,6 +1168,8 @@ export default {
     },
     watch:{
         percentage(newSides, oldSides){
+            var $ = Util.util.getJQuery$()
+            $('.sliderRange').css('background-size', newSides/2 +'% 100%' )
             if(this.inputActive == 10 || this.inputActive == 100){
                 var sidesDifference = newSides - oldSides
                 if (sidesDifference > 0) {
@@ -1173,6 +1191,8 @@ export default {
                     }
                     this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
                     this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
+                    this.inputWidth = Math.round(this.curWidth)
+                    this.inputHeight = Math.round(this.curHeight)
                 } else {
                     var absoluteSidesDifference = Math.abs(sidesDifference)
                     for (var i = 1; i <= absoluteSidesDifference; i++) {
@@ -1180,6 +1200,8 @@ export default {
                     }
                     this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
                     this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
+                    this.inputWidth = Math.round(this.curWidth)
+                    this.inputHeight = Math.round(this.curHeight)
                 }                
             }
         }
