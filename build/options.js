@@ -1,17 +1,26 @@
 'use strict';
 
+
 const path = require('path');
-const appName = require('../config/app.json');
-const version = require('../config/app.json');
+
+const packageCfg = require('../package.json');
+
+const appName = packageCfg.name;
+const appVersion = packageCfg.version;
+const repository = packageCfg.repository.url;
+const autor = packageCfg.author.name;
+const autorEmail = packageCfg.author.email;
 
 
 const banner =
     '/*!\n' +
-    ' * ' + appName + ' v' + version + ' (https://github.com/LabsRS-Dev/AiEXifCool)\n' +
-    ' * (c) ' + new Date().getFullYear() + ' Romanysoft LAB.\n' +
+    ' * ' + appName + ' v' + appVersion + ' (' + repository + ')\n' +
+    ' * (c) ' + new Date().getFullYear() + ' ' + autor +'  ('  + autorEmail  + ')\n' +
     ' * Released under the MIT License.\n' +
     ' */';
 
+console.log("banner:");
+console.log(banner);
 
 module.exports = {
     banner,
