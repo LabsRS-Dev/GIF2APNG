@@ -265,6 +265,7 @@ class Task {
 }
 
 var taskList = []
+var taskID2taskObj =  {}
 
 //// 与设置相关的处理
 class Settings {
@@ -631,7 +632,7 @@ export default {
                         let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
                         that.taskList.push(taskObj)
                         console.log('taskID-files=', taskObj.id)
-                        that.taskID2taskObj[taskObj.id] = taskObj
+                        taskID2taskObj[taskObj.id] = taskObj
                     })
 
                     return
@@ -640,7 +641,7 @@ export default {
                     for (let i =0; i < 50; ++i){
                         let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
                         that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
+                        taskID2taskObj[taskObj.id] = taskObj
                     }
                 }, function(data){ // Normal code
                     that.__importFilesOrDir(data)
@@ -661,7 +662,7 @@ export default {
                     var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
                     that.taskList.push(taskObj)
                     console.log('taskID-dir=', taskObj.id)
-                    that.taskID2taskObj[taskObj.id] = taskObj
+                    taskID2taskObj[taskObj.id] = taskObj
                 }
             }, function(data){
                 that.__importFilesOrDir(data)
@@ -766,7 +767,7 @@ export default {
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
                             let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                             that.taskList.push(taskObj)
-                            that.taskID2taskObj[taskObj.id] = taskObj
+                            taskID2taskObj[taskObj.id] = taskObj
                         }
                     }else{
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
@@ -774,7 +775,7 @@ export default {
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
                             let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
                             that.taskList.push(taskObj)
-                            that.taskID2taskObj[taskObj.id] = taskObj
+                            taskID2taskObj[taskObj.id] = taskObj
                         }
                     }
                 })
@@ -783,7 +784,7 @@ export default {
 
         __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {
             var that = this
-            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj = _.extend(curInfoWithTaskObj, data)
                 extendHandler && extendHandler(curInfoWithTaskObj)
@@ -794,7 +795,7 @@ export default {
 
         __updateInfoWithGif2apngTask(taskID, data) {
             var that = this
-            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj.isWorking = data.progress >= 100 ? false : true
                 curInfoWithTaskObj.progress = data.progress >= 100 ? 100: data.progress
@@ -940,7 +941,7 @@ export default {
             // 检查必要数值
             console.assert(taskID)
 
-            let curTaskObj = that.taskID2taskObj[taskID]
+            let curTaskObj = taskID2taskObj[taskID]
             _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
                 /// call process task
                 Transfer.Tools.call('stop.resie_gif', {
@@ -962,7 +963,7 @@ export default {
             // TODO：remove it from taskList
             item.progress = 0
             item.stateInfo = 0
-            that.taskID2taskObj[item.id] = null
+            taskID2taskObj[item.id] = null
 
             // remove from taskList
             that.taskList.splice(index, 1)
