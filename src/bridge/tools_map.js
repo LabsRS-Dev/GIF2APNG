@@ -32,7 +32,14 @@ const ToolsMap = {
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   'gif2apng': { type: ToolsType.NTASK, cli: BS.b$.App.getAppPluginDir() + '/CLIgif2apng', command: [], mainThread: false },
-  'stop.gif2apng': { type: ToolsType.STOP_NTASK, command: ['stop', 'calltask'] }
+  'stop.gif2apng': { type: ToolsType.STOP_NTASK, command: ['stop', 'calltask'] },
+
+  // gif图像文件改变尺寸(w*h) 宽度及高度
+  'gif.resize': { type: ToolsType.NTASK, cli: BS.b$.App.getAppPluginDir() + '/CLIgif2apng', command: [], mainThread: false },
+  'stop.gif.resize': { type: ToolsType.STOP_NTASK, command: ['stop', 'calltask'] }
+
+  // 下载工具
+
 }
 
 // export
