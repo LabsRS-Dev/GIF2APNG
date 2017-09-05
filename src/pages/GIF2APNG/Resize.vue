@@ -820,7 +820,7 @@ export default {
             var that = this
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_Gif2apngTask(taskObj.id, {
+                    that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput || false
@@ -870,21 +870,20 @@ export default {
         },
 
         /**
-        * @function __abi__start_Gif2apngTask   调用处理gif转换成apng格式任务
+        * @function __abi__start_ResizeGifTask   调用处理gif转换成apng格式任务
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Object} config 调用的配置选项
         * @param  {Function} handler 回调处理
         * @return {Object} {this}
         */
-        __abi__start_Gif2apngTask(taskID, config, handler = (data)=>{}){
+        __abi__start_ResizeGifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
                 src: '',  // 要处理的文件或者目录的路径
                 out: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
-                compression: '-z1',    // 压缩方式： -z0: zlib compression; -z1: 7zip compression (default); -z2: Zopfli compression
-                iterations: '-i' + 15, // 迭代数量：-i##: number of iterations (default -i15) for 7zip and Zopfli
-                keepPalette: false     // 保持调色信息
+                width: 100, // resize 后的宽度
+                height: 0,  // resize 后的高度，0 为只适应按照原宽度比
             }, config)
 
             // 检查必要数值
@@ -892,36 +891,38 @@ export default {
             console.assert(BS.b$.App.checkPathIsExist(_config.src))
             console.assert(BS.b$.App.checkPathIsExist(_config.out))
 
-            var _command = [],
-                _dest = _config.out
+            var _command = []
 
-            const transferTaskID =  _.uniqueId('onetask') + ',' + taskID
-            that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
+            that.__updateTaskObj(taskID, {fixOutDir:_config.out}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
-            // Fix when the task is file obj
-            if (BS.b$.App.checkPathIsFile(_config.src)) {
-                _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
-                that.__updateTaskObj(taskID, {fixOutDir:_dest, fixpath:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
-            }
+            // -- 声明输出json的路径
+            var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
 
             // -- 命令行参数格式化
-            const commandFormat = '['   +
-                                    '"' + _config.compression  + '",' +
-                                    '"' + _config.iterations  + '",' +
-                                    (_config.overwrite ? '"-ow",' : '') +
-                                    (_config.keepPalette ? '"-kp",' : '') +
-                                    '"%input%","%output%"]'
+            const commandFormat = '["-cfg=%input%"]'
             var fm_command = commandFormat
-            fm_command = fm_command.replace(/%input%/g, _config.src)
-            fm_command = fm_command.replace(/%output%/g, _dest)
+            fm_command = fm_command.replace(/%input%/g, jsonFilePath)
             _command = window.eval(fm_command)
 
-            /// call process task
-            Transfer.Tools.call('gif2apng', {
-                taskID: transferTaskID,
-                command: _command
-            }, (data) => {
-                 handler && handler(data)
+            //DEBUG
+            console.log("jsonfile = ", jsonFilePath)
+
+            // -- 生成json文件
+            const jsonData = JSON.stringify({
+                tasks: [_config]
+            })
+            BS.b$.Binary.createTextFile({
+                filePath: jsonFilePath,
+                text: jsonData
+            }, function(){
+                /// call process task
+                Transfer.Tools.call('resize_gif', {
+                    taskID: transferTaskID,
+                    command: _command
+                }, (data) => {
+                    handler && handler(data)
+                })
             })
 
             return that
@@ -942,7 +943,7 @@ export default {
             let curTaskObj = that.taskID2taskObj[taskID]
             _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
                 /// call process task
-                Transfer.Tools.call('stop.gif2apng', {
+                Transfer.Tools.call('stop.resie_gif', {
                     taskID: transferTaskId
                 }, (data) => {
                     handler && handler(data)
