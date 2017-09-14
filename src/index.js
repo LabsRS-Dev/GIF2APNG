@@ -6,11 +6,7 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
-import {
-  BS,
-  Util,
-  _
-} from 'dove.max.sdk'
+import { BS, Util, _ } from 'dove.max.sdk'
 
 // /----------- Components
 import App from './App.vue'
@@ -63,7 +59,7 @@ function startApp(i18nObj) {
     components: {
       App
     },
-    render(h) {
+    render (h) {
       console.log('start app render ....')
       return h(App)
     }

@@ -1,9 +1,15 @@
 .dove-docs-content {
-    width: 100%;
-    overflow-x: hidden;
+    /* 宽度和高度适应新老Safari浏览器:
+    see: http://caniuse.com/#search=calc 
+    */
+    width: 75%; // Fixed for macOS 10.7 old safari
+    width: $page-content-width;
+    height: 100%;
     height: 100vh;
+
     display: flex;
     flex-direction: column;
+
     background: $docs-content-background;
     color: $docs-content-font-color;
 }
@@ -34,7 +40,8 @@
     }
 }
 .dove-docs-content__toolbar {
-    height: $docs-content__toolbar-height;
+    height: $docs-content__toolbar-px-height;
+    height: $docs-content__toolbar-vh-height;
     background: $docs-content__toolbar-background;
     color: $docs-content__toolbar-font-color;
     width: 100%;
@@ -302,11 +309,13 @@
     color: white;
 }
 
+//
 .dove-docs-content__page-content {
     background-color: $docs-content-background;
     color: $docs-content-font-color;
-    height: 100%;
     width: 100%;
+    height: $docs-content__content-px-heigth;
+    height: $docs-content__content-vh-height;
     overflow-y: auto;
     z-index: 0;
 }

@@ -92,11 +92,16 @@
         </div>
 
         <div class="page__examples page__examples-app-doc">
-            <svg
-                :id="welcomeContentID"
+            <div
                 class="page__examples-app-doc__welcome"
                 v-show="taskList.length <= 0"
-                />
+                >
+                <p 
+                    v-html="item"
+                    :key="index"
+                    v-for="(item, index) in $t('pages.convert.welcome')">
+                </p>
+            </div>    
             <ui-alert
                 :class="getItemStyleClass(item)"
                 :type="item.style.type"
@@ -107,7 +112,7 @@
 
                 v-show="item.style.show"
                 v-for="(item, index) in taskList">
-                <div class="page__examples-app-doc__item">
+                <div class="page__examples-app-doc__item" :data-taskid="item.id">
                     <div class="ui-toolbar__top">
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
@@ -173,8 +178,8 @@
 </template>
 
 <script>
-import { BS, Util, _ } from 'dove.max.sdk'
-import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox} from 'keen-ui'
+import { BS, Util, _, lodash } from 'dove.max.sdk'
+import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox, UiTextbox} from 'keen-ui'
 import {Transfer} from '../../bridge/transfer'
 import echarts from "echarts"
 
@@ -390,7 +395,7 @@ export default {
     },
 
     mounted(){
-        this.drawWelcome()
+
     },
 
     beforeDestroy() {
@@ -435,7 +440,7 @@ export default {
 
             console.assert(_.isString(that.lastOutputPath))
             console.assert(_.isBoolean(that.enableOverWriteOutput))
-
+ 
             $LS$.data.enableOverwriteOutput = that.enableOverWriteOutput
             $LS$.data.lastSelectOutputPath = that.lastOutputPath
             $LS$.data.outputPaths = that.availableOutputPathList
@@ -452,38 +457,6 @@ export default {
         },
 
         // ------------------------- Welcome content
-        drawWelcome(){
-            var that = this
-            var SnapRef = Util.util.getSnapSVG$()
-            if (SnapRef) {
-                var s = SnapRef('#' + that.welcomeContentID)
-
-                // 创建一个盒子
-                var rect = s.rect('8%', '8%', '84%', '84%', 16)
-                rect.attr({
-                    fill: "none",
-                    "fill-opacity": 0.5,
-                    "stroke-linecap": "round",
-                    "stroke-linejoin": "bevel",
-                    "stroke-dasharray" : "5,5",
-                    stroke: "#adadad",
-                    strokeWidth: 1
-                })
-
-                // 创建一个文字盒子
-                var description = s.text('12%', '16%', that.$t('pages.convert.welcome.description'))
-                var step1 = s.text('15%', '26%', that.$t('pages.convert.welcome.step1'))
-                var step2 = s.text('15%', '36%', that.$t('pages.convert.welcome.step2'))
-                var step3 = s.text('15%', '46%', that.$t('pages.convert.welcome.step3'))
-                var step4 = s.text('15%', '56%', that.$t('pages.convert.welcome.step4'))
-
-                // 修饰一下文字
-                description.attr({
-                    "font-weight": "bold"
-                })
-
-            }
-        },
 
         // ------------------------- Style
         getItemStyleClass(item){
@@ -547,8 +520,15 @@ export default {
                 types:[] // Note: too many formats
             }, function(){ // Test code
                 // Test[1]: Windows 本地实际数据
+                var _prx = "N_X" 
+                var i = 0
+                while(i < 50){
+                    _prx += "N_X"
+                    ++i
+                }
+
                 _.each([
-                    {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB'},
+                    {fileName: 'RAW_NIKON_D7100.NEF' + _prx, filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF' + _prx, fileSize: '27.5MB'},
                     {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
                 ], function(ele){
                     let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
@@ -557,8 +537,8 @@ export default {
                     taskID2taskObj[taskObj.id] = taskObj
                 })
 
+                return
 
-                    return
                 // Test[2]: 测试很多的情况下的列表展示
                 for (let i =0; i < 50; ++i){
                     let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
@@ -639,9 +619,9 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.lastOutputPath==""){
-                cdg.callbackConfirm = () => {
+                cdg.callbackConfirm = () => { 
                     cdg.callbackConfirm && cdg.callbackConfirm()
-                    that.startDo()
+                    that.startDo() 
                 }
                 that.onBtnOutputFolderClick()
             }else{
@@ -746,8 +726,11 @@ export default {
                     that.__abi__start_Gif2apngTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput || false
+                        overwrite: that.enableOverWriteOutput ? true : false
                     }, (data) => {
+                        console.warn('startDo data reback....')
+                        console.dir(data)    
+                        // process 
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 50,
@@ -762,7 +745,7 @@ export default {
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
                                 state: -1,
-                                message: 'error'
+                                message: data.detail_error || 'error'
                             })
                         }
                         // check converting
@@ -776,7 +759,7 @@ export default {
             var that = this
             // send stop message to server
             if(!notice) return
-            if(taskList.length > 0 && that.isConvertWorking) {
+            if(that.taskList.length > 0 && that.isConvertWorking) {
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
                         // check converting

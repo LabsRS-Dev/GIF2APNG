@@ -1,0 +1,28 @@
+$def-font-size: rem-calc(12px);
+
+
+//ui-checkbox
+.ui-checkbox__label-text {
+    font-size: $def-font-size;
+}
+
+//ui-textbox
+.ui-textbox__content {
+    font-size: $def-font-size;
+}
+
+.ui-textbox__label {
+    font-size: $def-font-size;
+    .ui-textbox__label-text {
+        font-size: $def-font-size;
+    }
+
+    textarea.ui-textbox__textarea {
+        font-size: $def-font-size;
+    }
+}
+
+.ui-textbox__feedback {
+    font-size: $def-font-size;
+}
+

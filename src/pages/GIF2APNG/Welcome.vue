@@ -42,9 +42,10 @@
             >
         </div>
         <ui-alert
-            :dismissible="false"
             :class="getItemStyleClass(item)"
             :type="item.style.type"
+            @dismiss="onRemoveItem(item, index)"
+
             v-show="item.style.show"
             :key="item.id"
             v-for="(item, index) in newsList"
@@ -52,13 +53,15 @@
             <div class="page__examples-app-doc__item">
                 <div class="ui-toolbar__top">
                     <div class="ui-toolbar__top__metainfo">
-                        <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
-                        <strong class="ui-toolbar__top__news__title">
-                            {{ item.title }}
-                            <sup class="ui-toolbar__top__news__date">
-                            {{ item.date ? '(' + item.date + ')' : '' }}
-                            </sup>
-                        </strong>
+                            <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
+                              <strong class="ui-toolbar__top__news__title">
+                                  <a :click="$t('pages.welcome.task-item.onOpenLink') ">
+                                  {{ item.title }}
+                                  </a>
+                                  <sup class="ui-toolbar__top__news__date">
+                                  {{ item.date ? '(' + item.date + ')' : '' }}
+                                  </sup>
+                              </strong>
                     </div>
                     <div class="ui-toolbar__top__metainfo__toolbar">
                         <ui-icon-button
@@ -67,7 +70,7 @@
                             color="black"
                             size="small"
                             >
-                            <span class="fa fa-link fa-lg fa-fw" :title=" $t('pages.welcome.task-item.onOpenLink') "></span>
+                            <span class="fa fa-comments fa-lg fa-fw" :title=" $t('pages.welcome.task-item.onOpenLink') "></span>
                         </ui-icon-button>
                     </div>
                 </div>
@@ -104,7 +107,7 @@ class News {
     /// ------- 展示样式相关
     this.style = {
       show: true,
-      type: "success"
+      type: "info"
     }
   }
 }
@@ -199,7 +202,7 @@ export default {
       var that = this
       var list = []
       list.push({
-          title: SysConfig.appName + '\t' + SysConfig.version ,
+          title: SysConfig.appName + '\t Ver' + SysConfig.version ,
           date:'',
           description:`
             Welcome to Gmagon.com
@@ -226,6 +229,14 @@ export default {
         store_newsList = that.newsList
       })
     },
+    onRemoveItem(item, index) {
+      var that = this
+      // remove from taskList
+       that.newsList.splice(index, 1)
+       store_newsList = that.newsList
+    },
+
+    
     // ------------------------- Style
     getItemStyleClass(item){
       var _styleClass = ['']
