@@ -44,20 +44,20 @@
                     <div class="page__toolbar-app-doc__change-dimensions__content">
                         <div class="page__toolbar-app-doc__change-dimensions__size">
                             <div class="page__toolbar-app-doc__change-dimensions__width">
-                                <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                                <input type="number" v-model.number ="inputWidth" @keyup="ValidateWidthNumber(inputWidth)" @blur="changeInputActive()">
+                                <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
+                                <input type="text" v-model.number ="inputWidth" @keyup="ValidateWidthNumber(inputWidth)" @blur="changeInputActive()" v-number-only minLength = 1 maxLength = 4>
                                 <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                             <div class="page__toolbar-app-doc__change-dimensions__height">
-                                <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                                <input type="number" v-model.number ="inputHeight" @keyup="ValidateHeightNumber(inputHeight)" @blur="changeInputActive()">
+                                <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
+                                <input type="text" v-model.number ="inputHeight" @keyup="ValidateHeightNumber(inputHeight)" @blur="changeInputActive()" v-number-only minLength = 1 maxLength = 4>
                                 <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                         </div>
                         <div class="page__toolbar-app-doc__change-dimensions__setting">
                             <ui-checkbox
                                 v-model="enableMaintainAspectRatio"
-                                @blur="getCheckboxActive()"
+                                @change="getCheckboxActive"
                                 >
                             </ui-checkbox>
                             <span class="change-dimensions__setting">{{ $t('pages.resize.dialog-config-change.setting') }}</span>                            
@@ -65,7 +65,7 @@
                     </div>
                     <div class="page__toolbar-app-doc__change-dimensions__adjust">
                         <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                        <input type="range" min="1" max="200" v-model.number="percentage" class="sliderRange">
+                        <input type="range" min="1" max="100" v-model.number="percentage" class="sliderRange">
                         <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                                 color="black"
                                 size="small"
                                 >
-                                <span class="fa fa-exchange fa-lg fa-fw" :title=" $t('pages.resize.task-item.change-size') "></span>
+                                <span class="fa fa-cog fa-lg fa-fw" :title=" $t('pages.resize.task-item.change-size') "></span>
                             </ui-icon-button>
 
                             <ui-icon-button
@@ -337,6 +337,8 @@ export default {
             curHeight:0,
             defaultCurWidth:0,
             defaultCurHeight:0,
+            changeCurWidth:0,      // 最终转换的宽度
+            changeCurHeight:0,     // 最终转换的高度
             stats : stats,
             percentage:defaultSides,
             enableMaintainAspectRatio:true,
@@ -485,14 +487,27 @@ export default {
            return [
                 {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.import"},
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.importDir"},
-                {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.remove"},
-                {id:'action-outputFolder', visiable:true, color:"primary", icon:"fa fa-folder fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.outputFolder"},
-                {id:'action-do', visiable:!that.isResizeWorking, color:"green", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.fix"},
-                {id:'action-stop', visiable:that.isResizeWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.chancel"}
+                {id:'action-do', visiable:true, color:"black", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.fix"},
+                {id:'action-stop', visiable:true, color:"black", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.chancel"},
+                {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.outputFolder"},
+                {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.remove"}
            ]
         }
     },
-
+    /////  限制输入框输入内容
+    directives: {
+        numberOnly: {
+            bind: function(el) {
+                el.handler = function() {
+                    el.value = el.value.replace(/\D+/, '')
+                }
+                el.addEventListener('input', el.handler)
+            },
+            unbind: function(el) {
+                el.removeEventListener('input', el.handler)
+            }
+        }
+    },
     methods:{
         // ------------------------- on Transfer Events
         onTransferIsNoraml() {
@@ -1037,13 +1052,19 @@ export default {
             that.curHeight = item.dimensions.data.height
             that.defaultCurWidth = item.dimensions.data.width
             that.defaultCurHeight = item.dimensions.data.height
-            $('.sliderRange').css('background-size', that.percentage/2 +'% 100%' )
+            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
             that.inputWidth = Math.round(that.curWidth)
             that.inputHeight = Math.round(that.curHeight)
             dialog.open()
         },
         recordedDataValue(){
             var that = this
+            if(that.inputWidth <= that.defaultCurWidth && that.inputHeight <= that.defaultCurHeight){
+                that.changeCurWidth = that.inputWidth
+                that.changeCurHeight = that.inputHeight
+            } else {
+                alert(that.$t('pages.resize.dialog-config-change.title'))
+            }
             that.percentage = 100
         },
         reductionPercentValue(){
@@ -1052,34 +1073,39 @@ export default {
         },
         ValidateWidthNumber(value){
             var that = this
-            // if((/^[^0](\d{1,3})?$/).test(value)){                
-            // }
-            // return false
-            that.inputActive = 10
-            that.curWidth = value
-            that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
-            that.inputHeight = Math.round(that.curHeight)
-            that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)
+            if(that.enableMaintainAspectRatio == true){
+                that.inputActive = 10
+                that.curWidth = value
+                that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
+                that.inputHeight = Math.round(that.curHeight)
+                that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)                
+            }
         },
         ValidateHeightNumber(value){
             var that = this
-            // if((/^[^0](\d{1,3})?$/).test(value)){                
-            // }
-            // return false
-            that.inputActive = 100
-            that.curHeight = value
-            that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
-            that.inputWidth = Math.round(that.curWidth)
-            that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)
+            if(that.enableMaintainAspectRatio == true){
+                that.inputActive = 100
+                that.curHeight = value
+                that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
+                that.inputWidth = Math.round(that.curWidth)
+                that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)                
+            }
         },
         changeInputActive(){
             var that = this
             that.inputActive = 0
         },
-        getCheckboxActive(){
+        getCheckboxActive(value, e){
             var that = this 
             var $ = Util.util.getJQuery$()
-            // $(".sliderRange").attr("disabled","disabled")
+            console.log(e.target.checked)
+            if(e.target.checked == true){
+                $(".sliderRange").attr("disabled",false)
+                $('.sliderRange').css('background-size', that.percentage +'% 100%')
+            }else {
+                $(".sliderRange").attr("disabled","disabled")
+                $('.sliderRange').css('background-size', '0% 100%')
+            }
         },
         onOpenParentDir(dir){
             var that = this
@@ -1171,7 +1197,7 @@ export default {
     watch:{
         percentage(newSides, oldSides){
             var $ = Util.util.getJQuery$()
-            $('.sliderRange').css('background-size', newSides/2 +'% 100%' )
+            $('.sliderRange').css('background-size', newSides +'% 100%' )
             if(this.inputActive == 10 || this.inputActive == 100){
                 var sidesDifference = newSides - oldSides
                 if (sidesDifference > 0) {

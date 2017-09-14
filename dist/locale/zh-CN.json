@@ -232,6 +232,8 @@
         "btnConfirm": "确定",
         "btnDeny": "取消",
         "percentage":"百分比:",
+        "width":"宽度:",
+        "height":"高度:",
         "pixel":"像素",
         "setting":"锁定宽高比"
       },

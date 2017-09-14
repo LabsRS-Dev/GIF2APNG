@@ -179,7 +179,7 @@
         "importDir":"Import directory",
         "remove":"Remove All",
         "outputFolder": "Output directory",
-        "fix":"Convert",
+        "fix":"Resize",
         "chancel":"Cancel all"
       },
       "task-item":{
@@ -232,6 +232,8 @@
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
         "percentage":"Percentage:",
+        "width":"Width:",
+        "height":"Height:",
         "pixel":"PX",
         "setting":"Preserve Aspect Ratio"
       },
