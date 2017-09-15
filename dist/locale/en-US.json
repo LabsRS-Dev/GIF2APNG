@@ -162,10 +162,10 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-        "1. Click \"<i class='fa fa-plus fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
         "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
-        "3. Click \"<i class='fa fa-play fa-lg fa-fw' style='color:#000f;'></i>\" button to start download tasks.",
-        "4. You can click \"<i class='fa fa-stop fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all download tasks.",
+        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start convert tasks.",
+        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all convert tasks.",
         "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
      ],
       "dialog-popover-confirm-edit":{
@@ -233,6 +233,9 @@
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
         "percentage":"Percentage:",
+        "apply":"Apply to all tasks?",
+        "width-height":"Wide-height conversion",
+        "percent":"Percentage conversion",
         "width":"Width:",
         "height":"Height:",
         "pixel":"PX",
@@ -257,13 +260,14 @@
       "notice-no-process":{
         "message": "Please convert first, then output!"
       },
-      "welcome":{
-        "description": "Steps：",
-        "step1":"1: Import GIF(.gif) files or directory (Support drag)",
-        "step2":"2: Set output directory",
-        "step3":"3: Click 'convert' button to run",
-        "step4":"4: Review the convert result"
-      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize tasks.",
+        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all resize tasks.",
+        "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
+     ],
       "dialog-popover-confirm-edit":{
         "title":"Description of GIF",
         "btnConfirm": "OK",

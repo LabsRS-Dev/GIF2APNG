@@ -13,7 +13,7 @@
       .page__toolbar-app-doc__change-dimensions__width{
         display: flex;
         flex-direction: row;
-        margin: rem-calc(5px) 0;
+        margin: rem-calc(10px) 0 rem-calc(5px) 0;
         align-items: center;
         .page__toolbar-app-doc__change-dimensions__width__percentage{
           width: rem-calc(65px);
@@ -30,7 +30,7 @@
       .page__toolbar-app-doc__change-dimensions__height{
         display: flex;
         flex-direction: row; 
-        margin: rem-calc(5px) 0;
+        margin: rem-calc(10px) 0 rem-calc(5px) 0;
         align-items: center;
         .page__toolbar-app-doc__change-dimensions__height__percentage{
           width: rem-calc(65px);
@@ -47,13 +47,33 @@
     }
     .page__toolbar-app-doc__change-dimensions__setting{
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       margin-top: rem-calc(5px);
       padding-top: rem-calc(5px);
       width: 45%;
-      height: rem-calc(80px);  
+      height: rem-calc(100px);  
       border-left: rem-calc(2px) solid $md-grey-400;   
       align-items: flex-start;
+      .change-dimensions__setting__first{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: rem-calc(5px);        
+      }
+      .change-dimensions__setting__second{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: rem-calc(5px);         
+      }
+      .change-dimensions__setting__third{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: rem-calc(5px);         
+      }
+      .change-dimensions__setting__fourth{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: rem-calc(5px);         
+      }
       .ui-checkbox{
         margin: 0 rem-calc(10px) 0 rem-calc(25px);
       }
