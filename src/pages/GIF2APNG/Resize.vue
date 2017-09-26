@@ -80,6 +80,7 @@
                             <div class="change-dimensions__setting__second">
                                 <ui-checkbox
                                     v-model="applyAllFileTask"
+                                    @change="CheckAllTaskActive"
                                     >
                                     {{ $t('pages.resize.dialog-config-change.apply') }}
                                 </ui-checkbox>                               
@@ -128,19 +129,31 @@
                         <div class="page__toolbar-app-doc__change-dimensions__size">
                             <div class="page__toolbar-app-doc__change-dimensions__width">
                                 <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
-                                <input type="text" class="widthRange" v-model.number ="inputWidthAll" disabled="disabled">
+                                <input  type="text" class="widthRange"
+                                        :disabled="!applyAllFileTask" 
+                                        v-model.number ="inputWidthAll"
+                                        @blur="changeInputActive()"
+                                        v-number-only 
+                                        minLength = 1 maxLength = 4        
+                                >
                                 <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                             <div class="page__toolbar-app-doc__change-dimensions__height">
                                 <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
-                                <input type="text" class="heightRange" v-model.number ="inputHeightAll" disabled="disabled">
+                                <input  type="text" class="heightRange"
+                                        :disabled="!applyAllFileTask"  
+                                        v-model.number ="inputHeightAll"                                       
+                                        @blur="changeInputActive()" 
+                                        v-number-only 
+                                        minLength = 1 maxLength = 4 
+                                >
                                 <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                         </div>
                         <div class="page__toolbar-app-doc__change-dimensions__setting">
                             <div class="change-dimensions__setting__first">
                                 <ui-checkbox
-                                    v-model="applyAllFileTask"
+                                    v-model="applyAllDirFileTask"
                                     >
                                     {{ $t('pages.resize.dialog-config-change.apply') }}
                                 </ui-checkbox>                                 
@@ -148,7 +161,7 @@
                             <div class="change-dimensions__setting__second">
                                 <ui-checkbox
                                     v-model="WidthHeightConversion"
-                                    @change="CheckboxSizeActive"                           
+                                    @change="CheckboxSizeActive"                                                              
                                     >
                                     {{ $t('pages.resize.dialog-config-change.width-height') }}
                                 </ui-checkbox>                            
@@ -267,7 +280,7 @@
                         </div>
                         <div class="ui-toolbar__top__metainfo__toolbar">
                             <ui-icon-button
-                                @click="onChangeImageSize(item)"
+                                @click="onChangeImageSize(item,index)"
                                 type="secondary"
                                 color="black"
                                 size="small"
@@ -426,7 +439,9 @@ var inputWidth;          // 文件类型输入框显示宽度
 var inputHeight;         // 文件类型输入框显示高度
 var inputWidthAll;       // 文件夹类型输入框显示宽度
 var inputHeightAll;      // 文件夹类型输入框显示高度
-var finalPercentage;
+var finalPercentage;     // 确认时百分比
+var finalInputWidth;     // 确认时输入框内宽度
+var finalInputHeight;    // 确认时输入框内高度
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -446,11 +461,15 @@ export default {
             defaultCurHeight:0,
             stats : stats,
             percentage:defaultSides,
-            finalPercentage:finalPercentage,      //  确认时百分比
+            finalPercentage:finalPercentage,
+            finalInputWidth:finalInputWidth,
+            finalInputHeight:finalInputHeight,   
             inputWidth:inputWidth,
             inputHeight:inputHeight,
-            inputWidthAll:inputWidthAll,
-            inputHeightAll:inputHeightAll,
+            inputWidthAll:0,
+            inputHeightAll:0,
+            applyAllDirFileTask:true,
+            allowAccess:true,
             enableMaintainAspectRatio:true,
             applyAllFileTask:false,
             WidthHeightConversion:false,
@@ -937,7 +956,9 @@ export default {
                     that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput ? true : false
+                        overwrite: that.enableOverWriteOutput ? true : false,
+                        width: that.finalInputWidth,
+                        height: that.finalInputHeight
                     }, (data) => {
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
@@ -984,7 +1005,7 @@ export default {
         },
 
         /**
-        * @function __abi__start_ResizeGifTask   调用处理gif转换成apng格式任务
+        * @function __abi__start_ResizeGifTask   调用处理gif转换成gif尺寸
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Object} config 调用的配置选项
         * @param  {Function} handler 回调处理
@@ -1043,7 +1064,7 @@ export default {
         },
 
         /**
-        * @function __abi__cancel_Gif2apngTask 调用停止处理gif转换成apng格式任务
+        * @function __abi__cancel_Gif2apngTask 调用停止处理gif转换尺寸
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Function} handler 回调处理
         * @return {type} {description}
@@ -1142,16 +1163,28 @@ export default {
                 cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
                 cdg.callbackConfirm = () => { that.recordedDataValue(item) }
                 cdg.callbackDeny = () => { that.reductionPercentValue() }
-                //cdg.callbackClose = () => { that.reductionPercentValue() }
+                cdg.callbackClose = () => { that.reductionPercentValue() }
 
                 var dialog = that.$refs[cdg.ref]
                 that.curWidth = item.dimensions.data.width
                 that.curHeight = item.dimensions.data.height
                 that.defaultCurWidth = item.dimensions.data.width
                 that.defaultCurHeight = item.dimensions.data.height
-                $('.sliderRange').css('background-size', that.percentage +'% 100%' )
-                that.inputWidth = Math.round(that.curWidth)
-                that.inputHeight = Math.round(that.curHeight)
+                if(that.PercentageConversion){
+                    $('.sliderRange').css('background-size', that.percentage +'% 100%' )
+                }
+                if(that.enableMaintainAspectRatio){
+                    that.inputWidth = Math.round(that.curWidth)
+                    that.inputHeight = Math.round(that.curHeight)
+                    that.percentage = 100
+                    that.finalPercentage = 100
+                }else if(that.applyAllFileTask && that.WidthHeightConversion == true){
+                    that.inputWidth = that.finalInputWidth
+                    that.inputHeight = that.finalInputHeight
+                }else if(that.applyAllFileTask == true && that.PercentageConversion == true){
+                    that.inputWidth = Math.round(that.curWidth)
+                    that.inputHeight = Math.round(that.curHeight)                   
+                }
                 dialog.open()
             } else {
                 var $ = Util.util.getJQuery$()
@@ -1159,33 +1192,49 @@ export default {
                 cdg.title = that.$t('pages.resize.dialog-config-change.title')
                 cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
                 cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
-                cdg.callbackConfirm = () => { that.recordedAllDataValue() }
+                cdg.callbackConfirm = () => { that.recordedDirDataValue() }
                 cdg.callbackDeny = () => { that.reductionPercentValue() }
-                //cdg.callbackClose = () => { that.reductionPercentValue() }
-
+                cdg.callbackClose = () => { that.reductionPercentValue() }
+                
                 var dialog = that.$refs[cdg.ref]
-                $('.sliderRange').css('background-size', that.percentage +'% 100%' )
-                that.inputWidthAll = 0
-                that.inputHeightAll = 0
+                if(that.PercentageConversion){
+                     $('.sliderRange').css('background-size', that.percentage +'% 100%' )
+                }
                 dialog.open()
             }
         },
         recordedDataValue(item){
             var that = this
-            that.percentage = that.finalPercentage
-            item.dimensions.data.width = that.inputWidth
-            item.dimensions.data.height = that.inputHeight       
-        },
-        recordedAllDataValue(){
-            var that = this
-            
+            if(that.applyAllFileTask == true && that.WidthHeightConversion == true){
+                that.inputWidth = that.finalInputWidth
+                that.inputHeight = that.finalInputHeight
+                that.percentage = 100
+            }else if(that.applyAllFileTask == true && that.PercentageConversion == true){
+                that.percentage = that.finalPercentage
+                item.dimensions.data.width = that.inputWidth
+                item.dimensions.data.height = that.inputHeight
+            }else if(that.enableMaintainAspectRatio){
+                item.dimensions.data.width = that.inputWidth
+                item.dimensions.data.height = that.inputHeight
+                that.finalPercentage = that.percentage
+                that.allowAccess = false
+            }    
         },
         reductionPercentValue(){
             var that = this
-            that.percentage = 100
-            that.applyAllFileTask = false
-            that.WidthHeightConversion = false
-            that.PercentageConversion = true
+            that.allowAccess = false
+        },
+        recordedDirDataValue(){
+            var that = this
+            if(that.WidthHeightConversion){
+                if(that.inputWidthAll == ''){
+                    that.inputWidthAll = 0
+                }else if(that.inputHeightAll == ''){
+                    that.inputHeightAll = 0
+                }
+            }else if(that.PercentageConversion){
+                that.finalPercentage = that.percentage
+            }
         },
         ValidateWidthNumber(value){
             var that = this
@@ -1199,7 +1248,7 @@ export default {
         },
         ValidateHeightNumber(value){
             var that = this
-            if(that.enableMaintainAspectRatio == true){
+            if(that.enableMaintainAspectRatio == true && that.applyAllFileTask == false){
                 that.inputActive = 100
                 that.curHeight = value
                 that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
@@ -1214,12 +1263,23 @@ export default {
         getCheckboxActive(value, e){
             var that = this 
             var $ = Util.util.getJQuery$()
+            that.applyAllFileTask = !e.target.checked
             if(e.target.checked == true){
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%')
             }else {
                 $(".sliderRange").attr("disabled","disabled")
                 $('.sliderRange').css('background-size', '0% 100%')
+            }
+        },
+        CheckAllTaskActive(value, e){
+            var that = this 
+            that.enableMaintainAspectRatio = !e.target.checked
+            if(e.target.checked == true && that.PercentageConversion == true){
+                that.inputWidth = that.finalInputWidth
+                that.inputHeight = that.finalInputHeight
+            }else if (e.target.checked == true && that.WidthHeightConversion == true){
+                that.percentage = that.finalPercentage
             }
         },
         CheckboxSizeActive(value, e){
@@ -1346,68 +1406,81 @@ export default {
             var $ = Util.util.getJQuery$()
             this.finalPercentage = newSides
             $('.sliderRange').css('background-size', newSides +'% 100%' )
-            if(this.inputActive == 10 || this.inputActive == 100){
-                var sidesDifference = newSides - oldSides
-                if (sidesDifference > 0) {
-                    for (var i = 1; i <= sidesDifference; i++) {
-                        this.stats.push(100)
-                    }
+            if(this.allowAccess){
+                if(this.inputActive == 10 || this.inputActive == 100){
+                    var sidesDifference = newSides - oldSides
+                    if (sidesDifference > 0) {
+                        for (var i = 1; i <= sidesDifference; i++) {
+                            this.stats.push(100)
+                        }
 
+                    } else {
+                        var absoluteSidesDifference = Math.abs(sidesDifference)
+                        for (var i = 1; i <= absoluteSidesDifference; i++) {
+                            this.stats.shift()
+                        }
+                    }                
                 } else {
-                    var absoluteSidesDifference = Math.abs(sidesDifference)
-                    for (var i = 1; i <= absoluteSidesDifference; i++) {
-                        this.stats.shift()
-                    }
+                    var sidesDifference = newSides - oldSides
+                    if (sidesDifference > 0 && this.enableMaintainAspectRatio == true) {
+                        for (var i = 1; i <= sidesDifference; i++) {
+                            this.stats.push(100)
+                        }
+                        this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
+                        this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
+                        this.inputWidth = Math.round(this.curWidth)
+                        this.inputHeight = Math.round(this.curHeight)
+                    } else if(sidesDifference <= 0 && this.enableMaintainAspectRatio == true){
+                        var absoluteSidesDifference = Math.abs(sidesDifference)
+                        for (var i = 1; i <= absoluteSidesDifference; i++) {
+                            this.stats.shift()
+                        }
+                        this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
+                        this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
+                        this.inputWidth = Math.round(this.curWidth)
+                        this.inputHeight = Math.round(this.curHeight)
+                    }                
                 }                
-            } else {
-                var sidesDifference = newSides - oldSides
-                if (sidesDifference > 0) {
-                    for (var i = 1; i <= sidesDifference; i++) {
-                        this.stats.push(100)
-                    }
-                    this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
-                    this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
-                    this.inputWidth = Math.round(this.curWidth)
-                    this.inputHeight = Math.round(this.curHeight)
-                } else {
-                    var absoluteSidesDifference = Math.abs(sidesDifference)
-                    for (var i = 1; i <= absoluteSidesDifference; i++) {
-                        this.stats.shift()
-                    }
-                    this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
-                    this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
-                    this.inputWidth = Math.round(this.curWidth)
-                    this.inputHeight = Math.round(this.curHeight)
-                }                
+            }else {
+                this.allowAccess = true
             }
         },
         inputWidth(val, oldVal){
             var that = this
+            that.finalInputWidth = val
             if(val > that.defaultCurWidth){
                 that.inputWidth = that.defaultCurWidth
                 that.inputHeight = that.defaultCurHeight
                 that.percentage = 100
-            }
+            }                
+
         },
         inputHeight(val, oldVal){
             var that = this
+            that.finalInputHeight = val
             if(val > that.defaultCurHeight){
                 that.inputWidth = that.defaultCurWidth
                 that.inputHeight = that.defaultCurHeight
                 that.percentage = 100
-            }
+            }                
         },
         enableMaintainAspectRatio(val,oldVal){
             var that = this
             var widthRatio = that.inputWidth / that.defaultCurWidth
             var heightRatio = that.inputHeight / that.defaultCurHeight
-            if(val == true && widthRatio > heightRatio){
+            if(val == true && widthRatio >= heightRatio && that.WidthHeightConversion == true){
                 that.inputHeight = that.defaultCurHeight*widthRatio
                 that.percentage = Math.round(widthRatio*100)
-            }else if(val == true && widthRatio < heightRatio){
+            } else if(val == true && widthRatio <= heightRatio && that.WidthHeightConversion == true){
                 that.inputWidth = that.defaultCurWidth*heightRatio
-                that.percentage = Math.round(heightRatio*100)                
-            }
+                that.percentage = Math.round(heightRatio*100)              
+            } else if(val == true && that.PercentageConversion == true){
+                that.percentage = that.finalPercentage
+                that.curWidth = (that.defaultCurWidth/100)*that.percentage
+                that.curHeight = (that.defaultCurHeight/100)*that.percentage
+                that.inputWidth = Math.round(this.curWidth)
+                that.inputHeight = Math.round(this.curHeight)
+            } 
         }
     },
     components: {
