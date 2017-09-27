@@ -320,14 +320,13 @@
         "title":"Select a output directory",
         "prompt":"Select"
       },
-      "welcome":{
-        "description": "No download of GIF images, go to download ~ ",
-        "step1":"Button action: ",
-        "step2":"Button 1: Set output directory",
-        "step3":"Button 2: Remove download directory",
-        "step4":"Button 3: Re-Download all the GIF images",
-        "step5":"Button 4: Re-Download the failed GIF images"
-      }       
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+        "1. Click \"<i class='fa fa-folder fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+        "2. Click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
+        "3. You can click \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download all the GIF images.",
+        "4. You can click \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download the failed GIF images."
+     ]      
     },
     "abouts":{
       "header":{

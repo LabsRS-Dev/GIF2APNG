@@ -160,13 +160,14 @@
       "notice-no-process":{
         "message": "请先执行处理，然后再执行输出！"
       },
-      "welcome":{
-        "description": "操作步骤：",
-        "step1":"Step1: 导入GIF动画文件或者文件目录（支持拖拽）",
-        "step2":"Step2: 设置文件输出地址",
-        "step3":"Step3: 执行转换",
-        "step4":"Step4: 查看转换结果"
-      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+        "1. 点击 \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" 或 \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来添加新的任务.",
+        "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
+        "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
+        "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
+        "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+     ],
       "dialog-popover-confirm-edit":{
         "title":"GIF动画信息描述",
         "btnConfirm": "确定",
@@ -259,13 +260,14 @@
       "notice-no-process":{
         "message": "请先执行处理，然后再执行输出！"
       },
-      "welcome":{
-        "description": "操作步骤：",
-        "step1":"Step1: 导入GIF动画文件或者文件目录（支持拖拽）",
-        "step2":"Step2: 设置文件输出地址",
-        "step3":"Step3: 执行转换",
-        "step4":"Step4: 查看转换结果"
-      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+        "1. 点击 \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" 或 \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来添加新的任务.",
+        "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
+        "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
+        "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
+        "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+     ],
       "dialog-popover-confirm-edit":{
         "title":"GIF动画信息描述",
         "btnConfirm": "确定",
@@ -318,14 +320,13 @@
         "title":"请选择输出目录",
         "prompt":"选择"
       },
-      "welcome":{
-        "description": "还没有下载的GIF图片哦,快去下载吧~",
-        "step1":"按钮作用：",
-        "step2":"按钮1: 设置输出地址",
-        "step3":"按钮2: 清空下载目录",
-        "step4":"按钮3: 重新下载所有GIF图片",
-        "step5":"按钮4: 重新下载下载失败的GIF图片"
-      }      
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+        "1. 点击 \"<i class='fa fa-folder fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出地址.",
+        "2. 点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来清空下载目录.",
+        "3. 您可以点击 \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来重新下载所有GIF图片.",
+        "4. 您可以点击 \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来重新下载下载失败的GIF图片."
+     ]       
     },
     "abouts":{
       "header":{

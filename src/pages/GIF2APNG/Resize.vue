@@ -474,6 +474,7 @@ export default {
             applyAllFileTask:false,
             WidthHeightConversion:false,
             PercentageConversion:true,
+            onChangeTestFile:Boolean,
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -1154,8 +1155,8 @@ export default {
         },
         onChangeImageSize(item){
             var  that = this
-            var path = true
-            if(path){                ////////////    BS.b$.App.checkPathIsFile(item.path)   检验item是否为文件
+            //var path = false
+            if(BS.b$.App.checkPathIsFile(item.path)){                ////////////    BS.b$.App.checkPathIsFile(item.path)   检验item是否为文件
                 var $ = Util.util.getJQuery$()
                 const cdg = that.changeConfigDialog
                 cdg.title = that.$t('pages.resize.dialog-config-change.title')
@@ -1170,6 +1171,7 @@ export default {
                 that.curHeight = item.dimensions.data.height
                 that.defaultCurWidth = item.dimensions.data.width
                 that.defaultCurHeight = item.dimensions.data.height
+                that.onChangeTestFile = true
                 if(that.PercentageConversion){
                     $('.sliderRange').css('background-size', that.percentage +'% 100%' )
                 }
@@ -1193,10 +1195,13 @@ export default {
                 cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
                 cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
                 cdg.callbackConfirm = () => { that.recordedDirDataValue() }
-                cdg.callbackDeny = () => { that.reductionPercentValue() }
-                cdg.callbackClose = () => { that.reductionPercentValue() }
+                cdg.callbackDeny = () => {}
+                cdg.callbackClose = () => {}
                 
                 var dialog = that.$refs[cdg.ref]
+                that.enableMaintainAspectRatio = false
+                that.onChangeTestFile = false
+                that.allowAccess = true
                 if(that.PercentageConversion){
                      $('.sliderRange').css('background-size', that.percentage +'% 100%' )
                 }
@@ -1233,7 +1238,7 @@ export default {
                     that.inputHeightAll = 0
                 }
             }else if(that.PercentageConversion){
-                that.finalPercentage = that.percentage
+                that.percentage = that.finalPercentage
             }
         },
         ValidateWidthNumber(value){
@@ -1421,25 +1426,39 @@ export default {
                         }
                     }                
                 } else {
-                    var sidesDifference = newSides - oldSides
-                    if (sidesDifference > 0 && this.enableMaintainAspectRatio == true) {
-                        for (var i = 1; i <= sidesDifference; i++) {
-                            this.stats.push(100)
-                        }
-                        this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
-                        this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
-                        this.inputWidth = Math.round(this.curWidth)
-                        this.inputHeight = Math.round(this.curHeight)
-                    } else if(sidesDifference <= 0 && this.enableMaintainAspectRatio == true){
-                        var absoluteSidesDifference = Math.abs(sidesDifference)
-                        for (var i = 1; i <= absoluteSidesDifference; i++) {
-                            this.stats.shift()
-                        }
-                        this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
-                        this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
-                        this.inputWidth = Math.round(this.curWidth)
-                        this.inputHeight = Math.round(this.curHeight)
-                    }                
+                    if(this.onChangeTestFile){
+                        var sidesDifference = newSides - oldSides
+                        if (sidesDifference > 0 && this.enableMaintainAspectRatio == true) {
+                            for (var i = 1; i <= sidesDifference; i++) {
+                                this.stats.push(100)
+                            }
+                            this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
+                            this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
+                            this.inputWidth = Math.round(this.curWidth)
+                            this.inputHeight = Math.round(this.curHeight)
+                        } else if(sidesDifference <= 0 && this.enableMaintainAspectRatio == true){
+                            var absoluteSidesDifference = Math.abs(sidesDifference)
+                            for (var i = 1; i <= absoluteSidesDifference; i++) {
+                                this.stats.shift()
+                            }
+                            this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
+                            this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
+                            this.inputWidth = Math.round(this.curWidth)
+                            this.inputHeight = Math.round(this.curHeight)
+                        }                        
+                    }else {
+                        var sidesDifference = newSides - oldSides
+                        if (sidesDifference > 0) {
+                            for (var i = 1; i <= sidesDifference; i++) {
+                                this.stats.push(100)
+                            }
+                        } else if(sidesDifference <= 0){
+                            var absoluteSidesDifference = Math.abs(sidesDifference)
+                            for (var i = 1; i <= absoluteSidesDifference; i++) {
+                                this.stats.shift()
+                            }
+                        }                        
+                    }
                 }                
             }else {
                 this.allowAccess = true
