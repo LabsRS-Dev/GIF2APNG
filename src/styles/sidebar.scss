@@ -89,6 +89,7 @@
 .dove-docs-sidebar__centent__scrollable{
     flex: 1;
     border-right:2px solid rgba(0,0,0,0.12);
+    background:  -webkit-gradient(linear, center top, center bottom, from($md-blue-50),to($md-brown-100));
 }
 .dove-docs-sidebar__scrollable {
     height: auto;

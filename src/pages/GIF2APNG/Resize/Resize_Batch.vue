@@ -344,7 +344,7 @@
 <script>
 import { BS, Util, _ , lodash } from 'dove.max.sdk'
 import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox} from 'keen-ui'
-import {Transfer} from '../../bridge/transfer'
+import {Transfer} from '../../../bridge/transfer'
 import echarts from "echarts"
 
 var baseID = "__page__resize__action__"

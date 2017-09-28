@@ -175,6 +175,14 @@
       }
     },
     "resize":{
+      "title":{
+        "top":"Welcome to the Resize page",
+        "botton":"To get started with Resize,do any of the following:"
+      },
+      "content":{
+        "tooltip_single":"To process a single picture.",
+        "tooltip_batch":"To batch process a group of pictures."
+      },
       "toolbar":{
         "import":"Import GIF(.gif) files",
         "importDir":"Import directory",
@@ -267,7 +275,17 @@
         "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize tasks.",
         "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all resize tasks.",
         "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
-     ],
+      ],
+      "single":{
+        "welcome":[
+          "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+          "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new task.",
+          "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+          "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize task.",
+          "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop resize task.",
+          "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
+        ]
+      },
       "dialog-popover-confirm-edit":{
         "title":"Description of GIF",
         "btnConfirm": "OK",
