@@ -79,13 +79,61 @@
                     v-for="(item, index) in $t('pages.resize.single.welcome')">
                 </p>
             </div>
-            <div class="page__examples-app-doc__welcome__image">
+            <div class="page__examples-app-doc__welcome__image" v-show="taskList.length >0">
                 <div
-                    class="page__examples-app-doc__welcome__image__single" 
+                    class="page__examples-app-doc__welcome__image__single"
                     v-for="(item, index) in taskList" 
                     :key="item.id"
                     >
-                        <img :src="item.path">
+                        <img :src="item.path" class="sliderImage">
+                        <div class="image__single_ribbon"></div>
+                </div>
+                <div class="page__examples-app-doc__welcome__image__setting">
+                    <div class="page__examples-app-doc__welcome__image__setting__size">
+                            <div class="page__examples-app-doc__welcome__image__setting__width">
+                                <span class="page__examples-app-doc__welcome__image__setting__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
+                                <input  type="text" class="widthRange"  
+                                        v-model.number ="inputWidth" 
+                                        @keyup="ValidateWidthNumber(inputWidth)" 
+                                        @blur="changeInputActive()" 
+                                        v-number-only 
+                                        minLength = 1 maxLength = 4
+                                >
+                                <span class="page__examples-app-doc__welcome__image__setting__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
+                            </div>
+                            <div class="page__examples-app-doc__welcome__image__setting__height">
+                                <span class="page__examples-app-doc__welcome__image__setting__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
+                                <input  type="text" class="heightRange" 
+                                        v-model.number ="inputHeight" 
+                                        @keyup="ValidateHeightNumber(inputHeight)" 
+                                        @blur="changeInputActive()" 
+                                        v-number-only 
+                                        minLength = 1 maxLength = 4
+                                >
+                                <span class="page__examples-app-doc__welcome__image__setting__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
+                            </div>
+                    </div>
+                    <div class="page__examples-app-doc__welcome__image__setting__adjust">
+                        <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
+                        <input type="range" min="1" max="100" v-model.number="percentage" :disabled="!enableMaintainAspectRatio" class="sliderRange">
+                        <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
+                    </div>
+                    <div class="page__examples-app-doc__welcome__image__setting__keep">
+                        <ui-checkbox
+                            v-model="enableMaintainAspectRatio"
+                            @change="getCheckboxActive"
+                            >
+                            {{ $t('pages.resize.dialog-config-change.setting') }}
+                        </ui-checkbox>
+                        <ui-icon-button
+                            @click="onToolReplayBtnClick()"
+                            type="secondary"
+                            size="small"
+                            color="primary"
+                            >
+                                <span class="fa fa-reply-all fa-lg fa-fw" :title="$t('pages.resize.content.reply')"></span>
+                        </ui-icon-button>                           
+                    </div>
                 </div>
             </div>
         </div>
@@ -181,9 +229,17 @@ var $LS$ = Settings.shareInstance()
 
 ////
 var hasInited = false     // 是否初始过
+////
+var inputWidth;           // 输入框显示宽度
+var inputHeight;          // 输入框显示高度
+var finalPercentage;      // 确认时百分比
+
 
 export default {
     data() {
+        var that = this
+        var defaultSides = 100
+        var stats = Array.apply(null, { length: defaultSides }).map(function () { return 100 })
         return {
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -193,7 +249,17 @@ export default {
             progressInterval: null,  // 进度条轮询
             lastOutputPath: $LS$.data.lastSelectOutputPath,
             availableOutputPathList: $LS$.data.outputPaths,
-
+            curWidth:0,
+            curHeight:0,
+            defaultCurWidth:0,
+            defaultCurHeight:0,
+            inputWidth:inputWidth,
+            inputHeight:inputHeight,
+            stats : stats,
+            percentage:defaultSides,
+            finalPercentage:defaultSides,
+            enableMaintainAspectRatio:true,
+            onChangeTestFile:true,
             confirmDialog:{
                 ref: 'default',
                 autofocus: 'none',
@@ -309,6 +375,20 @@ export default {
            ]
         }
     },
+    /////  限制输入框输入内容
+    directives: {
+        numberOnly: {
+            bind: function(el) {
+                el.handler = function() {
+                    el.value = el.value.replace(/\D+/, '')
+                }
+                el.addEventListener('input', el.handler)
+            },
+            unbind: function(el) {
+                el.removeEventListener('input', el.handler)
+            }
+        }
+    },
     methods:{
         // ------------------------- on Transfer Events
         onTransferIsNoraml() {
@@ -364,36 +444,78 @@ export default {
                 this.onBtnStopDoClick()
             }
         },
+        onToolReplayBtnClick(){
+            var that = this
+            var clientWidth = document.body.clientWidth
+            var clientHeight = document.body.clientHeight
+            var $ = Util.util.getJQuery$()
+            that.curWidth = that.defaultCurWidth
+            that.curHeight = that.defaultCurHeight
+            that.inputWidth = that.defaultCurWidth
+            that.inputHeight = that.defaultCurHeight
+            // if(that.finalPercentage !== 100){
+            //     that.onChangeTestFile = false
+            //     that.percentage = 100
+            // }
+            // if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+            //     $('.sliderImage').css('width',that.curWidth)
+            //     $('.sliderImage').css('height',that.curHeight)                            
+            // }else {
+            //     var cliWidth = that.curWidth/(clientWidth*0.4)
+            //     var cliHeight = that.curHeight/(clientHeight*0.6)
+            //     if(cliWidth > cliHeight){
+            //         var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+            //         $('.sliderImage').css('width',width)
+            //         $('.sliderImage').css('height',clientHeight*0.6)   
+            //     }else {
+            //         var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+            //         $('.sliderImage').css('width',clientWidth*0.4)
+            //         $('.sliderImage').css('height',height)
+            //     }
+            // }
+        },
 
         onBtnImportFilesClick(){
             var that = this
+            var $ = Util.util.getJQuery$()
             that.taskList = []
             console.log("-------------------- call import files")
                 // call bs
-                BS.b$.importFiles({
-                    title: this.$t('pages.resize.dialog-import-images.title'),
-                    prompt: this.$t('pages.resize.dialog-import-images.prompt'),
-                    allowMulSelection: true,
-                    types:[] // Note: too many formats
-                }, function(){ // Test code
-                    // Test: Windows 本地实际数据
-                    var img = [
-                                'http://img.mp.itc.cn/upload/20160323/22d014b2fcff4c199ed6f2e6ab4ae9fd.jpg',
-                                'http://img.mp.itc.cn/upload/20160322/62106ba2b7014f8d8814a999285548c7.jpg',
-                                'http://pic.962.net/up/2012-8/2012082011125260036.gif',
-                                'http://p2.so.qhimgs1.com/t01a4723418f8de871e.gif',
-                                'http://www.tfedu.org//forum//data//attachment//forum//201402//05//152308tr8pyys87do18yo8.gif'
-                            ]
-                    var index = Math.floor(Math.random() * 5)
-                    let ele = {fileName: 'RAW_NIKON_D7100.NEF', filePath:img[index], fileSize: '27.5MB',fileDimensions:{data:{width:250,height:150}}}
-                    let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
-                    that.taskList.push(taskObj)
-                    console.log('taskID-files=', taskObj.id)
-                    taskID2taskObj[taskObj.id] = taskObj
-                    return
-                }, function(data){ // Normal code
-                    that.__importFilesOrDir(data)
-                })
+            BS.b$.importFiles({
+                title: this.$t('pages.resize.dialog-import-images.title'),
+                prompt: this.$t('pages.resize.dialog-import-images.prompt'),
+                allowMulSelection: true,
+                types:[] // Note: too many formats
+            }, function(){ // Test code
+                // Test: Windows 本地实际数据
+                var img = [
+                            {path:'http://img.mp.itc.cn/upload/20160323/22d014b2fcff4c199ed6f2e6ab4ae9fd.jpg',width:400,height:224},
+                            {path:'http://img.mp.itc.cn/upload/20160322/62106ba2b7014f8d8814a999285548c7.jpg',width:280,height:157},
+                            {path:'http://pic.962.net/up/2012-8/2012082011125260036.gif',width:350,height:197},
+                            {path:'http://p2.so.qhimgs1.com/t01a4723418f8de871e.gif',width:585,height:240},
+                            {path:'http://www.tfedu.org//forum//data//attachment//forum//201402//05//152308tr8pyys87do18yo8.gif',width:460,height:768}
+                        ]
+                var index = Math.floor(Math.random() * 5)
+                let ele = {fileName: 'RAW_NIKON_D7100.NEF', filePath:img[index].path, fileSize: '27.5MB',fileDimensions:{data:{width:img[index].width,height:img[index].height}}}
+                let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
+                that.taskList.push(taskObj)
+                console.log('taskID-files=', taskObj.id)
+                taskID2taskObj[taskObj.id] = taskObj
+                return
+            }, function(data){ // Normal code
+                that.__importFilesOrDir(data)
+            })
+            that.curWidth = that.taskList[0].dimensions.data.width
+            that.curHeight = that.taskList[0].dimensions.data.height
+            that.defaultCurWidth = that.taskList[0].dimensions.data.width
+            that.defaultCurHeight = that.taskList[0].dimensions.data.height
+            that.inputWidth = Math.round(that.curWidth)
+            that.inputHeight = Math.round(that.curHeight) 
+            if(that.finalPercentage !== 100){
+                that.onChangeTestFile = false
+                that.percentage = 100
+            }  
+            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
         },
 
         onBtnRemoveAllClick(){
@@ -739,6 +861,187 @@ export default {
                         that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
                 }
             })
+        },
+        ValidateWidthNumber(value){
+            var that = this
+            var clientWidth = document.body.clientWidth
+            var clientHeight = document.body.clientHeight
+            if(that.enableMaintainAspectRatio == true){
+                that.inputActive = 10
+                that.curWidth = value
+                that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
+                that.inputHeight = Math.round(that.curHeight)
+                that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)
+                // if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                //     $('.sliderImage').css('width',that.curWidth)
+                //     $('.sliderImage').css('height',that.curHeight)                            
+                // }else if(that.curWidth >= clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                //     var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                //     $('.sliderImage').css('width',clientWidth*0.4)
+                //     $('.sliderImage').css('height',height)
+                // }else if(that.curWidth < clientWidth*0.4 && that.curHeight >= clientHeight*0.6) {
+                //     var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                //     $('.sliderImage').css('width',width)
+                //     $('.sliderImage').css('height',clientHeight*0.6)                           
+                // }  
+            }else {
+                that.curWidth = value
+                $('.sliderImage').css('width',that.curWidth)
+            }
+        },
+        ValidateHeightNumber(value){
+            var that = this
+            var clientWidth = document.body.clientWidth
+            var clientHeight = document.body.clientHeight
+            if(that.enableMaintainAspectRatio == true){
+                that.inputActive = 100
+                that.curHeight = value
+                that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
+                that.inputWidth = Math.round(that.curWidth)
+                that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)
+                // if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                //     $('.sliderImage').css('width',that.curWidth)
+                //     $('.sliderImage').css('height',that.curHeight)                            
+                // }else if(that.curWidth >= clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                //     var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                //     $('.sliderImage').css('width',clientWidth*0.4)
+                //     $('.sliderImage').css('height',height)
+                // }else if(that.curWidth < clientWidth*0.4 && that.curHeight >= clientHeight*0.6) {
+                //     var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                //     $('.sliderImage').css('width',width)
+                //     $('.sliderImage').css('height',clientHeight*0.6)                           
+                // }   
+            }else {
+                that.curHeight = value
+                $('.sliderImage').css('height',that.curHeight)
+            }
+        },
+        changeInputActive(){
+            var that = this
+            that.inputActive = 0
+        },
+        getCheckboxActive(value, e){
+            var that = this 
+            var $ = Util.util.getJQuery$()
+            if(e.target.checked == true){
+                $('.sliderRange').css('background-size', that.percentage +'% 100%')
+            }else {
+                $('.sliderRange').css('background-size', '0% 100%')
+            }
+        }        
+    },
+    watch:{
+        percentage(newSides, oldSides){
+            var that = this
+            var clientWidth = document.body.clientWidth
+            var clientHeight = document.body.clientHeight
+            var $ = Util.util.getJQuery$()
+            that.finalPercentage = newSides
+            $('.sliderRange').css('background-size', newSides +'% 100%' )
+            if(that.inputActive == 10 || that.inputActive == 100){
+                var sidesDifference = newSides - oldSides
+                if (sidesDifference > 0) {
+                    for (var i = 1; i <= sidesDifference; i++) {
+                        that.stats.push(100)
+                    }
+                } else {
+                    var absoluteSidesDifference = Math.abs(sidesDifference)
+                    for (var i = 1; i <= absoluteSidesDifference; i++) {
+                        that.stats.shift()
+                    }
+                }                
+            } else {
+                var sidesDifference = newSides - oldSides
+                if(that.onChangeTestFile){
+                    if (sidesDifference > 0 && that.enableMaintainAspectRatio == true) {
+                        for (var i = 1; i <= sidesDifference; i++) {
+                            that.stats.push(100)
+                        }
+                        that.curWidth = that.curWidth + (that.defaultCurWidth/100)*sidesDifference
+                        that.curHeight = that.curHeight + (that.defaultCurHeight/100)*sidesDifference
+                        that.inputWidth = Math.round(that.curWidth)
+                        that.inputHeight = Math.round(that.curHeight)
+                        if(that.curWidth <= clientWidth*0.4 && that.curHeight <= clientHeight*0.6){
+                            $('.sliderImage').css('width',that.curWidth)
+                            $('.sliderImage').css('height',that.curHeight)                            
+                        }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                            var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                            $('.sliderImage').css('width',clientWidth*0.4)
+                            $('.sliderImage').css('height',height)
+                        }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6) {
+                            var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                            $('.sliderImage').css('width',width)
+                            $('.sliderImage').css('height',clientHeight*0.6)                           
+                        }
+                    } else if(sidesDifference <= 0 && that.enableMaintainAspectRatio == true){
+                        var absoluteSidesDifference = Math.abs(sidesDifference)
+                        for (var i = 1; i <= absoluteSidesDifference; i++) {
+                            that.stats.shift()
+                        }
+                        that.curWidth = that.curWidth - (that.defaultCurWidth/100)*absoluteSidesDifference
+                        that.curHeight = that.curHeight - (that.defaultCurHeight/100)*absoluteSidesDifference
+                        that.inputWidth = Math.round(that.curWidth)
+                        that.inputHeight = Math.round(that.curHeight)
+                        if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                            $('.sliderImage').css('width',that.curWidth)
+                            $('.sliderImage').css('height',that.curHeight)                            
+                        }else if(that.curWidth >= clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                            var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                            $('.sliderImage').css('width',clientWidth*0.4)
+                            $('.sliderImage').css('height',height)
+                        }else if(that.curWidth < clientWidth*0.4 && that.curHeight >= clientHeight*0.6) {
+                            var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                            $('.sliderImage').css('width',width)
+                            $('.sliderImage').css('height',clientHeight*0.6)                           
+                        }
+                    } 
+                } else {
+                    if (sidesDifference > 0) {
+                        for (var i = 1; i <= sidesDifference; i++) {
+                            this.stats.push(100)
+                        }
+                    } else if(sidesDifference <= 0){
+                        var absoluteSidesDifference = Math.abs(sidesDifference)
+                        for (var i = 1; i <= absoluteSidesDifference; i++) {
+                            this.stats.shift()
+                        }
+                    }
+                    that.onChangeTestFile = true
+                }    
+            }                
+        },
+        inputWidth(val, oldVal){
+            var that = this
+            that.finalInputWidth = val
+            if(val > that.defaultCurWidth){
+                that.inputWidth = that.defaultCurWidth
+                that.inputHeight = that.defaultCurHeight
+                that.percentage = 100
+            }                
+
+        },
+        inputHeight(val, oldVal){
+            var that = this
+            that.finalInputHeight = val
+            if(val > that.defaultCurHeight){
+                that.inputWidth = that.defaultCurWidth
+                that.inputHeight = that.defaultCurHeight
+                that.percentage = 100
+            }                
+        },
+        enableMaintainAspectRatio(val,oldVal){
+            var that = this
+            var widthRatio = that.inputWidth / that.defaultCurWidth
+            var heightRatio = that.inputHeight / that.defaultCurHeight
+            if(val == true && widthRatio >= heightRatio){
+                that.inputHeight = Math.round(that.defaultCurHeight*widthRatio)
+                that.percentage = Math.round(widthRatio*100)
+                that.onChangeTestFile = false
+            } else if(val == true && widthRatio <= heightRatio){
+                that.inputWidth = Math.round(that.defaultCurWidth*heightRatio)
+                that.percentage = Math.round(heightRatio*100)
+                that.onChangeTestFile = false              
+            }
         }
     },
     components: {

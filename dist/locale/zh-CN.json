@@ -180,6 +180,7 @@
         "botton":"要开始使用页面，请执行以下步骤:"
       },
       "content":{
+        "reply":"撤销",
         "tooltip_single":"单独处理一张图片",
         "tooltip_batch":"批量处理一组图片"
       },
@@ -283,7 +284,8 @@
           "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
           "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
           "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止任务.",
-          "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除任务."
+          "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除任务.",
+          "6. 您可以点击 \"<i class='fa fa-reply-all fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来撤销改动."
       ]
      },
       "dialog-popover-confirm-edit":{
