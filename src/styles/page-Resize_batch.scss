@@ -48,31 +48,40 @@
     .page__toolbar-app-doc__change-dimensions__setting{
       display: flex;
       flex-direction: column;
-      margin-top: rem-calc(5px);
-      padding-top: rem-calc(5px);
+      margin-top: 0;
+      padding-top: 0;
       width: 45%;
       height: rem-calc(100px);  
       border-left: rem-calc(2px) solid $md-grey-400;   
       align-items: flex-start;
+      .change-dimensions__setting__lock{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .change-dimensions__setting__lock__title{
+          font-size: rem-calc(12px)
+        }         
+      }
+      .change-dimensions__setting__unlock{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .change-dimensions__setting__unlock__title{
+          font-size: rem-calc(12px)
+        }         
+      }
       .change-dimensions__setting__first{
         display: flex;
         flex-direction: row;
-        margin-bottom: rem-calc(5px);        
+        margin: rem-calc(6px) 0;        
       }
       .change-dimensions__setting__second{
         display: flex;
         flex-direction: row;
-        margin-bottom: rem-calc(5px);         
+        margin: rem-calc(6px) 0;          
       }
-      .change-dimensions__setting__third{
-        display: flex;
-        flex-direction: row;
-        margin-bottom: rem-calc(5px);         
-      }
-      .change-dimensions__setting__fourth{
-        display: flex;
-        flex-direction: row;
-        margin-bottom: rem-calc(5px);         
+      .ui-icon-button{
+        margin: 0 rem-calc(2px) 0 rem-calc(18px);
       }
       .ui-checkbox{
         margin: 0 rem-calc(10px) 0 rem-calc(25px);

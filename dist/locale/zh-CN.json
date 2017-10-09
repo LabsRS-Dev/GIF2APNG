@@ -189,6 +189,7 @@
         "importDir":"导入GIF动画目录",
         "remove":"清空导入",
         "outputFolder": "选择输出目录",
+        "adjustSize" :"图像尺寸调整",
         "fix":"开始执行",
         "chancel":"停止"
       },
@@ -248,7 +249,9 @@
         "width":"宽度:",
         "height":"高度:",
         "pixel":"像素",
-        "setting":"锁定宽高比"
+        "setting":"锁定宽高比",
+        "lock":"已锁定比例",
+        "unlock":"未锁定比例"
       },
       "dialog-config-preview":{
         "title":"信息预览",
@@ -273,9 +276,10 @@
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
         "1. 点击 \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" 或 \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来添加新的任务.",
         "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
-        "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
-        "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
-        "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+        "3. 点击 \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来调整图像尺寸并且您可以点击 \"<i class='fa fa-lock  fa-lg fa-fw' style='color:#000f;'></i>\" 或者 \"<i class='fa fa-unlock fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来改变是否锁定比例.",
+        "4. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
+        "5. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
+        "6. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
      ],
      "single":{
         "welcome":[
