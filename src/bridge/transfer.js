@@ -233,7 +233,8 @@ __$p$.http = {
       contentType: 'application/json',
       crossDomain: true
     })
-    $.ajax(config)
+    const $ = Util.util.getJQuery$()
+    return $.ajax(config)
   },
   call: function (apiKey, options = {}, handler = () => {}, testHandler = () => {}) {
     var t$ = this
@@ -243,7 +244,6 @@ __$p$.http = {
       return
     }
 
-    const $ = Util.util.getJQuery$()
     const cfg = ServerAPIMap[apiKey]
     if (cfg) {
       t$.sub_call(cfg.api, cfg.type, options, handler)
