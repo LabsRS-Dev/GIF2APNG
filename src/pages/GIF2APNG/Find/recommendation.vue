@@ -34,6 +34,7 @@
     import { BS, Util, _ } from 'dove.max.sdk'
     import {Transfer} from '../../../bridge/transfer'
     import VLoading from './loading.vue'
+    require('swiper/dist/css/swiper.css')
 
     const taskPrefix = 'children-recommendation-image-id-' + _.now()
     class Listbox {

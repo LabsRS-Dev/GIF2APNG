@@ -29,38 +29,84 @@
             </ui-confirm>
 
             <ui-confirm
-                :autofocus="changeConfigDialog.autofocus"
-                :confirm-button-text="changeConfigDialog.confirmButtonText"
-                :deny-button-text="changeConfigDialog.denyButtonText"
-                :ref="changeConfigDialog.ref"
-                :title="changeConfigDialog.title"
+                :autofocus="changeDirConfigDialog.autofocus"
+                :confirm-button-text="changeDirConfigDialog.confirmButtonText"
+                :deny-button-text="changeDirConfigDialog.denyButtonText"
+                :ref="changeDirConfigDialog.ref"
+                :title="changeDirConfigDialog.title"
 
-                @confirm="changeConfigDialog.callbackConfirm"
-                @deny="changeConfigDialog.callbackDeny"
-                @open="changeConfigDialog.callbackOpen"
-                @close="changeConfigDialog.callbackClose"
+                @confirm="changeDirConfigDialog.callbackConfirm"
+                @deny="changeDirConfigDialog.callbackDeny"
+                @open="changeDirConfigDialog.callbackOpen"
+                @close="changeDirConfigDialog.callbackClose"
                 >
                 <div class="page__toolbar-app-doc__change-dimensions">
                     <div class="page__toolbar-app-doc__change-dimensions__content">
                         <div class="page__toolbar-app-doc__change-dimensions__size">
                             <div class="page__toolbar-app-doc__change-dimensions__width">
                                 <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
-                                <input type="text" v-model.number ="inputWidth" @keyup="ValidateWidthNumber(inputWidth)" @blur="changeInputActive()" v-number-only minLength = 1 maxLength = 4>
+                                <input  type="text" class="widthRange"
+                                        :disabled="!applyAllFileTask" 
+                                        v-model.number ="inputWidthAll"
+                                        @focus="ValidateWidthNumber"
+                                        v-number-only 
+                                        minLength = 1 maxLength = 4        
+                                >
                                 <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                             <div class="page__toolbar-app-doc__change-dimensions__height">
                                 <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
-                                <input type="text" v-model.number ="inputHeight" @keyup="ValidateHeightNumber(inputHeight)" @blur="changeInputActive()" v-number-only minLength = 1 maxLength = 4>
+                                <input  type="text" class="heightRange"
+                                        :disabled="!applyAllFileTask"  
+                                        v-model.number ="inputHeightAll"
+                                        @focus="ValidateHeightNumber"                                        
+                                        v-number-only 
+                                        minLength = 1 maxLength = 4 
+                                >
                                 <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
                             </div>
                         </div>
                         <div class="page__toolbar-app-doc__change-dimensions__setting">
-                            <ui-checkbox
-                                v-model="enableMaintainAspectRatio"
-                                @change="getCheckboxActive"
-                                >
-                            </ui-checkbox>
-                            <span class="change-dimensions__setting">{{ $t('pages.resize.dialog-config-change.setting') }}</span>                            
+                            <div class="change-dimensions__setting__lock" v-if="onBtnLock">
+                                <ui-icon-button
+                                    @click="onBtnLockClick()"
+                                    :disabled="!WidthHeightConversion"
+                                    type="secondary"
+                                    size="small"
+                                    color="primary"                                                              
+                                    >
+                                    <span class="fa fa-lock fa-lg fa-fw"></span>
+                                </ui-icon-button> 
+                                <span class="change-dimensions__setting__lock__title">{{ $t('pages.resize.dialog-config-change.lock') }}</span>                           
+                            </div>
+                            <div class="change-dimensions__setting__unlock" v-if="!onBtnLock">
+                                <ui-icon-button
+                                    @click="onBtnUnlockClick()"
+                                    :disabled="!WidthHeightConversion"
+                                    type="secondary"
+                                    size="small"
+                                    color="primary"                                                             
+                                    >
+                                    <span class="fa fa-unlock fa-lg fa-fw"></span>
+                                </ui-icon-button>
+                                <span class="change-dimensions__setting__unlock__title">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
+                            </div>                              
+                            <div class="change-dimensions__setting__first">
+                                <ui-checkbox
+                                    v-model="WidthHeightConversion"
+                                    @change="CheckboxSizeActive"                                                              
+                                    >
+                                    {{ $t('pages.resize.dialog-config-change.width-height') }}
+                                </ui-checkbox>                            
+                            </div>
+                            <div class="change-dimensions__setting__second">
+                                <ui-checkbox
+                                    v-model="PercentageConversion"
+                                    @change="CheckboxPercentActive"
+                                    >
+                                    {{ $t('pages.resize.dialog-config-change.percent') }}
+                                </ui-checkbox>                                
+                            </div>                             
                         </div>
                     </div>
                     <div class="page__toolbar-app-doc__change-dimensions__adjust">
@@ -70,7 +116,6 @@
                     </div>
                 </div>
             </ui-confirm>
-
             <ui-confirm
                 :autofocus="outputConfigDialog.autofocus"
                 :confirm-button-text="outputConfigDialog.confirmButtonText"
@@ -135,11 +180,16 @@
         </div>
 
         <div class="page__examples page__examples-app-doc">
-            <svg
-                :id="welcomeContentID"
+            <div
                 class="page__examples-app-doc__welcome"
                 v-show="taskList.length <= 0"
-                />
+                >
+                <p 
+                    v-html="item"
+                    :key="index"
+                    v-for="(item, index) in $t('pages.resize.welcome')">
+                </p>
+            </div>
             <ui-alert
                 :class="getItemStyleClass(item)"
                 :type="item.style.type"
@@ -150,7 +200,7 @@
 
                 v-show="item.style.show"
                 v-for="(item, index) in taskList">
-                <div class="page__examples-app-doc__item">
+                <div class="page__examples-app-doc__item" :data-taskid="item.id">
                     <div class="ui-toolbar__top">
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
@@ -162,15 +212,6 @@
                             </strong>
                         </div>
                         <div class="ui-toolbar__top__metainfo__toolbar">
-                            <ui-icon-button
-                                @click="onChangeImageSize(item)"
-                                type="secondary"
-                                color="black"
-                                size="small"
-                                >
-                                <span class="fa fa-cog fa-lg fa-fw" :title=" $t('pages.resize.task-item.change-size') "></span>
-                            </ui-icon-button>
-
                             <ui-icon-button
                                 @click="onOpenParentDir(item.fixOutDir)"
                                 type="secondary"
@@ -225,9 +266,9 @@
 </template>
 
 <script>
-import { BS, Util, _ } from 'dove.max.sdk'
+import { BS, Util, _ , lodash } from 'dove.max.sdk'
 import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox} from 'keen-ui'
-import {Transfer} from '../../bridge/transfer'
+import {Transfer} from '../../../bridge/transfer'
 import echarts from "echarts"
 
 var baseID = "__page__resize__action__"
@@ -318,8 +359,11 @@ var beforePath = ''      // 原图片地址
 var afterPath = ''       //修改后图片地址
 //////
 var inputActive;         // 输入框是否处于激活状态
-var inputWidth;          // 输入框显示宽度
-var inputHeight;         // 输入框显示高度
+var inputWidthAll;       // 文件夹类型输入框显示宽度
+var inputHeightAll;      // 文件夹类型输入框显示高度
+var finalPercentage;     // 确认时百分比
+var finalInputWidth;     // 确认时输入框内宽度
+var finalInputHeight;    // 确认时输入框内高度
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -337,11 +381,18 @@ export default {
             curHeight:0,
             defaultCurWidth:0,
             defaultCurHeight:0,
-            changeCurWidth:0,      // 最终转换的宽度
-            changeCurHeight:0,     // 最终转换的高度
             stats : stats,
             percentage:defaultSides,
-            enableMaintainAspectRatio:true,
+            finalPercentage:finalPercentage,
+            finalInputWidth:finalInputWidth,
+            finalInputHeight:finalInputHeight,   
+            inputWidthAll:inputWidthAll,
+            inputHeightAll:inputHeightAll,
+            applyAllDirFileTask:true,
+            applyAllFileTask:false,
+            WidthHeightConversion:false,
+            PercentageConversion:true,
+            onBtnLock:true,
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -364,8 +415,8 @@ export default {
                 callbackOpen: ()=>{},
                 callbackClose: ()=>{}
             },            
-            changeConfigDialog:{
-                ref: 'changeConfigDialog',
+            changeDirConfigDialog:{
+                ref: 'changeDirConfigDialog',
                 autofocus: 'none',
                 confirmButtonText: 'Confirm',
                 denyButtonText: 'Deny',
@@ -471,10 +522,6 @@ export default {
         }
     },
 
-    mounted(){
-        this.drawWelcome()
-    },
-
     beforeDestroy() {
         console.log('Resize.vue beforeDestroy()')
         clearInterval(this.progressInterval);
@@ -487,9 +534,10 @@ export default {
            return [
                 {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.import"},
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.importDir"},
-                {id:'action-do', visiable:true, color:"black", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.fix"},
-                {id:'action-stop', visiable:true, color:"black", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.chancel"},
                 {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.outputFolder"},
+                {id:'action-resize', visiable:true, color:"black", icon:"fa fa-cogs fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.adjustSize"},
+                {id:'action-do', visiable:true, color:"black", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.fix"},
+                {id:'action-stop', visiable:true, color:"black", icon:"fa fa-stop-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.chancel"},
                 {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.remove"}
            ]
         }
@@ -546,40 +594,6 @@ export default {
             that.availableOutputPathList = $LS$.data.outputPaths
         },
 
-        // ------------------------- Welcome content
-        drawWelcome(){
-            var that = this
-            var SnapRef = Util.util.getSnapSVG$()
-            if (SnapRef) {
-                var s = SnapRef('#' + that.welcomeContentID)
-
-                // 创建一个盒子
-                var rect = s.rect('8%', '8%', '84%', '84%', 16)
-                rect.attr({
-                    fill: "none",
-                    "fill-opacity": 0.5,
-                    "stroke-linecap": "round",
-                    "stroke-linejoin": "bevel",
-                    "stroke-dasharray" : "5,5",
-                    stroke: "#adadad",
-                    strokeWidth: 1
-                })
-
-                // 创建一个文字盒子
-                var description = s.text('12%', '16%', that.$t('pages.resize.welcome.description'))
-                var step1 = s.text('15%', '26%', that.$t('pages.resize.welcome.step1'))
-                var step2 = s.text('15%', '36%', that.$t('pages.resize.welcome.step2'))
-                var step3 = s.text('15%', '46%', that.$t('pages.resize.welcome.step3'))
-                var step4 = s.text('15%', '56%', that.$t('pages.resize.welcome.step4'))
-
-                // 修饰一下文字
-                description.attr({
-                    "font-weight": "bold"
-                })
-
-            }
-        },
-
         // ------------------------- Style
         getItemStyleClass(item){
             var _styleClass = ['page__resize__task__item']
@@ -623,6 +637,8 @@ export default {
                 this.onBtnRemoveAllClick()
             }else if (item.id === 'action-outputFolder') {
                 this.onBtnOutputFolderClick()
+            }else if(item.id === 'action-resize'){
+                this.onBtnFitImageClick()
             }else if (item.id === 'action-do') {
                 this.onBtnDoClick()
             }else if (item.id === 'action-stop') {
@@ -642,8 +658,14 @@ export default {
                     types:[] // Note: too many formats
                 }, function(){ // Test code
                     // Test[1]: Windows 本地实际数据
+                    var _prx = "N_X" 
+                    var i = 0
+                    while(i < 50){
+                        _prx += "N_X"
+                        ++i
+                    }
                     _.each([
-                        {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB',fileDimensions:{data:{width:250,height:150}}},
+                        {fileName: 'RAW_NIKON_D7100.NEF' + _prx, filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF' + _prx, fileSize: '27.5MB',fileDimensions:{data:{width:250,height:150}}},
                         {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB',fileDimensions:{data:{width:512,height:512}}}
                     ], function(ele){
                         let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
@@ -720,6 +742,26 @@ export default {
             cdg.callbackClose = () => { that.resetOutputSettings() }
 
             var dialog = that.$refs[cdg.ref]
+            dialog.open()
+        },
+
+        onBtnFitImageClick(){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            const cdg = that.changeDirConfigDialog
+            cdg.title = that.$t('pages.resize.dialog-config-change.title')
+            cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
+            cdg.callbackConfirm = () => { that.recordedDirDataValue() }
+            cdg.callbackDeny = () => {}
+            cdg.callbackClose = () => {}
+            
+            var dialog = that.$refs[cdg.ref]
+            if(that.PercentageConversion){
+                 $('.sliderRange').css('background-size', that.percentage +'% 100%' )
+                that.inputWidthAll = 1
+                that.inputHeightAll = 1
+            }
             dialog.open()
         },
 
@@ -841,7 +883,9 @@ export default {
                     that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput || false
+                        overwrite: that.enableOverWriteOutput ? true : false,
+                        width: that.finalInputWidth,
+                        height: that.finalInputHeight
                     }, (data) => {
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
@@ -857,7 +901,7 @@ export default {
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
                                 state: -1,
-                                message: 'error'
+                                message: data.detail_error || 'error'
                             })
                         }
                         // check converting
@@ -871,7 +915,7 @@ export default {
             var that = this
             // send stop message to server
             if(!notice) return
-            if(taskList.length > 0 && that.isResizeWorking) {
+            if(that.taskList.length > 0 && that.isResizeWorking) {
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
                         // check converting
@@ -888,7 +932,7 @@ export default {
         },
 
         /**
-        * @function __abi__start_ResizeGifTask   调用处理gif转换成apng格式任务
+        * @function __abi__start_ResizeGifTask   调用处理gif转换成gif尺寸
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Object} config 调用的配置选项
         * @param  {Function} handler 回调处理
@@ -947,7 +991,7 @@ export default {
         },
 
         /**
-        * @function __abi__cancel_Gif2apngTask 调用停止处理gif转换成apng格式任务
+        * @function __abi__cancel_Gif2apngTask 调用停止处理gif转换尺寸
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Function} handler 回调处理
         * @return {type} {description}
@@ -1035,74 +1079,96 @@ export default {
                 }
             })
         },
-        onChangeImageSize(item){
-            var  that = this
-            var $ = Util.util.getJQuery$()
-            const cdg = that.changeConfigDialog
-            cdg.title = that.$t('pages.resize.dialog-config-change.title')
-            cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
-            cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
-            cdg.callbackConfirm = () => { that.recordedDataValue() }
-            cdg.callbackDeny = () => { that.reductionPercentValue() }
-            cdg.callbackClose = () => { that.reductionPercentValue() }
 
-            var dialog = that.$refs[cdg.ref]
-            console.log(item)
-            that.curWidth = item.dimensions.data.width
-            that.curHeight = item.dimensions.data.height
-            that.defaultCurWidth = item.dimensions.data.width
-            that.defaultCurHeight = item.dimensions.data.height
-            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
-            that.inputWidth = Math.round(that.curWidth)
-            that.inputHeight = Math.round(that.curHeight)
-            dialog.open()
-        },
-        recordedDataValue(){
+        recordedDirDataValue(){
             var that = this
-            if(that.inputWidth <= that.defaultCurWidth && that.inputHeight <= that.defaultCurHeight){
-                that.changeCurWidth = that.inputWidth
-                that.changeCurHeight = that.inputHeight
-            } else {
-                alert(that.$t('pages.resize.dialog-config-change.title'))
-            }
-            that.percentage = 100
-        },
-        reductionPercentValue(){
-            var that = this
-            that.percentage = 100
-        },
-        ValidateWidthNumber(value){
-            var that = this
-            if(that.enableMaintainAspectRatio == true){
-                that.inputActive = 10
-                that.curWidth = value
-                that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
-                that.inputHeight = Math.round(that.curHeight)
-                that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)                
-            }
-        },
-        ValidateHeightNumber(value){
-            var that = this
-            if(that.enableMaintainAspectRatio == true){
-                that.inputActive = 100
-                that.curHeight = value
-                that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
-                that.inputWidth = Math.round(that.curWidth)
-                that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)                
-            }
-        },
-        changeInputActive(){
-            var that = this
-            that.inputActive = 0
-        },
-        getCheckboxActive(value, e){
-            var that = this 
             var $ = Util.util.getJQuery$()
-            console.log(e.target.checked)
+            if(that.WidthHeightConversion && that.onBtnLock){
+                if(that.inputWidthAll == ''){
+                    that.inputWidthAll = 1
+                    that.finalInputWidth = 1
+                }else if(that.inputHeightAll == ''){
+                    that.inputHeightAll = 1
+                    that.finalInputHeight = 1
+                }else if(isNaN(that.inputHeightAll)){
+                    that.finalInputWidth = that.inputWidthAll
+                }else if(isNaN(that.inputWidthAll)){
+                    that.finalInputHeight = that.inputHeightAll
+                }
+            }else if(that.WidthHeightConversion && !that.onBtnLock){
+                if(that.inputWidthAll == ''){
+                    that.inputWidthAll = 1
+                    that.finalInputWidth = 1
+                }else if(that.inputHeightAll == ''){
+                    that.inputHeightAll = 1
+                    that.finalInputHeight = 1
+                }else {
+                    that.finalInputWidth = that.inputWidthAll
+                    that.finalInputHeight = that.inputHeightAll
+                }
+            }else if(that.PercentageConversion){
+                that.percentage = that.finalPercentage
+            }
+        },
+
+        ValidateWidthNumber(){
+            var that = this
+            if(that.onBtnLock){
+                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
+                that.inputWidthAll = ''
+            }
+        },
+        ValidateHeightNumber(){
+            var that = this
+            if(that.onBtnLock){
+                that.inputWidthAll = that.$t('pages.resize.dialog-config-change.lock')
+                that.inputHeightAll = ''
+            }
+        },
+        onBtnLockClick(){
+            var that = this
+            that.onBtnLock = !that.onBtnLock
+            that.inputWidthAll = 1
+            that.inputHeightAll = 1
+        },
+        onBtnUnlockClick(){
+            var that = this
+            that.onBtnLock = !that.onBtnLock
+            that.inputWidthAll = 1
+            that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
+        },
+        CheckboxSizeActive(value, e){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            that.PercentageConversion = !e.target.checked
             if(e.target.checked == true){
+                $(".sliderRange").attr("disabled","disabled")
+                $('.sliderRange').css('background-size', '0% 100%')
+                $(".widthRange").attr("disabled",false)
+                $(".heightRange").attr("disabled",false)
+            }else{
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%')
+                $(".widthRange").attr("disabled","disabled")
+                $(".heightRange").attr("disabled","disabled")
+                that.inputWidthAll = 1
+                that.inputHeightAll = 1               
+            }            
+        },
+        CheckboxPercentActive(value, e){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            that.WidthHeightConversion = !e.target.checked          
+            if(e.target.checked == true){
+                $(".widthRange").attr("disabled","disabled")
+                $(".heightRange").attr("disabled","disabled")
+                $(".sliderRange").attr("disabled",false)
+                $('.sliderRange').css('background-size', that.percentage +'% 100%') 
+                that.inputWidthAll = 1
+                that.inputHeightAll = 1 
             }else {
+                $(".widthRange").attr("disabled",false)
+                $(".heightRange").attr("disabled",false)
                 $(".sliderRange").attr("disabled","disabled")
                 $('.sliderRange').css('background-size', '0% 100%')
             }
@@ -1197,41 +1263,19 @@ export default {
     watch:{
         percentage(newSides, oldSides){
             var $ = Util.util.getJQuery$()
+            this.finalPercentage = newSides
             $('.sliderRange').css('background-size', newSides +'% 100%' )
-            if(this.inputActive == 10 || this.inputActive == 100){
-                var sidesDifference = newSides - oldSides
-                if (sidesDifference > 0) {
-                    for (var i = 1; i <= sidesDifference; i++) {
-                        this.stats.push(100)
-                    }
-
-                } else {
-                    var absoluteSidesDifference = Math.abs(sidesDifference)
-                    for (var i = 1; i <= absoluteSidesDifference; i++) {
-                        this.stats.shift()
-                    }
-                }                
+            var sidesDifference = newSides - oldSides
+            if (sidesDifference > 0) {
+                for (var i = 1; i <= sidesDifference; i++) {
+                    this.stats.push(100)
+                }
             } else {
-                var sidesDifference = newSides - oldSides
-                if (sidesDifference > 0) {
-                    for (var i = 1; i <= sidesDifference; i++) {
-                        this.stats.push(100)
-                    }
-                    this.curWidth = this.curWidth + (this.defaultCurWidth/100)*sidesDifference
-                    this.curHeight = this.curHeight + (this.defaultCurHeight/100)*sidesDifference
-                    this.inputWidth = Math.round(this.curWidth)
-                    this.inputHeight = Math.round(this.curHeight)
-                } else {
-                    var absoluteSidesDifference = Math.abs(sidesDifference)
-                    for (var i = 1; i <= absoluteSidesDifference; i++) {
-                        this.stats.shift()
-                    }
-                    this.curWidth = this.curWidth - (this.defaultCurWidth/100)*absoluteSidesDifference
-                    this.curHeight = this.curHeight - (this.defaultCurHeight/100)*absoluteSidesDifference
-                    this.inputWidth = Math.round(this.curWidth)
-                    this.inputHeight = Math.round(this.curHeight)
-                }                
-            }
+                var absoluteSidesDifference = Math.abs(sidesDifference)
+                for (var i = 1; i <= absoluteSidesDifference; i++) {
+                    this.stats.shift()
+                }
+            }                 
         }
     },
     components: {

@@ -6,7 +6,10 @@ import { SysConfig } from './data/sys-config.js'
 import WelcomePage from './pages/GIF2APNG/Welcome.vue'
 import DiscoverPage from './pages/GIF2APNG/Find/Discover.vue'
 import ConvertPage from './pages/GIF2APNG/Convert.vue'
-import ResizePage from './pages/GIF2APNG/Resize.vue'
+import ResizePage from './pages/GIF2APNG/Resize/Resize'
+import Resize_Single from './pages/GIF2APNG/Resize/Resize_Single'
+import Resize_Batch from './pages/GIF2APNG/Resize/Resize_Batch'
+
 // /
 import Recommendation from './pages/GIF2APNG/Find/recommendation.vue'
 import Classification from './pages/GIF2APNG/Find/classification.vue'
@@ -132,6 +135,16 @@ const menu = [{
       tipAsSubTitle: true,
       icon: icons.adjust,
       sourceUrl: ''
+    }, {
+      path: rootPath + '/resize/resize_single',
+      name: 'Resize_Single',
+      show: false,
+      component: Resize_Single
+    }, {
+      path: rootPath + '/resize/resize_batch',
+      name: 'Resize_Batch',
+      show: false,
+      component: Resize_Batch
     }, {
       path: rootPath + '/Down',
       show: true,

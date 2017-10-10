@@ -67,11 +67,16 @@
             </ui-confirm>
         </div>
         <div class="page__download__router__content__single__content">
-            <svg
-                :id="welcomeContentID"
-                class="page__download__router__content__single__content__welcome"
+            <div
+                class="page__examples-app-doc__welcome"
                 v-show="downloadList.length <= 0"
-            />
+                >
+                <p 
+                    v-html="item"
+                    :key="index"
+                    v-for="(item, index) in $t('pages.download.welcome')">
+                </p>
+            </div>            
              <ui-alert
                 :class="getItemStyleClass(item)"
                 :type="item.style.type"
@@ -303,7 +308,6 @@
     mounted(){
         var that = this
         var downloadMgr = DownloadHandler.getAll()
-        that.drawWelcome()
         if (!hasInited && downloadMgr.length !== 0){
             hasInited = true
             that.getDownloadListInfo()
@@ -326,39 +330,6 @@
         }
     },
     methods:{
-        // ------------------------- Welcome content
-        drawWelcome(){
-            var that = this
-            var SnapRef = Util.util.getSnapSVG$()
-            if (SnapRef) {
-                var s = SnapRef('#' + that.welcomeContentID)
-
-                // 创建一个盒子
-                var rect = s.rect('8%', '8%', '84%', '84%', 14)
-                rect.attr({
-                    fill: "none",
-                    "fill-opacity": 0.5,
-                    "stroke-linecap": "round",
-                    "stroke-linejoin": "bevel",
-                    "stroke-dasharray" : "5,5",
-                    stroke: "#adadad",
-                    strokeWidth: 1
-                })
-
-                // 创建一个文字盒子
-                var description = s.text('12%', '20%', that.$t('pages.download.welcome.description'))
-                var step1 = s.text('12%', '30%', that.$t('pages.download.welcome.step1'))
-                var step2 = s.text('15%', '40%', that.$t('pages.download.welcome.step2'))
-                var step3 = s.text('15%', '50%', that.$t('pages.download.welcome.step3'))
-                var step4 = s.text('15%', '60%', that.$t('pages.download.welcome.step4'))
-                var step5 = s.text('15%', '70%', that.$t('pages.download.welcome.step5'))
-
-                // 修饰一下文字
-                description.attr({
-                    "font-weight": "bold"
-                })
-            }
-        },
         // ------------------------- Style
         getItemStyleClass(item){
             var _styleClass = ['page__download-single__task__item']
