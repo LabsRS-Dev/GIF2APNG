@@ -879,35 +879,129 @@ export default {
         startDo(){
             var that = this
             if(that.taskList.length > 0){
-                _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_ResizeGifTask(taskObj.id, {
-                        src: taskObj.path,
-                        out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput ? true : false,
-                        width: that.finalInputWidth,
-                        height: that.finalInputHeight
-                    }, (data) => {
-                        if (data.infoType === 'type_calltask_start'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 50,
-                                state:0
-                            })
-                        }else if (data.infoType === 'type_calltask_success'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: 1
-                            })
-                        }else if (data.infoType === 'type_calltask_error'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: -1,
-                                message: data.detail_error || 'error'
-                            })
-                        }
-                        // check converting
-                        that.__checkTaskStateInfo()
-                    } )
-                })
+                if(that.PercentageConversion){
+                    _.each(that.taskList, (taskObj, index) => {
+                        that.__abi__start_ResizeGifTask(taskObj.id, {
+                            src: taskObj.path,
+                            out: that.lastOutputPath,
+                            overwrite:true,
+                            width: that.finalPercentage/100,
+                            height: 0
+                        }, (data) => {
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })
+                }else if(that.WidthHeightConversion && that.onBtnLock){
+                    if(isNaN(that.finalInputWidth)){
+                        _.each(that.taskList, (taskObj, index) => {
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                out: that.lastOutputPath,
+                                overwrite:false,
+                                width: 0,
+                                height: that.finalInputHeight
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_start'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1,
+                                        message: data.detail_error || 'error'
+                                    })
+                                }
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )
+                        })
+                    }else if(isNaN(that.finalInputHeight)){
+                        _.each(that.taskList, (taskObj, index) => {
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                out: that.lastOutputPath,
+                                overwrite:false,
+                                width: that.finalInputWidth,
+                                height: 0
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_start'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1,
+                                        message: data.detail_error || 'error'
+                                    })
+                                }
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )
+                        })
+                    }
+                }else if(that.WidthHeightConversion && that.onBtnLock == false){
+                    _.each(that.taskList, (taskObj, index) => {
+                        that.__abi__start_ResizeGifTask(taskObj.id, {
+                            src: taskObj.path,
+                            out: that.lastOutputPath,
+                            overwrite:false,
+                            width: that.finalInputWidth,
+                            height: that.finalInputHeight
+                        }, (data) => {
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })                    
+                }
             }
         },
 
@@ -944,6 +1038,7 @@ export default {
                 src: '',  // 要处理的文件或者目录的路径
                 out: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
+                IsPercentValue: false, // 确认时具体值还是百分比,false就是具体值,true就是百分比
                 width: 100, // resize 后的宽度
                 height: 0,  // resize 后的高度，0 为只适应按照原宽度比
             }, config)
@@ -1085,11 +1180,11 @@ export default {
             var $ = Util.util.getJQuery$()
             if(that.WidthHeightConversion && that.onBtnLock){
                 if(that.inputWidthAll == ''){
-                    that.inputWidthAll = 1
-                    that.finalInputWidth = 1
+                    that.inputWidthAll = 0
+                    that.finalInputWidth = 0
                 }else if(that.inputHeightAll == ''){
-                    that.inputHeightAll = 1
-                    that.finalInputHeight = 1
+                    that.inputHeightAll = 0
+                    that.finalInputHeight = 0
                 }else if(isNaN(that.inputHeightAll)){
                     that.finalInputWidth = that.inputWidthAll
                 }else if(isNaN(that.inputWidthAll)){
@@ -1097,11 +1192,11 @@ export default {
                 }
             }else if(that.WidthHeightConversion && !that.onBtnLock){
                 if(that.inputWidthAll == ''){
-                    that.inputWidthAll = 1
-                    that.finalInputWidth = 1
+                    that.inputWidthAll = 0
+                    that.finalInputWidth = 0
                 }else if(that.inputHeightAll == ''){
-                    that.inputHeightAll = 1
-                    that.finalInputHeight = 1
+                    that.inputHeightAll = 0
+                    that.finalInputHeight = 0
                 }else {
                     that.finalInputWidth = that.inputWidthAll
                     that.finalInputHeight = that.inputHeightAll
@@ -1128,13 +1223,13 @@ export default {
         onBtnLockClick(){
             var that = this
             that.onBtnLock = !that.onBtnLock
-            that.inputWidthAll = 1
-            that.inputHeightAll = 1
+            that.inputWidthAll = 0
+            that.inputHeightAll = 0
         },
         onBtnUnlockClick(){
             var that = this
             that.onBtnLock = !that.onBtnLock
-            that.inputWidthAll = 1
+            that.inputWidthAll = 0
             that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
         },
         CheckboxSizeActive(value, e){
@@ -1151,8 +1246,8 @@ export default {
                 $('.sliderRange').css('background-size', that.percentage +'% 100%')
                 $(".widthRange").attr("disabled","disabled")
                 $(".heightRange").attr("disabled","disabled")
-                that.inputWidthAll = 1
-                that.inputHeightAll = 1               
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0          
             }            
         },
         CheckboxPercentActive(value, e){
@@ -1164,8 +1259,8 @@ export default {
                 $(".heightRange").attr("disabled","disabled")
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%') 
-                that.inputWidthAll = 1
-                that.inputHeightAll = 1 
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0
             }else {
                 $(".widthRange").attr("disabled",false)
                 $(".heightRange").attr("disabled",false)

@@ -5,6 +5,7 @@
   align-items: center; 
   .page__examples-app-doc__welcome__image__single{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center; 
     margin-left: rem-calc(40px);
@@ -21,6 +22,12 @@
       border: rem-calc(1px) solid $md-grey-300;
       max-width: 40vw;
       max-height: 60vh;
+      content:none;
+    }
+    .image__single__top{
+      width: 100%;
+      margin-top:rem-calc(20px); 
+      display: block;
     }
   }
   .page__examples-app-doc__welcome__image__single:before{

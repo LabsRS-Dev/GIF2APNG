@@ -84,8 +84,17 @@
                     class="page__examples-app-doc__welcome__image__single"
                     v-for="(item, index) in taskList" 
                     :key="item.id"
-                    >
+                    >                         
                         <img :src="item.path" class="sliderImage">
+                        <div class="image__single__top">
+                            <ui-progress-linear
+                                :color="getItemProgressStyle(item)"
+                                :progress="item.progress"
+                                v-show="getImageProgressShow(item)"
+                                :title=" $t('pages.resize.task-item.progress') + item.progress"
+                                >
+                            </ui-progress-linear>
+                        </div>  
                         <div class="image__single_ribbon"></div>
                 </div>
                 <div class="page__examples-app-doc__welcome__image__setting">
@@ -431,7 +440,21 @@ export default {
             that.availableOutputPathList = $LS$.data.outputPaths
         },
 
+        getItemProgressStyle(item){
+            var that = this
+            var progressStyle = 'black' // item.stateInfo.state === 0
+            if (item.stateInfo) {
+                if (item.stateInfo.state < 0) progressStyle = 'accent'
+                if (item.stateInfo.state > 0) progressStyle = 'primary'
+            }
 
+            return progressStyle
+        },
+
+        getImageProgressShow(item) {
+            return item.isWorking
+        },
+        
         // -------------------------- Tool bar
         onToolBtnClick(index, item){
             console.log('onToolBtnClick', index)
@@ -623,13 +646,19 @@ export default {
             var that = this
             if(data.success) {
                 var imageFiles = data.filesArray
+                var dimensions = {}
+                BS.b$.Binary.getImageFileInfo(
+                    {path:imageFiles[0].filePath}
+                    ,function(info){
+                        dimensions.data = info.data
+                })
                 var checkFileExt
                 _.each(imageFiles,(fileObj, dinx) => {
                     checkFileExt = BS.b$.App.getFileExt(fileObj.filePath).toLowerCase()
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
-                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr,dimensions)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -677,10 +706,17 @@ export default {
             var that = this
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
+                    console.log(taskObj.id)
+                    console.log(taskObj.path)
+                    console.log(that.lastOutputPath)
+                    console.log(that.enableOverWriteOutput)
+                    console.log(that.finalInputWidth)
+                    console.log(that.finalInputHeight)
                     that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput ? true : false,
+                        IsPercentValue:false,
                         width: that.finalInputWidth,
                         height: that.finalInputHeight
                     }, (data) => {
@@ -741,6 +777,7 @@ export default {
                 src: '',  // 要处理的文件或者目录的路径
                 out: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
+                IsPercentValue: false, // 确认时具体值还是百分比,false就是具体值,true就是百分比
                 width: 100, // resize 后的宽度
                 height: 0,  // resize 后的高度，0 为只适应按照原宽度比
             }, config)
@@ -872,7 +909,7 @@ export default {
             },(data)=>{
                 if(data.success) {
                     that.lastOutputPath = data.filesArray[0].filePath
-                        that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
+                    that.__autoUpdateAvailableOutputPathList(that.lastOutputPath)
                 }
             })
         },
