@@ -1180,15 +1180,20 @@ export default {
         },
         enableMaintainAspectRatio(val,oldVal){
             var that = this
+            var $ = Util.util.getJQuery$()
             var widthRatio = that.inputWidth / that.defaultCurWidth
             var heightRatio = that.inputHeight / that.defaultCurHeight
             if(val == true && widthRatio >= heightRatio){
                 that.inputHeight = Math.round(that.defaultCurHeight*widthRatio)
                 that.percentage = Math.round(widthRatio*100)
+                $('.sliderImage').css('height',that.inputHeight)
+                $('.imageBlur').css('height',that.inputHeight) 
                 that.onChangeTestFile = false
             } else if(val == true && widthRatio <= heightRatio){
                 that.inputWidth = Math.round(that.defaultCurWidth*heightRatio)
                 that.percentage = Math.round(heightRatio*100)
+                $('.sliderImage').css('width',that.inputWidth)
+                $('.imageBlur').css('width',that.inputWidth)
                 that.onChangeTestFile = false              
             }
         }
