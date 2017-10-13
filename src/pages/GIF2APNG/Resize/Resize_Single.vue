@@ -542,7 +542,6 @@ export default {
 
         onBtnImportFilesClick(){
             var that = this
-            var $ = Util.util.getJQuery$()
             that.taskList = []
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
@@ -573,18 +572,6 @@ export default {
             }, function(data){ // Normal code
                 that.__importFilesOrDir(data)
             })
-            that.taskList.length = 1
-            that.curWidth = that.taskList[0].dimensions.data.width
-            that.curHeight = that.taskList[0].dimensions.data.height
-            that.defaultCurWidth = that.taskList[0].dimensions.data.width
-            that.defaultCurHeight = that.taskList[0].dimensions.data.height
-            that.inputWidth = Math.round(that.curWidth)
-            that.inputHeight = Math.round(that.curHeight) 
-            if(that.finalPercentage !== 100){
-                that.onChangeTestFile = false
-                that.percentage = 100
-            }  
-            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
         },
 
         onBtnRemoveAllClick(){
@@ -676,6 +663,7 @@ export default {
 
         __importFilesOrDir(data){
             var that = this
+            var $ = Util.util.getJQuery$()
             if(data.success) {
                 var imageFiles = data.filesArray
                 var dimensions = {}
@@ -697,6 +685,19 @@ export default {
                     }
                 })
             }
+            var length = that.taskList.length
+            that.taskList.splice(1,length-1)
+            that.curWidth = that.taskList[0].dimensions.data.width
+            that.curHeight = that.taskList[0].dimensions.data.height
+            that.defaultCurWidth = that.taskList[0].dimensions.data.width
+            that.defaultCurHeight = that.taskList[0].dimensions.data.height
+            that.inputWidth = Math.round(that.curWidth)
+            that.inputHeight = Math.round(that.curHeight) 
+            if(that.finalPercentage !== 100){
+                that.onChangeTestFile = false
+                that.percentage = 100
+            }  
+            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
         },
 
         __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {
