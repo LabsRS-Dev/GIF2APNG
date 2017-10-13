@@ -84,9 +84,9 @@
                     class="page__examples-app-doc__welcome__image__single"
                     v-for="(item, index) in taskList" 
                     :key="item.id"
-                    >                         
-                        <img :src="item.path" class="sliderImage">
-                        <div class="image__single__top">
+                    >    
+                        <div class="image__single__top" v-show="showMaskLayer">
+                            <img :src="item.path" class="imageBlur" v-show="showMaskLayer">
                             <ui-progress-linear
                                 :color="getItemProgressStyle(item)"
                                 :progress="item.progress"
@@ -94,8 +94,20 @@
                                 :title=" $t('pages.resize.task-item.progress') + item.progress"
                                 >
                             </ui-progress-linear>
-                        </div>  
-                        <div class="image__single_ribbon"></div>
+                            <div class="image__single__top__message">
+                                <span
+                                    class="fa fa-check fa-lg fa-fw"
+                                    v-show="showMaskLayerSuccess"
+                                    >
+                                </span>
+                                <span
+                                    class="fa fa-exclamation fa-lg fa-fw"
+                                    v-show="showMaskLayerError"
+                                    >
+                                </span>                                
+                            </div>
+                        </div>                     
+                        <img :src="item.path" class="sliderImage">  
                 </div>
                 <div class="page__examples-app-doc__welcome__image__setting">
                     <div class="page__examples-app-doc__welcome__image__setting__size">
@@ -136,11 +148,11 @@
                         </ui-checkbox>
                         <ui-icon-button
                             @click="onToolReplayBtnClick()"
-                            type="primary"
+                            type="secondary"
                             size="small"
                             color="primary"
                             >
-                                <span class="fa fa-reply-all fa-lg fa-fw" :title="$t('pages.resize.content.reply')"></span>
+                                <span class="fa fa-refresh fa-lg fa-fw" :title="$t('pages.resize.content.reply')"></span>
                         </ui-icon-button>                           
                     </div>
                 </div>
@@ -256,6 +268,9 @@ export default {
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
             taskID2taskObj: {},
             isResizeWorking: false,
+            showMaskLayer:false,
+            showMaskLayerSuccess:false,
+            showMaskLayerError:false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
             lastOutputPath: $LS$.data.lastSelectOutputPath,
@@ -476,6 +491,9 @@ export default {
             var clientWidth = document.body.clientWidth
             var clientHeight = document.body.clientHeight
             var $ = Util.util.getJQuery$()
+            that.showMaskLayer = false
+            that.showMaskLayerSuccess = false
+            that.showMaskLayerError = false
             that.curWidth = that.defaultCurWidth
             that.curHeight = that.defaultCurHeight
             that.inputWidth = that.defaultCurWidth
@@ -486,15 +504,21 @@ export default {
             }
             if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
                 $('.sliderImage').css('width',that.defaultCurWidth)
-                $('.sliderImage').css('height',that.defaultCurHeight)                            
+                $('.sliderImage').css('height',that.defaultCurHeight)
+                $('.imageBlur').css('width',that.defaultCurWidth)
+                $('.imageBlur').css('height',that.defaultCurHeight)                                            
             }else if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight > clientHeight*0.6){
                 let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
                 $('.sliderImage').css('width',width)
                 $('.sliderImage').css('height',clientHeight*0.6)
+                $('.imageBlur').css('width',width)
+                $('.imageBlur').css('height',clientHeight*0.6)
             }else if(that.defaultCurWidth > clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
                 let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
                 $('.sliderImage').css('width',clientWidth*0.4)
                 $('.sliderImage').css('height',height)
+                $('.imageBlur').css('width',clientWidth*0.4)
+                $('.imageBlur').css('height',height)
             }else if(that.defaultCurWidth > clientWidth*0.4 && that.defaultCurHeight > clientHeight*0.6){
                 let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
                 let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
@@ -503,11 +527,15 @@ export default {
                     let endHeight = that.defaultCurHeight/cliWidth
                     $('.sliderImage').css('width',endWidth)
                     $('.sliderImage').css('height',endHeight)
+                    $('.imageBlur').css('width',endWidth)
+                    $('.imageBlur').css('height',endHeight)
                 } else {
                     let endWidth = that.defaultCurWidth/cliHeight
                     let endHeight = clientHeight*0.6
                     $('.sliderImage').css('width',endWidth)
-                    $('.sliderImage').css('height',endHeight)                    
+                    $('.sliderImage').css('height',endHeight)
+                    $('.imageBlur').css('width',endWidth)
+                    $('.imageBlur').css('height',endHeight)                    
                 }
             }
         },
@@ -516,6 +544,9 @@ export default {
             var that = this
             var $ = Util.util.getJQuery$()
             that.taskList = []
+            that.showMaskLayer = false
+            that.showMaskLayerSuccess = false
+            that.showMaskLayerError = false
             console.log("-------------------- call import files")
                 // call bs
             BS.b$.importFiles({
@@ -542,6 +573,7 @@ export default {
             }, function(data){ // Normal code
                 that.__importFilesOrDir(data)
             })
+            that.taskList.length = 1
             that.curWidth = that.taskList[0].dimensions.data.width
             that.curHeight = that.taskList[0].dimensions.data.height
             that.defaultCurWidth = that.taskList[0].dimensions.data.width
@@ -704,37 +736,38 @@ export default {
 
         startDo(){
             var that = this
+            var $ = Util.util.getJQuery$()
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
-                    console.log(taskObj.id)
-                    console.log(taskObj.path)
-                    console.log(that.lastOutputPath)
-                    console.log(that.enableOverWriteOutput)
-                    console.log(that.finalInputWidth)
-                    console.log(that.finalInputHeight)
                     that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
-                        out: that.lastOutputPath,
+                        dest: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput ? true : false,
                         IsPercentValue:false,
                         width: that.finalInputWidth,
                         height: that.finalInputHeight
                     }, (data) => {
                         if (data.infoType === 'type_calltask_start'){
+                            that.showMaskLayer = true
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 50,
                                 state:0
                             })
                         }else if (data.infoType === 'type_calltask_success'){
+                            that.showMaskLayerSuccess = true
+                            $('.image__single__top').css('background-color','rgba(0,0,0,0)')
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
-                                state: 1
+                                state: 1,
+                                message: 'Success'
                             })
                         }else if (data.infoType === 'type_calltask_error'){
+                            that.showMaskLayerError = true
+                            $('.image__single__top').css('background-color','rgba(0,0,0,0)')
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
                                 state: -1,
-                                message: data.detail_error || 'error'
+                                message: 'Error'
                             })
                         }
                         // check converting
@@ -775,7 +808,7 @@ export default {
             var that = this
             const _config = _.extend({
                 src: '',  // 要处理的文件或者目录的路径
-                out: '',  // 输出目录
+                dest: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
                 IsPercentValue: false, // 确认时具体值还是百分比,false就是具体值,true就是百分比
                 width: 100, // resize 后的宽度
@@ -785,24 +818,25 @@ export default {
             // 检查必要数值
             console.assert(taskID)
             console.assert(BS.b$.App.checkPathIsExist(_config.src))
-            console.assert(BS.b$.App.checkPathIsExist(_config.out))
+            console.assert(BS.b$.App.checkPathIsExist(_config.dest))
 
             var _command = []
 
             const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
-            that.__updateTaskObj(taskID, {fixOutDir:_config.out}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // -- 声明输出json的路径
             var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
 
             // -- 命令行参数格式化
-            const commandFormat = '["-cfg=%input%"]'
+            const commandFormat = '["-mode=gifresziejson","-cfg=%input%"]'
             var fm_command = commandFormat
             fm_command = fm_command.replace(/%input%/g, jsonFilePath)
             _command = window.eval(fm_command)
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
+            window.log("jsonfile = "+ jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({
@@ -915,6 +949,7 @@ export default {
         },
         ValidateWidthNumber(value){
             var that = this
+            var $ = Util.util.getJQuery$()
             var clientWidth = document.body.clientWidth
             var clientHeight = document.body.clientHeight
             if(that.enableMaintainAspectRatio == true){
@@ -925,15 +960,21 @@ export default {
                 that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)
                 if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                     $('.sliderImage').css('width',that.curWidth)
-                    $('.sliderImage').css('height',that.curHeight)                            
+                    $('.sliderImage').css('height',that.curHeight)
+                    $('.imageBlur').css('width',that.curWidth)
+                    $('.imageBlur').css('height',that.curHeight)                              
                 }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6){
                     let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
                     $('.sliderImage').css('width',width)
                     $('.sliderImage').css('height',clientHeight*0.6)
+                    $('.imageBlur').css('width',width)
+                    $('.imageBlur').css('height',clientHeight*0.6)
                 }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                     let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
                     $('.sliderImage').css('width',clientWidth*0.4)
                     $('.sliderImage').css('height',height)
+                    $('.imageBlur').css('width',clientWidth*0.4)
+                    $('.imageBlur').css('height',height)
                 }else if(that.curWidth > clientWidth*0.4 && that.curHeight > clientHeight*0.6){
                     let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
                     let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
@@ -942,20 +983,26 @@ export default {
                         let endHeight = that.defaultCurHeight/cliWidth
                         $('.sliderImage').css('width',endWidth)
                         $('.sliderImage').css('height',endHeight)
+                        $('.imageBlur').css('width',endWidth)
+                        $('.imageBlur').css('height',endHeight)
                     } else {
                         let endWidth = that.defaultCurWidth/cliHeight
                         let endHeight = clientHeight*0.6
                         $('.sliderImage').css('width',endWidth)
-                        $('.sliderImage').css('height',endHeight)                    
+                        $('.sliderImage').css('height',endHeight)
+                        $('.imageBlur').css('width',endWidth)
+                        $('.imageBlur').css('height',endHeight)                      
                     }
                 }
             }else {
                 that.curWidth = value
                 $('.sliderImage').css('width',that.curWidth)
+                $('.imageBlur').css('width',that.curWidth)
             }
         },
         ValidateHeightNumber(value){
             var that = this
+            var $ = Util.util.getJQuery$()
             var clientWidth = document.body.clientWidth
             var clientHeight = document.body.clientHeight
             if(that.enableMaintainAspectRatio == true){
@@ -966,15 +1013,21 @@ export default {
                 that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)
                 if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                     $('.sliderImage').css('width',that.curWidth)
-                    $('.sliderImage').css('height',that.curHeight)                            
+                    $('.sliderImage').css('height',that.curHeight)   
+                    $('.imageBlur').css('width',that.curWidth)
+                    $('.imageBlur').css('height',that.curHeight)                           
                 }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6){
                     let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
                     $('.sliderImage').css('width',width)
                     $('.sliderImage').css('height',clientHeight*0.6)
+                    $('.imageBlur').css('width',width)
+                    $('.imageBlur').css('height',clientHeight*0.6)
                 }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                     let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
                     $('.sliderImage').css('width',clientWidth*0.4)
                     $('.sliderImage').css('height',height)
+                    $('.imageBlur').css('width',clientWidth*0.4)
+                    $('.imageBlur').css('height',height)
                 }else if(that.curWidth > clientWidth*0.4 && that.curHeight > clientHeight*0.6){
                     let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
                     let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
@@ -983,16 +1036,21 @@ export default {
                         let endHeight = that.defaultCurHeight/cliWidth
                         $('.sliderImage').css('width',endWidth)
                         $('.sliderImage').css('height',endHeight)
+                        $('.imageBlur').css('width',endWidth)
+                        $('.imageBlur').css('height',endHeight)
                     } else {
                         let endWidth = that.defaultCurWidth/cliHeight
                         let endHeight = clientHeight*0.6
                         $('.sliderImage').css('width',endWidth)
-                        $('.sliderImage').css('height',endHeight)                    
+                        $('.sliderImage').css('height',endHeight)
+                        $('.imageBlur').css('width',endWidth)
+                        $('.imageBlur').css('height',endHeight)                        
                     }
                 } 
             }else {
                 that.curHeight = value
                 $('.sliderImage').css('height',that.curHeight)
+                $('.imageBlur').css('height',that.curHeight)
             }
         },
         changeInputActive(){
@@ -1042,15 +1100,21 @@ export default {
                         that.inputHeight = Math.round(that.curHeight)
                         if(that.curWidth <= clientWidth*0.4 && that.curHeight <= clientHeight*0.6){
                             $('.sliderImage').css('width',that.curWidth)
-                            $('.sliderImage').css('height',that.curHeight)                            
+                            $('.sliderImage').css('height',that.curHeight)
+                            $('.imageBlur').css('width',that.curWidth)
+                            $('.imageBlur').css('height',that.curHeight)                             
                         }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                             var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
                             $('.sliderImage').css('width',clientWidth*0.4)
                             $('.sliderImage').css('height',height)
+                            $('.imageBlur').css('width',clientWidth*0.4)
+                            $('.imageBlur').css('height',height)
                         }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6) {
                             var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
                             $('.sliderImage').css('width',width)
-                            $('.sliderImage').css('height',clientHeight*0.6)                           
+                            $('.sliderImage').css('height',clientHeight*0.6)
+                            $('.imageBlur').css('width',width)
+                            $('.imageBlur').css('height',clientHeight*0.6)                            
                         }
                     } else if(sidesDifference <= 0 && that.enableMaintainAspectRatio == true){
                         var absoluteSidesDifference = Math.abs(sidesDifference)
@@ -1063,15 +1127,21 @@ export default {
                         that.inputHeight = Math.round(that.curHeight)
                         if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                             $('.sliderImage').css('width',that.curWidth)
-                            $('.sliderImage').css('height',that.curHeight)                            
+                            $('.sliderImage').css('height',that.curHeight)
+                            $('.imageBlur').css('width',that.curWidth)
+                            $('.imageBlur').css('height',that.curHeight)                             
                         }else if(that.curWidth >= clientWidth*0.4 && that.curHeight < clientHeight*0.6){
                             var height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
                             $('.sliderImage').css('width',clientWidth*0.4)
                             $('.sliderImage').css('height',height)
+                            $('.imageBlur').css('width',clientWidth*0.4)
+                            $('.imageBlur').css('height',height)
                         }else if(that.curWidth < clientWidth*0.4 && that.curHeight >= clientHeight*0.6) {
                             var width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
                             $('.sliderImage').css('width',width)
-                            $('.sliderImage').css('height',clientHeight*0.6)                           
+                            $('.sliderImage').css('height',clientHeight*0.6)      
+                            $('.imageBlur').css('width',width)
+                            $('.imageBlur').css('height',clientHeight*0.6)                        
                         }
                     } 
                 } else {

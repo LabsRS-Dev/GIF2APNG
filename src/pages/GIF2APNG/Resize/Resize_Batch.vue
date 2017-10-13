@@ -67,30 +67,14 @@
                             </div>
                         </div>
                         <div class="page__toolbar-app-doc__change-dimensions__setting">
-                            <div class="change-dimensions__setting__lock" v-if="onBtnLock">
-                                <ui-icon-button
-                                    @click="onBtnLockClick()"
-                                    :disabled="!WidthHeightConversion"
-                                    type="secondary"
-                                    size="small"
-                                    color="primary"                                                              
+                            <div class="change-dimensions__setting__second">
+                                <ui-checkbox
+                                    v-model="PercentageConversion"
+                                    @change="CheckboxPercentActive"
                                     >
-                                    <span class="fa fa-lock fa-lg fa-fw"></span>
-                                </ui-icon-button> 
-                                <span class="change-dimensions__setting__lock__title">{{ $t('pages.resize.dialog-config-change.lock') }}</span>                           
-                            </div>
-                            <div class="change-dimensions__setting__unlock" v-if="!onBtnLock">
-                                <ui-icon-button
-                                    @click="onBtnUnlockClick()"
-                                    :disabled="!WidthHeightConversion"
-                                    type="secondary"
-                                    size="small"
-                                    color="primary"                                                             
-                                    >
-                                    <span class="fa fa-unlock fa-lg fa-fw"></span>
-                                </ui-icon-button>
-                                <span class="change-dimensions__setting__unlock__title">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
-                            </div>                              
+                                    {{ $t('pages.resize.dialog-config-change.percent') }}
+                                </ui-checkbox>                                
+                            </div>   
                             <div class="change-dimensions__setting__first">
                                 <ui-checkbox
                                     v-model="WidthHeightConversion"
@@ -99,14 +83,24 @@
                                     {{ $t('pages.resize.dialog-config-change.width-height') }}
                                 </ui-checkbox>                            
                             </div>
-                            <div class="change-dimensions__setting__second">
+                            <div class="change-dimensions__setting__third">
                                 <ui-checkbox
-                                    v-model="PercentageConversion"
-                                    @change="CheckboxPercentActive"
+                                    v-model="onHandleTheTask"
+                                    :disabled="!WidthHeightConversion"                                                            
                                     >
-                                    {{ $t('pages.resize.dialog-config-change.percent') }}
-                                </ui-checkbox>                                
-                            </div>                             
+                                    {{ $t('pages.resize.dialog-config-change.handle-task') }}
+                                </ui-checkbox>                            
+                            </div>    
+                            <div class="change-dimensions__setting__lock">
+                                <ui-switch
+                                    v-model="onBtnLock"
+                                    :disabled="!WidthHeightConversion"
+                                    switch-position="right"                                                             
+                                    >
+                                </ui-switch>
+                                <span class="change-dimensions__setting__lock__title" v-show="onBtnLock">{{ $t('pages.resize.dialog-config-change.lock') }}</span>
+                                <span class="change-dimensions__setting__unlock__title" v-show="!onBtnLock">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
+                            </div>                                                   
                         </div>
                     </div>
                     <div class="page__toolbar-app-doc__change-dimensions__adjust">
@@ -267,7 +261,7 @@
 
 <script>
 import { BS, Util, _ , lodash } from 'dove.max.sdk'
-import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox} from 'keen-ui'
+import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox,UiSwitch} from 'keen-ui'
 import {Transfer} from '../../../bridge/transfer'
 import echarts from "echarts"
 
@@ -393,6 +387,7 @@ export default {
             WidthHeightConversion:false,
             PercentageConversion:true,
             onBtnLock:true,
+            onHandleTheTask:false,
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -759,8 +754,8 @@ export default {
             var dialog = that.$refs[cdg.ref]
             if(that.PercentageConversion){
                  $('.sliderRange').css('background-size', that.percentage +'% 100%' )
-                that.inputWidthAll = 1
-                that.inputHeightAll = 1
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0
             }
             dialog.open()
         },
@@ -878,13 +873,16 @@ export default {
 
         startDo(){
             var that = this
+            console.log(that.onHandleTheTask)
             if(that.taskList.length > 0){
                 if(that.PercentageConversion){
                     _.each(that.taskList, (taskObj, index) => {
                         that.__abi__start_ResizeGifTask(taskObj.id, {
                             src: taskObj.path,
-                            out: that.lastOutputPath,
-                            overwrite:true,
+                            dest: that.lastOutputPath,
+                            finalPercentage: that.onHandleTheTask ? true : false,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            IsPercentValue:true,
                             width: that.finalPercentage/100,
                             height: 0
                         }, (data) => {
@@ -914,8 +912,10 @@ export default {
                         _.each(that.taskList, (taskObj, index) => {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
-                                out: that.lastOutputPath,
-                                overwrite:false,
+                                dest: that.lastOutputPath,
+                                finalPercentage: that.onHandleTheTask ? true : false,
+                                overwrite: that.enableOverWriteOutput ? true : false,
+                                IsPercentValue:false,
                                 width: 0,
                                 height: that.finalInputHeight
                             }, (data) => {
@@ -944,8 +944,10 @@ export default {
                         _.each(that.taskList, (taskObj, index) => {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
-                                out: that.lastOutputPath,
-                                overwrite:false,
+                                dest: that.lastOutputPath,
+                                finalPercentage: that.onHandleTheTask ? true : false,
+                                overwrite: that.enableOverWriteOutput ? true : false,
+                                IsPercentValue:false,
                                 width: that.finalInputWidth,
                                 height: 0
                             }, (data) => {
@@ -975,8 +977,10 @@ export default {
                     _.each(that.taskList, (taskObj, index) => {
                         that.__abi__start_ResizeGifTask(taskObj.id, {
                             src: taskObj.path,
-                            out: that.lastOutputPath,
-                            overwrite:false,
+                            dest: that.lastOutputPath,
+                            finalPercentage: that.onHandleTheTask ? true : false,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            IsPercentValue:false,
                             width: that.finalInputWidth,
                             height: that.finalInputHeight
                         }, (data) => {
@@ -1036,9 +1040,10 @@ export default {
             var that = this
             const _config = _.extend({
                 src: '',  // 要处理的文件或者目录的路径
-                out: '',  // 输出目录
+                dest: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
-                IsPercentValue: false, // 确认时具体值还是百分比,false就是具体值,true就是百分比
+                IsPercentValue: false, // 确认是具体值还是百分比,false就是具体值,true就是百分比
+                processRequest: false, // 确认是否需要处理客户输入尺寸大于图片原始尺寸的文件
                 width: 100, // resize 后的宽度
                 height: 0,  // resize 后的高度，0 为只适应按照原宽度比
             }, config)
@@ -1046,24 +1051,25 @@ export default {
             // 检查必要数值
             console.assert(taskID)
             console.assert(BS.b$.App.checkPathIsExist(_config.src))
-            console.assert(BS.b$.App.checkPathIsExist(_config.out))
+            console.assert(BS.b$.App.checkPathIsExist(_config.dest))
 
             var _command = []
 
             const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
-            that.__updateTaskObj(taskID, {fixOutDir:_config.out}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // -- 声明输出json的路径
             var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
 
             // -- 命令行参数格式化
-            const commandFormat = '["-cfg=%input%"]'
+            const commandFormat = '["-mode=gifresziejson","-cfg=%input%"]'
             var fm_command = commandFormat
             fm_command = fm_command.replace(/%input%/g, jsonFilePath)
             _command = window.eval(fm_command)
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
+            window.log("jsonfile = "+jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({
@@ -1186,8 +1192,10 @@ export default {
                     that.inputHeightAll = 0
                     that.finalInputHeight = 0
                 }else if(isNaN(that.inputHeightAll)){
+                    that.finalInputHeight = 'Locked ratio'
                     that.finalInputWidth = that.inputWidthAll
                 }else if(isNaN(that.inputWidthAll)){
+                    that.finalInputWidth = 'Locked ratio'
                     that.finalInputHeight = that.inputHeightAll
                 }
             }else if(that.WidthHeightConversion && !that.onBtnLock){
@@ -1209,28 +1217,16 @@ export default {
         ValidateWidthNumber(){
             var that = this
             if(that.onBtnLock){
-                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
+                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.input-lock')
                 that.inputWidthAll = ''
             }
         },
         ValidateHeightNumber(){
             var that = this
             if(that.onBtnLock){
-                that.inputWidthAll = that.$t('pages.resize.dialog-config-change.lock')
+                that.inputWidthAll = that.$t('pages.resize.dialog-config-change.input-lock')
                 that.inputHeightAll = ''
             }
-        },
-        onBtnLockClick(){
-            var that = this
-            that.onBtnLock = !that.onBtnLock
-            that.inputWidthAll = 0
-            that.inputHeightAll = 0
-        },
-        onBtnUnlockClick(){
-            var that = this
-            that.onBtnLock = !that.onBtnLock
-            that.inputWidthAll = 0
-            that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
         },
         CheckboxSizeActive(value, e){
             var that = this
@@ -1249,6 +1245,9 @@ export default {
                 that.inputWidthAll = 0
                 that.inputHeightAll = 0          
             }            
+        },
+        onProcessRequest(){
+            var that = this
         },
         CheckboxPercentActive(value, e){
             var that = this
@@ -1371,6 +1370,16 @@ export default {
                     this.stats.shift()
                 }
             }                 
+        },
+        onBtnLock(newSwich, oldSwich){
+            var that = this
+            if(newSwich){
+                that.inputWidthAll = 0
+                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.input-lock')                
+            }else {
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0
+            }
         }
     },
     components: {
@@ -1385,7 +1394,8 @@ export default {
         UiConfirm,
         UiProgressLinear,
         UiCheckbox,
-        UiTextbox
+        UiTextbox,
+        UiSwitch
     }
 }
 </script>
