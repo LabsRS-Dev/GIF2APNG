@@ -358,6 +358,15 @@ var inputHeightAll;      // 文件夹类型输入框显示高度
 var finalPercentage;     // 确认时百分比
 var finalInputWidth;     // 确认时输入框内宽度
 var finalInputHeight;    // 确认时输入框内高度
+///// 修改图片尺寸的弹出框
+var initialInputWidth;                   //初始（宽度输入框）
+var initialInputHeight;                  //初始（宽度输入框）
+var initialPercentage;                   //初始（百分比）
+var initialPtConversion;                 //初始（按比例转换）
+var initialW_HConversion;                //初始（按宽高转换）
+var initialHandleTask;                   //初始（是否处理大于原始尺寸的值）
+var initialBtnLock;                      //初始（是否锁定宽高比）
+var initialState;                        //初始（输入框是否处于激活状态）
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -380,14 +389,20 @@ export default {
             finalPercentage:finalPercentage,
             finalInputWidth:finalInputWidth,
             finalInputHeight:finalInputHeight,   
-            inputWidthAll:inputWidthAll,
-            inputHeightAll:inputHeightAll,
-            applyAllDirFileTask:true,
+            inputWidthAll:0,
+            inputHeightAll:0,
             applyAllFileTask:false,
             WidthHeightConversion:false,
             PercentageConversion:true,
             onBtnLock:true,
             onHandleTheTask:false,
+            initialInputWidth:initialInputWidth,
+            initialInputHeight:initialInputHeight,
+            initialPercentage:initialPercentage,          
+            initialPtConversion:initialPtConversion,
+            initialW_HConversion:initialW_HConversion,             
+            initialHandleTask:initialHandleTask,               
+            initialBtnLock:initialBtnLock,                     
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -742,20 +757,26 @@ export default {
 
         onBtnFitImageClick(){
             var that = this
+            that.initialInputWidth = that.inputWidthAll
+            that.initialInputHeight = that.inputHeightAll
+            that.initialPercentage = that.percentage       
+            that.initialPtConversion = that.PercentageConversion
+            that.initialW_HConversion = that.WidthHeightConversion        
+            that.initialHandleTask = that.onHandleTheTask 
+            that.initialBtnLock = that.onBtnLock
+            that.initialState = that.applyAllFileTask
             var $ = Util.util.getJQuery$()
             const cdg = that.changeDirConfigDialog
             cdg.title = that.$t('pages.resize.dialog-config-change.title')
             cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
             cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
             cdg.callbackConfirm = () => { that.recordedDirDataValue() }
-            cdg.callbackDeny = () => {}
-            cdg.callbackClose = () => {}
+            cdg.callbackDeny = () => { that.resetDirDataValue() }
+            cdg.callbackClose = () => { }
             
             var dialog = that.$refs[cdg.ref]
             if(that.PercentageConversion){
-                 $('.sliderRange').css('background-size', that.percentage +'% 100%' )
-                that.inputWidthAll = 0
-                that.inputHeightAll = 0
+                $('.sliderRange').css('background-size', that.percentage +'% 100%' )
             }
             dialog.open()
         },
@@ -1213,6 +1234,21 @@ export default {
                 that.percentage = that.finalPercentage
             }
         },
+        resetDirDataValue(){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            that.inputWidthAll = that.initialInputWidth
+            that.inputHeightAll = that.initialInputHeight
+            that.percentage = that.initialPercentage       
+            that.PercentageConversion = that.initialPtConversion
+            that.WidthHeightConversion = that.initialW_HConversion      
+            that.onHandleTheTask = that.initialHandleTask
+            that.onBtnLock = that.initialBtnLock
+            that.applyAllFileTask = that.initialState
+            $(".widthRange").attr("disabled",that.PercentageConversion)
+            $(".heightRange").attr("disabled",that.PercentageConversion)
+            $(".sliderRange").attr("disabled",that.WidthHeightConversion)
+        },
 
         ValidateWidthNumber(){
             var that = this
@@ -1233,15 +1269,15 @@ export default {
             var $ = Util.util.getJQuery$()
             that.PercentageConversion = !e.target.checked
             if(e.target.checked == true){
-                $(".sliderRange").attr("disabled","disabled")
+                $(".sliderRange").attr("disabled",true)
                 $('.sliderRange').css('background-size', '0% 100%')
                 $(".widthRange").attr("disabled",false)
                 $(".heightRange").attr("disabled",false)
             }else{
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%')
-                $(".widthRange").attr("disabled","disabled")
-                $(".heightRange").attr("disabled","disabled")
+                $(".widthRange").attr("disabled",true)
+                $(".heightRange").attr("disabled",true)
                 that.inputWidthAll = 0
                 that.inputHeightAll = 0          
             }            
@@ -1254,8 +1290,8 @@ export default {
             var $ = Util.util.getJQuery$()
             that.WidthHeightConversion = !e.target.checked          
             if(e.target.checked == true){
-                $(".widthRange").attr("disabled","disabled")
-                $(".heightRange").attr("disabled","disabled")
+                $(".widthRange").attr("disabled",true)
+                $(".heightRange").attr("disabled",true)
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%') 
                 that.inputWidthAll = 0
@@ -1263,7 +1299,7 @@ export default {
             }else {
                 $(".widthRange").attr("disabled",false)
                 $(".heightRange").attr("disabled",false)
-                $(".sliderRange").attr("disabled","disabled")
+                $(".sliderRange").attr("disabled",true)
                 $('.sliderRange').css('background-size', '0% 100%')
             }
         },

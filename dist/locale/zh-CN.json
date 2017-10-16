@@ -290,7 +290,7 @@
           "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
           "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止任务.",
           "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除任务.",
-          "6. 您可以点击 \"<i class='fa fa-reply-all fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来撤销改动."
+          "6. 您可以点击 \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来撤销改动."
       ]
      },
       "dialog-popover-confirm-edit":{
@@ -347,7 +347,7 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
-        "1. 点击 \"<i class='fa fa-folder fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出地址.",
+        "1. 点击 \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出地址.",
         "2. 点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来清空下载目录.",
         "3. 您可以点击 \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来重新下载所有GIF图片.",
         "4. 您可以点击 \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来重新下载下载失败的GIF图片."

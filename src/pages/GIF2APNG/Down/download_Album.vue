@@ -314,7 +314,7 @@
         actionList() {
           var that = this
           return [
-            {id:'action-outputFolder', visiable:true, color:"primary", icon:"fa fa-folder fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.download.toolbar.outputFolder"},
+            {id:'action-outputFolder', visiable:true, color:"primary", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.download.toolbar.outputFolder"},
             {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.download.toolbar.remove"},
             {id:'action-redownload', visiable:true, color:"black", icon:"fa fa-download fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.download.toolbar.redownload"},
             {id:'action-redownloadFailed', visiable:true, color:"black", icon:"fa fa-tasks fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.download.toolbar.redownloadFailed"},

@@ -568,6 +568,17 @@ export default {
                 that.taskList.push(taskObj)
                 console.log('taskID-files=', taskObj.id)
                 taskID2taskObj[taskObj.id] = taskObj
+                that.curWidth = that.taskList[0].dimensions.data.width
+                that.curHeight = that.taskList[0].dimensions.data.height
+                that.defaultCurWidth = that.taskList[0].dimensions.data.width
+                that.defaultCurHeight = that.taskList[0].dimensions.data.height
+                that.inputWidth = Math.round(that.curWidth)
+                that.inputHeight = Math.round(that.curHeight) 
+                if(that.finalPercentage !== 100){
+                    that.onChangeTestFile = false
+                    that.percentage = 100
+                }  
+                $('.sliderRange').css('background-size', that.percentage +'% 100%' )
                 return
             }, function(data){ // Normal code
                 that.__importFilesOrDir(data)
@@ -738,6 +749,10 @@ export default {
         startDo(){
             var that = this
             var $ = Util.util.getJQuery$()
+            console.log(that.enableOverWriteOutput)
+            that.showMaskLayer = false
+            that.showMaskLayerSuccess = false
+            that.showMaskLayerError = false
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__start_ResizeGifTask(taskObj.id, {
