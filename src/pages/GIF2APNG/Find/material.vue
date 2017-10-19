@@ -17,16 +17,16 @@
             </div>
             <div class="children__router__content__material__content__button">
                 <ui-icon-button
-                    @click=""
-                    :type="item.type"
-                    :size="item.size"
-                    :key="item.id"
-                    :title="$t(item.tooltip)"
+                    @click="getWritePermission(ele, imageID)"
+                    :type="ele.type"
+                    :size="ele.size"
+                    :key="ele.id"
+                    :title="$t(ele.tooltip)"
                     raised
-                    v-if="item.visiable"
-                    v-for="item, index in actionList"
+                    v-if="ele.visiable"
+                    v-for="ele in actionList"
                     >
-                    <span :class="item.icon"></span>
+                    <span :class="ele.icon"></span>
                 </ui-icon-button>
             </div>
         </ui-confirm>
@@ -41,13 +41,13 @@
                             <span class="label__popover__custom__content__title">{{$t('pages.discover.task-item.types')}}</span>
                             <span class="label__popover__custom__content__select"><i class="fa fa-check fa-lg"></i></span>
                         </div>
-                        <div class="label__popover__custom__content__category" v-for="item in materialList">
+                        <div class="label__popover__custom__content__category" v-for="item in materialList" :key="item.id">
                             <div class="label__popover__custom__content__category__icon">
                                 <img :src="item.thumb" width="32" height="32" viewBox="0 0 32 32" />
                                 <span class="label__popover__custom__content__category__title">{{item.name}}</span>
                             </div>
                             <div class="label__popover__custom__content__category__tag">
-                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event,el)">
+                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event,el)" :key="el.id">
                                     <span class="label__popover__custom__content__content">{{el.name}}</span>
                                     <span class="label__popover__custom__content__tag__space"></span>
                                     <span class="label__popover__custom__content__tag__select"><i class="fa fa-check fa-lg"></i></span>
@@ -62,14 +62,14 @@
         <div class="children__router__content__material__hot">
             <span class ="children__router__content__material__hot__label">{{$t('pages.discover.task-item.label')}}</span>
             <div class ="children__router__content__material__hot__all">
-                <div class="children__router__content__material__hot__content" v-for="ele in hotList">
+                <div class="children__router__content__material__hot__content" v-for="ele in hotList" :key="ele.id">
                     <span class="children__router__content__material__hot__text" @click="getLabelChange(ele)">{{ele.name}}</span>
                 </div>
             </div>
         </div>
         <div class="children__router__content__material__content">
             <dl v-show="showLoading">
-                <dd class="children__recommendation__showImage__imageCover" v-for="item in labelList">
+                <dd class="children__recommendation__showImage__imageCover" v-for="item in labelList" :key="item.id">
                     <div class="showImage__imageCover__viewCount">
                         <span class="showImage__imageCover__viewCount__icon"><i class="fa fa-eye fa-lg"></i></span>
                         <span class="showImage__imageCover__viewCount__content">{{item.previewCount}}</span>
@@ -77,16 +77,16 @@
                     <img :src="item.image" @click="getItemsEnlargeFigureImage(item)" @mouseenter="autoShowButton($event)" @mouseleave="autoDisplayButton($event)">
                     <div class="showImage__imageCover__viewCount__button" @mouseenter="autoShowButtonAgain($event)" @mouseleave="autoDisplayButtonAgain($event)">
                         <ui-icon-button
-                            @click=""
-                            :type="item.type"
-                            :size="item.size"
-                            :key="item.id"
-                            :title="$t(item.tooltip)"
+                            @click="getWritePermission(ele, item)"
+                            :type="ele.type"
+                            :size="ele.size"
+                            :key="ele.id"
+                            :title="$t(ele.tooltip)"
                             raised
-                            v-if="item.visiable"
-                            v-for="item, index in actionList"
+                            v-if="ele.visiable"
+                            v-for="ele in actionList"
                             >
-                            <span :class="item.icon"></span>
+                            <span :class="ele.icon"></span>
                         </ui-icon-button>
                     </div>
                     <span class="showImage__imageCover__introduce">{{item.introduce}}</span>
@@ -107,15 +107,23 @@
     import {UiPopover,UiConfirm,UiIconButton} from 'keen-ui'
     import IconsRef from '../../../data/icon.js'
     import VLoading from './loading.vue'
+    import Vue from 'vue'
+    import { DownloadHandler } from '../../../data/downlaod-manager'
 
     const imgPrefix = 'children-material-image-id-' + _.now()
     class Label {
-        constructor(name, image,introduce,previewCount){
+        constructor(name,thumb,size,image,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
             this.id = _.uniqueId(imgPrefix);
-            this.name = name;                  // 图像名称
-            this.image = image;                // 图像的路径
-            this.introduce = introduce;        // 图片的描述
-            this.previewCount = previewCount;        // 图片浏览次数
+            this.name = name;                              // 图像名称
+            this.thumb = thumb;                            // 图像缩略图
+            this.size = size;                              // 图像的大小
+            this.image = image;                            // 图像的路径
+            this.introduce = introduce;                    // 图片的描述
+            this.previewCount = previewCount;              // 图片浏览次数
+            this.downloadCount = downloadCount;            // 图片下载次数
+            this.shareCount = shareCount;                  // 图片分享次数
+            this.collectionCount = collectionCount;        // 图片收藏次数
+            this.imgID = imgID;                            // 图片自身ID       
         }
     }
     /////
@@ -144,15 +152,18 @@
     var total;
     var current ;
     var imagePreview ='';
+    var imageID;
+    var labelButton;
     export default{
         data(){
             return{
-                labelButton:"所有类型",
+                labelButton:labelButton,
                 labelList:labelList,
                 hotList:hotList,
                 hotLabelList:{},
                 materialList:materialList,
                 imagePreview:imagePreview,
+                imageID:imageID,
                 total: total,             // 记录总条数
                 display: 20,              // 每页显示条数
                 current: current,         // 当前的页数
@@ -185,31 +196,55 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileImage = ele.url
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                })
+                that.getCheckAllTagStyle()
             }
         },
         computed:{
             actionList() {
                 var that = this
                 return [
-                    {id:'action-share',name:'分享', visiable:true, icon:"fa fa-share-square-o fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-share"},
-                    {id:'action-collect',name:'收藏', visiable:true, icon:"fa fa-user-plus fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-collect"},
+                    //{id:'action-share',name:'分享', visiable:true, icon:"fa fa-share-square-o fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-share"},
+                    //{id:'action-collect',name:'收藏', visiable:true, icon:"fa fa-user-plus fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-collect"},
                     {id:'action-download', name:'下载',visiable:true, icon:"fa fa-download fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-download"}
                 ]
             }
         },
         methods:{
+            getWritePermission(ele, item){
+                var that = this
+                if(ele.id === 'action-share') {
+                    that.getShareCountWritePermission(item)
+                }else if (ele.id === 'action-collect') {
+                    that.getCollectCountWritePermission(item)
+                }else if (ele.id === 'action-download') {
+                    that.getDownloadCountWritePermission(item)
+                }
+            },
+            getShareCountWritePermission(item){
+                var that = this
+                //////////////////////////////////////////   记录分享次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_share',{"machine_id":machineCode,"id":item.imgID},(info) => {
+                    console.log('记录成功')
+                })
+            },
+            getCollectCountWritePermission(item){
+                var that = this
+                //////////////////////////////////////////   记录收藏次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_collection',{"machine_id":machineCode,"id":item.imgID},(info) => {
+                    console.log('记录成功')
+                })
+            },
+            getDownloadCountWritePermission(item){
+                var that = this
+                //////////////////////////////////////////   记录下载次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":item.imgID},(info) => {
+                    console.log('记录成功')
+                })
+                DownloadHandler.add(item)
+            },
             getHotLabelList(){
                 var that = this
                 var tagsArr = []
@@ -243,6 +278,8 @@
             getCheckAllTagStyle(){
                 var that = this
                 var $ = Util.util.getJQuery$()
+                $('.label__popover__custom__content__tag__space').css('opacity','0')
+                $('.label__popover__custom__content__tag__select').css('opacity','0')
                 $('.label__popover__custom__content__title').css('border','1px solid #2196f3')
                 $('.label__popover__custom__content__select').css('opacity','1')
                 that.labelButton = that.$t('pages.discover.task-item.types')
@@ -252,10 +289,16 @@
                 Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
+                        var fileThumb = ele.thumb
+                        var fileSize = ele.size
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                        var fileDownloadCount = ele.download_quantity
+                        var fileShareCount = ele.share_quantity
+                        var fileCollectionCount = ele.collection_quantity
+                        var fileImgID = ele.id
+                        let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -266,8 +309,12 @@
             getCheckTagStyle($event,ele){
                 var that = this
                 var $ = Util.util.getJQuery$()
+                $("span").filter(".label__popover__custom__content__tag__space").css('opacity','0')
+                $("span").filter(".label__popover__custom__content__tag__select").css('opacity','0')
                 $(event.target).css('opacity','1')
                 $(event.target).next().css('opacity','1')
+                $('.label__popover__custom__content__title').css('border','1px solid #e0e0e0')
+                $('.label__popover__custom__content__select').css('opacity','0')
                 current_logic_page = LPage.TagPage
                 click_logic_page = ele.id
                 that.labelButton = ele.name
@@ -296,25 +343,39 @@
             },
             getItemsEnlargeFigureImage(item){
                 var that = this
+
+                //////////////////////////////////////////   记录浏览次数
+                let machineCode = BS.b$.App.getSerialNumber()
+                Transfer.http.call('get.items_preview',{"machine_id":machineCode,"id":item.imgID},(info) => {
+                    console.log('记录成功')
+                })
+
                 const cdg = that.itemsConfirmDialog
                 cdg.title = that.$t('pages.discover.dialog-confirm.title')
                 cdg.confirmButtonText = that.$t('pages.discover.dialog-confirm.btnConfirm')
                 cdg.denyButtonText = that.$t('pages.discover.dialog-confirm.btnDeny')
                 var dialog = that.$refs[cdg.ref]
                 that.imagePreview = item.image
+                that.imageID = item
                 dialog.open()
             },
             __UpdateTheDataList(el, curPage){
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":that.curPage,"per_page":that.display},(info) => {
+                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
+                        var fileThumb = ele.thumb
+                        var fileSize = ele.size
                         var fileImage = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                        var fileDownloadCount = ele.download_quantity
+                        var fileShareCount = ele.share_quantity
+                        var fileCollectionCount = ele.collection_quantity
+                        var fileImgID = ele.id
+                        let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -333,10 +394,16 @@
                     Transfer.http.call('get.items',{"page":that.current,"per_page":that.display},(info) => {
                         _.each(info.data,function(ele){
                             var fileName = ele.name
+                            var fileThumb = ele.thumb
+                            var fileSize = ele.size
                             var fileImage = ele.url
                             var fileIntroduce = ele.description
                             var filePreviewCount = ele.preview_quantity
-                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount)
+                            var fileDownloadCount = ele.download_quantity
+                            var fileShareCount = ele.share_quantity
+                            var fileCollectionCount = ele.collection_quantity
+                            var fileImgID = ele.id
+                            let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
                             that.labelList.push(labelObj)
                         })
                         that.showLoading = !that.showLoading

@@ -17,3 +17,4 @@ debug.log
 /dist/bundle.js.map
 /dist_public
 /*.~$lock
+.DS_Store

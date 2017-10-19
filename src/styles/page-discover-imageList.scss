@@ -1,7 +1,7 @@
 .page__toolbar-app-doc__imageList__router__head{
   display: flex;
   width:100%;
-  height: 40%;
+  height: 30%;
   align-items:center;
   .imageList__router__head__imageCover{
     border: rem-calc(1px) solid $md-grey-300;
@@ -27,7 +27,7 @@
       width: 100%;
       .ui-icon-button {
         width: 15%;
-        height: 70%;
+        height: 100%;
         border-radius: rem-calc(5px);
         border: rem-calc(1px) solid $md-grey-300;
         margin-right:3%;
@@ -37,14 +37,18 @@
       height: 20%;
     }
     .imageList__router__head__content__introduce{
+      margin-top: rem-calc(10px);
       height: 30%;
+      .imageList__router__head__content__introduce__title{
+        margin-right: rem-calc(5px);
+      }
     }
   }
 }
 .page__toolbar-app-doc__imageList__router__content{
   display: flex;
   flex-direction: column;
-  height: 60%;
+  height: 70%;
   width:100%;
   .imageList__router__content__router{
     display: flex;

@@ -16,26 +16,26 @@
             <img :src="imagePreview">
           </div>
       </ui-confirm>
-      <div class="page__children__router__content__single__content" v-for='item in singleList' v-show="showLoading">
+      <div class="page__children__router__content__single__content" v-for='item in singleList' v-show="showLoading" :key="item.id">
         <div class="page__single__content__thumb">
           <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" @click='getEnlargeFigureImage(item)'/>
         </div>
         <div class="page__single__content__info">
-          <span class="page__single__content__info__size">{{item.size}}</span>
+          <span class="page__single__content__info__size">{{item.size + 'MB'}}</span>
         </div>
         <div class="page__single__content__dimension"><span>{{item.dimension}}</span></div>
         <div class="page__single__content__introduce"><span>{{item.introduce}}</span></div>
         <div class="page__single__content__handle__icon">
             <ui-icon-button
-                @click="onToolBtnClick(item)"
-                :type="item.type"
-                :size="item.size"
-                :color="item.color"
-                :key="item.id"
-                v-if="item.visiable"
-                v-for="item in actionList"
+                @click="getWritePermission(ele,item)"
+                :type="ele.type"
+                :size="ele.size"
+                :color="ele.color"
+                :key="ele.id"
+                v-if="ele.visiable"
+                v-for="ele in actionList"
                 >
-                  <span :class="item.icon" :title="$t(item.tooltip)"></span>
+                  <span :class="ele.icon" :title="$t(ele.tooltip)"></span>
             </ui-icon-button>
         </div>
       </div>
@@ -53,34 +53,44 @@
   import { UiIconButton,UiConfirm} from 'keen-ui'
   import Pagination from './pagination.vue'
   import VLoading from '../Find/loading.vue'
-
+  import { DownloadHandler } from '../../../data/downlaod-manager'
+  
   var singleList = [];
   var imagePreview = '';
   var hasInited = false ;
   var total;
   var current;
-  var dataType;
 
   const singlePrefix = 'children-single-image-id-' + _.now()
   class Eattedit {
-      constructor(name,image,size,dimension,thumb,introduce){
+      constructor(name,image,size,dimension,thumb,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
           this.id = _.uniqueId(singlePrefix);
-          this.name = name;                  // 图片名称
-          this.image = image;                // 图片名称
-          this.size = size;                  // 图片大小
-          this.thumb = thumb;                // 图片缩略图
-          this.introduce = introduce;        // 图片简介
-          this.dimension = dimension;        // 图片尺寸
+          this.name = name;                              // 图片名称
+          this.image = image;                            // 图片名称
+          this.size = size;                              // 图片大小
+          this.thumb = thumb;                            // 图片缩略图
+          this.introduce = introduce;                    // 图片简介
+          this.dimension = dimension;                    // 图片尺寸
+          this.previewCount = previewCount;              // 图片浏览次数
+          this.downloadCount = downloadCount;            // 图片下载次数
+          this.shareCount = shareCount;                  // 图片分享次数
+          this.collectionCount = collectionCount;        // 图片收藏次数
+          this.imgID = imgID;                            // 图片自身ID   
       }
   }
 
   export default{
-    props:['getValue','singleInfo'],
+    props:{
+        getValue:String,
+        getBus:{
+          type: Object,
+          default: null
+        }
+    },
     data(){
       return{
         singleList:singleList,
         imagePreview:imagePreview,
-        dataType:dataType,
         enlargeConfirmDialog:{
             ref: 'enlargeConfirmDialog',
             autofocus: 'none',
@@ -102,24 +112,29 @@
       var that = this
       if(!hasInited){
         hasInited = true
-        console.log(that.singleInfo)
-        _.each(that.singleInfo.data,function(ele){
-          var fileName = ele.name
-          var fileImage = ele.url
-          var fileSize = ele.size
-          var fileThumb = ele.thumb
-          var fileIntroduce = ele.description
-          var fileDimension = ele.dimensions
-          let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
-          that.singleList.push(singleObj)
-        })
-        that.showLoading = !that.showLoading
-        that.total = that.singleInfo.paginate.total
+        if(that.getBus){
+          that.getBus.$on('to-single-data',function(in_data){
+            that.singleList.length = 0
+            _.each(in_data.data,function(ele){
+              var fileName = ele.name
+              var fileImage = ele.url
+              var fileSize = that.bytesToSize(ele.size)
+              var fileThumb = ele.thumb
+              var fileIntroduce = ele.description
+              var fileDimension = ele.dimensions
+              var filePreviewCount = ele.preview_quantity
+              var fileDownloadCount = ele.download_quantity
+              var fileShareCount = ele.share_quantity
+              var fileCollectionCount = ele.collection_quantity
+              var fileImgID = ele.id
+              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
+              that.singleList.push(singleObj)
+            })
+            that.total = in_data.paginate.total
+          })
+          that.showLoading = !that.showLoading
+        }
       }
-    },
-    activated(){
-      var that = this
-      that.getDataInfo(that.singleList.length)
     },
     computed:{
       actionList() {
@@ -132,13 +147,35 @@
       }
     },
     methods:{
-      getDataInfo(type){
+      getWritePermission(ele,item){
         var that = this
-        that.dataType = type
-        that.$emit('data-info', type)
+        if(ele.id === 'action-download') {
+            that.getDownloadCountWritePermission(item)
+        }
+      },
+      ///// 转化为MB,并且只保留两位小数/////////////////////////
+      bytesToSize(bytes) {
+              var k = 1000
+              var i = Math.floor(Math.log(bytes) / Math.log(k))
+              return (bytes / Math.pow(k, i)).toFixed(2)
+      },
+      getDownloadCountWritePermission(item){
+        var that = this
+        //////////////////////////////////////////   记录下载次数
+        let machineCode = BS.b$.App.getSerialNumber()
+        Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":item.imgID},(info) => {
+            console.log('记录成功')
+        })
+        DownloadHandler.add(item)
       },
       getEnlargeFigureImage(item){
           var that = this
+          //////////////////////////////////////////   记录浏览次数
+          let machineCode = BS.b$.App.getSerialNumber()
+          Transfer.http.call('get.items_preview',{"machine_id":machineCode,"id":item.imgID},(info) => {
+              console.log('记录成功')
+          })
+
           const cdg = that.enlargeConfirmDialog
           cdg.title = that.$t('pages.search.dialog-confirm.title')
           cdg.confirmButtonText = that.$t('pages.search.dialog-confirm.btnConfirm')
@@ -150,6 +187,7 @@
       pagechange(currentPage){
           var that = this
           that.current = currentPage
+          that.showLoading = false
           that.singleList.length = 0
           var stt_tmp = "description like '%" +that.getValue+ "%'"
           var tmp_where = {
@@ -161,11 +199,16 @@
               _.each(info.data,function(ele){
               var fileName = ele.name
               var fileImage = ele.url
-              var fileSize = ele.size
+              var fileSize = that.bytesToSize(ele.size)
               var fileThumb = ele.thumb
-              var fileIntroduce = ele.description
+              var fileIntroduce = ele.descriptions
               var fileDimension = ele.dimensions
-              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce)
+              var filePreviewCount = ele.preview_quantity
+              var fileDownloadCount = ele.download_quantity
+              var fileShareCount = ele.share_quantity
+              var fileCollectionCount = ele.collection_quantity
+              var fileImgID = ele.id
+              let singleObj = new Eattedit(fileName,fileImage,fileSize,fileDimension,fileThumb,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
               that.singleList.push(singleObj)
               })
               that.showLoading = !that.showLoading

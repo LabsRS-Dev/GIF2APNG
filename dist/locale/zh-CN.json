@@ -2,6 +2,7 @@
   "routes":{
     "common":{
       "title":"常用操作",
+      "cover":"很抱歉,该功能为本产品订阅功能,请您先注册订阅后再使用该功能!",
       "menu":{
         "welcome":{
           "title": "欢迎使用",
@@ -15,9 +16,17 @@
           "title": "格式转换",
           "tip": "转换GIF动画格式"
         },
+        "resize":{
+          "title": "格式转换",
+          "tip": "转换GIF动画格式以及改变尺寸"
+        },
         "search":{
           "title":"搜索或者输入名称",
           "info":"搜索记录"
+        },
+        "download":{
+          "title":"下载管理",
+          "info":"用户下载的图片以及图集的管理"
         }
       }
     },
@@ -71,6 +80,12 @@
         "select":"选择标签",
         "hot":"HOT",
         "label":"热门标签:"
+      },
+      "recommend":{
+        "types":"个性推荐"
+      },
+      "image-list":{
+        "title":"简介:"
       }
     },
     "convert":{
@@ -145,13 +160,139 @@
       "notice-no-process":{
         "message": "请先执行处理，然后再执行输出！"
       },
-      "welcome":{
-        "description": "操作步骤：",
-        "step1":"Step1: 导入GIF动画文件或者文件目录（支持拖拽）",
-        "step2":"Step2: 设置文件输出地址",
-        "step3":"Step3: 执行转换",
-        "step4":"Step4: 查看转换结果"
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+        "1. 点击 \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" 或 \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来添加新的任务.",
+        "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
+        "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
+        "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
+        "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+     ],
+      "dialog-popover-confirm-edit":{
+        "title":"GIF动画信息描述",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      }
+    },
+    "resize":{
+      "title":{
+        "top":"欢迎来到尺寸转换页面",
+        "botton":"要开始使用页面，请执行以下步骤:"
       },
+      "content":{
+        "reply":"撤销",
+        "tooltip_single":"单独处理一张图片",
+        "tooltip_batch":"批量处理一组图片"
+      },
+      "toolbar":{
+        "import":"导入GIF动画文件",
+        "importDir":"导入GIF动画目录",
+        "remove":"清空导入",
+        "outputFolder": "选择输出目录",
+        "adjustSize" :"图像尺寸调整",
+        "fix":"开始执行",
+        "chancel":"停止"
+      },
+      "task-item":{
+         "file-name": "名称：",
+         "file-path": "路径：",
+         "file-size": "大小：",
+         "progress": "处理进度：",
+         "setting-plan": "设置",
+         "open-parent-dir": "打开所在目录",
+         "review-in-file": "点击查看",
+         "change-size":"转换图片尺寸"
+      },
+      "footbar": {
+        "fileCount": "任务数量",
+        "state": "当前状态",
+        "isResizeWorking":"运行中",
+        "isRemoveWorking": "正在执行移除",
+        "isWaiting":"空闲",
+        "transferState": "引擎状态",
+        "transferIsNormal": "连接正常",
+        "transferIsFault": "无法连接"
+      },
+      "dialog-import-images":{
+        "title":"请选择要导入的GIF动画文件",
+        "prompt":"导入"
+      },
+      "dialog-import-dir-images":{
+        "title":"请选择要导入的GIF动画文件目录",
+        "prompt":"导入"
+      },
+      "dialog-select-outdir":{
+        "title":"请选择输出目录",
+        "prompt":"选择"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要清空导入的GIF动画信息吗？"
+      },
+      "dialog-config-output":{
+        "title":"设置输出路径",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "path":"输出路径:",
+        "cover":"是否覆盖原有文件"
+      },
+      "dialog-config-change":{
+        "title":"调节图片尺寸",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "percentage":"百分比:",
+        "apply":"应用到所有任务?",
+        "width-height":"按宽高转换",
+        "handle-task":"处理比原始值大的输入值",
+        "percent":"按百分比转换",
+        "width":"宽度:",
+        "height":"高度:",
+        "pixel":"像素",
+        "setting":"锁定宽高比",
+        "lock":"已锁定比例",
+        "unlock":"未锁定比例"
+      },
+      "dialog-config-preview":{
+        "title":"信息预览",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "before":"Gif",
+        "after":"Apng"
+      },
+      "dialog-confirm-stop-fix":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要终止所有操作吗？"
+      },
+      "notice-no-items":{
+        "message": "请先导入GIF动画文件，然后再执行处理！"
+      },
+      "notice-no-process":{
+        "message": "请先执行处理，然后再执行输出！"
+      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+        "1. 点击 \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" 或 \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来添加新的任务.",
+        "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
+        "3. 点击 \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来调整图像尺寸.",
+        "4. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
+        "5. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
+        "6. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+     ],
+     "single":{
+        "welcome":[
+          "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+          "1. 点击 \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来添加新的任务.",
+          "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
+          "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
+          "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止任务.",
+          "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除任务.",
+          "6. 您可以点击 \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来撤销改动."
+      ]
+     },
       "dialog-popover-confirm-edit":{
         "title":"GIF动画信息描述",
         "btnConfirm": "确定",
@@ -176,6 +317,42 @@
         "collection":"图集"
       }
     },
+    "download":{
+      "toolbar":{
+        "remove":"清空列表",
+        "outputFolder": "选择输出目录",
+        "redownload":"重新下载全部",
+        "redownloadFailed":"重新下载那些下载失败的内容"
+      },
+      "content":{
+        "img":"已下载图片",
+        "collection":"已下载图集"
+      },
+      "dialog-config-output":{
+        "title":"设置输出路径",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "path":"输出路径:",
+        "cover":"是否覆盖原有文件"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "确定要清空导入的GIF动画信息吗？"
+      },
+      "dialog-select-outdir":{
+        "title":"请选择输出目录",
+        "prompt":"选择"
+      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> 开始 </h3>",
+        "1. 点击 \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出地址.",
+        "2. 点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来清空下载目录.",
+        "3. 您可以点击 \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来重新下载所有GIF图片.",
+        "4. 您可以点击 \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来重新下载下载失败的GIF图片."
+     ]       
+    },
     "abouts":{
       "header":{
         "title":"关于"
@@ -199,6 +376,11 @@
       "updata":{
         "auto":"自动更新",
         "remind":"有新版本时提醒我"
+      },
+      "certificate":{
+        "title":"证书:",
+        "valid":"有效证书",
+        "invalid":"无效证书"
       }
     }
   }

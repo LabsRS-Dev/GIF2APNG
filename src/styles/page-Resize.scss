@@ -1,0 +1,36 @@
+.page__examples-app-doc__resize__content{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+  .page__examples-app-doc__resize__title-top{
+    font-size: rem-calc(20px);
+    margin-top: 16%; 
+  }
+  .page__examples-app-doc__resize__title-botton{
+    font-size: rem-calc(16px);
+    font-weight: bold;
+    margin-bottom: rem-calc(30px);
+  }
+  .page__examples-app-doc__resize__button{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    .ui-button{
+      text-transform :none;
+      display: flex;
+      width: 40%;
+      height: 25%;
+      border-radius:rem-calc(15px); 
+      .ui-button__content{
+        display: flex;
+        flex-direction: column;
+        padding: rem-calc(5px);
+        img{
+          margin-bottom: rem-calc(10px);
+        }
+      }
+    }
+  }
+}

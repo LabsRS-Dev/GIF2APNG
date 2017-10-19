@@ -63,7 +63,7 @@
   width: 100%;
   height:rem-calc(28px);
   .children__router__content__material__hot__label{
-    width: rem-calc(50px);
+    width: rem-calc(60px);
     margin-left:2%;
     font-size: rem-calc(12px);
   }
@@ -140,7 +140,9 @@
             margin:0 rem-calc(5px);
           }
           .ui-icon-button:hover{
-            background-color: rgba(0,0,0,0);
+            background-color: rgba(0,0,0,0.5);
+            width: rem-calc(30px);
+            height: rem-calc(30px);
           }
           .ui-icon-button__icon{
             color:$md-blue-500;

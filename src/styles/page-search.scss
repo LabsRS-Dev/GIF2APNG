@@ -52,6 +52,9 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
+        span{
+          font-size: rem-calc(12px);
+        }
       }
       .page__single__content__dimension{
         display: flex;
@@ -61,6 +64,9 @@
         padding-left: rem-calc(10px);
         align-items: center;
         justify-content: center;
+        span{
+          font-size: rem-calc(12px);
+        }
       }
       .page__single__content__introduce{
         display: flex;
@@ -69,6 +75,9 @@
         padding: rem-calc(10px);
         align-items: center;
         border-right: 1px solid $md-grey-300;
+        span{
+          font-size: rem-calc(12px);
+        }
       }
       .page__single__content__handle__icon{
         display: flex;
@@ -121,20 +130,26 @@
       .page__album__content__info{
         display: flex;
         flex-direction: column;
-        width: 10%;
+        width: 25%;
         height: 100%;
         border-right: 1px solid $md-grey-300;
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
+        span{
+          font-size: rem-calc(12px);
+        }
       }
       .page__album__content__introduce{
         display: flex;
-        width: 65%;
+        width: 50%;
         height: 100%;
         padding: rem-calc(10px);
         align-items: center;
         border-right: 1px solid $md-grey-300;
+        span{
+          font-size: rem-calc(12px);
+        }
       }
       .page__album__content__handle__icon{
         display: flex;

@@ -1,6 +1,7 @@
 <template>
   <dd class="children__recommendation__showImage__imageCover"
-    @click="$router.push({name:'ImageList', params:{id:url,attributes:{img:imgSrc,name:imageName,introduce:introduce,browse:previewCount,share:shareCount,download:downloadCount,collection:collectionCount}}})"
+    @click="$router.push({name:'ImageList', params:{id:url,attributes:{img:imgSrc,imgUrl:imgUrl,name:imageName,introduce:introduce,browse:previewCount,share:shareCount,download:downloadCount,collection:collectionCount}}})"
+    @mousedown="registrationPreviewCount()"
     >
       <div class="showImage__imageCover__viewCount">
         <span class="showImage__imageCover__viewCount__icon"><i class="fa fa-eye fa-lg"></i></span>
@@ -16,6 +17,9 @@
 export default {
   props: {
     imgSrc: {
+      required: true
+    },
+    imgUrl:{
       required: true
     },
     introduce: {
@@ -41,6 +45,17 @@ export default {
   data () {
     return {
 
+    }
+  },
+  methods:{
+    registrationPreviewCount (){
+      var that = this
+      console.log(that.url)
+      ////////////////////////////////////////////   记录浏览次数
+      let machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call('get.sets_preview',{"machine_id":machineCode,"id":that.url},(info) => {
+        console.log('记录成功')
+      })
     }
   },
   components:{

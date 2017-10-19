@@ -1,12 +1,13 @@
 .page {
     margin: 0 auto;
-    max-width: 100%;
-    height: $page-content-height;
+    
+    height: $page-content-px-height;
+    height: $page-content-vh-height;
 
     display: flex;
     flex-direction: column;    
 
-    padding: rem-calc(16px);
+    padding: $page-content-padding;
     line-height: 1.6;
     color: $page-content-font-color;
 

@@ -1,10 +1,10 @@
 <template>
     <div class="children__router__content__topRank">
-        <div class="children__router__content__topRank__content" v-for="item in allRankList">
+        <div class="children__router__content__topRank__content" v-for="item in allRankList" :key="item.id">
             <div class="children__router__content__topRank__title">{{item.name}}</div>
             <div class="children__router__content__topRank__body">
                 <div class="children__router__content__topRank__body__top">
-                    <div class="children__router__content__topRank__body__top__content" v-for="(el,index) in item.top">
+                    <div class="children__router__content__topRank__body__top__content" v-for="(el,index) in item.top" :key="el.id">
                         <img class="children__router__content__topRank__body__top__icon" :src="el.thumb"></img>
                         <span class="children__router__content__topRank__body__top__rank">{{index + 1}}</span>
                         <span class="children__router__content__topRank__body__top__name">{{el.name}}</span>
@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <div class="children__router__content__topRank__body__bottom">
-                    <div class="children__router__content__topRank__body__bottom__content" v-for="(ele,index) in item.bottom">
+                    <div class="children__router__content__topRank__body__bottom__content" v-for="(ele,index) in item.bottom" :key="ele.id">
                         <span class="children__router__content__topRank__body__bottom__rank">{{index + 4}}</span>
                         <img class="children__router__content__topRank__body__bottom__icon" :src="ele.thumb"></img>
                         <span class="children__router__content__topRank__body__bottom__name">{{ele.name}}</span>

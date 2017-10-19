@@ -8,7 +8,7 @@
                 :color="item.color"
                 :key="item.id"
                 v-if="item.visiable"
-                v-for="item, index in actionList"
+                v-for="(item, index) in actionList"
                 >
                     <span :class="item.icon" :title="$t(item.tooltip)"></span>
             </ui-icon-button>
@@ -92,11 +92,16 @@
         </div>
 
         <div class="page__examples page__examples-app-doc">
-            <svg
-                :id="welcomeContentID"
+            <div
                 class="page__examples-app-doc__welcome"
                 v-show="taskList.length <= 0"
-                />
+                >
+                <p 
+                    v-html="item"
+                    :key="index"
+                    v-for="(item, index) in $t('pages.convert.welcome')">
+                </p>
+            </div>    
             <ui-alert
                 :class="getItemStyleClass(item)"
                 :type="item.style.type"
@@ -106,8 +111,8 @@
                 @dismiss="onRemoveTaskItem(item, index)"
 
                 v-show="item.style.show"
-                v-for="item, index in taskList">
-                <div class="page__examples-app-doc__item">
+                v-for="(item, index) in taskList">
+                <div class="page__examples-app-doc__item" :data-taskid="item.id">
                     <div class="ui-toolbar__top">
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
@@ -173,8 +178,8 @@
 </template>
 
 <script>
-import { BS, Util, _ } from 'dove.max.sdk'
-import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox} from 'keen-ui'
+import { BS, Util, _, lodash } from 'dove.max.sdk'
+import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox, UiTextbox} from 'keen-ui'
 import {Transfer} from '../../bridge/transfer'
 import echarts from "echarts"
 
@@ -211,7 +216,7 @@ class Task {
 }
 
 var taskList = []
-
+var taskID2taskObj = {}
 //// 与设置相关的处理
 class Settings {
     static key = "convert-page-settings"
@@ -275,7 +280,6 @@ export default {
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
-            taskID2taskObj: {},
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
@@ -391,7 +395,7 @@ export default {
     },
 
     mounted(){
-        this.drawWelcome()
+
     },
 
     beforeDestroy() {
@@ -407,8 +411,8 @@ export default {
                 {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.import"},
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importDir"},
                 {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.remove"},
-                {id:'action-outputFolder', visiable:true, color:"primary", icon:"fa fa-folder fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
-                {id:'action-do', visiable:!that.isConvertWorking, color:"green", icon:"fa fa-legal fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
+                {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
+                {id:'action-do', visiable:!that.isConvertWorking, color:"green", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
         }
@@ -436,7 +440,7 @@ export default {
 
             console.assert(_.isString(that.lastOutputPath))
             console.assert(_.isBoolean(that.enableOverWriteOutput))
-
+ 
             $LS$.data.enableOverwriteOutput = that.enableOverWriteOutput
             $LS$.data.lastSelectOutputPath = that.lastOutputPath
             $LS$.data.outputPaths = that.availableOutputPathList
@@ -453,38 +457,6 @@ export default {
         },
 
         // ------------------------- Welcome content
-        drawWelcome(){
-            var that = this
-            var SnapRef = Util.util.getSnapSVG$()
-            if (SnapRef) {
-                var s = SnapRef('#' + that.welcomeContentID)
-
-                // 创建一个盒子
-                var rect = s.rect('8%', '8%', '84%', '84%', 16)
-                rect.attr({
-                    fill: "none",
-                    "fill-opacity": 0.5,
-                    "stroke-linecap": "round",
-                    "stroke-linejoin": "bevel",
-                    "stroke-dasharray" : "5,5",
-                    stroke: "#adadad",
-                    strokeWidth: 1
-                })
-
-                // 创建一个文字盒子
-                var description = s.text('12%', '16%', that.$t('pages.convert.welcome.description'))
-                var step1 = s.text('15%', '26%', that.$t('pages.convert.welcome.step1'))
-                var step2 = s.text('15%', '36%', that.$t('pages.convert.welcome.step2'))
-                var step3 = s.text('15%', '46%', that.$t('pages.convert.welcome.step3'))
-                var step4 = s.text('15%', '56%', that.$t('pages.convert.welcome.step4'))
-
-                // 修饰一下文字
-                description.attr({
-                    "font-weight": "bold"
-                })
-
-            }
-        },
 
         // ------------------------- Style
         getItemStyleClass(item){
@@ -540,35 +512,42 @@ export default {
             var that = this
 
             console.log("-------------------- call import files")
-                // call bs
-                BS.b$.importFiles({
-                    title: this.$t('pages.convert.dialog-import-images.title'),
-                    prompt: this.$t('pages.convert.dialog-import-images.prompt'),
-                    allowMulSelection: true,
-                    types:[] // Note: too many formats
-                }, function(){ // Test code
-                    // Test[1]: Windows 本地实际数据
-                    _.each([
-                        {fileName: 'RAW_NIKON_D7100.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB'},
-                        {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
-                    ], function(ele){
-                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
-                        that.taskList.push(taskObj)
-                        console.log('taskID-files=', taskObj.id)
-                        that.taskID2taskObj[taskObj.id] = taskObj
-                    })
+            // call bs
+            BS.b$.importFiles({
+                title: this.$t('pages.convert.dialog-import-images.title'),
+                prompt: this.$t('pages.convert.dialog-import-images.prompt'),
+                allowMulSelection: true,
+                types:[] // Note: too many formats
+            }, function(){ // Test code
+                // Test[1]: Windows 本地实际数据
+                var _prx = "N_X" 
+                var i = 0
+                while(i < 50){
+                    _prx += "N_X"
+                    ++i
+                }
 
-                    return
-
-                    // Test[2]: 测试很多的情况下的列表展示
-                    for (let i =0; i < 50; ++i){
-                        let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
-                        that.taskList.push(taskObj)
-                        that.taskID2taskObj[taskObj.id] = taskObj
-                    }
-                }, function(data){ // Normal code
-                    that.__importFilesOrDir(data)
+                _.each([
+                    {fileName: 'RAW_NIKON_D7100.NEF' + _prx, filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF' + _prx, fileSize: '27.5MB'},
+                    {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
+                ], function(ele){
+                    let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
+                    that.taskList.push(taskObj)
+                    console.log('taskID-files=', taskObj.id)
+                    taskID2taskObj[taskObj.id] = taskObj
                 })
+
+                return
+
+                // Test[2]: 测试很多的情况下的列表展示
+                for (let i =0; i < 50; ++i){
+                    let taskObj = new Task("images/picture.svg", "Images" + i, "/url/image" + i, i + '.2MB')
+                    that.taskList.push(taskObj)
+                    taskID2taskObj[taskObj.id] = taskObj
+                }
+            }, function(data){ // Normal code
+                that.__importFilesOrDir(data)
+            })
         },
 
         onBtnImportDirClick(){
@@ -585,7 +564,7 @@ export default {
                     var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
                     that.taskList.push(taskObj)
                     console.log('taskID-dir=', taskObj.id)
-                    that.taskID2taskObj[taskObj.id] = taskObj
+                    taskID2taskObj[taskObj.id] = taskObj
                 }
             }, function(data){
                 that.__importFilesOrDir(data)
@@ -640,9 +619,9 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.lastOutputPath==""){
-                cdg.callbackConfirm = () => {
+                cdg.callbackConfirm = () => { 
                     cdg.callbackConfirm && cdg.callbackConfirm()
-                    that.startDo()
+                    that.startDo() 
                 }
                 that.onBtnOutputFolderClick()
             }else{
@@ -690,7 +669,7 @@ export default {
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
                             let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                             that.taskList.push(taskObj)
-                            that.taskID2taskObj[taskObj.id] = taskObj
+                            taskID2taskObj[taskObj.id] = taskObj
                         }
                     }else{
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
@@ -698,7 +677,7 @@ export default {
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
                             let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
                             that.taskList.push(taskObj)
-                            that.taskID2taskObj[taskObj.id] = taskObj
+                            taskID2taskObj[taskObj.id] = taskObj
                         }
                     }
                 })
@@ -707,7 +686,7 @@ export default {
 
         __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {
             var that = this
-            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj = _.extend(curInfoWithTaskObj, data)
                 extendHandler && extendHandler(curInfoWithTaskObj)
@@ -718,7 +697,7 @@ export default {
 
         __updateInfoWithGif2apngTask(taskID, data) {
             var that = this
-            let curInfoWithTaskObj = that.taskID2taskObj[taskID]
+            let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
                 curInfoWithTaskObj.isWorking = data.progress >= 100 ? false : true
                 curInfoWithTaskObj.progress = data.progress >= 100 ? 100: data.progress
@@ -747,8 +726,11 @@ export default {
                     that.__abi__start_Gif2apngTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput || false
+                        overwrite: that.enableOverWriteOutput ? true : false
                     }, (data) => {
+                        console.warn('startDo data reback....')
+                        console.dir(data)    
+                        // process 
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 50,
@@ -763,7 +745,7 @@ export default {
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
                                 state: -1,
-                                message: 'error'
+                                message: data.detail_error || 'error'
                             })
                         }
                         // check converting
@@ -777,7 +759,7 @@ export default {
             var that = this
             // send stop message to server
             if(!notice) return
-            if(taskList.length > 0 && that.isConvertWorking) {
+            if(that.taskList.length > 0 && that.isConvertWorking) {
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
                         // check converting
@@ -861,9 +843,8 @@ export default {
             var that = this
 
             // 检查必要数值
-            console.assert(taskID)
-
-            let curTaskObj = that.taskID2taskObj[taskID]
+            console.assert(taskID)         
+            let curTaskObj = taskID2taskObj[taskID]
             _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
                 /// call process task
                 Transfer.Tools.call('stop.gif2apng', {
@@ -885,7 +866,7 @@ export default {
             // TODO：remove it from taskList
             item.progress = 0
             item.stateInfo = 0
-            that.taskID2taskObj[item.id] = null
+            taskID2taskObj[item.id] = null
 
             // remove from taskList
             that.taskList.splice(index, 1)

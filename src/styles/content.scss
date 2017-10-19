@@ -1,20 +1,53 @@
 .dove-docs-content {
-    width: 100%;
-    overflow-x: hidden;
+    /* 宽度和高度适应新老Safari浏览器:
+    see: http://caniuse.com/#search=calc 
+    */
+    width: 75%; // Fixed for macOS 10.7 old safari
+    width: $page-content-width;
+    height: 100%;
     height: 100vh;
+
     display: flex;
     flex-direction: column;
+
     background: $docs-content-background;
     color: $docs-content-font-color;
 }
-
+.dove-docs-cover{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    height: 100vh;
+    left: rem-calc(200px); 
+    top: 0; 
+    right: 0; 
+    bottom: 0;
+    background-color:#000;
+    background:rgba(0,0,0,0.6) ;
+    z-index:100;
+    /* 过渡效果 */
+    transition: all .25s;
+    overflow: hidden;
+    .dove-docs-cover-content{
+        padding: rem-calc(10px);
+        background:#333;
+        border-radius: rem-calc(10px);
+        color: #aaa;
+        font-size: rem-calc(18px);
+        width: 40vw;
+        white-space: normal;
+    }
+}
 .dove-docs-content__toolbar {
-    height: $docs-content__toolbar-height;
+    height: $docs-content__toolbar-px-height;
+    height: $docs-content__toolbar-vh-height;
     background: $docs-content__toolbar-background;
     color: $docs-content__toolbar-font-color;
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-shrink: 0;
     z-index: $z-index-toolbar;
     border-bottom: $docs-content__toolbar-border-bottom;
@@ -28,6 +61,30 @@
     display: flex;
     align-items: center;
     user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.dove-docs-content__toolbar-button{
+    display: flex;
+    margin-left: rem-calc(5px);
+    .dove-docs-content__toolbar-button__icon{
+        display: flex;
+        width:rem-calc(25px);
+        height: rem-calc(25px);
+        border: rem-calc(1px) solid $md-grey-400;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .Backward{
+        border-top-left-radius: rem-calc(5px);
+        border-bottom-left-radius: rem-calc(5px);
+    }
+    .Forward{
+        border-top-right-radius: rem-calc(5px);
+        border-bottom-right-radius:  rem-calc(5px);
+    }
 }
 .dove-docs-content__toolbar-search{
     display: flex;
@@ -252,11 +309,13 @@
     color: white;
 }
 
+//
 .dove-docs-content__page-content {
     background-color: $docs-content-background;
     color: $docs-content-font-color;
-    height: 100%;
     width: 100%;
+    height: $docs-content__content-px-heigth;
+    height: $docs-content__content-vh-height;
     overflow-y: auto;
     z-index: 0;
 }

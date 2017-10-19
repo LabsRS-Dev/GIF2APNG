@@ -10,7 +10,8 @@ $global-titlebar-font-color: #676767;
 $global-font-size: rem-calc(13px);
 $global-font: $font-stack;
 $global-cursor: default;
-$global-toolbar-height: 10vh;
+$global-toolbar-vh-height: 10vh;
+$global-toolbar-px-height: rem-calc(62px);
 
 
 //
@@ -33,7 +34,8 @@ $sidebar__header-background: $global-titlebar-background;
 $sidebar__header-font-color: $global-titlebar-font-color;
 $sidebar__header-border-bottom: 1px solid $md-grey-400;
 $sidebar__header-border-right: $sidebar-border-right;
-$sidebar__header-height: $global-toolbar-height;
+$sidebar__header-vh-height: $global-toolbar-vh-height;
+$sidebar__header-px-height: $global-toolbar-px-height;
 
 //2. 菜单导航栏
 $sider-section-font-color: $global-font-color;
@@ -49,19 +51,33 @@ $sider-menu-item-is-active-font-color: $global-font-color;
 //0. 整体Page页面的基本配置
 $page-content-backgroud: $global-background;
 $page-content-font-color: $global-font-color;
-$page-content-height: 100vh - $sidebar__header-height;
+
+$page-content-padding: rem-calc(16px);
+$page-content-width:  calc(100% - #{$sidebar-default-width});
+$page-content-px-height: calc(100% -  #{$page-content-padding});
+$page-content-vh-height: calc((100vh - #{$sidebar__header-vh-height}) - #{$page-content-padding}); 
+    
+
 
 $page-content__footbar-background: $global-background;          // 默认无连接状态
 $page-content__footbar-working-background: $global-background;  // 工作状态
 $page-content__footbar-normal-background: $global-background;   // 连接正常状态
 $page-content__footbar-font-color: $global-font-color;
 
+/**
+** 处理页面内的内容高度和宽度
+**/
 $docs-content-background: $global-background;
 $docs-content-font-color: $global-font-color;
 $docs-content__toolbar-background: $global-titlebar-background;
 $docs-content__toolbar-font-color: $global-titlebar-font-color;
 $docs-content__toolbar-border-bottom: 1px solid $md-grey-400;
-$docs-content__toolbar-height: $global-toolbar-height;
+$docs-content__toolbar-vh-height: $global-toolbar-vh-height;
+$docs-content__toolbar-px-height: $global-toolbar-px-height;
+
+
+$docs-content__content-vh-height: 100vh - $docs-content__toolbar-vh-height;
+$docs-content__content-px-heigth: calc(100% - #{$docs-content__toolbar-px-height});
 
 $docs-content__taskitem-background: rgba(233, 233, 233, 1.0); // linear-gradient(rgba(233, 233, 233, 1.0), rgba(178, 178, 178, 1.0));
 $docs-content__taskitem-hover-background:  $global-hover-background;
@@ -85,10 +101,12 @@ $desktop-min-height: 600px;
 
 //
 //
+@import 'ui-keen-redefine';
 @import 'code';
 @import 'tables';
 @import 'helpers';
 @import 'globals';
+@import 'docs';
 @import 'sidebar';
 @import 'content';
 @import 'tables';
@@ -105,3 +123,7 @@ $desktop-min-height: 600px;
 @import 'page-discover-imageList';
 @import 'page-search';
 @import 'page-pagination';
+@import 'page-download';
+@import 'page-Resize_single';
+@import 'page-Resize_batch';
+@import 'page-Resize';

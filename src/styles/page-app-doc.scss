@@ -1,21 +1,28 @@
 .page-app-doc {
-
-    .page__toolbar-app-doc{
+    .page__toolbar-app-doc {
         flex: 1;
         min-height: rem-calc(44px);
+        .page__toolbar {
+            .page__toolbar__widget {
+                display: flex;
+            }
+            .ui-modal__container {
+                overflow: visible;
+                .ui-modal__body {
+                    overflow-y: visible;
+                }
+            }
+        }
         .ui-confirm {
             background: $global-background;
             font-size: $global-font-size;
             border-radius: rem-calc(4px);
-
             .ui-modal__container {
                 background: $global-background;
                 color: $global-font-color;
-
                 .ui-modal__header {
                     background: $global-titlebar-background;
                     color: $global-font-color;
-
                     h1 {
                         font-size: $global-font-size;
                     }
@@ -27,17 +34,94 @@
                     }
                 }
             }
+
+            .page__toolbar-app-doc__input-group {
+                display: flex;
+                flex-direction: column;
+
+                font-size: rem-calc(11px);
+
+                .page__toolbar-app-doc__input-browse {
+                    display: flex;
+                    align-items: center;
+                    margin-top: rem-calc(14px);
+                    margin-bottom: rem-calc(20px);
+                    .ui-button {
+                        padding: 0;
+                        margin-left: rem-calc(5px);
+                        height: rem-calc(26px);
+                        border-radius: rem-calc(5px);
+                    }
+                    .ui-select {
+                        flex: 1;
+                        align-items: center;
+                        margin: 0;
+                        margin-left: rem-calc(8px);
+                        padding: 0;
+                        height: rem-calc(25px);
+                        border-radius: rem-calc(5px);
+                        border: rem-calc(1px) solid #adadad;
+                        position: relative;
+                        .ui-select__dropdown {
+                            .ui-select-option {
+                                font-size: rem-calc(11px);
+                            }
+                        }
+                        .ui-select__display {
+                            border: 0;
+                            height: rem-calc(25px);
+                            font-size: rem-calc(11px);
+                            .ui-select__dropdown-button {
+                                margin: 0 auto;
+                            }
+                        }
+                        .ui-select-option {
+                            height: rem-calc(28px);
+                        }
+                        .ui-select-option.is-selected {
+                            color: rgba(0, 0, 0, .87);
+                            background-color: #fff;
+                            font-weight: 400;
+                        }
+                        .ui-select-option:hover {
+                            background-color: $md-blue;
+                        }
+                    }
+                }
+            }
         }
+
+
     }
-
-
-    .page__examples-app-doc{
+    .page__examples-app-doc {
         overflow-y: auto;
         flex: 358;
 
-        .page__examples-app-doc__welcome{
-            min-width: 100%;
-            min-height: 80%;
+        // 每个月面的欢迎页面的样式处理
+        .page__examples-app-doc__welcome {
+            padding: 12px;
+            font-size: rem-calc(12px);
+
+            color: $md-grey-500;
+        }
+
+        .ui-alert {
+            box-shadow: $shadow-elevation-2dp_-_box-shadow;
+            font-size: rem-calc(12px);
+        }
+
+        .ui-alert--type-info {
+            .ui-alert__body {
+                background: $docs-content__taskitem-background;
+                color: $docs-content__taskitem-font-color;
+                font-size: rem-calc(13px);
+                border-radius: rem-calc(4px);
+                border-left: $docs-content__taskitem_normal-boder-left;
+                &:hover {
+                    background: $docs-content__taskitem-hover-background;
+                    color: $docs-content__taskitem-hover-font-color !important;
+                }
+            }
         }
 
         .ui-alert--type-success {
@@ -46,29 +130,23 @@
                 color: $docs-content__taskitem-font-color;
                 font-size: rem-calc(13px);
                 border-radius: rem-calc(4px);
-
                 border-left: $docs-content__taskitem_normal-boder-left;
-
-                &:hover{
+                &:hover {
                     background: $docs-content__taskitem-hover-background;
                     color: $docs-content__taskitem-hover-font-color !important;
                 }
             }
-
             &.isFixedSuccess {
                 .ui-alert__body {
                     border-left: $docs-content__taskitem_success-boder-left;
                 }
-
             }
-
-            &.isFixFailed{
+            &.isFixFailed {
                 .ui-alert__body {
                     border-left: $docs-content__taskitem_failed-boder-left;
                 }
             }
         }
-
         .page__examples-app-doc__item {
             display: flex;
             flex-direction: column;
@@ -78,118 +156,101 @@
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-
                 width: 100%;
-
-                .ui-toolbar__top__metainfo{
+                .ui-toolbar__top__metainfo {
                     flex-grow: 2;
                     width: 100%;
-
                     display: flex;
                     flex-direction: row;
-                    align-items: center;
-
-                    .ui-toolbar__top__news__title{
+                    align-items: center; // 文字越界的处理
+                    word-wrap: break-word;
+                    word-break: break-all;
+                    text-overflow: ellipsis;
+                    .ui-toolbar__top__news__title {
                         margin-left: rem-calc(8px);
                     }
-                    .ui-toolbar__top__fileName{
+                    .ui-toolbar__top__fileName {
                         margin-left: rem-calc(4px);
                         user-select: auto !important;
                     }
-
-                    .ui-toolbar__top__fileSize{
+                    .ui-toolbar__top__fileSize {
                         margin-left: rem-calc(4px);
                         font-size: rem-calc(11px);
                         user-select: auto !important;
                     }
                 }
-
-                .ui-toolbar__top__metainfo__toolbar{
+                .ui-toolbar__top__metainfo__toolbar {
                     flex-grow: 1;
                     align-self: flex-start;
                     flex-shrink: 0;
-
                     display: flex;
                     flex-direction: row;
-
-                    font-size: rem-calc(11px);
-
-                    // 选择框
+                    font-size: rem-calc(11px); // 选择框
                     .ui-select__dropdown {
                         position: relative;
                         max-height: rem-calc(3px);
-
-                        .ui-select__search-input{
+                        .ui-select__search-input {
                             background-color: #fff;
                             font-size: rem-calc(11px);
                         }
                     }
-
                     .ui-select__display {
                         height: auto !important;
                     }
-
-                    .ui-select__options *{
+                    .ui-select__options * {
                         font-size: rem-calc(9px) !important;
                     }
-                    .ui-select__display-value{
+                    .ui-select__display-value {
                         font-size: rem-calc(9px);
                     }
                 }
             }
-
-            .ui-toolbar__body{
+            .ui-toolbar__body {
                 display: flex;
                 flex-direction: column;
-                align-items: flex-start;
-
-                .ui-toolbar__top__taskMessage{
+                align-items: flex-start; // 文字越界的处理
+                word-wrap: break-word;
+                word-break: break-all;
+                text-overflow: ellipsis;
+                .ui-toolbar__top__taskMessage {
                     margin-left: rem-calc(8px);
-                    &.task-item-has-error{
+                    &.task-item-has-error {
                         color: $docs-content__taskitem_haserror-font-color;
                         user-select: auto !important;
                     }
                 }
-
-
-                .ui-toolbar__body__filePath{
+                .ui-toolbar__body__filePath {
                     font-size: rem-calc(10px);
                     padding: rem-calc(4px);
                     user-select: auto !important;
                 }
             }
-
-            .ui-toolbar__bottom{
+            .ui-toolbar__bottom {
                 display: block;
                 flex-shrink: 1
             }
         }
     }
-
-
-    .page__footbar-app-doc{
+    .page__footbar-app-doc {
+        bottom: 2px;
         flex: 1;
         min-height: rem-calc(44px);
-
         background: $page-content__footbar-background;
-        border-radius:8px;
+        border-radius: 8px;
         margin-top: rem-calc(4px);
+        margin-bottom: rem-calc(-28px);
         padding: rem-calc(4px);
         cursor: pointer;
         span {
             color: $page-content__footbar-font-color;
             font-size: rem-calc(10px);
-            padding:  rem-calc(4px);
+            padding: rem-calc(4px);
         }
-
         &.working {
             background: $page-content__footbar-working-background;
         }
-
-        &.transferNormal{
+        &.transferNormal {
             background: $page-content__footbar-normal-background;
         }
     }
 }
-
-

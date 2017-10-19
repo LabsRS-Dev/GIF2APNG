@@ -1,7 +1,10 @@
 const options = require('./options')
     //处理CSS的兼容性的 Autoprefixer:一个以最好的方式处理浏览器前缀的后处理程序
     //https://npm.taobao.org/package/autoprefixer
-const autoprefixer = require('autoprefixer')
+const postcss_autoprefixer = require('autoprefixer')
+const postcss_cssnext = require('postcss-cssnext')
+const postcss_viewport_units = require('postcss-viewport-units')
+const postcss_vmin = require('postcss-vmin')
 
 const dir_nACommonJS = 'D:/workspace/nACommonJS'
 const dir_sdk = dir_nACommonJS + '/sdk'
@@ -48,8 +51,19 @@ module.exports = {
                         // configured in the script specific webpack configs
                     },
                     postcss: [
-                        autoprefixer({
-                            browsers: ['last 2 versions', 'ie > 9', 'Firefox ESR']
+                        postcss_cssnext,
+                        postcss_viewport_units,
+                        postcss_vmin,
+                        postcss_autoprefixer({
+                            browsers: [
+                                'last 5 version',
+                                'last 5 Chrome versions',
+                                'ios >= 4',
+                                'ie > 9',
+                                'Firefox ESR',
+                                'Firefox >= 3',
+                                'Safari >= 2'
+                            ]
                         })
                     ]
                 }

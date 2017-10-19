@@ -2,6 +2,7 @@
   "routes":{
     "common":{
       "title":"General",
+      "cover":"Sorry, this feature is only available for our subscribers. Please subscribe it first!",
       "menu":{
         "welcome":{
           "title": "Welcome",
@@ -15,9 +16,17 @@
           "title": "Convert",
           "tip": "Convert GIF(.gif) to animated PNG(.png)"
         },
+        "resize":{
+          "title": "Resize",
+          "tip": "Convert GIF(.gif) to animated PNG(.png) and resize"
+        },
         "search":{
           "title":"Search or enter name",
           "info":"Search record"
+        },
+        "download":{
+          "title":"Download",
+          "tip":"User downloads of images and collection of management"
         }
       }
     },
@@ -71,11 +80,17 @@
         "select":"Select Label Group",
         "hot":"HOT",
         "label":"Hot Tags:"
+      },
+      "recommend":{
+        "types":"Recommendation"
+      },
+      "image-list":{
+        "title":"Description:"
       }
     },
     "convert":{
       "toolbar":{
-        "import":"Import GIF(.gif) files",
+        "import":"Import files",
         "importDir":"Import directory",
         "remove":"Remove All",
         "outputFolder": "Output directory",
@@ -102,7 +117,7 @@
         "transferIsFault": "Offline"
       },
       "dialog-import-images":{
-        "title":"Import GIF(.gif) files",
+        "title":"Import files",
         "prompt":"Import"
       },
       "dialog-import-dir-images":{
@@ -145,12 +160,139 @@
       "notice-no-process":{
         "message": "Please convert first, then output!"
       },
-      "welcome":{
-        "description": "Steps：",
-        "step1":"1: Import GIF(.gif) files or directory (Support drag)",
-        "step2":"2: Set output directory",
-        "step3":"3: Click 'convert' button to run",
-        "step4":"4: Review the convert result"
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start convert tasks.",
+        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all convert tasks.",
+        "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
+     ],
+      "dialog-popover-confirm-edit":{
+        "title":"Description of GIF",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      }
+    },
+    "resize":{
+      "title":{
+        "top":"Welcome to the Resize page",
+        "botton":"To get started with Resize,do any of the following:"
+      },
+      "content":{
+        "reply":"Undo",
+        "tooltip_single":"To process a single picture.",
+        "tooltip_batch":"To batch process a group of pictures."
+      },
+      "toolbar":{
+        "import":"Import GIF(.gif) files",
+        "importDir":"Import directory",
+        "remove":"Remove All",
+        "outputFolder": "Output directory",
+        "adjustSize" :"Fit Image",
+        "fix":"Resize",
+        "chancel":"Cancel all"
+      },
+      "task-item":{
+         "file-name": "Name：",
+         "file-path": "Path：",
+         "file-size": "Size：",
+         "progress": "Progress：",
+         "setting-plan": "Settings",
+         "open-parent-dir": "Reveal in Folder",
+         "review-in-file": "Preview",
+         "change-size":"Change the Image Size"
+      },
+      "footbar": {
+        "fileCount": "Task Count",
+        "state": "Task State",
+        "isResizeWorking":"Running",
+        "isRemoveWorking": "Removing",
+        "isWaiting":"Idle",
+        "transferState": "Engine State",
+        "transferIsNormal": "Online",
+        "transferIsFault": "Offline"
+      },
+      "dialog-import-images":{
+        "title":"Import GIF(.gif) files",
+        "prompt":"Import"
+      },
+      "dialog-import-dir-images":{
+        "title":"Import a directory",
+        "prompt":"Import"
+      },
+      "dialog-select-outdir":{
+        "title":"Select a output directory",
+        "prompt":"Select"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Remove all items?"
+      },
+      "dialog-config-output":{
+        "title":"Settings",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "path":"Output:",
+        "cover":"Overwrite exsisting files?"
+      },
+      "dialog-config-change":{
+        "title":"Adjust the image size",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "percentage":"Percent:",
+        "apply":"Apply to all tasks?",
+        "width-height":"Width-height conversion",
+        "handle-task":"Handle an input value larger than the original",
+        "percent":"Percentage conversion",
+        "width":"Width:",
+        "height":"Height:",
+        "pixel":"PX",
+        "setting":"Preserve Aspect Ratio",
+        "lock":"Keep aspect ratio",
+        "input-lock":"keep ratio",
+        "unlock":"Don't keep aspect ratio"
+      },
+      "dialog-config-preview":{
+        "title":"Preview info",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "before":"Gif",
+        "after":"Apng"
+      },
+      "dialog-confirm-stop-fix":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Cancel all converted tasks?"
+      },
+      "notice-no-items":{
+        "message": "Please import GIF files first, then convert!"
+      },
+      "notice-no-process":{
+        "message": "Please convert first, then output!"
+      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+        "3. Click \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" button to Fit Image.",
+        "4. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize tasks.",
+        "5. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all resize tasks.",
+        "6. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
+      ],
+      "single":{
+        "welcome":[
+          "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+          "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new task.",
+          "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+          "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize task.",
+          "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop resize task.",
+          "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
+          "6. You can click \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" button to  undo the change."
+        ]
       },
       "dialog-popover-confirm-edit":{
         "title":"Description of GIF",
@@ -176,6 +318,42 @@
         "collection":"Image Collection"
       }
     },
+    "download":{
+      "toolbar":{
+        "remove":"Remove All",
+        "outputFolder": "Output directory",
+        "redownload":"Re-Download all",
+        "redownloadFailed":"Re-Download the failed downloads"
+      },
+      "content":{
+        "img":"Downloaded Images",
+        "collection":"Downloaded ImgCollection"
+      },
+      "dialog-config-output":{
+        "title":"Output directory",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "path":"Path:",
+        "cover":"Overwrite exsisting files?"
+      },
+      "dialog-confirm-remove-all":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Remove all imported items?"
+      },
+      "dialog-select-outdir":{
+        "title":"Select a output directory",
+        "prompt":"Select"
+      },
+      "welcome":[
+        "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
+        "1. Click \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+        "2. Click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
+        "3. You can click \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download all the GIF images.",
+        "4. You can click \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download the failed GIF images."
+     ]      
+    },
     "abouts":{
       "header":{
         "title":"About"
@@ -199,6 +377,11 @@
       "updata":{
         "auto":"Auto update",
         "remind":"Remind me if a new version released"
+      },
+      "certificate":{
+        "title":"Certificate:",
+        "valid":"Valid Certificate",
+        "invalid":"Invalid Certificate"
       }
     }
   }

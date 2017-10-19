@@ -11,13 +11,13 @@
                             <span class="label__popover__custom__content__title">{{$t('pages.discover.task-item.types')}}</span>
                             <span class="label__popover__custom__content__select"><i class="fa fa-check fa-lg"></i></span>
                         </div>
-                        <div class="label__popover__custom__content__category" v-for="item in categoryList">
+                        <div class="label__popover__custom__content__category" v-for="item in categoryList" :key="item.id">
                             <div class="label__popover__custom__content__category__icon">
                                 <img :src="item.thumb" width="32" height="32" viewBox="0 0 32 32" />
                                 <span class="label__popover__custom__content__category__title">{{item.name}}</span>
                             </div>
                             <div class="label__popover__custom__content__category__tag">
-                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event,el)">
+                                <div class="label__popover__custom__content__category__tag__all" v-for="el in item.tags" @click="getCheckTagStyle($event,el)" :key="el.id">
                                     <span class="label__popover__custom__content__content">{{el.name}}</span>
                                     <span class="label__popover__custom__content__tag__space"></span>
                                     <span class="label__popover__custom__content__tag__select"><i class="fa fa-check fa-lg"></i></span>
@@ -32,7 +32,7 @@
         <div class="children__router__content__classification__hot">
             <span class ="children__router__content__classification__hot__label">{{$t('pages.discover.task-item.label')}}</span>
             <div class ="children__router__content__classification__hot__all">
-                <div class="children__router__content__classification__hot__content" v-for="ele in hotList">
+                <div class="children__router__content__classification__hot__content" v-for="ele in hotList" :key="ele.id">
                     <span class="children__router__content__classification__hot__text" @click="getLabelChange(ele)">{{ele.name}}</span>
                 </div>
             </div>
@@ -40,11 +40,12 @@
         <div class="children__router__content__classification__content">
             <dl v-show="showLoading">
                 <image-cover
-                    :imageName="item.name" :img-src="item.image"
+                    :imageName="item.name" :img-src="item.image" :img-url="item.imgUrl"
                     :introduce="item.introduce" :previewCount="item.previewCount"
                     :shareCount="item.shareCount" :downloadCount="item.downloadCount"
                     :collectionCount="item.collectionCount" :url="item.urlPostfix"
                     v-for="item in labelList"
+                    :key="item.id"
                     >
                 </image-cover>
             </dl>
@@ -69,10 +70,11 @@
 
     const labelPrefix = 'children-classification-image-id-' + _.now()
     class Label {
-        constructor(name, image,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
+        constructor(name, image,imgUrl,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
             this.id = _.uniqueId(labelPrefix);
             this.name = name;                        // 图像文件名称
-            this.image = image;                      // 图像文件的路径
+            this.image = image;                      // 图像文件的缩略图
+            this.imgUrl = imgUrl;                    // 图像文件的路径
             this.introduce = introduce;              // 图片文件的描述
             this.previewCount = previewCount;        // 图片文件浏览次数
             this.shareCount = shareCount;            // 图片文件分享次数
@@ -105,10 +107,11 @@
     var hasInited = false;
     var total;
     var current;
+    var labelButton;
     export default{
         data(){
             return{
-                labelButton:"所有类型",
+                labelButton:labelButton,
                 labelList:labelList,
                 hotList:hotList,
                 hotLabelList:{},
@@ -135,22 +138,7 @@
                     })
                     that.getHotLabelList()
                 })
-                Transfer.http.call('get.sets',{"page":1,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileImage = ele.thumb
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        var fileShareCount = ele.share_quantity
-                        var fileDownloadCount = ele.download_quantity
-                        var fileCollectionCount = ele.collection_quantity
-                        var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                })
+                that.getCheckAllTagStyle()
             }
         },
         methods:{
@@ -187,6 +175,8 @@
             getCheckAllTagStyle(){
                 var that = this
                 var $ = Util.util.getJQuery$()
+                $('.label__popover__custom__content__tag__space').css('opacity','0')
+                $('.label__popover__custom__content__tag__select').css('opacity','0')
                 $('.label__popover__custom__content__title').css('border','1px solid #2196f3')
                 $('.label__popover__custom__content__select').css('opacity','1')
                 that.labelButton = that.$t('pages.discover.task-item.types')
@@ -197,13 +187,14 @@
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.thumb
+                        var fileImgUrl = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
                         var fileShareCount = ele.share_quantity
                         var fileDownloadCount = ele.download_quantity
                         var fileCollectionCount = ele.collection_quantity
                         var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
+                        let labelObj = new Label(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -214,8 +205,12 @@
             getCheckTagStyle($event,ele){
                 var that = this
                 var $ = Util.util.getJQuery$()
+                $("span").filter(".label__popover__custom__content__tag__space").css('opacity','0')
+                $("span").filter(".label__popover__custom__content__tag__select").css('opacity','0')
                 $(event.target).css('opacity','1')
                 $(event.target).next().css('opacity','1')
+                $('.label__popover__custom__content__title').css('border','1px solid #e0e0e0')
+                $('.label__popover__custom__content__select').css('opacity','0')
                 current_logic_page = LPage.TagPage
                 click_logic_page = ele.id
                 that.labelButton = ele.name
@@ -226,17 +221,18 @@
                 var that = this
                 that.labelList.length = 0
                 that.showLoading = false
-                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":that.curPage,"per_page":that.display},(info) => {
+                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
                     _.each(info.data,function(ele){
                         var fileName = ele.name
                         var fileImage = ele.thumb
+                        var fileImgUrl = ele.url
                         var fileIntroduce = ele.description
                         var filePreviewCount = ele.preview_quantity
                         var fileShareCount = ele.share_quantity
                         var fileDownloadCount = ele.download_quantity
                         var fileCollectionCount = ele.collection_quantity
                         var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
+                        let labelObj = new Label(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                         that.labelList.push(labelObj)
                     })
                     that.showLoading = !that.showLoading
@@ -256,13 +252,14 @@
                         _.each(info.data,function(ele){
                             var fileName = ele.name
                             var fileImage = ele.thumb
+                            var fileImgUrl = ele.url
                             var fileIntroduce = ele.description
                             var filePreviewCount = ele.preview_quantity
                             var fileShareCount = ele.share_quantity
                             var fileDownloadCount = ele.download_quantity
                             var fileCollectionCount = ele.collection_quantity
                             var fileUrlPostfix = ele.id
-                            let labelObj = new Label(fileName,fileImage,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
+                            let labelObj = new Label(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
                             that.labelList.push(labelObj)
                         })
                         that.showLoading = !that.showLoading

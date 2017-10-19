@@ -17,18 +17,28 @@
       <div class="page__examples page__examples-app-doc">
         <div class="page__toolbar-app-doc__children__router__content">
           <keep-alive>
-            <router-view @data-info="getDataInfo" :getValue="inputValue" :singleInfo="singleInfo" :albumInfo="albumInfo"></router-view>
+            <router-view :getValue="inputValue" :getBus="bus"></router-view>
           </keep-alive>
         </div>
       </div>
   </section>
 </template>
 <script>
+  var albumInfo;
   var dataType;
+  var hasInited = false;
   export default{
-    props: ['inputValue','singleInfo','albumInfo'],
+    props:{
+      inputValue:String,
+      getDataType:Number,
+      bus:{
+        type: Object,
+        default: null
+      }
+    },
     data(){
       return{
+        albumInfo:albumInfo,
         dataType:dataType,
         tail:{
           'Single':'',
@@ -37,20 +47,41 @@
       }
     },
     methods:{
-      getDataInfo(type){
+      getAlbumDataInfo(){
         var that = this
-        that.dataType = type
+        var stt_tmp = "description like '%" +that.inputValue+ "%'"
+        var tmp_where = {
+            "where": stt_tmp,
+            "page" :1,
+            "per_page":20
+        }
+        Transfer.http.call('get.data_sets',tmp_where,(info) => {
+            that.albumInfo = info
+            that.dataType = info.paginate.total
+            console.log(that.albumInfo)
+            that.bus.$emit('to-album-data',that.albumInfo)
+        })
       }
     },
     computed:{
       topName() {
         var that = this
         let path = that.$route.path
+        that.dataType = that.getDataType
         path = path.substr(path.lastIndexOf('/') + 1)
         that.tail.Single = that.$t('pages.search.content.img')
         that.tail.Album = that.$t('pages.search.content.collection')
         return path
       }
+    },
+    watch:{
+        topName(newVal) {
+          var that = this
+          let path = that.$route.path
+          if(path.match(/Album/)){
+            that.getAlbumDataInfo()
+          }
+        }
     }
   }
 </script>

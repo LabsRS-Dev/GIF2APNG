@@ -1,7 +1,14 @@
-import { BS, Observable, Util, _ } from 'dove.max.sdk'
-import { ToolsMap, ToolsType, ServerAPIMap } from './tools_map.js'
-
-
+import {
+  BS,
+  Observable,
+  Util,
+  _
+} from 'dove.max.sdk'
+import {
+  ToolsMap,
+  ToolsType,
+  ServerAPIMap
+} from './tools_map.js'
 
 // -----------------------------------------------------------------
 // 交互处理
@@ -37,7 +44,9 @@ const __$p$ = {
         enableDir: true,
         allowTypes: ['*'],
         handler: function (data) {
-          that.trigger('onDropDragFiles', { data: data })
+          that.trigger('onDropDragFiles', {
+            data: data
+          })
         }
       }
     })
@@ -101,7 +110,9 @@ const __$p$ = {
 //  绑定工具
 __$p$.Common = {
   sendMessage: (options = {}, handler, one = false) => {
-    __$p$.send({ data: 'Hello' }, function (data) {
+    __$p$.send({
+      data: 'Hello'
+    }, function (data) {
       handler && handler(data)
     }, one)
   },
@@ -109,11 +120,15 @@ __$p$.Common = {
     const debugMode = false
     if (debugMode === false) {
       const taskInfo = {
-        task_id: options.taskID,                    // 任务ID
-        cli: cli,                                   // 动态调用的模块
-        reload: false,                              // 默认是false, 支持热部署, 是否重新加载动态模块
-        command: [                                  // 命令
-          { action: action, data: options.data, lang: options.lang || 'en' }
+        task_id: options.taskID, // 任务ID
+        cli: cli, // 动态调用的模块
+        reload: false, // 默认是false, 支持热部署, 是否重新加载动态模块
+        command: [ // 命令
+          {
+            action: action,
+            data: options.data,
+            lang: options.lang || 'en'
+          }
         ]
       }
 
@@ -144,11 +159,11 @@ __$p$.Common = {
       }
 
       __$p$.send(info, data => {
-        try{
+        try {
           if (data.queueInfo.id === options.taskID) { // 只处理本任务的返回数据
             handler && handler(data)
           }
-        }catch(e){
+        } catch (e) {
           console.error(e)
         }
       }, one)
@@ -201,60 +216,60 @@ __$p$.Tools = {
 }
 
 __$p$.http = {
-   useTest: false,
-   sub_call:function (api, type, options={}, handler=() =>{}, cfg) {
-        const baseConfig = {
-          url: api,
-          data: JSON.stringify(options),
-          method: type,
-          dataType:"json",
-          complete: function(jqXHR, status){},
-          error: function(jqXHR, status, error){},
-          success: function(data, status, jqXHR){
-            handler && handler(data)
-          }
-        }
-        var config = _.extend(baseConfig, {
-          contentType: 'application/json',
-          crossDomain: true
-        })
-        $.ajax(config)
-   },
-   call: function(apiKey, options = {}, handler = () =>{}, testHandler =()=>{}){
-     var t$ = this
-     if (t$.useTest) {
-        testHandler && testHandler()
-        console.log('http test...')
-        return
-     }
-
-     const $ = Util.util.getJQuery$()
-     const cfg = ServerAPIMap[apiKey]
-     if (cfg) {
-        t$.sub_call(cfg.api, cfg.type, options, handler)
-     }else{
-       console.warn('Error: Not found the \'' + apiKey + '\' config http...')
-     }
-   },
-   callEx: function(apiKey, extend={}, options={}, handler = () =>{}, testHandler =()=>{}){
-      var t$ = this
-      if (t$.useTest) {
-        testHandler && testHandler()
-        console.log('http test...')
-        return
-      }
-
-      const $ = Util.util.getJQuery$()
-      const cfg = ServerAPIMap[apiKey]
-      var extObj = _.extend({
-        url:''
-      }, extend)
-      if (cfg) {
-         t$.sub_call(cfg.api + extObj.url, cfg.type, options, handler)
-      }else{
-        console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+  useTest: false,
+  sub_call: function (api, type, options = {}, handler = () => {}, cfg) {
+    const baseConfig = {
+      url: api,
+      data: JSON.stringify(options),
+      method: type,
+      dataType: "json",
+      complete: function (jqXHR, status) {},
+      error: function (jqXHR, status, error) {},
+      success: function (data, status, jqXHR) {
+        handler && handler(data)
       }
     }
+    var config = _.extend(baseConfig, {
+      contentType: 'application/json',
+      crossDomain: true
+    })
+    $.ajax(config)
+  },
+  call: function (apiKey, options = {}, handler = () => {}, testHandler = () => {}) {
+    var t$ = this
+    if (t$.useTest) {
+      testHandler && testHandler()
+      console.log('http test...')
+      return
+    }
+
+    const $ = Util.util.getJQuery$()
+    const cfg = ServerAPIMap[apiKey]
+    if (cfg) {
+      t$.sub_call(cfg.api, cfg.type, options, handler)
+    } else {
+      console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+    }
+  },
+  callEx: function (apiKey, extend = {}, options = {}, handler = () => {}, testHandler = () => {}) {
+    var t$ = this
+    if (t$.useTest) {
+      testHandler && testHandler()
+      console.log('http test...')
+      return
+    }
+
+    const $ = Util.util.getJQuery$()
+    const cfg = ServerAPIMap[apiKey]
+    var extObj = _.extend({
+      url: ''
+    }, extend)
+    if (cfg) {
+      t$.sub_call(cfg.api + extObj.url, cfg.type, options, handler)
+    } else {
+      console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+    }
+  }
 }
 
 
@@ -273,4 +288,3 @@ $(document).ready(function () {
 export {
   Transfer
 }
-
