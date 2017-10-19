@@ -34,6 +34,7 @@
                 :deny-button-text="changeDirConfigDialog.denyButtonText"
                 :ref="changeDirConfigDialog.ref"
                 :title="changeDirConfigDialog.title"
+                class="page__toolbar-app-doc__change__batch"
 
                 @confirm="changeDirConfigDialog.callbackConfirm"
                 @deny="changeDirConfigDialog.callbackDeny"
@@ -261,7 +262,7 @@
 
 <script>
 import { BS, Util, _ , lodash } from 'dove.max.sdk'
-import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox,UiSwitch} from 'keen-ui'
+import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox,UiSwitch,UiModal} from 'keen-ui'
 import {Transfer} from '../../../bridge/transfer'
 import echarts from "echarts"
 
@@ -901,7 +902,7 @@ export default {
                         that.__abi__start_ResizeGifTask(taskObj.id, {
                             src: taskObj.path,
                             dest: that.lastOutputPath,
-                            finalPercentage: that.onHandleTheTask ? true : false,
+                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
                             overwrite: that.enableOverWriteOutput ? true : false,
                             IsPercentValue:true,
                             width: that.finalPercentage/100,
@@ -934,7 +935,7 @@ export default {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
                                 dest: that.lastOutputPath,
-                                finalPercentage: that.onHandleTheTask ? true : false,
+                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
                                 overwrite: that.enableOverWriteOutput ? true : false,
                                 IsPercentValue:false,
                                 width: 0,
@@ -966,7 +967,7 @@ export default {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
                                 dest: that.lastOutputPath,
-                                finalPercentage: that.onHandleTheTask ? true : false,
+                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
                                 overwrite: that.enableOverWriteOutput ? true : false,
                                 IsPercentValue:false,
                                 width: that.finalInputWidth,
@@ -999,7 +1000,7 @@ export default {
                         that.__abi__start_ResizeGifTask(taskObj.id, {
                             src: taskObj.path,
                             dest: that.lastOutputPath,
-                            finalPercentage: that.onHandleTheTask ? true : false,
+                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
                             overwrite: that.enableOverWriteOutput ? true : false,
                             IsPercentValue:false,
                             width: that.finalInputWidth,
@@ -1060,13 +1061,13 @@ export default {
         __abi__start_ResizeGifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
-                src: '',  // 要处理的文件或者目录的路径
-                dest: '',  // 输出目录
-                overwrite: false,      // 是否覆盖已有文件
-                IsPercentValue: false, // 确认是具体值还是百分比,false就是具体值,true就是百分比
-                processRequest: false, // 确认是否需要处理客户输入尺寸大于图片原始尺寸的文件
-                width: 100, // resize 后的宽度
-                height: 0,  // resize 后的高度，0 为只适应按照原宽度比
+                src: '',                        // 要处理的文件或者目录的路径
+                dest: '',                       // 输出目录
+                overwrite: false,               // 是否覆盖已有文件
+                IsPercentValue: false,          // 确认是具体值还是百分比,false就是具体值,true就是百分比
+                enableIncludeMinImage: false,   // 确认是否需要处理客户输入尺寸大于图片原始尺寸的文件
+                width: 100,                     // resize 后的宽度
+                height: 0,                      // resize 后的高度，0 为只适应按照原宽度比
             }, config)
 
             // 检查必要数值
@@ -1231,7 +1232,7 @@ export default {
                     that.finalInputHeight = that.inputHeightAll
                 }
             }else if(that.PercentageConversion){
-                that.percentage = that.finalPercentage
+                that.percentage = that.percentage
             }
         },
         resetDirDataValue(){
@@ -1282,9 +1283,7 @@ export default {
                 that.inputHeightAll = 0          
             }            
         },
-        onProcessRequest(){
-            var that = this
-        },
+
         CheckboxPercentActive(value, e){
             var that = this
             var $ = Util.util.getJQuery$()
@@ -1431,7 +1430,8 @@ export default {
         UiProgressLinear,
         UiCheckbox,
         UiTextbox,
-        UiSwitch
+        UiSwitch,
+        UiModal
     }
 }
 </script>

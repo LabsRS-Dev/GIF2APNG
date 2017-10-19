@@ -15,6 +15,15 @@
             <sidebar class="is-mobile" v-show="showSidebar"></sidebar>
         </transition>
 
+        <div class="dove-docs-line"
+            @mousedown="onMouseStartDown(e)"
+            @mousemove="onMouseStartMove(e)"
+            @mouseup="onMouseStartUp(e)"
+            >
+            <div class="dove-docs-line__top"></div>
+            <div class="dove-docs-line__bottom"></div>
+        </div>
+
         <section class="dove-docs-content">
             <div class="dove-docs-content__toolbar">
                 <!-- <div class="dove-docs-content__toolbar-content">
@@ -253,6 +262,18 @@ export default {
             that.lastInputValue = item
             that.inputValue = item
             that.searchInputValue(item)
+        },
+        onMouseStartDown(e){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            var disX = (e || event).clientX
+            
+        },
+        onMouseStartMove(e){
+
+        },
+        onMouseStartUp(e){
+
         }
     },
     computed: {
