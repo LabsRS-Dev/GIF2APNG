@@ -551,7 +551,7 @@ export default {
             BS.b$.importFiles({
                 title: this.$t('pages.resize.dialog-import-images.title'),
                 prompt: this.$t('pages.resize.dialog-import-images.prompt'),
-                allowMulSelection: true,
+                allowMulSelection: false,
                 types:[] // Note: too many formats
             }, function(){ // Test code
                 // Test: Windows 本地实际数据
@@ -693,22 +693,22 @@ export default {
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
+                        var length = that.taskList.length
+                        that.taskList.splice(1,length-1)
+                        that.curWidth = that.taskList[0].dimensions.data.width
+                        that.curHeight = that.taskList[0].dimensions.data.height
+                        that.defaultCurWidth = that.taskList[0].dimensions.data.width
+                        that.defaultCurHeight = that.taskList[0].dimensions.data.height
+                        that.inputWidth = Math.round(that.curWidth)
+                        that.inputHeight = Math.round(that.curHeight) 
+                        if(that.finalPercentage !== 100){
+                            that.onChangeTestFile = false
+                            that.percentage = 100
+                        }  
+                        $('.sliderRange').css('background-size', that.percentage +'% 100%' )
                     }
                 })
             }
-            var length = that.taskList.length
-            that.taskList.splice(1,length-1)
-            that.curWidth = that.taskList[0].dimensions.data.width
-            that.curHeight = that.taskList[0].dimensions.data.height
-            that.defaultCurWidth = that.taskList[0].dimensions.data.width
-            that.defaultCurHeight = that.taskList[0].dimensions.data.height
-            that.inputWidth = Math.round(that.curWidth)
-            that.inputHeight = Math.round(that.curHeight) 
-            if(that.finalPercentage !== 100){
-                that.onChangeTestFile = false
-                that.percentage = 100
-            }  
-            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
         },
 
         __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {

@@ -17,7 +17,7 @@
           "tip": "转换GIF动画格式"
         },
         "resize":{
-          "title": "格式转换",
+          "title": "尺寸转换",
           "tip": "转换GIF动画格式以及改变尺寸"
         },
         "search":{
