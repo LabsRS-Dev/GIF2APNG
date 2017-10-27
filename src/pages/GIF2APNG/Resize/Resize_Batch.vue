@@ -963,7 +963,15 @@ export default {
                                     state: -1,
                                     message: data.detail_error || 'error'
                                 })
+                            }else if (data.infoType === 'type_type_calltask_cancel') {
+                                window.log('[x] type_type_calltask_cancel')
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 0,
+                                    state: 0
+                                })
                             }
+
+                            window.log('[x] infoType ===' + data.infoType)
                             // check converting
                             that.__checkTaskStateInfo()
                         } )
@@ -997,7 +1005,16 @@ export default {
                                         state: -1,
                                         message: data.detail_error || 'error'
                                     })
+                                }else if (data.infoType === 'type_type_calltask_cancel') {
+                                    window.log('[x] type_type_calltask_cancel')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 0,
+                                        state: 0
+                                    })
                                 }
+
+                                window.log('[x] infoType ===' + data.infoType)
+                                
                                 // check converting
                                 that.__checkTaskStateInfo()
                             } )
@@ -1030,7 +1047,16 @@ export default {
                                         state: -1,
                                         message: data.detail_error || 'error'
                                     })
+                                }else if (data.infoType === 'type_type_calltask_cancel') {
+                                    window.log('[x] type_type_calltask_cancel')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 0,
+                                        state: 0
+                                    })
                                 }
+
+                                window.log('[x] infoType ===' + data.infoType)
+
                                 // check converting
                                 that.__checkTaskStateInfo()
                             } )
@@ -1064,7 +1090,16 @@ export default {
                                     state: -1,
                                     message: data.detail_error || 'error'
                                 })
+                            }else if (data.infoType === 'type_type_calltask_cancel') {
+                                window.log('[x] type_type_calltask_cancel')
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 0
+                                })
                             }
+
+                            window.log('[x] infoType ===' + data.infoType)
+
                             // check converting
                             that.__checkTaskStateInfo()
                         } )

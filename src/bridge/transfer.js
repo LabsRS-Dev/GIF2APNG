@@ -177,7 +177,7 @@ __$p$.Common = {
     if (debugMode === false) {
       const info = {
         task_id: taskID || _.uniqueId('native-fork-task-'),
-        commands: command,
+        commands: command || [],
         taskMethodWay: 'sendEvent'
       }
 
@@ -222,7 +222,7 @@ __$p$.http = {
       url: api,
       data: JSON.stringify(options),
       method: type,
-      dataType: "json",
+      dataType: 'json',
       complete: function (jqXHR, status) {},
       error: function (jqXHR, status, error) {},
       success: function (data, status, jqXHR) {
@@ -259,7 +259,7 @@ __$p$.http = {
       return
     }
 
-    const $ = Util.util.getJQuery$()
+    // const $ = Util.util.getJQuery$()
     const cfg = ServerAPIMap[apiKey]
     var extObj = _.extend({
       url: ''

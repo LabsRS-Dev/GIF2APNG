@@ -15,7 +15,7 @@ const autorEmail = packageCfg.author.email;
 const banner =
     '/*!\n' +
     ' * ' + appName + ' v' + appVersion + ' (' + repository + ')\n' +
-    ' * (c) ' + new Date().getFullYear() + ' ' + autor +'  ('  + autorEmail  + ')\n' +
+    ' * (c) ' + new Date().getFullYear() + ' '  + autor +'  ('  + autorEmail  + ') ' + new Date().toString() +'\n' +
     ' * Released under the MIT License.\n' +
     ' */';
 
