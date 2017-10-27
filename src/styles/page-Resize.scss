@@ -20,7 +20,7 @@
     .ui-button{
       text-transform :none;
       display: flex;
-      width: 40%;
+      min-width: 40%;
       height: 25%;
       border-radius:rem-calc(15px); 
       .ui-button__content{

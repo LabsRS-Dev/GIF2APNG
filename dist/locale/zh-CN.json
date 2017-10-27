@@ -181,8 +181,8 @@
       },
       "content":{
         "reply":"撤销",
-        "tooltip_single":"单独处理一张图片",
-        "tooltip_batch":"批量处理一组图片"
+        "tooltip_single":"单独处理",
+        "tooltip_batch":"批量处理"
       },
       "toolbar":{
         "import":"导入GIF动画文件",

@@ -181,8 +181,8 @@
       },
       "content":{
         "reply":"Undo",
-        "tooltip_single":"To process a single picture.",
-        "tooltip_batch":"To batch process a group of pictures."
+        "tooltip_single":"Single processing",
+        "tooltip_batch":"Batch processing"
       },
       "toolbar":{
         "import":"Import GIF(.gif) files",
