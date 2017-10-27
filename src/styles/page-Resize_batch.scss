@@ -51,34 +51,47 @@
       margin-top: 0;
       padding-top: 0;
       width: 45%;
-      height: rem-calc(100px);  
+      height: rem-calc(110px);  
       border-left: rem-calc(2px) solid $md-grey-400;   
       align-items: flex-start;
       .change-dimensions__setting__lock{
         display: flex;
         flex-direction: row;
         align-items: center;
+        margin: rem-calc(5px) 0;
+        .ui-switch{
+          margin: 0 0 0 rem-calc(25px);
+        }
+        .ui-switch__thumb{
+          z-index: 1;
+        }
+        .ui-switch__track{
+          z-index: 0;
+        }
         .change-dimensions__setting__lock__title{
-          font-size: rem-calc(12px)
-        }         
-      }
-      .change-dimensions__setting__unlock{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+          font-size: rem-calc(12px);
+          margin: 0 0 0 rem-calc(10px);
+        }
         .change-dimensions__setting__unlock__title{
-          font-size: rem-calc(12px)
+          font-size: rem-calc(12px);
+          margin: 0 0 0 rem-calc(10px);
         }         
       }
       .change-dimensions__setting__first{
         display: flex;
         flex-direction: row;
-        margin: rem-calc(6px) 0;        
+        margin: rem-calc(5px) 0;        
       }
       .change-dimensions__setting__second{
         display: flex;
         flex-direction: row;
-        margin: rem-calc(6px) 0;          
+        margin: rem-calc(5px) 0;          
+      }
+      .change-dimensions__setting__third{
+        display: flex;
+        flex-direction: row;
+        margin: rem-calc(5px) 0;
+        font-size: rem-calc(12px);         
       }
       .ui-icon-button{
         margin: 0 rem-calc(2px) 0 rem-calc(18px);
@@ -131,4 +144,9 @@
         box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/
     }
   }
+}
+.page__toolbar-app-doc__change__batch{
+      .ui-modal__close-button{
+          display: none;
+      }
 }

@@ -34,6 +34,7 @@
                 :deny-button-text="changeDirConfigDialog.denyButtonText"
                 :ref="changeDirConfigDialog.ref"
                 :title="changeDirConfigDialog.title"
+                class="page__toolbar-app-doc__change__batch"
 
                 @confirm="changeDirConfigDialog.callbackConfirm"
                 @deny="changeDirConfigDialog.callbackDeny"
@@ -67,30 +68,14 @@
                             </div>
                         </div>
                         <div class="page__toolbar-app-doc__change-dimensions__setting">
-                            <div class="change-dimensions__setting__lock" v-if="onBtnLock">
-                                <ui-icon-button
-                                    @click="onBtnLockClick()"
-                                    :disabled="!WidthHeightConversion"
-                                    type="secondary"
-                                    size="small"
-                                    color="primary"                                                              
+                            <div class="change-dimensions__setting__second">
+                                <ui-checkbox
+                                    v-model="PercentageConversion"
+                                    @change="CheckboxPercentActive"
                                     >
-                                    <span class="fa fa-lock fa-lg fa-fw"></span>
-                                </ui-icon-button> 
-                                <span class="change-dimensions__setting__lock__title">{{ $t('pages.resize.dialog-config-change.lock') }}</span>                           
-                            </div>
-                            <div class="change-dimensions__setting__unlock" v-if="!onBtnLock">
-                                <ui-icon-button
-                                    @click="onBtnUnlockClick()"
-                                    :disabled="!WidthHeightConversion"
-                                    type="secondary"
-                                    size="small"
-                                    color="primary"                                                             
-                                    >
-                                    <span class="fa fa-unlock fa-lg fa-fw"></span>
-                                </ui-icon-button>
-                                <span class="change-dimensions__setting__unlock__title">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
-                            </div>                              
+                                    {{ $t('pages.resize.dialog-config-change.percent') }}
+                                </ui-checkbox>                                
+                            </div>   
                             <div class="change-dimensions__setting__first">
                                 <ui-checkbox
                                     v-model="WidthHeightConversion"
@@ -99,14 +84,24 @@
                                     {{ $t('pages.resize.dialog-config-change.width-height') }}
                                 </ui-checkbox>                            
                             </div>
-                            <div class="change-dimensions__setting__second">
+                            <div class="change-dimensions__setting__third">
                                 <ui-checkbox
-                                    v-model="PercentageConversion"
-                                    @change="CheckboxPercentActive"
+                                    v-model="onHandleTheTask"
+                                    :disabled="!WidthHeightConversion"                                                            
                                     >
-                                    {{ $t('pages.resize.dialog-config-change.percent') }}
-                                </ui-checkbox>                                
-                            </div>                             
+                                    {{ $t('pages.resize.dialog-config-change.handle-task') }}
+                                </ui-checkbox>                            
+                            </div>    
+                            <div class="change-dimensions__setting__lock">
+                                <ui-switch
+                                    v-model="onBtnLock"
+                                    :disabled="!WidthHeightConversion"
+                                    switch-position="right"                                                             
+                                    >
+                                </ui-switch>
+                                <span class="change-dimensions__setting__lock__title" v-show="onBtnLock">{{ $t('pages.resize.dialog-config-change.lock') }}</span>
+                                <span class="change-dimensions__setting__unlock__title" v-show="!onBtnLock">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
+                            </div>                                                   
                         </div>
                     </div>
                     <div class="page__toolbar-app-doc__change-dimensions__adjust">
@@ -205,9 +200,9 @@
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
                             <strong class="ui-toolbar__top__fileName" :title=" $t('pages.resize.task-item.file-name') +  item.name">
-                                {{ item.name }}
+                                {{ item.omitName }}
                                 <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.resize.task-item.file-size') +  item.size ">
-                                    {{ item.size ? '(' + item.size + ')' : '' }}
+                                    {{ item.dimensions ? '(' + item.dimensions.data.width + 'x' + item.dimensions.data.height  + ')' : '' }}
                                 </sup>
                             </strong>
                         </div>
@@ -241,7 +236,7 @@
                             >
                             {{ item.stateInfo.message }}
                         </span>
-                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.resize.task-item.file-path') + item.path">{{ item.path }}</span>
+                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.resize.task-item.file-path') + item.path">{{ item.omitPath }}</span>
                     </div>
                     <div class="ui-toolbar__bottom">
                         <ui-progress-linear
@@ -267,7 +262,7 @@
 
 <script>
 import { BS, Util, _ , lodash } from 'dove.max.sdk'
-import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox} from 'keen-ui'
+import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox,UiTextbox,UiSwitch,UiModal} from 'keen-ui'
 import {Transfer} from '../../../bridge/transfer'
 import echarts from "echarts"
 
@@ -277,7 +272,7 @@ var baseIDIndex = -1
 
 const taskPrefix = 'resize-page-image-id-' + _.now()
 class Task {
-    constructor(thumb, name, path, size, dimensions){
+    constructor(thumb, name, path, size, dimensions,omitName,omitPath){
         this.id = _.uniqueId(taskPrefix);
         this.thumb = thumb;   // 缩略图
         this.name = name;     // 图像文件名称
@@ -285,6 +280,9 @@ class Task {
         this.size = size;     // 图像文件的存储大小
         ////----- 图片尺寸相关相关
         this.dimensions = dimensions
+        ////----- 名称以及地址缩略显示
+        this.omitName = omitName;
+        this.omitPath = omitPath;
 
         /// ----- 展示样式相关
         this.style = {
@@ -364,6 +362,15 @@ var inputHeightAll;      // 文件夹类型输入框显示高度
 var finalPercentage;     // 确认时百分比
 var finalInputWidth;     // 确认时输入框内宽度
 var finalInputHeight;    // 确认时输入框内高度
+///// 修改图片尺寸的弹出框
+var initialInputWidth;                   //初始（宽度输入框）
+var initialInputHeight;                  //初始（宽度输入框）
+var initialPercentage;                   //初始（百分比）
+var initialPtConversion;                 //初始（按比例转换）
+var initialW_HConversion;                //初始（按宽高转换）
+var initialHandleTask;                   //初始（是否处理大于原始尺寸的值）
+var initialBtnLock;                      //初始（是否锁定宽高比）
+var initialState;                        //初始（输入框是否处于激活状态）
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -386,13 +393,20 @@ export default {
             finalPercentage:finalPercentage,
             finalInputWidth:finalInputWidth,
             finalInputHeight:finalInputHeight,   
-            inputWidthAll:inputWidthAll,
-            inputHeightAll:inputHeightAll,
-            applyAllDirFileTask:true,
+            inputWidthAll:0,
+            inputHeightAll:0,
             applyAllFileTask:false,
             WidthHeightConversion:false,
             PercentageConversion:true,
             onBtnLock:true,
+            onHandleTheTask:false,
+            initialInputWidth:initialInputWidth,
+            initialInputHeight:initialInputHeight,
+            initialPercentage:initialPercentage,          
+            initialPtConversion:initialPtConversion,
+            initialW_HConversion:initialW_HConversion,             
+            initialHandleTask:initialHandleTask,               
+            initialBtnLock:initialBtnLock,                     
             planSelectModel: '',
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
@@ -668,7 +682,17 @@ export default {
                         {fileName: 'RAW_NIKON_D7100.NEF' + _prx, filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF' + _prx, fileSize: '27.5MB',fileDimensions:{data:{width:250,height:150}}},
                         {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB',fileDimensions:{data:{width:512,height:512}}}
                     ], function(ele){
-                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
+                        if(ele.fileName.length > 50){
+                             ele.omitName = ele.fileName.substring(0,50) + "..."
+                        }else {
+                             ele.omitName = ele.fileName
+                        }
+                        if(ele.filePath.length > 50) {
+                            ele.omitPath = ele.filePath.substring(0,50) + "..."
+                        }else {
+                            ele.omitPath = ele.filePath
+                        }
+                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions,ele.omitName,ele.omitPath)
                         that.taskList.push(taskObj)
                         console.log('taskID-files=', taskObj.id)
                         taskID2taskObj[taskObj.id] = taskObj
@@ -698,7 +722,7 @@ export default {
                 allowMulSelection: true
             }, function(){
                 for(let i =0; i < 5; ++i){
-                    var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
+                    var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB',"","ImagesDir" + i,"/url/imageDir" + i)
                     that.taskList.push(taskObj)
                     console.log('taskID-dir=', taskObj.id)
                     taskID2taskObj[taskObj.id] = taskObj
@@ -747,20 +771,26 @@ export default {
 
         onBtnFitImageClick(){
             var that = this
+            that.initialInputWidth = that.inputWidthAll
+            that.initialInputHeight = that.inputHeightAll
+            that.initialPercentage = that.percentage       
+            that.initialPtConversion = that.PercentageConversion
+            that.initialW_HConversion = that.WidthHeightConversion        
+            that.initialHandleTask = that.onHandleTheTask 
+            that.initialBtnLock = that.onBtnLock
+            that.initialState = that.applyAllFileTask
             var $ = Util.util.getJQuery$()
             const cdg = that.changeDirConfigDialog
             cdg.title = that.$t('pages.resize.dialog-config-change.title')
             cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
             cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
             cdg.callbackConfirm = () => { that.recordedDirDataValue() }
-            cdg.callbackDeny = () => {}
-            cdg.callbackClose = () => {}
+            cdg.callbackDeny = () => { that.resetDirDataValue() }
+            cdg.callbackClose = () => { }
             
             var dialog = that.$refs[cdg.ref]
             if(that.PercentageConversion){
-                 $('.sliderRange').css('background-size', that.percentage +'% 100%' )
-                that.inputWidthAll = 1
-                that.inputHeightAll = 1
+                $('.sliderRange').css('background-size', that.percentage +'% 100%' )
             }
             dialog.open()
         },
@@ -822,9 +852,25 @@ export default {
                 _.each(imageFiles,(fileObj, dinx) => {
                     checkFileExt = BS.b$.App.getFileExt(fileObj.filePath).toLowerCase()
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
+                        var dimensions = {}
+                        BS.b$.Binary.getImageFileInfo(
+                            {path:fileObj.filePath}
+                            ,function(info){
+                                dimensions.data = info.data
+                        })
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
-                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                            if(fileObj.fileName.length > 50){
+                                fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitName = fileObj.fileName
+                            }
+                            if(fileObj.filePath.length > 50) {
+                                fileObj.omitPath = fileObj.filePath.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitPath = fileObj.filePath
+                            }                            
+                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr,dimensions,fileObj.omitName,fileObj.omitPath)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -832,7 +878,17 @@ export default {
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
                         let imgPath = BS.b$.App.getFileOrDirIconPath(fileObj.filePath)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
-                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
+                            if(fileObj.fileName.length > 50){
+                                fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitName = fileObj.fileName
+                            }
+                            if(fileObj.filePath.length > 50) {
+                                fileObj.omitPath = fileObj.filePath.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitPath = fileObj.filePath
+                            }  
+                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"","",fileObj.omitName,fileObj.omitPath)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -879,35 +935,141 @@ export default {
         startDo(){
             var that = this
             if(that.taskList.length > 0){
-                _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_ResizeGifTask(taskObj.id, {
-                        src: taskObj.path,
-                        out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput ? true : false,
-                        width: that.finalInputWidth,
-                        height: that.finalInputHeight
-                    }, (data) => {
-                        if (data.infoType === 'type_calltask_start'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 50,
-                                state:0
-                            })
-                        }else if (data.infoType === 'type_calltask_success'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: 1
-                            })
-                        }else if (data.infoType === 'type_calltask_error'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: -1,
-                                message: data.detail_error || 'error'
-                            })
-                        }
-                        // check converting
-                        that.__checkTaskStateInfo()
-                    } )
-                })
+                if(that.PercentageConversion){
+                    _.each(that.taskList, (taskObj, index) => {
+                        console.log(taskObj.isWorking)
+                        that.__abi__start_ResizeGifTask(taskObj.id, {
+                            src: taskObj.path,
+                            dest: that.lastOutputPath,
+                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            IsPercentValue:true,
+                            width: that.finalPercentage/100,
+                            height: 0
+                        }, (data) => {
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })
+                }else if(that.WidthHeightConversion && that.onBtnLock){
+                    if(isNaN(that.finalInputWidth)){
+                        _.each(that.taskList, (taskObj, index) => {
+                            console.log(taskObj.isWorking)
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                dest: that.lastOutputPath,
+                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                                overwrite: that.enableOverWriteOutput ? true : false,
+                                IsPercentValue:false,
+                                width: 0,
+                                height: that.finalInputHeight
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_start'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1,
+                                        message: data.detail_error || 'error'
+                                    })
+                                }
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )
+                        })
+                    }else if(isNaN(that.finalInputHeight)){
+                        _.each(that.taskList, (taskObj, index) => {
+                            console.log(taskObj.isWorking)
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                dest: that.lastOutputPath,
+                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                                overwrite: that.enableOverWriteOutput ? true : false,
+                                IsPercentValue:false,
+                                width: that.finalInputWidth,
+                                height: 0
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_start'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1,
+                                        message: data.detail_error || 'error'
+                                    })
+                                }
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )
+                        })
+                    }
+                }else if(that.WidthHeightConversion && that.onBtnLock == false){
+                    _.each(that.taskList, (taskObj, index) => {
+                        console.log(taskObj.isWorking)
+                        that.__abi__start_ResizeGifTask(taskObj.id, {
+                            src: taskObj.path,
+                            dest: that.lastOutputPath,
+                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            IsPercentValue:false,
+                            width: that.finalInputWidth,
+                            height: that.finalInputHeight
+                        }, (data) => {
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })                    
+                }
             }
         },
 
@@ -941,34 +1103,37 @@ export default {
         __abi__start_ResizeGifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
-                src: '',  // 要处理的文件或者目录的路径
-                out: '',  // 输出目录
-                overwrite: false,      // 是否覆盖已有文件
-                width: 100, // resize 后的宽度
-                height: 0,  // resize 后的高度，0 为只适应按照原宽度比
+                src: '',                        // 要处理的文件或者目录的路径
+                dest: '',                       // 输出目录
+                overwrite: false,               // 是否覆盖已有文件
+                IsPercentValue: false,          // 确认是具体值还是百分比,false就是具体值,true就是百分比
+                enableIncludeMinImage: false,   // 确认是否需要处理客户输入尺寸大于图片原始尺寸的文件
+                width: 100,                     // resize 后的宽度
+                height: 0,                      // resize 后的高度，0 为只适应按照原宽度比
             }, config)
 
             // 检查必要数值
             console.assert(taskID)
             console.assert(BS.b$.App.checkPathIsExist(_config.src))
-            console.assert(BS.b$.App.checkPathIsExist(_config.out))
+            console.assert(BS.b$.App.checkPathIsExist(_config.dest))
 
             var _command = []
 
             const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
-            that.__updateTaskObj(taskID, {fixOutDir:_config.out}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // -- 声明输出json的路径
             var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
 
             // -- 命令行参数格式化
-            const commandFormat = '["-cfg=%input%"]'
+            const commandFormat = '["-mode=gifresziejson","-cfg=%input%"]'
             var fm_command = commandFormat
             fm_command = fm_command.replace(/%input%/g, jsonFilePath)
             _command = window.eval(fm_command)
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
+            window.log("jsonfile = "+jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({
@@ -1085,91 +1250,97 @@ export default {
             var $ = Util.util.getJQuery$()
             if(that.WidthHeightConversion && that.onBtnLock){
                 if(that.inputWidthAll == ''){
-                    that.inputWidthAll = 1
-                    that.finalInputWidth = 1
+                    that.inputWidthAll = 0
+                    that.finalInputWidth = 0
                 }else if(that.inputHeightAll == ''){
-                    that.inputHeightAll = 1
-                    that.finalInputHeight = 1
+                    that.inputHeightAll = 0
+                    that.finalInputHeight = 0
                 }else if(isNaN(that.inputHeightAll)){
+                    that.finalInputHeight = 'Locked ratio'
                     that.finalInputWidth = that.inputWidthAll
                 }else if(isNaN(that.inputWidthAll)){
+                    that.finalInputWidth = 'Locked ratio'
                     that.finalInputHeight = that.inputHeightAll
                 }
             }else if(that.WidthHeightConversion && !that.onBtnLock){
                 if(that.inputWidthAll == ''){
-                    that.inputWidthAll = 1
-                    that.finalInputWidth = 1
+                    that.inputWidthAll = 0
+                    that.finalInputWidth = 0
                 }else if(that.inputHeightAll == ''){
-                    that.inputHeightAll = 1
-                    that.finalInputHeight = 1
+                    that.inputHeightAll = 0
+                    that.finalInputHeight = 0
                 }else {
                     that.finalInputWidth = that.inputWidthAll
                     that.finalInputHeight = that.inputHeightAll
                 }
             }else if(that.PercentageConversion){
-                that.percentage = that.finalPercentage
+                that.percentage = that.percentage
             }
+        },
+        resetDirDataValue(){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            that.inputWidthAll = that.initialInputWidth
+            that.inputHeightAll = that.initialInputHeight
+            that.percentage = that.initialPercentage       
+            that.PercentageConversion = that.initialPtConversion
+            that.WidthHeightConversion = that.initialW_HConversion      
+            that.onHandleTheTask = that.initialHandleTask
+            that.onBtnLock = that.initialBtnLock
+            that.applyAllFileTask = that.initialState
+            $(".widthRange").attr("disabled",that.PercentageConversion)
+            $(".heightRange").attr("disabled",that.PercentageConversion)
+            $(".sliderRange").attr("disabled",that.WidthHeightConversion)
         },
 
         ValidateWidthNumber(){
             var that = this
             if(that.onBtnLock){
-                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
+                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.input-lock')
                 that.inputWidthAll = ''
             }
         },
         ValidateHeightNumber(){
             var that = this
             if(that.onBtnLock){
-                that.inputWidthAll = that.$t('pages.resize.dialog-config-change.lock')
+                that.inputWidthAll = that.$t('pages.resize.dialog-config-change.input-lock')
                 that.inputHeightAll = ''
             }
-        },
-        onBtnLockClick(){
-            var that = this
-            that.onBtnLock = !that.onBtnLock
-            that.inputWidthAll = 1
-            that.inputHeightAll = 1
-        },
-        onBtnUnlockClick(){
-            var that = this
-            that.onBtnLock = !that.onBtnLock
-            that.inputWidthAll = 1
-            that.inputHeightAll = that.$t('pages.resize.dialog-config-change.lock')
         },
         CheckboxSizeActive(value, e){
             var that = this
             var $ = Util.util.getJQuery$()
             that.PercentageConversion = !e.target.checked
             if(e.target.checked == true){
-                $(".sliderRange").attr("disabled","disabled")
+                $(".sliderRange").attr("disabled",true)
                 $('.sliderRange').css('background-size', '0% 100%')
                 $(".widthRange").attr("disabled",false)
                 $(".heightRange").attr("disabled",false)
             }else{
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%')
-                $(".widthRange").attr("disabled","disabled")
-                $(".heightRange").attr("disabled","disabled")
-                that.inputWidthAll = 1
-                that.inputHeightAll = 1               
+                $(".widthRange").attr("disabled",true)
+                $(".heightRange").attr("disabled",true)
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0          
             }            
         },
+
         CheckboxPercentActive(value, e){
             var that = this
             var $ = Util.util.getJQuery$()
             that.WidthHeightConversion = !e.target.checked          
             if(e.target.checked == true){
-                $(".widthRange").attr("disabled","disabled")
-                $(".heightRange").attr("disabled","disabled")
+                $(".widthRange").attr("disabled",true)
+                $(".heightRange").attr("disabled",true)
                 $(".sliderRange").attr("disabled",false)
                 $('.sliderRange').css('background-size', that.percentage +'% 100%') 
-                that.inputWidthAll = 1
-                that.inputHeightAll = 1 
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0
             }else {
                 $(".widthRange").attr("disabled",false)
                 $(".heightRange").attr("disabled",false)
-                $(".sliderRange").attr("disabled","disabled")
+                $(".sliderRange").attr("disabled",true)
                 $('.sliderRange').css('background-size', '0% 100%')
             }
         },
@@ -1276,6 +1447,16 @@ export default {
                     this.stats.shift()
                 }
             }                 
+        },
+        onBtnLock(newSwich, oldSwich){
+            var that = this
+            if(newSwich){
+                that.inputWidthAll = 0
+                that.inputHeightAll = that.$t('pages.resize.dialog-config-change.input-lock')                
+            }else {
+                that.inputWidthAll = 0
+                that.inputHeightAll = 0
+            }
         }
     },
     components: {
@@ -1290,7 +1471,9 @@ export default {
         UiConfirm,
         UiProgressLinear,
         UiCheckbox,
-        UiTextbox
+        UiTextbox,
+        UiSwitch,
+        UiModal
     }
 }
 </script>

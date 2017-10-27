@@ -5,6 +5,7 @@
   align-items: center; 
   .page__examples-app-doc__welcome__image__single{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center; 
     margin-left: rem-calc(40px);
@@ -16,11 +17,71 @@
     border: rem-calc(1px) solid #ccc;
     -webkit-box-shadow: rem-calc(1px) rem-calc(1px) rem-calc(4px) rgba(0,0,0, 0.1);
     -webkit-border-bottom-right-radius: rem-calc(60px) rem-calc(5px);
+    // .image__single_ribbon{
+    //   position:absolute;
+    //   top:0; left: 0;
+    //   width: rem-calc(120px);
+    //   height: rem-calc(40px);
+    //   background: -webkit-gradient(linear, 555% 20%, 0% 92%, from(rgba(0, 0, 0, 0.1)), to(rgba(0, 0, 0, 0.0)), color-stop(.1,rgba(0, 0, 0, 0.2)));
+    //   border-left: 1px dashed rgba(0, 0, 0, 0.1);
+    //   border-right: 1px dashed rgba(0, 0, 0, 0.1);
+    //   -webkit-box-shadow: 0 0 rem-calc(12px) rgba(0, 0, 0, 0.2);
+    //   -webkit-transform: rotate(-30deg) skew(0,0) translate(rem-calc(-30px),rem-calc(-20px));   
+    // }
     img{
       border-radius: rem-calc(5px);
       border: rem-calc(1px) solid $md-grey-300;
       max-width: 40vw;
       max-height: 60vh;
+      content:none;
+    }
+    .image__single__top{
+      background-color: rgba(0,0,0, 0.2);
+      display: flex;
+      width: 100%;
+      height: 6vh; 
+      position:absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      margin: auto;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      .image__single__top__message{
+        z-index: 100;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: rem-calc(14px);
+        transform: translate(-50%,-50%);
+        -webkit-transform:translate(-50%,-50%);
+      }
+      .fa-check{
+        color:$md-green;
+      }
+      .fa-exclamation{
+        color:$md-red;
+      }
+      .imageBlur{
+        filter: blur(5px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-filter: blur(5px);
+        -moz-filter: blur(5px);
+      }
+      .ui-progress-linear{
+        width: 95%;
+      }
     }
   }
   .page__examples-app-doc__welcome__image__single:before{
@@ -54,17 +115,6 @@
     -webkit-transform: skew(2deg,2deg)
                        translate(rem-calc(-1px),rem-calc(2px))   
   }
-  .image__single_ribbon{
-    position:absolute;
-    top:0; left: 0;
-    width: rem-calc(120px);
-    height: rem-calc(40px);
-    background: -webkit-gradient(linear, 555% 20%, 0% 92%, from(rgba(0, 0, 0, 0.1)), to(rgba(0, 0, 0, 0.0)), color-stop(.1,rgba(0, 0, 0, 0.2)));
-    border-left: 1px dashed rgba(0, 0, 0, 0.1);
-    border-right: 1px dashed rgba(0, 0, 0, 0.1);
-    -webkit-box-shadow: 0 0 rem-calc(12px) rgba(0, 0, 0, 0.2);
-    -webkit-transform: rotate(-30deg) skew(0,0) translate(rem-calc(-30px),rem-calc(-20px));   
-  }
   .page__examples-app-doc__welcome__image__setting{
     display: flex;
     flex-direction: column;
@@ -73,7 +123,7 @@
     align-self:flex-start;
     border: 1px solid $md-grey-300;
     border-radius: rem-calc(10px);
-    box-shadow: 10px 10px 5px $md-grey-400;
+    box-shadow: 5px 5px 2.5px $md-grey-300;
     .page__examples-app-doc__welcome__image__setting__size{
       display: flex;
       flex-direction: column;
@@ -86,17 +136,18 @@
         .page__examples-app-doc__welcome__image__setting__width__percentage{
           width: rem-calc(60px);
           text-align: center;
-          font-size: rem-calc(12px);
+          font-size: rem-calc(11px);
         }
         .page__examples-app-doc__welcome__image__setting__width__unit{
-          font-size: rem-calc(12px);
+          font-size: rem-calc(11px);
         }
         input{
           width: 40%;
-          height: rem-calc(28px);
+          height: rem-calc(24px);
           border-radius: rem-calc(5px);
           margin: 0 rem-calc(5px);
           padding-left: rem-calc(5px);
+          font-size: rem-calc(11px);
         }        
       }
       .page__examples-app-doc__welcome__image__setting__height{
@@ -107,17 +158,18 @@
         .page__examples-app-doc__welcome__image__setting__height__percentage{
           width: rem-calc(60px);
           text-align: center;
-          font-size: rem-calc(12px);          
+          font-size: rem-calc(11px);          
         }
         .page__examples-app-doc__welcome__image__setting__height__unit{
-          font-size: rem-calc(12px);
+          font-size: rem-calc(11px);
         }
         input{
           width: 40%;
-          height: rem-calc(28px);
+          height: rem-calc(24px);
           border-radius: rem-calc(5px);
           margin: 0 rem-calc(5px);
           padding-left: rem-calc(5px);
+          font-size: rem-calc(11px);
         }        
       }
     }
@@ -138,23 +190,23 @@
       flex-direction: row;
       width: 100%;
       height: rem-calc(30px);
-      margin: rem-calc(10px) 0 rem-calc(5px) 0;  
+      margin: rem-calc(5px) 0;  
       align-items: flex-end;
       .change-dimensions__adjust__percentage{
         width: rem-calc(60px);
         text-align: center;
         margin-bottom: rem-calc(3px);
-        font-size: rem-calc(12px);
+        font-size: rem-calc(11px);
       }
       .change-dimensions__adjust__maximum{
         margin-bottom: rem-calc(3px);
-        font-size: rem-calc(12px);
+        font-size: rem-calc(11px);
       }
       input[type=range]{
         -webkit-appearance: none;
         width: 60%;
         border-radius: rem-calc(10px);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#81d4fa), color-stop(70%,#4fc3f7), color-stop(100%,#29b6f6)) no-repeat;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$md-blue-300), color-stop(70%,$md-blue-400), color-stop(100%,$md-blue-500)) no-repeat;
         background-size: 0% 100%;
       }
       input[type=range]::-webkit-slider-runnable-track {

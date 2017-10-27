@@ -15,6 +15,13 @@
             <sidebar class="is-mobile" v-show="showSidebar"></sidebar>
         </transition>
 
+        <div class="dove-docs-line"
+            @mousedown="onMouseStartDown(event)"
+            >
+            <div class="dove-docs-line__top"></div>
+            <div class="dove-docs-line__bottom"></div>
+        </div>
+
         <section class="dove-docs-content">
             <div class="dove-docs-content__toolbar">
                 <!-- <div class="dove-docs-content__toolbar-content">
@@ -156,6 +163,10 @@ var dataType;
 var hasInited = false ;
 var certificate;   /////// 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
 
+/////
+var mouseDownX;          //鼠标落点的X方向坐标
+var slideWidth ;         //侧边栏原始宽度
+
 export default {
     data() {
         return {
@@ -163,6 +174,8 @@ export default {
             showHotSearch:false,
             showTip: false,
             showCover:false,
+            mouseDownX:mouseDownX,
+            slideWidth:slideWidth,
             appName:SysConfig.appName,
             searchRecordList:$LS$.data.searchList,
             lastInputValue:$LS$.data.lastSelectInputValue,
@@ -253,6 +266,34 @@ export default {
             that.lastInputValue = item
             that.inputValue = item
             that.searchInputValue(item)
+        },
+        onMouseStartDown(e){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            var oLine = $(".dove-docs-line")
+            var oSlide = $(".is-desktop")
+            that.mouseDownX = event.clientX
+            that.slideWidth = oSlide[0].offsetWidth
+            document.onmousemove = function(e){
+                var newWidth = that.slideWidth*1 + event.clientX*1 - that.mouseDownX
+                if(newWidth > 0){
+                    oSlide[0].style.width = newWidth+'px'
+                    if(newWidth >= 400){
+                        oLine[0].style.left = '400px'
+                    }else if(newWidth <= 200){
+                        oLine[0].style.left = '200px'                        
+                    }else if(200 < newWidth < 400){
+                        oLine[0].style.left = newWidth+'px'
+                    }
+                }
+            }
+            document.onmouseup = function(e){
+                document.onmousemove = null
+                document.onmouseup = null
+                oLine.releaseCapture && oLine.releaseCapture()               
+            }
+            oLine.setCapture && oLine.setCapture()
+            return false            
         }
     },
     computed: {

@@ -16,6 +16,8 @@
     height: 100%;
     height: 100vh;
     width: $sidebar-default-width;
+    min-width: $sidebar-default-width;
+    max-width: 2*$sidebar-default-width;
     &.is-mobile {
         max-width: $mobile-sidebar-max-width;
         z-index: $z-index-nav-drawer;
@@ -88,7 +90,6 @@
 
 .dove-docs-sidebar__centent__scrollable{
     flex: 1;
-    border-right:2px solid rgba(0,0,0,0.12);
     background:  -webkit-gradient(linear, center top, center bottom, from($md-blue-50),to($md-brown-100));
 }
 .dove-docs-sidebar__scrollable {
@@ -145,9 +146,11 @@
                 &:focus{
                     color: $sider-menu-item-is-active-font-color;
                 }
-
-                background: $sider-menu-item-hover-background;
-                background: url(../dist/images/menu-active.png) no-repeat scroll 96% transparent!important;
+                border-radius: rem-calc(5px);
+                background:linear-gradient(rgba(230, 230, 230,1.0), rgba(215, 215, 215,1.0));
+                background:-webkit-linear-gradient(left,rgba(230, 230, 230,1.0), rgba(215, 215, 215,1.0));
+                //background: $sider-menu-item-hover-background;
+                //background: url(../dist/images/menu-active.png) no-repeat scroll 96% transparent!important;
             }
 
             &:hover,
@@ -170,7 +173,28 @@
         }
     }
 }
-
+////// 侧边栏拖拽处理
+.dove-docs-line{
+    display: flex;
+    flex-direction: column;
+    width: rem-calc(1px);
+    height: 100vh;
+    position: absolute;
+    left: $sidebar-default-width;
+    top: 0;
+    z-index: $z-index-nav-drawer;
+    .dove-docs-line__top{
+        width: 100%;
+        height: 10vh;
+        background: $docs-content__toolbar-background;
+    }
+    .dove-docs-line__bottom{
+        width: 100%;
+        height: 90vh;
+        background-color: rgba(0,0,0,0.12);
+        cursor:ew-resize;
+    }
+}
 
 .transition-fade-enter-active,
 .transition-fade-leave-active {

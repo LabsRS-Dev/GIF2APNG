@@ -83,7 +83,7 @@ const ToolsMap = {
   // gif 图像文件尺寸改变
   'resize_gif': {
     type: ToolsType.NTASK,
-    cli: BS.b$.App.getAppPluginDir() + 'cli_img_resize',
+    cli: BS.b$.App.getAppPluginDir() + '/cli_img_resize',
     command: [],
     mainThread: false
   },
@@ -96,7 +96,7 @@ const ToolsMap = {
   // 文件下载器
   'downloader': {
     type: ToolsType.NTASK,
-    cli: BS.b$.App.getAppPluginDir() + 'curl',
+    cli: BS.b$.App.getAppPluginDir() + '/curl',
     command: [],
     mainThread: false
   },
