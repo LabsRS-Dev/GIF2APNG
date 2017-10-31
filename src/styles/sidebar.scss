@@ -144,7 +144,7 @@
             &.is-active {
                 &:hover,
                 &:focus{
-                    color: $sider-menu-item-is-active-font-color;
+                    color: $sider-menu-item-hover-font-color;
                 }
                 border-radius: rem-calc(5px);
                 background:linear-gradient(rgba(230, 230, 230,1.0), rgba(215, 215, 215,1.0));

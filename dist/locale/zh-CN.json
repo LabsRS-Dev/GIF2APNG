@@ -252,6 +252,7 @@
         "pixel":"像素",
         "setting":"锁定宽高比",
         "lock":"已锁定比例",
+        "input-lock":"保持比例",
         "unlock":"未锁定比例"
       },
       "dialog-config-preview":{
