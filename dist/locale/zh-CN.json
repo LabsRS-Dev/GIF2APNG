@@ -268,6 +268,9 @@
         "btnDeny": "取消",
         "message": "确定要终止所有操作吗？"
       },
+      "notice-no-prompt":{
+        "message": "请选择不是100%的百分比！"
+      },
       "notice-no-items":{
         "message": "请先导入GIF动画文件，然后再执行处理！"
       },

@@ -120,9 +120,9 @@
                 &:hover {
                     background: $docs-content__taskitem-hover-background;
                     color: $docs-content__taskitem-hover-font-color !important;
-                    .ui-alert__icon , .ui-icon-button__icon , .ui-close-button__icon , a{
-                        color: $docs-content__taskitem-hover-font-color !important;
-                    }
+                }
+                &:hover .ui-alert__icon , &:hover .ui-icon-button__icon , &:hover .ui-close-button__icon , &:hover a{
+                    color: $docs-content__taskitem-hover-font-color !important;
                 }
             }
         }

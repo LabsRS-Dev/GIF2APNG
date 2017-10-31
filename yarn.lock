@@ -1870,8 +1870,8 @@ domutils@^1.5.1:
     domelementtype "1"
 
 dove.max.sdk@^1.2.0:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/dove.max.sdk/-/dove.max.sdk-1.2.6.tgz#13cb97160297767569ff4e860ff43cd5c81acabe"
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/dove.max.sdk/-/dove.max.sdk-1.2.7.tgz#f532a6d5b8c68a0878c531f1e9bb9af11075194c"
   dependencies:
     lodash "^4.17.4"
 

@@ -305,6 +305,7 @@ class Task {
 
 var taskList = []
 var taskID2taskObj =  {}
+var taskID2taskList = {}   ///   每次startDo时更新
 
 //// 与设置相关的处理
 class Settings {
@@ -411,6 +412,7 @@ export default {
             taskList: taskList,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
             taskID2taskObj: {},
+            taskID2taskList:{},
             isResizeWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
@@ -936,46 +938,53 @@ export default {
             var that = this
             if(that.taskList.length > 0){
                 if(that.PercentageConversion){
-                    _.each(that.taskList, (taskObj, index) => {
-                        console.log(taskObj.isWorking)
-                        that.__abi__start_ResizeGifTask(taskObj.id, {
-                            src: taskObj.path,
-                            dest: that.lastOutputPath,
-                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
-                            overwrite: that.enableOverWriteOutput ? true : false,
-                            IsPercentValue:true,
-                            width: that.finalPercentage/100,
-                            height: 0
-                        }, (data) => {
-                            if (data.infoType === 'type_calltask_start'){
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 50,
-                                    state:0
-                                })
-                            }else if (data.infoType === 'type_calltask_success'){
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 100,
-                                    state: 1
-                                })
-                            }else if (data.infoType === 'type_calltask_error'){
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 100,
-                                    state: -1,
-                                    message: data.detail_error || 'error'
-                                })
-                            }else if (data.infoType === 'type_type_calltask_cancel') {
-                                window.log('[x] type_type_calltask_cancel')
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 0,
-                                    state: 0
-                                })
-                            }
+                    if(that.percentage == 100){
+                        return BS.b$.Notice.alert({
+                            message: that.$t('pages.resize.notice-no-prompt.message')
+                        })
+                    }else {
+                        _.each(that.taskList, (taskObj, index) => {
+                            //var taskID = taskObj.id + _.now()
+                            //that.taskID2taskList[taskID] = taskObj
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                dest: that.lastOutputPath,
+                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                                overwrite: that.enableOverWriteOutput ? true : false,
+                                IsPercentValue:true,
+                                width: that.finalPercentage/100,
+                                height: 0
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_start'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1,
+                                        message: data.detail_error || 'error'
+                                    })
+                                }else if (data.infoType === 'type_type_calltask_cancel') {
+                                    window.log('[x] type_type_calltask_cancel')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 0,
+                                        state: 0
+                                    })
+                                }
 
-                            window.log('[x] infoType ===' + data.infoType)
-                            // check converting
-                            that.__checkTaskStateInfo()
-                        } )
-                    })
+                                window.log('[x] infoType ===' + data.infoType)
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )
+                        })
+                    }
                 }else if(that.WidthHeightConversion && that.onBtnLock){
                     if(isNaN(that.finalInputWidth)){
                         _.each(that.taskList, (taskObj, index) => {
@@ -1114,6 +1123,9 @@ export default {
             if(!notice) return
             if(that.taskList.length > 0 && that.isResizeWorking) {
                 _.each(that.taskList, (taskObj, index) => {
+                    // var taskID = _.findKey(that.taskID2taskList,function(o){
+                    //     return o.id == taskObj.id
+                    // })
                     that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
                         // check converting
                         if (data.infoType === 'type_calltask_cancel'){
@@ -1154,7 +1166,7 @@ export default {
 
             var _command = []
 
-            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
+            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID + _.now()
             that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // -- 声明输出json的路径
