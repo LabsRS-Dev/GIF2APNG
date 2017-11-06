@@ -212,7 +212,7 @@
                                 type="secondary"
                                 color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0"
+                                v-if="item.stateInfo.state == 1"
                                 >
                                 <span class="fa fa-folder-open-o fa-lg fa-fw" :title=" $t('pages.resize.task-item.open-parent-dir') "></span>
                             </ui-icon-button>
@@ -222,7 +222,7 @@
                                 type="secondary"
                                 color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0 && checkOutputPathIsFile(item.fixpath)"
+                                v-if="item.stateInfo.state == 1 && checkOutputPathIsFile(item.fixpath)"
                                 >
                                 <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.resize.task-item.review-in-file') "></span>
                             </ui-icon-button>
@@ -230,9 +230,9 @@
                     </div>
                     <div class="ui-toolbar__body">
                         <span
-                            :class="['ui-toolbar__top__taskMessage', item.stateInfo.state < 0 ? 'task-item-has-error': '']"
+                            :class="['ui-toolbar__top__taskMessage', item.stateInfo.state < 0 ? 'task-item-has-error':'task-item-has-cancel']"
                             :title="item.stateInfo.message"
-                            v-show="item.stateInfo.state < 0"
+                            v-show="item.stateInfo.state < 0 || item.stateInfo.state == 2"
                             >
                             {{ item.stateInfo.message }}
                         </span>
@@ -297,7 +297,7 @@ class Task {
         this.fixOutDir = "";        // 指定的修改输出目录
         this.fixpath = "";          // 修改成功的文件路径
         this.stateInfo = {          // 修改运行状态
-            state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败
+            state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败 ,2 取消转换
             message: ""             // 修改结果的描述，如果是错误，描述错误，如果是成功，描述其定义内容
         }
     }
@@ -613,11 +613,14 @@ export default {
             var _styleClass = ['page__resize__task__item']
             if (item.stateInfo) {
 
-                if (item.stateInfo.state < 0) {
+                if (item.stateInfo.state == -1) {
                     _styleClass.push('isFixFailed')
                 }
-                if (item.stateInfo.state > 0) {
+                if (item.stateInfo.state == 1) {
                     _styleClass.push('isFixedSuccess')
+                }
+                if (item.stateInfo.state == 2) {
+                    _styleClass.push('isFixedCancel')
                 }
             }
 
@@ -628,8 +631,8 @@ export default {
             var that = this
             var progressStyle = 'black' // item.stateInfo.state === 0
             if (item.stateInfo) {
-                if (item.stateInfo.state < 0) progressStyle = 'accent'
-                if (item.stateInfo.state > 0) progressStyle = 'primary'
+                if (item.stateInfo.state == -1) progressStyle = 'accent'
+                if (item.stateInfo.state == 1) progressStyle = 'primary'
             }
 
             return progressStyle
@@ -937,6 +940,9 @@ export default {
             if(that.taskList.length > 0){
                 if(that.PercentageConversion){
                     if(that.percentage == 100){
+                        BS.b$.Notice.alert({
+                            message: that.$t('pages.resize.notice-no-prompt.message')
+                        })                        
                         that.onBtnFitImageClick()
                     }else {
                         _.each(that.taskList, (taskObj, index) => {
@@ -968,8 +974,8 @@ export default {
                                 }else if (data.infoType === 'type_calltask_cancel') {
                                     that.__updateInfoWithGif2apngTask(taskObj.id, {
                                         progress: 100,
-                                        state: -1,
-                                        message:  'paused'
+                                        state: 2,
+                                        message: that.$t('pages.resize.notice-no-cancel.message')
                                     })
                                 }
                                 window.log('[x] infoType ===' + data.infoType)
@@ -1009,8 +1015,8 @@ export default {
                                 }else if (data.infoType === 'type_calltask_cancel') {
                                     that.__updateInfoWithGif2apngTask(taskObj.id, {
                                         progress: 100,
-                                        state: -1,
-                                        message:  'paused'
+                                        state: 2,
+                                        message: that.$t('pages.resize.notice-no-cancel.message')
                                     })
                                 }
 
@@ -1050,8 +1056,8 @@ export default {
                                 }else if (data.infoType === 'type_calltask_cancel') {
                                     that.__updateInfoWithGif2apngTask(taskObj.id, {
                                         progress: 100,
-                                        state: -1,
-                                        message:  'paused'
+                                        state: 2,
+                                        message: that.$t('pages.resize.notice-no-cancel.message')
                                     })
                                 }
 
@@ -1092,8 +1098,8 @@ export default {
                             }else if (data.infoType === 'type_calltask_cancel') {
                                 that.__updateInfoWithGif2apngTask(taskObj.id, {
                                     progress: 100,
-                                    state: -1,
-                                    message:  'paused'
+                                    state: 2,
+                                    message: that.$t('pages.resize.notice-no-cancel.message')
                                 })
                             }
 
@@ -1118,7 +1124,7 @@ export default {
                         if (data.infoType === 'type_calltask_cancel'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
-                                state:-1
+                                state:2
                             })
                         }
                         that.__checkTaskStateInfo()

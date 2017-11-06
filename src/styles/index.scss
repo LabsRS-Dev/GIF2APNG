@@ -83,12 +83,14 @@ $docs-content__taskitem-background: rgba(233, 233, 233, 1.0); // linear-gradient
 $docs-content__taskitem-hover-background:  $global-hover-background;
 $docs-content__taskitem-font-color: $global-font-color;
 $docs-content__taskitem_haserror-font-color: $md-red-300;
+$docs-content__taskitem_hascancel-font-color:$md-blue-200;
 $docs-content__taskitem-hover-font-color: white;
 
 // {任务执行情况标记}
 $docs-content__taskitem_normal-boder-left: 12px solid $md-grey-400;
 $docs-content__taskitem_success-boder-left: 12px solid $md-green-300;
 $docs-content__taskitem_failed-boder-left: 12px solid $md-red-300;
+$docs-content__taskitem_cancel-boder-left: 12px solid $md-blue-200;
 
 /**
 ** 自适应布局设置

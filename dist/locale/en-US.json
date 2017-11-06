@@ -201,7 +201,8 @@
          "setting-plan": "Settings",
          "open-parent-dir": "Reveal in Folder",
          "review-in-file": "Preview",
-         "change-size":"Change the Image Size"
+         "change-size":"Change the Image Size",
+         "hint":"Image scale"
       },
       "footbar": {
         "fileCount": "Task Count",
@@ -250,10 +251,11 @@
         "width":"Width:",
         "height":"Height:",
         "pixel":"PX",
-        "setting":"Preserve Aspect Ratio",
+        "setting":"Keep the original ratio",
         "lock":"Keep aspect ratio",
         "input-lock":"keep ratio",
-        "unlock":"Don't keep aspect ratio"
+        "unlock":"Don't keep aspect ratio",
+        "custom":"Custom"
       },
       "dialog-config-preview":{
         "title":"Preview info",
@@ -269,7 +271,10 @@
         "message": "Cancel all converted tasks?"
       },
       "notice-no-prompt":{
-        "message": "Please select percentages not 100%！"
+        "message": "Please set the files size first！"
+      },
+      "notice-no-cancel":{
+        "message": "Cancel"
       },
       "notice-no-items":{
         "message": "Please import GIF files first, then convert!"

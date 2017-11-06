@@ -132,7 +132,7 @@
         "title":"确认操作",
         "btnConfirm": "确定",
         "btnDeny": "取消",
-        "message": "确定要清空导入的GIF动画信息吗？"
+        "message": "确定要清空任务列表吗？"
       },
       "dialog-config-output":{
         "title":"设置输出路径",
@@ -201,7 +201,8 @@
          "setting-plan": "设置",
          "open-parent-dir": "打开所在目录",
          "review-in-file": "点击查看",
-         "change-size":"转换图片尺寸"
+         "change-size":"转换图片尺寸",
+         "hint":"图像缩放比例"
       },
       "footbar": {
         "fileCount": "任务数量",
@@ -229,7 +230,7 @@
         "title":"确认操作",
         "btnConfirm": "确定",
         "btnDeny": "取消",
-        "message": "确定要清空导入的GIF动画信息吗？"
+        "message": "确定要清空任务列表吗？"
       },
       "dialog-config-output":{
         "title":"设置输出路径",
@@ -250,10 +251,11 @@
         "width":"宽度:",
         "height":"高度:",
         "pixel":"像素",
-        "setting":"锁定宽高比",
+        "setting":"保持原图宽高比",
         "lock":"已锁定比例",
         "input-lock":"保持比例",
-        "unlock":"未锁定比例"
+        "unlock":"未锁定比例",
+        "custom":"自定义宽高比"
       },
       "dialog-config-preview":{
         "title":"信息预览",
@@ -269,7 +271,10 @@
         "message": "确定要终止所有操作吗？"
       },
       "notice-no-prompt":{
-        "message": "请选择不是100%的百分比！"
+        "message": "请先进行文件尺寸设置！"
+      },
+      "notice-no-cancel":{
+        "message": "已撤销"
       },
       "notice-no-items":{
         "message": "请先导入GIF动画文件，然后再执行处理！"
@@ -343,7 +348,7 @@
         "title":"确认操作",
         "btnConfirm": "确定",
         "btnDeny": "取消",
-        "message": "确定要清空导入的GIF动画信息吗？"
+        "message": "确定要清空任务列表吗？"
       },
       "dialog-select-outdir":{
         "title":"请选择输出目录",

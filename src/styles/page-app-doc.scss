@@ -138,6 +138,9 @@
                     background: $docs-content__taskitem-hover-background;
                     color: $docs-content__taskitem-hover-font-color !important;
                 }
+                &:hover .ui-close-button__icon ,&:hover .ui-icon-button__icon {
+                    color: $docs-content__taskitem-hover-font-color !important;
+                }
             }
             &.isFixedSuccess {
                 .ui-alert__body {
@@ -149,6 +152,11 @@
                     border-left: $docs-content__taskitem_failed-boder-left;
                 }
             }
+            &.isFixedCancel {
+                .ui-alert__body {
+                    border-left: $docs-content__taskitem_cancel-boder-left;
+                }
+            }            
         }
         .page__examples-app-doc__item {
             display: flex;
@@ -219,6 +227,10 @@
                     margin-left: rem-calc(8px);
                     &.task-item-has-error {
                         color: $docs-content__taskitem_haserror-font-color;
+                        user-select: auto !important;
+                    }
+                    &.task-item-has-cancel{
+                        color: $docs-content__taskitem_hascancel-font-color;
                         user-select: auto !important;
                     }
                 }
