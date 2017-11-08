@@ -35,12 +35,15 @@
       justify-content: center;
       align-items: center; 
       width: 100%;
-      img{
+      .sliderCustomImage{
         border-radius: rem-calc(5px);
         border: rem-calc(1px) solid $md-grey-300;
         content:none;
       }
       .sliderImage{
+        border-radius: rem-calc(5px);
+        border: rem-calc(1px) solid $md-grey-300;
+        content:none;
         max-width: 40vw;
         max-height: 60vh;
       }
@@ -76,7 +79,10 @@
       .fa-exclamation{
         color:$md-red;
       }
-      .imageBlur{
+      .fa-hand-paper-o{
+        color:$md-red;
+      }
+      .imageBlur .imageCustomBlur{
         filter: blur(5px);
         position: absolute;
         -webkit-transform: translateZ(0);
@@ -85,7 +91,13 @@
         -moz-filter: blur(5px);
       }
       .ui-progress-linear{
+        position: absolute;
         width: 95%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
       }
     }
     .page__examples-app-doc__welcome__image__hint{
@@ -94,7 +106,7 @@
       z-index: 15;
       width: 100%;
       height: rem-calc(20px);
-      bottom: rem-calc(20px);
+      bottom: rem-calc(10px);
       .image__single__hint__title{
         left: 0;
         right: 0;
@@ -248,6 +260,9 @@
           border-radius: 50%; /*外观设置为圆形*/
           border: rem-calc(1px) solid $md-grey-300; /*设置边框*/
           box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/
+      }
+      input[type=range]:disabled::-webkit-slider-thumb{
+         opacity: 0;
       }
     }
   }

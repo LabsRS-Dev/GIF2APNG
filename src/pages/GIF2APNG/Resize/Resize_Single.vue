@@ -108,7 +108,12 @@
                                     class="fa fa-exclamation fa-lg fa-fw"
                                     v-show="showMaskLayerError"
                                     >
-                                </span>                                
+                                </span>
+                                <span
+                                    class="fa fa-hand-paper-o fa-lg fa-fw"
+                                    v-show="showMaskLayerCancel"
+                                    >
+                                </span>                              
                             </div>
                         </div>   
                         <div class="page__examples-app-doc__welcome__image__scale">                    
@@ -297,6 +302,7 @@ export default {
             showMaskLayer:false,
             showMaskLayerSuccess:false,
             showMaskLayerError:false,
+            showMaskLayerCancel:false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
             lastOutputPath: $LS$.data.lastSelectOutputPath,
@@ -540,6 +546,7 @@ export default {
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
             that.showMaskLayerError = false
+            that.showMaskLayerCancel = false
             if(that.enableCustomRatio){
                 that.isCheckPercent = 1
                 that.imageScale = that.defaultImageScale
@@ -610,6 +617,7 @@ export default {
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
             that.showMaskLayerError = false
+            that.showMaskLayerCancel = false
             that.enableMaintainAspectRatio = true
             that.enableCustomRatio = false
             that.isCheckNumber = 1
@@ -833,17 +841,19 @@ export default {
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
             that.showMaskLayerError = false
+            that.showMaskLayerCancel = false
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         dest: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput ? true : false,
+                        enableIncludeMinImage:true,
                         IsPercentValue:false,
                         width: that.finalInputWidth,
                         height: that.finalInputHeight
                     }, (data) => {
-                        if (data.infoType === 'type_calltask_start'){
+                        if (data.infoType === 'type_calltask_log'){
                             that.showMaskLayer = true
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 50,
@@ -851,21 +861,27 @@ export default {
                             })
                         }else if (data.infoType === 'type_calltask_success'){
                             that.showMaskLayerSuccess = true
-                            $('.image__single__top').css('background-color','rgba(0,0,0,0)')
+                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
-                                state: 1,
-                                message: 'Success'
+                                state: 1
                             })
                         }else if (data.infoType === 'type_calltask_error'){
                             that.showMaskLayerError = true
-                            $('.image__single__top').css('background-color','rgba(0,0,0,0)')
+                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
-                                state: -1,
-                                message: 'Error'
+                                state: -1
+                            })
+                        }else if (data.infoType === 'type_calltask_cancel') {
+                            that.showMaskLayerCancel = true
+                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: 100,
+                                state: 0
                             })
                         }
+                        window.log('[x] infoType ===' + data.infoType)
                         // check converting
                         that.__checkTaskStateInfo()
                     } )
@@ -883,7 +899,7 @@ export default {
                         // check converting
                         if (data.infoType === 'type_calltask_cancel'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 200,
+                                progress: 100,
                                 state:0
                             })
                         }
@@ -903,12 +919,13 @@ export default {
         __abi__start_ResizeGifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
-                src: '',  // 要处理的文件或者目录的路径
-                dest: '',  // 输出目录
-                overwrite: false,      // 是否覆盖已有文件
-                IsPercentValue: false, // 确认时具体值还是百分比,false就是具体值,true就是百分比
-                width: 100, // resize 后的宽度
-                height: 0,  // resize 后的高度，0 为只适应按照原宽度比
+                src: '',                        // 要处理的文件或者目录的路径
+                dest: '',                       // 输出目录
+                overwrite: false,               // 是否覆盖已有文件
+                IsPercentValue: false,          // 确认是具体值还是百分比,false就是具体值,true就是百分比
+                enableIncludeMinImage: false,   // 确认是否需要处理客户输入尺寸大于图片原始尺寸的文件
+                width: 100,                     // resize 后的宽度
+                height: 0,                      // resize 后的高度，0 为只适应按照原宽度比
             }, config)
 
             // 检查必要数值
@@ -918,7 +935,7 @@ export default {
 
             var _command = []
 
-            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
+            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID + _.now()
             that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // -- 声明输出json的路径
@@ -932,7 +949,7 @@ export default {
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
-            window.log("jsonfile = "+ jsonFilePath)
+            window.log("jsonfile = "+jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({
@@ -1494,6 +1511,9 @@ export default {
         enableMaintainAspectRatio(val,oldVal){
             var that = this
             var $ = Util.util.getJQuery$()
+            if(val == false){
+                $("input[type=range]::-webkit-slider-thumb").css({'background':'red'})
+            }
             if(that.WidthFocus){
                 that.WidthFocus = false 
                 that.curWidth = that.finalInputWidth
@@ -1522,7 +1542,11 @@ export default {
             var clientHeight = document.body.clientHeight
             var $ = Util.util.getJQuery$()
             if(val){
-                that.isCustomRatio = true  
+                that.isCustomRatio = true
+                that.showMaskLayer = false
+                that.showMaskLayerSuccess = false
+                that.showMaskLayerError = false
+                that.showMaskLayerCancel = false
                 ///  记录原比例转换的信息
                 that.changeOrgWidth = that.finalInputWidth
                 that.changeOrgHeight = that.finalInputHeight
