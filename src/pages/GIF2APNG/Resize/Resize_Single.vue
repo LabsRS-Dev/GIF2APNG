@@ -1174,7 +1174,7 @@ export default {
                         }
                     }                      
                 }
-            },600),
+            },1000),
         ValidateHeightNumber:_.debounce(function(e){
                 var that = this
                 var $ = Util.util.getJQuery$()
@@ -1289,7 +1289,7 @@ export default {
                         }
                     }                       
                 }
-            },600),
+            },1000),
         changeInputActive(){
             var that = this
             that.inputActive = 0
