@@ -988,7 +988,7 @@ export default {
             var afterModificationSize = that.bytesToSize(afterSizeBytes)
             myChart.setOption({
                 title: {
-                    text: '数据对比图'
+                    text: that.$t('pages.convert.dialog-config-preview.chartTitle')
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -1001,7 +1001,7 @@ export default {
                 },
                 xAxis: {
                     type : 'category',
-                    data: ['文件大小']
+                    data: [that.$t('pages.convert.dialog-config-preview.xAxis')]
                 },
                 yAxis: {
                     type : 'value',

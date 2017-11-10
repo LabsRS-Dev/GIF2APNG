@@ -146,7 +146,9 @@
         "btnConfirm": "确定",
         "btnDeny": "取消",
         "before":"Gif",
-        "after":"Apng"
+        "after":"Apng",
+        "chartTitle":"数据对比图",
+        "xAxis":"文件大小"
       },
       "dialog-confirm-stop-fix":{
         "title":"确认操作",

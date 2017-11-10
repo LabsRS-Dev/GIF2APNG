@@ -146,7 +146,9 @@
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
         "before":"Gif",
-        "after":"Apng"
+        "after":"Apng",
+        "chartTitle":"Size Contrast",
+        "xAxis":"File size"
       },
       "dialog-confirm-stop-fix":{
         "title":"Confirm",
