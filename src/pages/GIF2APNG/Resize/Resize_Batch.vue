@@ -1158,9 +1158,16 @@ export default {
             console.assert(BS.b$.App.checkPathIsExist(_config.dest))
 
             var _command = []
-
+            var _dest = _config.dest
+            
             const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID + _.now()
-            that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+
+            // Fix when the task is file obj
+            if (BS.b$.App.checkPathIsFile(_config.src)) {
+                _dest = _config.dest + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.gif'
+                that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            }
 
             // -- 声明输出json的路径
             var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
