@@ -147,7 +147,7 @@
         "btnDeny": "Cancel",
         "before":"Gif",
         "after":"Apng",
-        "chartTitle":"Size Contrast",
+        "chartTitle":"Size comparison diagram",
         "xAxis":"File size"
       },
       "dialog-confirm-stop-fix":{
