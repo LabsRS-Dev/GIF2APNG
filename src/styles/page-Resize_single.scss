@@ -5,14 +5,14 @@
   align-items: center; 
   .page__examples-app-doc__welcome__image__single{
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center; 
     margin-left: rem-calc(40px);
     width: 45VW;
-    min-height: 70VH;
-    padding: rem-calc(10px);
+    height: 70VH;
     position:relative;
+    overflow: hidden;
+    padding: rem-calc(10px);
     background: -webkit-gradient(linear, 100% 100%, 50% 10%, from(#fff), to(#f3f3f3), color-stop(.1,#fff));
     border: rem-calc(1px) solid #ccc;
     -webkit-box-shadow: rem-calc(1px) rem-calc(1px) rem-calc(4px) rgba(0,0,0, 0.1);
@@ -28,16 +28,30 @@
     //   -webkit-box-shadow: 0 0 rem-calc(12px) rgba(0, 0, 0, 0.2);
     //   -webkit-transform: rotate(-30deg) skew(0,0) translate(rem-calc(-30px),rem-calc(-20px));   
     // }
-    img{
-      border-radius: rem-calc(5px);
-      border: rem-calc(1px) solid $md-grey-300;
-      max-width: 40vw;
-      max-height: 60vh;
-      content:none;
+    .page__examples-app-doc__welcome__image__scale{
+      display: flex;
+      position:relative;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+      width: 100%;
+      .sliderCustomImage{
+        border-radius: rem-calc(5px);
+        border: rem-calc(1px) solid $md-grey-300;
+        content:none;
+      }
+      .sliderImage{
+        border-radius: rem-calc(5px);
+        border: rem-calc(1px) solid $md-grey-300;
+        content:none;
+        max-width: 40vw;
+        max-height: 60vh;
+      }
     }
-    .image__single__top{
+    .page__examples-app-doc__welcome__image__top{
       background-color: rgba(0,0,0, 0.2);
       display: flex;
+      flex-direction: column;
       width: 100%;
       height: 6vh; 
       position:absolute;
@@ -47,7 +61,6 @@
       right: 0;
       margin: auto;
       z-index: 10;
-      display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
@@ -66,23 +79,40 @@
       .fa-exclamation{
         color:$md-red;
       }
-      .imageBlur{
+      .fa-hand-paper-o{
+        color:$md-red;
+      }
+      .imageBlur .imageCustomBlur{
         filter: blur(5px);
         position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        margin: auto;
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
         -webkit-filter: blur(5px);
         -moz-filter: blur(5px);
       }
       .ui-progress-linear{
+        position: absolute;
         width: 95%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
       }
     }
+    .page__examples-app-doc__welcome__image__hint{
+      position:absolute;
+      text-align: center;
+      z-index: 15;
+      width: 100%;
+      height: rem-calc(20px);
+      bottom: rem-calc(10px);
+      .image__single__hint__title{
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+      }
+    }   
   }
   .page__examples-app-doc__welcome__image__single:before{
     content: '';
@@ -136,17 +166,18 @@
         .page__examples-app-doc__welcome__image__setting__width__percentage{
           width: rem-calc(60px);
           text-align: center;
-          font-size: rem-calc(12px);
+          font-size: rem-calc(11px);
         }
         .page__examples-app-doc__welcome__image__setting__width__unit{
-          font-size: rem-calc(12px);
+          font-size: rem-calc(11px);
         }
         input{
           width: 40%;
-          height: rem-calc(28px);
+          height: rem-calc(24px);
           border-radius: rem-calc(5px);
           margin: 0 rem-calc(5px);
           padding-left: rem-calc(5px);
+          font-size: rem-calc(11px);
         }        
       }
       .page__examples-app-doc__welcome__image__setting__height{
@@ -157,54 +188,58 @@
         .page__examples-app-doc__welcome__image__setting__height__percentage{
           width: rem-calc(60px);
           text-align: center;
-          font-size: rem-calc(12px);          
+          font-size: rem-calc(11px);          
         }
         .page__examples-app-doc__welcome__image__setting__height__unit{
-          font-size: rem-calc(12px);
+          font-size: rem-calc(11px);
         }
         input{
           width: 40%;
-          height: rem-calc(28px);
+          height: rem-calc(24px);
           border-radius: rem-calc(5px);
           margin: 0 rem-calc(5px);
           padding-left: rem-calc(5px);
+          font-size: rem-calc(11px);
         }        
       }
     }
-    .page__examples-app-doc__welcome__image__setting__keep{
+    .page__examples-app-doc__welcome__image__setting__button{
       display: flex;
       flex-direction: row;
-      width: 100%;
-      margin: rem-calc(10px) 0;
-      padding-left: rem-calc(10px);
-      justify-content: space-between;
-      .ui-icon-button{
-        margin-right:rem-calc(25px); 
-        margin-bottom: rem-calc(10px); 
+      .page__examples-app-doc__welcome__image__setting__keep{
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        padding-left: rem-calc(10px);
       }
+      .page__examples-app-doc__welcome__image__setting__reply{
+        display: flex;
+        width: 20%;
+        margin-top: rem-calc(5px);
+      }      
     }
     .page__examples-app-doc__welcome__image__setting__adjust{
       display: flex;
       flex-direction: row;
       width: 100%;
       height: rem-calc(30px);
-      margin: rem-calc(10px) 0 rem-calc(5px) 0;  
+      margin: rem-calc(5px) 0;  
       align-items: flex-end;
       .change-dimensions__adjust__percentage{
         width: rem-calc(60px);
         text-align: center;
         margin-bottom: rem-calc(3px);
-        font-size: rem-calc(12px);
+        font-size: rem-calc(11px);
       }
       .change-dimensions__adjust__maximum{
         margin-bottom: rem-calc(3px);
-        font-size: rem-calc(12px);
+        font-size: rem-calc(11px);
       }
       input[type=range]{
         -webkit-appearance: none;
         width: 60%;
         border-radius: rem-calc(10px);
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#81d4fa), color-stop(70%,#4fc3f7), color-stop(100%,#29b6f6)) no-repeat;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$md-blue-300), color-stop(70%,$md-blue-400), color-stop(100%,$md-blue-500)) no-repeat;
         background-size: 0% 100%;
       }
       input[type=range]::-webkit-slider-runnable-track {
@@ -221,10 +256,13 @@
           height: rem-calc(25px);
           width: rem-calc(25px);
           margin-top: rem-calc(-5px); /*使滑块超出轨道部分的偏移量相等*/
-          background: #ffffff; 
+          background: $md-grey-200;
           border-radius: 50%; /*外观设置为圆形*/
           border: rem-calc(1px) solid $md-grey-300; /*设置边框*/
           box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/
+      }
+      input[type=range]:disabled::-webkit-slider-thumb{
+         opacity: 0;
       }
     }
   }

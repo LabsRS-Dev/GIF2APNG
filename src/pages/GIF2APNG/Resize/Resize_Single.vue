@@ -84,9 +84,13 @@
                     class="page__examples-app-doc__welcome__image__single"
                     v-for="(item, index) in taskList" 
                     :key="item.id"
-                    >    
-                        <div class="image__single__top" v-show="showMaskLayer">
-                            <img :src="item.path" class="imageBlur" v-show="showMaskLayer">
+                    >
+                        <div class="page__examples-app-doc__welcome__image__hint" v-show="enableCustomRatio">
+                            <span class="image__single__hint__title">{{ $t('pages.resize.task-item.hint') }} : 1:{{imageScale}}</span>
+                        </div>
+                        <div class="page__examples-app-doc__welcome__image__top" v-show="showMaskLayer">
+                            <img :src="item.path" class="imageBlur" v-show="showMaskLayer && !enableCustomRatio" draggable="false">
+                            <img :src="item.path" class="imageCustomBlur" v-show="showMaskLayer && enableCustomRatio" draggable="false">
                             <ui-progress-linear
                                 :color="getItemProgressStyle(item)"
                                 :progress="item.progress"
@@ -104,10 +108,18 @@
                                     class="fa fa-exclamation fa-lg fa-fw"
                                     v-show="showMaskLayerError"
                                     >
-                                </span>                                
+                                </span>
+                                <span
+                                    class="fa fa-hand-paper-o fa-lg fa-fw"
+                                    v-show="showMaskLayerCancel"
+                                    >
+                                </span>                              
                             </div>
-                        </div>                     
-                        <img :src="item.path" class="sliderImage">  
+                        </div>   
+                        <div class="page__examples-app-doc__welcome__image__scale">                    
+                            <img :src="item.path" class="sliderImage" draggable="false" v-show="!enableCustomRatio">
+                            <img :src="item.path" class="sliderCustomImage" draggable="false" v-show="enableCustomRatio">   
+                        </div>
                 </div>
                 <div class="page__examples-app-doc__welcome__image__setting">
                     <div class="page__examples-app-doc__welcome__image__setting__size">
@@ -115,7 +127,7 @@
                                 <span class="page__examples-app-doc__welcome__image__setting__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
                                 <input  type="text" class="widthRange"  
                                         v-model.number ="inputWidth" 
-                                        @keyup="ValidateWidthNumber(inputWidth)" 
+                                        @input="ValidateWidthNumber"
                                         @blur="changeInputActive()" 
                                         v-number-only 
                                         minLength = 1 maxLength = 4
@@ -126,7 +138,7 @@
                                 <span class="page__examples-app-doc__welcome__image__setting__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
                                 <input  type="text" class="heightRange" 
                                         v-model.number ="inputHeight" 
-                                        @keyup="ValidateHeightNumber(inputHeight)" 
+                                        @input="ValidateHeightNumber" 
                                         @blur="changeInputActive()" 
                                         v-number-only 
                                         minLength = 1 maxLength = 4
@@ -136,25 +148,39 @@
                     </div>
                     <div class="page__examples-app-doc__welcome__image__setting__adjust">
                         <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                        <input type="range" min="1" max="100" v-model.number="percentage" :disabled="!enableMaintainAspectRatio" class="sliderRange">
-                        <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
+                        <input type="range" min="5" max="100" step="1" v-model.number="percentage" :disabled="!enableMaintainAspectRatio" class="sliderRange" v-show="!isCustomRatio">
+                        <input type="range" min="5" max="200" step="1" v-model.number="percentageCustom"  class="sliderCustomRange" v-show="isCustomRatio">
+                        <span class="change-dimensions__adjust__maximum" v-show="!isCustomRatio">{{percentage +'%'}}</span>
+                        <span class="change-dimensions__adjust__maximum" v-show="isCustomRatio">{{percentageCustom +'%'}}</span>
                     </div>
-                    <div class="page__examples-app-doc__welcome__image__setting__keep">
-                        <ui-checkbox
-                            v-model="enableMaintainAspectRatio"
-                            @change="getCheckboxActive"
-                            >
-                            {{ $t('pages.resize.dialog-config-change.setting') }}
-                        </ui-checkbox>
-                        <ui-icon-button
-                            @click="onToolReplayBtnClick()"
-                            type="secondary"
-                            size="small"
-                            color="primary"
-                            >
-                                <span class="fa fa-refresh fa-lg fa-fw" :title="$t('pages.resize.content.reply')"></span>
-                        </ui-icon-button>                           
+                    <div class="page__examples-app-doc__welcome__image__setting__button">
+                        <div class="page__examples-app-doc__welcome__image__setting__keep">
+                            <ui-checkbox
+                                v-model="enableMaintainAspectRatio"
+                                :disabled="enableCustomRatio"
+                                @change="getCheckboxActive"
+                                >
+                                {{ $t('pages.resize.dialog-config-change.setting') }}
+                            </ui-checkbox>
+                            <ui-checkbox
+                                v-model="enableCustomRatio"
+                                @change="getCustomCheckboxActive"
+                                >
+                                {{ $t('pages.resize.dialog-config-change.custom') }}
+                            </ui-checkbox>
+                        </div>
+                        <div class="page__examples-app-doc__welcome__image__setting__reply">
+                            <ui-icon-button
+                                @click="onToolReplayBtnClick()"
+                                type="secondary"
+                                size="small"
+                                color="primary"
+                                >
+                                    <span class="fa fa-refresh fa-lg fa-fw" :title="$t('pages.resize.content.reply')"></span>
+                            </ui-icon-button>                          
+                        </div>                        
                     </div>
+
                 </div>
             </div>
         </div>
@@ -254,8 +280,13 @@ var hasInited = false     // 是否初始过
 var inputWidth;           // 输入框显示宽度
 var inputHeight;          // 输入框显示高度
 var finalPercentage;      // 确认时百分比
+var finalPercentageCustom;// 自定义最终确认百分比
 var finalInputWidth;      // 确认时输入框内宽度
 var finalInputHeight;     // 确认时输入框内高度
+var changeOrgWidth;       // 切换到自定义之前保存的宽度
+var changeOrgHeight;      // 切换到自定义之前保存的高度
+var changeCustomWidth;    // 切换到原比例之前保存的宽度
+var changeCustomHeight;   // 切换到原比例之前保存的高度
 
 
 export default {
@@ -271,23 +302,44 @@ export default {
             showMaskLayer:false,
             showMaskLayerSuccess:false,
             showMaskLayerError:false,
+            showMaskLayerCancel:false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
             lastOutputPath: $LS$.data.lastSelectOutputPath,
             availableOutputPathList: $LS$.data.outputPaths,
-            curWidth:0,
-            curHeight:0,
-            defaultCurWidth:0,
-            defaultCurHeight:0,
+            curWidth:Number,
+            curHeight:Number,
+            defaultCurWidth:Number,
+            defaultCurHeight:Number,
+            customWidth:Number,
+            customHeight:Number,
+            defaultCustomWidth:Number,
+            defaultCustomHeight:Number,
+            isCheckNumber:1,      // 检查是否第一次进入自定义界面
+            isCheckPercent:1,     // 检查是否第一次拖动range
+            firstCustomWidth:Number,      // 第一次拖动range  width  输入框的值
+            firstCustomHeight:Number,     // 第一次拖动range  heiget 输入框的值
+            imageScale:1,         // 默认图片比例
+            defaultImageScale:1,  // 第一次进入自定义界面时的比例
+            WidthFocus:false,
+            HeightFocus:false,
+            changeOrgWidth:changeOrgWidth,
+            changeOrgHeight:changeOrgHeight,
+            changeCustomWidth:changeCustomWidth,
+            changeCustomHeight:changeCustomHeight,
             inputWidth:inputWidth,
             inputHeight:inputHeight,
             stats : stats,
             percentage:defaultSides,
             finalPercentage:defaultSides,
+            percentageCustom:defaultSides,
+            finalPercentageCustom:defaultSides,
             finalInputWidth:finalInputWidth,
             finalInputHeight:finalInputHeight,   
             enableMaintainAspectRatio:true,
+            enableCustomRatio:false,
             onChangeTestFile:true,
+            isCustomRatio:false,
             confirmDialog:{
                 ref: 'default',
                 autofocus: 'none',
@@ -494,49 +546,68 @@ export default {
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
             that.showMaskLayerError = false
-            that.curWidth = that.defaultCurWidth
-            that.curHeight = that.defaultCurHeight
-            that.inputWidth = that.defaultCurWidth
-            that.inputHeight = that.defaultCurHeight
-            if(that.percentage !== 100){
-                that.onChangeTestFile = false
-                that.percentage = 100
-            }
-            if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
-                $('.sliderImage').css('width',that.defaultCurWidth)
-                $('.sliderImage').css('height',that.defaultCurHeight)
-                $('.imageBlur').css('width',that.defaultCurWidth)
-                $('.imageBlur').css('height',that.defaultCurHeight)                                            
-            }else if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight > clientHeight*0.6){
-                let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
-                $('.sliderImage').css('width',width)
-                $('.sliderImage').css('height',clientHeight*0.6)
-                $('.imageBlur').css('width',width)
-                $('.imageBlur').css('height',clientHeight*0.6)
-            }else if(that.defaultCurWidth > clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
-                let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
-                $('.sliderImage').css('width',clientWidth*0.4)
-                $('.sliderImage').css('height',height)
-                $('.imageBlur').css('width',clientWidth*0.4)
-                $('.imageBlur').css('height',height)
-            }else if(that.defaultCurWidth > clientWidth*0.4 && that.defaultCurHeight > clientHeight*0.6){
-                let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
-                let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
-                if(cliWidth >= cliHeight){
-                    let endWidth = clientWidth*0.4
-                    let endHeight = that.defaultCurHeight/cliWidth
-                    $('.sliderImage').css('width',endWidth)
-                    $('.sliderImage').css('height',endHeight)
-                    $('.imageBlur').css('width',endWidth)
-                    $('.imageBlur').css('height',endHeight)
-                } else {
-                    let endWidth = that.defaultCurWidth/cliHeight
-                    let endHeight = clientHeight*0.6
-                    $('.sliderImage').css('width',endWidth)
-                    $('.sliderImage').css('height',endHeight)
-                    $('.imageBlur').css('width',endWidth)
-                    $('.imageBlur').css('height',endHeight)                    
+            that.showMaskLayerCancel = false
+            if(that.enableCustomRatio){
+                that.isCheckPercent = 1
+                that.imageScale = that.defaultImageScale
+                if(that.percentageCustom !== 100){
+                    that.onChangeTestFile = false
+                    that.percentageCustom = 100
                 }
+                that.customWidth = that.defaultCustomWidth
+                that.customHeight = that.defaultCustomHeight
+                that.inputWidth = that.defaultCustomWidth
+                that.inputHeight = that.defaultCustomHeight
+                $('.sliderCustomImage').css('width',that.defaultCustomWidth)
+                $('.sliderCustomImage').css('height',that.defaultCustomHeight)
+                $('.imageCustomBlur').css('width',that.defaultCustomWidth)
+                $('.imageCustomBlur').css('height',that.defaultCustomHeight)             
+            }else {
+                that.curWidth = that.defaultCurWidth
+                that.curHeight = that.defaultCurHeight
+                that.inputWidth = that.defaultCurWidth
+                that.inputHeight = that.defaultCurHeight
+                that.enableMaintainAspectRatio = true
+                if(that.percentage !== 100){
+                    that.onChangeTestFile = false
+                    that.percentage = 100
+                }
+                if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
+                    $('.sliderImage').css('width',that.defaultCurWidth)
+                    $('.sliderImage').css('height',that.defaultCurHeight)
+                    $('.imageBlur').css('width',that.defaultCurWidth)
+                    $('.imageBlur').css('height',that.defaultCurHeight)                                            
+                }else if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight > clientHeight*0.6){
+                    let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                    $('.sliderImage').css('width',width)
+                    $('.sliderImage').css('height',clientHeight*0.6)
+                    $('.imageBlur').css('width',width)
+                    $('.imageBlur').css('height',clientHeight*0.6)
+                }else if(that.defaultCurWidth > clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
+                    let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                    $('.sliderImage').css('width',clientWidth*0.4)
+                    $('.sliderImage').css('height',height)
+                    $('.imageBlur').css('width',clientWidth*0.4)
+                    $('.imageBlur').css('height',height)
+                }else if(that.defaultCurWidth > clientWidth*0.4 && that.defaultCurHeight > clientHeight*0.6){
+                    let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
+                    let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
+                    if(cliWidth >= cliHeight){
+                        let endWidth = clientWidth*0.4
+                        let endHeight = that.defaultCurHeight/cliWidth
+                        $('.sliderImage').css('width',endWidth)
+                        $('.sliderImage').css('height',endHeight)
+                        $('.imageBlur').css('width',endWidth)
+                        $('.imageBlur').css('height',endHeight)
+                    } else {
+                        let endWidth = that.defaultCurWidth/cliHeight
+                        let endHeight = clientHeight*0.6
+                        $('.sliderImage').css('width',endWidth)
+                        $('.sliderImage').css('height',endHeight)
+                        $('.imageBlur').css('width',endWidth)
+                        $('.imageBlur').css('height',endHeight)                    
+                    }
+                }                
             }
         },
 
@@ -546,19 +617,26 @@ export default {
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
             that.showMaskLayerError = false
+            that.showMaskLayerCancel = false
+            that.enableMaintainAspectRatio = true
+            that.enableCustomRatio = false
+            that.isCheckNumber = 1
+            that.isCheckPercent = 1
+            that.imageScale = 1
+            that.defaultImageScale = 1
             console.log("-------------------- call import files")
                 // call bs
             BS.b$.importFiles({
                 title: this.$t('pages.resize.dialog-import-images.title'),
                 prompt: this.$t('pages.resize.dialog-import-images.prompt'),
-                allowMulSelection: true,
+                allowMulSelection: false,
                 types:[] // Note: too many formats
             }, function(){ // Test code
                 // Test: Windows 本地实际数据
                 var img = [
                             {path:'http://img.mp.itc.cn/upload/20160323/22d014b2fcff4c199ed6f2e6ab4ae9fd.jpg',width:400,height:224},
                             {path:'http://img.mp.itc.cn/upload/20160322/62106ba2b7014f8d8814a999285548c7.jpg',width:280,height:157},
-                            {path:'http://pic.962.net/up/2012-8/2012082011125260036.gif',width:350,height:197},
+                            {path:'http://image.xcar.com.cn/attachments/a/day_140304/2014030414_1165b02cf2320ee81f92CnORE7mRIuCm_sst_560.gif',width:560,height:521},
                             {path:'http://p2.so.qhimgs1.com/t01a4723418f8de871e.gif',width:585,height:240},
                             {path:'http://www.tfedu.org//forum//data//attachment//forum//201402//05//152308tr8pyys87do18yo8.gif',width:460,height:768}
                         ]
@@ -574,11 +652,16 @@ export default {
                 that.defaultCurHeight = that.taskList[0].dimensions.data.height
                 that.inputWidth = Math.round(that.curWidth)
                 that.inputHeight = Math.round(that.curHeight) 
-                if(that.finalPercentage !== 100){
+                if(that.percentage !== 100){
                     that.onChangeTestFile = false
                     that.percentage = 100
                 }  
+                if(that.percentageCustom !== 100){
+                    that.onChangeTestFile = false
+                    that.percentageCustom = 100
+                } 
                 $('.sliderRange').css('background-size', that.percentage +'% 100%' )
+                $('.sliderCustomRange').css('background-size', that.percentageCustom/2 +'% 100%' )
                 return
             }, function(data){ // Normal code
                 that.__importFilesOrDir(data)
@@ -693,22 +776,27 @@ export default {
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
+                        var length = that.taskList.length
+                        that.taskList.splice(1,length-1)
+                        that.curWidth = that.taskList[0].dimensions.data.width
+                        that.curHeight = that.taskList[0].dimensions.data.height
+                        that.defaultCurWidth = that.taskList[0].dimensions.data.width
+                        that.defaultCurHeight = that.taskList[0].dimensions.data.height
+                        that.inputWidth = Math.round(that.curWidth)
+                        that.inputHeight = Math.round(that.curHeight) 
+                        if(that.percentage !== 100){
+                            that.onChangeTestFile = false
+                            that.percentage = 100
+                        }
+                        if(that.percentageCustom !== 100){
+                            that.onChangeTestFile = false
+                            that.percentageCustom = 100
+                        } 
+                        $('.sliderRange').css('background-size', that.percentage +'% 100%' )
+                        $('.sliderCustomRange').css('background-size', that.percentageCustom/2 +'% 100%' )
                     }
                 })
             }
-            var length = that.taskList.length
-            that.taskList.splice(1,length-1)
-            that.curWidth = that.taskList[0].dimensions.data.width
-            that.curHeight = that.taskList[0].dimensions.data.height
-            that.defaultCurWidth = that.taskList[0].dimensions.data.width
-            that.defaultCurHeight = that.taskList[0].dimensions.data.height
-            that.inputWidth = Math.round(that.curWidth)
-            that.inputHeight = Math.round(that.curHeight) 
-            if(that.finalPercentage !== 100){
-                that.onChangeTestFile = false
-                that.percentage = 100
-            }  
-            $('.sliderRange').css('background-size', that.percentage +'% 100%' )
         },
 
         __updateTaskObj(taskID, data = {}, extendHandler = (taskObj) => {}) {
@@ -753,17 +841,19 @@ export default {
             that.showMaskLayer = false
             that.showMaskLayerSuccess = false
             that.showMaskLayerError = false
+            that.showMaskLayerCancel = false
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__start_ResizeGifTask(taskObj.id, {
                         src: taskObj.path,
                         dest: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput ? true : false,
+                        enableIncludeMinImage:true,
                         IsPercentValue:false,
                         width: that.finalInputWidth,
                         height: that.finalInputHeight
                     }, (data) => {
-                        if (data.infoType === 'type_calltask_start'){
+                        if (data.infoType === 'type_calltask_log'){
                             that.showMaskLayer = true
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 50,
@@ -771,21 +861,27 @@ export default {
                             })
                         }else if (data.infoType === 'type_calltask_success'){
                             that.showMaskLayerSuccess = true
-                            $('.image__single__top').css('background-color','rgba(0,0,0,0)')
+                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
-                                state: 1,
-                                message: 'Success'
+                                state: 1
                             })
                         }else if (data.infoType === 'type_calltask_error'){
                             that.showMaskLayerError = true
-                            $('.image__single__top').css('background-color','rgba(0,0,0,0)')
+                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
                                 progress: 100,
-                                state: -1,
-                                message: 'Error'
+                                state: -1
+                            })
+                        }else if (data.infoType === 'type_calltask_cancel') {
+                            that.showMaskLayerCancel = true
+                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: 100,
+                                state: 0
                             })
                         }
+                        window.log('[x] infoType ===' + data.infoType)
                         // check converting
                         that.__checkTaskStateInfo()
                     } )
@@ -803,7 +899,7 @@ export default {
                         // check converting
                         if (data.infoType === 'type_calltask_cancel'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 200,
+                                progress: 100,
                                 state:0
                             })
                         }
@@ -823,12 +919,13 @@ export default {
         __abi__start_ResizeGifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
-                src: '',  // 要处理的文件或者目录的路径
-                dest: '',  // 输出目录
-                overwrite: false,      // 是否覆盖已有文件
-                IsPercentValue: false, // 确认时具体值还是百分比,false就是具体值,true就是百分比
-                width: 100, // resize 后的宽度
-                height: 0,  // resize 后的高度，0 为只适应按照原宽度比
+                src: '',                        // 要处理的文件或者目录的路径
+                dest: '',                       // 输出目录
+                overwrite: false,               // 是否覆盖已有文件
+                IsPercentValue: false,          // 确认是具体值还是百分比,false就是具体值,true就是百分比
+                enableIncludeMinImage: false,   // 确认是否需要处理客户输入尺寸大于图片原始尺寸的文件
+                width: 100,                     // resize 后的宽度
+                height: 0,                      // resize 后的高度，0 为只适应按照原宽度比
             }, config)
 
             // 检查必要数值
@@ -838,7 +935,7 @@ export default {
 
             var _command = []
 
-            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
+            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID + _.now()
             that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // -- 声明输出json的路径
@@ -852,7 +949,7 @@ export default {
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
-            window.log("jsonfile = "+ jsonFilePath)
+            window.log("jsonfile = "+jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({
@@ -963,112 +1060,236 @@ export default {
                 }
             })
         },
-        ValidateWidthNumber(value){
-            var that = this
-            var $ = Util.util.getJQuery$()
-            var clientWidth = document.body.clientWidth
-            var clientHeight = document.body.clientHeight
-            if(that.enableMaintainAspectRatio == true){
-                that.inputActive = 10
-                that.curWidth = value
-                that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
-                that.inputHeight = Math.round(that.curHeight)
-                that.percentage  = Math.round((that.curWidth/that.defaultCurWidth)*100)
-                if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
-                    $('.sliderImage').css('width',that.curWidth)
-                    $('.sliderImage').css('height',that.curHeight)
-                    $('.imageBlur').css('width',that.curWidth)
-                    $('.imageBlur').css('height',that.curHeight)                              
-                }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6){
-                    let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
-                    $('.sliderImage').css('width',width)
-                    $('.sliderImage').css('height',clientHeight*0.6)
-                    $('.imageBlur').css('width',width)
-                    $('.imageBlur').css('height',clientHeight*0.6)
-                }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
-                    let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
-                    $('.sliderImage').css('width',clientWidth*0.4)
-                    $('.sliderImage').css('height',height)
-                    $('.imageBlur').css('width',clientWidth*0.4)
-                    $('.imageBlur').css('height',height)
-                }else if(that.curWidth > clientWidth*0.4 && that.curHeight > clientHeight*0.6){
-                    let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
-                    let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
-                    if(cliWidth >= cliHeight){
-                        let endWidth = clientWidth*0.4
-                        let endHeight = that.defaultCurHeight/cliWidth
-                        $('.sliderImage').css('width',endWidth)
-                        $('.sliderImage').css('height',endHeight)
-                        $('.imageBlur').css('width',endWidth)
-                        $('.imageBlur').css('height',endHeight)
-                    } else {
-                        let endWidth = that.defaultCurWidth/cliHeight
-                        let endHeight = clientHeight*0.6
-                        $('.sliderImage').css('width',endWidth)
-                        $('.sliderImage').css('height',endHeight)
-                        $('.imageBlur').css('width',endWidth)
-                        $('.imageBlur').css('height',endHeight)                      
-                    }
+        ValidateWidthNumber:_.debounce(function(e){
+                var that = this
+                var $ = Util.util.getJQuery$()
+                var clientWidth = document.body.clientWidth
+                var clientHeight = document.body.clientHeight
+                var value = Number(e.target.value)
+                if(that.enableMaintainAspectRatio == false){
+                    that.WidthFocus = true                  
                 }
-            }else {
-                that.curWidth = value
-                $('.sliderImage').css('width',that.curWidth)
-                $('.imageBlur').css('width',that.curWidth)
-            }
-        },
-        ValidateHeightNumber(value){
-            var that = this
-            var $ = Util.util.getJQuery$()
-            var clientWidth = document.body.clientWidth
-            var clientHeight = document.body.clientHeight
-            if(that.enableMaintainAspectRatio == true){
-                that.inputActive = 100
-                that.curHeight = value
-                that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
-                that.inputWidth = Math.round(that.curWidth)
-                that.percentage  = Math.round((that.curHeight/that.defaultCurHeight)*100)
-                if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
-                    $('.sliderImage').css('width',that.curWidth)
-                    $('.sliderImage').css('height',that.curHeight)   
-                    $('.imageBlur').css('width',that.curWidth)
-                    $('.imageBlur').css('height',that.curHeight)                           
-                }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6){
-                    let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
-                    $('.sliderImage').css('width',width)
-                    $('.sliderImage').css('height',clientHeight*0.6)
-                    $('.imageBlur').css('width',width)
-                    $('.imageBlur').css('height',clientHeight*0.6)
-                }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
-                    let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
-                    $('.sliderImage').css('width',clientWidth*0.4)
-                    $('.sliderImage').css('height',height)
-                    $('.imageBlur').css('width',clientWidth*0.4)
-                    $('.imageBlur').css('height',height)
-                }else if(that.curWidth > clientWidth*0.4 && that.curHeight > clientHeight*0.6){
-                    let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
-                    let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
-                    if(cliWidth >= cliHeight){
-                        let endWidth = clientWidth*0.4
-                        let endHeight = that.defaultCurHeight/cliWidth
-                        $('.sliderImage').css('width',endWidth)
-                        $('.sliderImage').css('height',endHeight)
-                        $('.imageBlur').css('width',endWidth)
-                        $('.imageBlur').css('height',endHeight)
-                    } else {
-                        let endWidth = that.defaultCurWidth/cliHeight
-                        let endHeight = clientHeight*0.6
-                        $('.sliderImage').css('width',endWidth)
-                        $('.sliderImage').css('height',endHeight)
-                        $('.imageBlur').css('width',endWidth)
-                        $('.imageBlur').css('height',endHeight)                        
+                if(that.enableCustomRatio){
+                    that.isCheckPercent = 1
+                    if(that.percentageCustom !== 100){
+                        that.onChangeTestFile = false
+                        that.percentageCustom = 100
                     }
-                } 
-            }else {
-                that.curHeight = value
-                $('.sliderImage').css('height',that.curHeight)
-                $('.imageBlur').css('height',that.curHeight)
-            }
-        },
+                    if(value >= 16) {
+                         if(value > clientWidth*0.2){
+                            var scale =  _.ceil(value/(clientWidth*0.2),1)
+                            if(that.defaultImageScale < scale){
+                                that.imageScale = scale
+                                let scaling = 1/that.imageScale
+                                $('.sliderCustomImage').css('transform','scale(' + scaling + ')')
+                                $('.imageCustomBlur').css('transform','scale(' + scaling + ')')
+                            }
+                        }
+                        that.customWidth = value
+                        that.customHeight = that.finalInputHeight
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = Math.round(that.customHeight)
+                        $('.sliderCustomImage').css('width',that.customWidth)
+                        $('.sliderCustomImage').css('height',that.customHeight)
+                        $('.imageCustomBlur').css('width',that.customWidth)
+                        $('.imageCustomBlur').css('height',that.customHeight)  
+                    } else if(value < 16) {
+                        that.customWidth = 16
+                        that.customHeight = that.finalInputHeight
+                        that.inputWidth = 16
+                        that.inputHeight = Math.round(that.customHeight)
+                        $('.sliderCustomImage').css('width',that.customWidth)
+                        $('.sliderCustomImage').css('height',that.customHeight)
+                        $('.imageCustomBlur').css('width',that.customWidth)
+                        $('.imageCustomBlur').css('height',that.customHeight)
+                    }
+                }else {
+                    if(value >= 16) {
+                        if(that.enableMaintainAspectRatio == true){
+                            that.inputActive = 10
+                            that.curWidth = value
+                            that.curHeight = (value/that.defaultCurWidth)*that.defaultCurHeight
+                            that.inputHeight = Math.round(that.curHeight)
+                            that.percentage  = Math.round((value/that.defaultCurWidth)*100)
+                            if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                                $('.sliderImage').css('width',that.curWidth)
+                                $('.sliderImage').css('height',that.curHeight)
+                                $('.imageBlur').css('width',that.curWidth)
+                                $('.imageBlur').css('height',that.curHeight)                              
+                            }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6){
+                                let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                                $('.sliderImage').css('width',width)
+                                $('.sliderImage').css('height',clientHeight*0.6)
+                                $('.imageBlur').css('width',width)
+                                $('.imageBlur').css('height',clientHeight*0.6)
+                            }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                                let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                                $('.sliderImage').css('width',clientWidth*0.4)
+                                $('.sliderImage').css('height',height)
+                                $('.imageBlur').css('width',clientWidth*0.4)
+                                $('.imageBlur').css('height',height)
+                            }else if(that.curWidth > clientWidth*0.4 && that.curHeight > clientHeight*0.6){
+                                let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
+                                let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
+                                if(cliWidth >= cliHeight){
+                                    let endWidth = clientWidth*0.4
+                                    let endHeight = that.defaultCurHeight/cliWidth
+                                    $('.sliderImage').css('width',endWidth)
+                                    $('.sliderImage').css('height',endHeight)
+                                    $('.imageBlur').css('width',endWidth)
+                                    $('.imageBlur').css('height',endHeight)
+                                } else {
+                                    let endWidth = that.defaultCurWidth/cliHeight
+                                    let endHeight = clientHeight*0.6
+                                    $('.sliderImage').css('width',endWidth)
+                                    $('.sliderImage').css('height',endHeight)
+                                    $('.imageBlur').css('width',endWidth)
+                                    $('.imageBlur').css('height',endHeight)                      
+                                }
+                            }
+                        }else {
+                            that.inputActive = 10
+                            that.curWidth = value
+                            $('.sliderImage').css('width',that.curWidth)
+                            $('.imageBlur').css('width',that.curWidth)
+                        }                
+                    } else if(value < 16){              
+                        if(that.enableMaintainAspectRatio){
+                            that.inputActive = 10
+                            that.curWidth = 16
+                            that.inputWidth = 16
+                            that.curHeight = (16/that.defaultCurWidth)*that.defaultCurHeight
+                            that.inputHeight = Math.round(that.curHeight)
+                            that.percentage  = Math.round((16/that.defaultCurWidth)*100)
+                            $('.sliderImage').css('width',that.curWidth)
+                            $('.sliderImage').css('height',that.curHeight)
+                            $('.imageBlur').css('width',that.curWidth)
+                            $('.imageBlur').css('height',that.curHeight)   
+                        } else {
+                            that.inputActive = 10
+                            that.curWidth = 16
+                            that.inputWidth = 16
+                            $('.sliderImage').css('width',that.curWidth)
+                            $('.imageBlur').css('width',that.curWidth)                    
+                        }
+                    }                      
+                }
+            },1000),
+        ValidateHeightNumber:_.debounce(function(e){
+                var that = this
+                var $ = Util.util.getJQuery$()
+                var clientWidth = document.body.clientWidth
+                var clientHeight = document.body.clientHeight
+                var value = Number(e.target.value)
+                if(that.enableMaintainAspectRatio == false){
+                    that.HeightFocus = true
+                }
+                if(that.enableCustomRatio){
+                    that.isCheckPercent = 1
+                     if(value > clientHeight*0.3){
+                        var scale =  _.ceil(value/(clientHeight*0.3),1)
+                        if(that.defaultImageScale < scale){
+                            that.imageScale = scale
+                            let scaling = 1/that.imageScale
+                            $('.sliderCustomImage').css('transform','scale(' + scaling + ')')
+                            $('.imageCustomBlur').css('transform','scale(' + scaling + ')')
+                        }
+                    }
+                    if(that.percentageCustom !== 100){
+                        that.onChangeTestFile = false
+                        that.percentageCustom = 100
+                    }
+                    if(value >= 16) {
+                        that.customWidth = that.finalInputWidth
+                        that.customHeight = value
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = Math.round(that.customHeight)
+                        $('.sliderCustomImage').css('width',that.customWidth)
+                        $('.sliderCustomImage').css('height',that.customHeight)
+                        $('.imageCustomBlur').css('width',that.customWidth)
+                        $('.imageCustomBlur').css('height',that.customHeight) 
+                    }else if(value < 16) {
+                        that.customWidth = that.finalInputWidth
+                        that.customHeight = 16
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = 16
+                        $('.sliderCustomImage').css('width',that.customWidth)
+                        $('.sliderCustomImage').css('height',that.customHeight)
+                        $('.imageCustomBlur').css('width',that.customWidth)
+                        $('.imageCustomBlur').css('height',that.customHeight) 
+                    }
+                }else {
+                    if(value >= 16){
+                        if(that.enableMaintainAspectRatio == true){
+                            that.inputActive = 100
+                            that.curHeight = value
+                            that.curWidth = (value/that.defaultCurHeight)*that.defaultCurWidth
+                            that.inputWidth = Math.round(that.curWidth)
+                            that.percentage  = Math.round((value/that.defaultCurHeight)*100)
+                            if(that.curWidth < clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                                $('.sliderImage').css('width',that.curWidth)
+                                $('.sliderImage').css('height',that.curHeight)   
+                                $('.imageBlur').css('width',that.curWidth)
+                                $('.imageBlur').css('height',that.curHeight)                           
+                            }else if(that.curWidth < clientWidth*0.4 && that.curHeight > clientHeight*0.6){
+                                let width = ((clientHeight*0.6)/that.defaultCurHeight)*that.defaultCurWidth
+                                $('.sliderImage').css('width',width)
+                                $('.sliderImage').css('height',clientHeight*0.6)
+                                $('.imageBlur').css('width',width)
+                                $('.imageBlur').css('height',clientHeight*0.6)
+                            }else if(that.curWidth > clientWidth*0.4 && that.curHeight < clientHeight*0.6){
+                                let height = ((clientWidth*0.4)/that.defaultCurWidth)*that.defaultCurHeight
+                                $('.sliderImage').css('width',clientWidth*0.4)
+                                $('.sliderImage').css('height',height)
+                                $('.imageBlur').css('width',clientWidth*0.4)
+                                $('.imageBlur').css('height',height)
+                            }else if(that.curWidth > clientWidth*0.4 && that.curHeight > clientHeight*0.6){
+                                let cliWidth = that.defaultCurWidth/(clientWidth*0.4)
+                                let cliHeight = that.defaultCurHeight/(clientHeight*0.6)
+                                if(cliWidth >= cliHeight){
+                                    let endWidth = clientWidth*0.4
+                                    let endHeight = that.defaultCurHeight/cliWidth
+                                    $('.sliderImage').css('width',endWidth)
+                                    $('.sliderImage').css('height',endHeight)
+                                    $('.imageBlur').css('width',endWidth)
+                                    $('.imageBlur').css('height',endHeight)
+                                } else {
+                                    let endWidth = that.defaultCurWidth/cliHeight
+                                    let endHeight = clientHeight*0.6
+                                    $('.sliderImage').css('width',endWidth)
+                                    $('.sliderImage').css('height',endHeight)
+                                    $('.imageBlur').css('width',endWidth)
+                                    $('.imageBlur').css('height',endHeight)                        
+                                }
+                            } 
+                        }else {
+                            that.inputActive = 100
+                            that.curHeight = value
+                            $('.sliderImage').css('height',that.curHeight)
+                            $('.imageBlur').css('height',that.curHeight)
+                        }
+                    }else if(value < 16){
+                        if(that.enableMaintainAspectRatio){
+                            that.inputActive = 100
+                            that.curHeight = 16
+                            that.inputHeight = 16
+                            that.curWidth = (16/that.defaultCurHeight)*that.defaultCurWidth
+                            that.inputWidth = Math.round(that.curWidth)
+                            that.percentage  = Math.round((16/that.defaultCurHeight)*100)
+                            $('.sliderImage').css('width',that.curWidth)
+                            $('.sliderImage').css('height',that.curHeight)   
+                            $('.imageBlur').css('width',that.curWidth)
+                            $('.imageBlur').css('height',that.curHeight)                      
+                        } else {
+                            that.inputActive = 100
+                            that.curHeight = 16
+                            that.inputHeight = 16
+                            $('.sliderImage').css('height',that.curHeight)
+                            $('.imageBlur').css('height',that.curHeight)
+                        }
+                    }                       
+                }
+            },1000),
         changeInputActive(){
             var that = this
             that.inputActive = 0
@@ -1076,12 +1297,21 @@ export default {
         getCheckboxActive(value, e){
             var that = this 
             var $ = Util.util.getJQuery$()
-            if(e.target.checked == true){
+            if(e.target.checked){
                 $('.sliderRange').css('background-size', that.percentage +'% 100%')
             }else {
                 $('.sliderRange').css('background-size', '0% 100%')
             }
-        }        
+        },
+        getCustomCheckboxActive(value, e){
+            var that = this 
+            var $ = Util.util.getJQuery$()
+            if(e.target.checked){
+                $('.sliderCustomRange').css('background-size', that.percentageCustom/2 +'% 100%')
+            }else {
+                $('.sliderCustomRange').css('background-size', '0% 100%')
+            }
+        }     
     },
     watch:{
         percentage(newSides, oldSides){
@@ -1090,7 +1320,11 @@ export default {
             var clientHeight = document.body.clientHeight
             var $ = Util.util.getJQuery$()
             that.finalPercentage = newSides
-            $('.sliderRange').css('background-size', newSides +'% 100%' )
+            if(that.enableMaintainAspectRatio){
+                $('.sliderRange').css('background-size', that.finalPercentage +'% 100%' )
+            }else {
+                $('.sliderRange').css('background-size', '0% 100%' )
+            }
             if(that.inputActive == 10 || that.inputActive == 100){
                 var sidesDifference = newSides - oldSides
                 if (sidesDifference > 0) {
@@ -1175,45 +1409,210 @@ export default {
                 }    
             }                
         },
+        percentageCustom(newSides, oldSides){
+            var that = this
+            var clientWidth = document.body.clientWidth
+            var clientHeight = document.body.clientHeight
+            var $ = Util.util.getJQuery$()
+            that.finalPercentageCustom = newSides
+            if(that.enableCustomRatio){
+                $('.sliderCustomRange').css('background-size', newSides/2 +'% 100%' )
+            }
+            var sidesDifference = newSides - oldSides
+            if(that.onChangeTestFile){
+                if (sidesDifference > 0) {
+                    for (var i = 1; i <= sidesDifference; i++) {
+                        that.stats.push(100)
+                    }
+                    if(that.isCheckPercent == 1){
+                        that.isCheckPercent = that.isCheckPercent + 1
+                        that.firstCustomWidth =  that.finalInputWidth
+                        that.firstCustomHeight = that.finalInputHeight
+                        that.customWidth = that.customWidth + (that.firstCustomWidth/100)*sidesDifference
+                        that.customHeight = that.customHeight + (that.firstCustomHeight/100)*sidesDifference
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = Math.round(that.customHeight)                 
+                    } else {
+                        that.customWidth = that.customWidth + (that.firstCustomWidth/100)*sidesDifference
+                        that.customHeight = that.customHeight + (that.firstCustomHeight/100)*sidesDifference
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = Math.round(that.customHeight)   
+                    }
+                    $('.sliderCustomImage').css('width',that.customWidth)
+                    $('.sliderCustomImage').css('height',that.customHeight)
+                    $('.imageCustomBlur').css('width',that.customWidth)
+                    $('.imageCustomBlur').css('height',that.customHeight)   
+                } else if(sidesDifference <= 0){
+                    var absoluteSidesDifference = Math.abs(sidesDifference)
+                    for (var i = 1; i <= absoluteSidesDifference; i++) {
+                        that.stats.shift()
+                    }
+                    if(that.isCheckPercent == 1){
+                        that.isCheckPercent = that.isCheckPercent + 1
+                        that.firstCustomWidth =  that.finalInputWidth
+                        that.firstCustomHeight = that.finalInputHeight
+                        that.customWidth = that.customWidth - (that.firstCustomWidth/100)*absoluteSidesDifference
+                        that.customHeight = that.customHeight - (that.firstCustomHeight/100)*absoluteSidesDifference
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = Math.round(that.customHeight)                    
+                    } else {
+                        that.customWidth = that.customWidth - (that.firstCustomWidth/100)*absoluteSidesDifference
+                        that.customHeight = that.customHeight - (that.firstCustomHeight/100)*absoluteSidesDifference
+                        that.inputWidth = Math.round(that.customWidth)
+                        that.inputHeight = Math.round(that.customHeight)   
+                    }
+                    $('.sliderCustomImage').css('width',that.customWidth)
+                    $('.sliderCustomImage').css('height',that.customHeight)
+                    $('.imageCustomBlur').css('width',that.customWidth)
+                    $('.imageCustomBlur').css('height',that.customHeight)  
+                } 
+            } else {
+                if (sidesDifference > 0) {
+                    for (var i = 1; i <= sidesDifference; i++) {
+                        this.stats.push(100)
+                    }
+                } else if(sidesDifference <= 0){
+                    var absoluteSidesDifference = Math.abs(sidesDifference)
+                    for (var i = 1; i <= absoluteSidesDifference; i++) {
+                        this.stats.shift()
+                    }
+                }
+                that.onChangeTestFile = true
+            }     
+        },
         inputWidth(val, oldVal){
             var that = this
+            var clientWidth = document.body.clientWidth
             that.finalInputWidth = val
-            if(val > that.defaultCurWidth){
-                that.inputWidth = that.defaultCurWidth
-                that.inputHeight = that.defaultCurHeight
-                that.percentage = 100
-            }                
+            if(that.enableCustomRatio){
 
+            }else {
+                if(val > that.defaultCurWidth){
+                    that.inputWidth = that.defaultCurWidth
+                    that.inputHeight = that.defaultCurHeight
+                    that.percentage = 100
+                }                
+            }
         },
         inputHeight(val, oldVal){
             var that = this
+            var clientHeight = document.body.clientHeight
             that.finalInputHeight = val
-            if(val > that.defaultCurHeight){
-                that.inputWidth = that.defaultCurWidth
-                that.inputHeight = that.defaultCurHeight
-                that.percentage = 100
-            }                
+            if(that.enableCustomRatio){
+
+            }else {
+                if(val > that.defaultCurHeight){
+                    that.inputWidth = that.defaultCurWidth
+                    that.inputHeight = that.defaultCurHeight
+                    that.percentage = 100
+                }                  
+            }
         },
         enableMaintainAspectRatio(val,oldVal){
             var that = this
             var $ = Util.util.getJQuery$()
-            var widthRatio = that.inputWidth / that.defaultCurWidth
-            var heightRatio = that.inputHeight / that.defaultCurHeight
-            if(val == true && widthRatio >= heightRatio){
-                that.inputHeight = Math.round(that.defaultCurHeight*widthRatio)
-                that.percentage = Math.round(widthRatio*100)
+            if(val == false){
+                $("input[type=range]::-webkit-slider-thumb").css({'background':'red'})
+            }
+            if(that.WidthFocus){
+                that.WidthFocus = false 
+                that.curWidth = that.finalInputWidth
+                that.curHeight = Math.round(that.defaultCurHeight*(that.finalInputWidth / that.defaultCurWidth))
+                that.inputWidth = that.finalInputWidth
+                that.inputHeight = Math.round(that.defaultCurHeight*(that.finalInputWidth / that.defaultCurWidth))
+                that.percentage = Math.round(100*(that.finalInputWidth / that.defaultCurWidth))
                 $('.sliderImage').css('height',that.inputHeight)
                 $('.imageBlur').css('height',that.inputHeight) 
                 that.onChangeTestFile = false
-            } else if(val == true && widthRatio <= heightRatio){
-                that.inputWidth = Math.round(that.defaultCurWidth*heightRatio)
-                that.percentage = Math.round(heightRatio*100)
+            } else if(that.HeightFocus){
+                that.HeightFocus = false
+                that.curWidth = Math.round(that.defaultCurWidth*(that.finalInputHeight / that.defaultCurHeight))
+                that.curHeight = that.finalInputHeight
+                that.inputWidth = Math.round(that.defaultCurWidth*(that.finalInputHeight / that.defaultCurHeight))
+                that.inputHeight = that.finalInputHeight
+                that.percentage = Math.round(100*(that.finalInputHeight / that.defaultCurHeight))
                 $('.sliderImage').css('width',that.inputWidth)
                 $('.imageBlur').css('width',that.inputWidth)
-                that.onChangeTestFile = false              
+                that.onChangeTestFile = false 
             }
+        },
+        enableCustomRatio(val,oldVal){
+            var that = this
+            var clientWidth = document.body.clientWidth
+            var clientHeight = document.body.clientHeight
+            var $ = Util.util.getJQuery$()
+            if(val){
+                that.isCustomRatio = true
+                that.showMaskLayer = false
+                that.showMaskLayerSuccess = false
+                that.showMaskLayerError = false
+                that.showMaskLayerCancel = false
+                ///  记录原比例转换的信息
+                that.changeOrgWidth = that.finalInputWidth
+                that.changeOrgHeight = that.finalInputHeight
+                
+                ///  切换到自定义转换页面获取的信息
+                if(that.isCheckNumber == 1){
+                    that.defaultCustomWidth = that.finalInputWidth
+                    that.defaultCustomHeight =  that.finalInputHeight
+                    that.customWidth = that.finalInputWidth
+                    that.customHeight = that.finalInputHeight
+                    that.inputWidth = Math.round(that.customWidth)
+                    that.inputHeight = Math.round(that.customHeight)
+                    $('.sliderCustomImage').css('width',that.customWidth)
+                    $('.sliderCustomImage').css('height',that.customHeight)
+                    if(that.customWidth <= clientWidth*0.2 && that.customHeight <= clientHeight*0.3){
+                        that.imageScale = 1
+                        $('.sliderCustomImage').css('transform','scale(1)')
+                        $('.imageCustomBlur').css('transform','scale(1)')                     
+                    }else if(that.customWidth <= clientWidth*0.2 && that.customHeight > clientHeight*0.3){
+                        that.imageScale = _.ceil(that.customHeight/(clientHeight*0.3),1)
+                        let scaling = 1/that.imageScale
+                        $('.sliderCustomImage').css('transform','scale(' + scaling + ')')
+                        $('.imageCustomBlur').css('transform','scale(' + scaling + ')')
+                    }else if(that.customWidth > clientWidth*0.2 && that.customHeight <= clientHeight*0.3){
+                        that.imageScale = _.ceil(that.customWidth/(clientWidth*0.2),1)
+                        let scaling = 1/that.imageScale
+                        $('.sliderCustomImage').css('transform','scale(' + scaling + ')')
+                        $('.imageCustomBlur').css('transform','scale(' + scaling + ')')
+                    }else if(that.customWidth > clientWidth*0.2 && that.customHeight > clientHeight*0.3){
+                        let width = that.customWidth/(clientWidth*0.2)
+                        let height = that.customHeight/(clientHeight*0.3)
+                        if(width >= height){
+                            that.imageScale = _.ceil(width,1)
+                            let scaling = 1/that.imageScale
+                            $('.sliderCustomImage').css('transform','scale(' + scaling + ')')
+                            $('.imageCustomBlur').css('transform','scale(' + scaling + ')')
+                        } else {
+                            that.imageScale = _.ceil(height,1)
+                            let scaling = 1/that.imageScale
+                            $('.sliderCustomImage').css('transform','scale(' + scaling + ')')
+                            $('.imageCustomBlur').css('transform','scale(' + scaling + ')')                      
+                        }
+                    }
+                    that.defaultImageScale = that.imageScale
+                    that.isCheckNumber  = that.isCheckNumber + 1
+                }else {
+                    that.customWidth = that.changeCustomWidth
+                    that.customHeight = that.changeCustomHeight
+                    that.inputWidth = Math.round(that.customWidth)
+                    that.inputHeight = Math.round(that.customHeight)            
+                }  
+            }else {
+                that.isCustomRatio = false
+                ///  记录自定义转换的信息
+                that.changeCustomWidth = that.finalInputWidth
+                that.changeCustomHeight = that.finalInputHeight
+
+                ///  切换到原比例转换页面获取的信息
+                that.customWidth = that.changeOrgWidth
+                that.customHeight = that.changeOrgHeight
+                that.inputWidth = Math.round(that.customWidth)
+                that.inputHeight = Math.round(that.customHeight)
+            }          
         }
     },
+
     components: {
         UiIcon,
         UiTabs,

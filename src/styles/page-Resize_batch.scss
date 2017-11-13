@@ -143,6 +143,9 @@
         border: rem-calc(1px) solid $md-grey-300; /*设置边框*/
         box-shadow: 0 .125em .125em #3b4547; /*添加底部阴影*/
     }
+    input[type=range]:disabled::-webkit-slider-thumb{
+      opacity: 0;
+   }
   }
 }
 .page__toolbar-app-doc__change__batch{

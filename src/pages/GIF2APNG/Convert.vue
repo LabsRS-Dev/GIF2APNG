@@ -117,7 +117,7 @@
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
                             <strong class="ui-toolbar__top__fileName" :title=" $t('pages.convert.task-item.file-name') +  item.name">
-                                {{ item.name }}
+                                {{ item.omitName }}
                                 <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.convert.task-item.file-size') +  item.size ">
                                     {{ item.size ? '(' + item.size + ')' : '' }}
                                 </sup>
@@ -153,7 +153,7 @@
                             >
                             {{ item.stateInfo.message }}
                         </span>
-                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.convert.task-item.file-path') + item.path">{{ item.path }}</span>
+                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.convert.task-item.file-path') + item.path">{{ item.omitPath }}</span>
                     </div>
                     <div class="ui-toolbar__bottom">
                         <ui-progress-linear
@@ -189,12 +189,15 @@ var baseIDIndex = -1
 
 const taskPrefix = 'convert-page-image-id-' + _.now()
 class Task {
-    constructor(thumb, name, path, size){
+    constructor(thumb, name, path, size, omitName, omitPath){
         this.id = _.uniqueId(taskPrefix);
         this.thumb = thumb;   // 缩略图
         this.name = name;     // 图像文件名称
         this.path = path;     // 图像文件的路径
         this.size = size;     // 图像文件的存储大小
+        ////----- 名称以及地址缩略显示
+        this.omitName = omitName;
+        this.omitPath = omitPath;
 
         /// ----- 展示样式相关
         this.style = {
@@ -412,7 +415,7 @@ export default {
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importDir"},
                 {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.remove"},
                 {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
-                {id:'action-do', visiable:!that.isConvertWorking, color:"green", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
+                {id:'action-do', visiable:!that.isConvertWorking, color:"black", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
         }
@@ -531,7 +534,17 @@ export default {
                     {fileName: 'RAW_NIKON_D7100.NEF' + _prx, filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF' + _prx, fileSize: '27.5MB'},
                     {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB'}
                 ], function(ele){
-                    let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize)
+                    if(ele.fileName.length > 50){
+                         ele.omitName = ele.fileName.substring(0,50) + "..."
+                    }else {
+                         ele.omitName = ele.fileName
+                    }
+                    if(ele.filePath.length > 50) {
+                        ele.omitPath = ele.filePath.substring(0,50) + "..."
+                    }else {
+                        ele.omitPath = ele.filePath
+                    }
+                    let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize, ele.omitName, ele.omitPath)
                     that.taskList.push(taskObj)
                     console.log('taskID-files=', taskObj.id)
                     taskID2taskObj[taskObj.id] = taskObj
@@ -561,7 +574,7 @@ export default {
                 allowMulSelection: true
             }, function(){
                 for(let i =0; i < 5; ++i){
-                    var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
+                    var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB',"ImagesDir" + i,"/url/imageDir" + i)
                     that.taskList.push(taskObj)
                     console.log('taskID-dir=', taskObj.id)
                     taskID2taskObj[taskObj.id] = taskObj
@@ -667,7 +680,17 @@ export default {
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
-                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                            if(fileObj.fileName.length > 50){
+                                fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitName = fileObj.fileName
+                            }
+                            if(fileObj.filePath.length > 50) {
+                                fileObj.omitPath = fileObj.filePath.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitPath = fileObj.filePath
+                            }
+                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr, fileObj.omitName, fileObj.omitPath)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -675,7 +698,17 @@ export default {
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
                         let imgPath = BS.b$.App.getFileOrDirIconPath(fileObj.filePath)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
-                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
+                            if(fileObj.fileName.length > 50){
+                                fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitName = fileObj.fileName
+                            }
+                            if(fileObj.filePath.length > 50) {
+                                fileObj.omitPath = fileObj.filePath.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitPath = fileObj.filePath
+                            } 
+                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"",fileObj.omitName,fileObj.omitPath)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -955,7 +988,7 @@ export default {
             var afterModificationSize = that.bytesToSize(afterSizeBytes)
             myChart.setOption({
                 title: {
-                    text: '数据对比图'
+                    text: that.$t('pages.convert.dialog-config-preview.chartTitle')
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -968,7 +1001,7 @@ export default {
                 },
                 xAxis: {
                     type : 'category',
-                    data: ['文件大小']
+                    data: [that.$t('pages.convert.dialog-config-preview.xAxis')]
                 },
                 yAxis: {
                     type : 'value',

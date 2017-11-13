@@ -200,9 +200,9 @@
                         <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
                             <strong class="ui-toolbar__top__fileName" :title=" $t('pages.resize.task-item.file-name') +  item.name">
-                                {{ item.name }}
+                                {{ item.omitName }}
                                 <sup class="ui-toolbar__top__fileSize" :title=" $t('pages.resize.task-item.file-size') +  item.size ">
-                                    {{ item.size ? '(' + item.size + ')' : '' }}
+                                    {{ item.dimensions ? '(' + item.dimensions.data.width + 'x' + item.dimensions.data.height  + ')' : '' }}
                                 </sup>
                             </strong>
                         </div>
@@ -212,7 +212,7 @@
                                 type="secondary"
                                 color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0"
+                                v-if="item.stateInfo.state == 1"
                                 >
                                 <span class="fa fa-folder-open-o fa-lg fa-fw" :title=" $t('pages.resize.task-item.open-parent-dir') "></span>
                             </ui-icon-button>
@@ -222,7 +222,7 @@
                                 type="secondary"
                                 color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0 && checkOutputPathIsFile(item.fixpath)"
+                                v-if="item.stateInfo.state == 1 && checkOutputPathIsFile(item.fixpath)"
                                 >
                                 <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.resize.task-item.review-in-file') "></span>
                             </ui-icon-button>
@@ -230,13 +230,13 @@
                     </div>
                     <div class="ui-toolbar__body">
                         <span
-                            :class="['ui-toolbar__top__taskMessage', item.stateInfo.state < 0 ? 'task-item-has-error': '']"
+                            :class="['ui-toolbar__top__taskMessage', item.stateInfo.state < 0 ? 'task-item-has-error':'task-item-has-cancel']"
                             :title="item.stateInfo.message"
-                            v-show="item.stateInfo.state < 0"
+                            v-show="item.stateInfo.state < 0 || item.stateInfo.state == 2"
                             >
                             {{ item.stateInfo.message }}
                         </span>
-                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.resize.task-item.file-path') + item.path">{{ item.path }}</span>
+                        <span class="ui-toolbar__body__filePath" :title=" $t('pages.resize.task-item.file-path') + item.path">{{ item.omitPath }}</span>
                     </div>
                     <div class="ui-toolbar__bottom">
                         <ui-progress-linear
@@ -272,7 +272,7 @@ var baseIDIndex = -1
 
 const taskPrefix = 'resize-page-image-id-' + _.now()
 class Task {
-    constructor(thumb, name, path, size, dimensions){
+    constructor(thumb, name, path, size, dimensions,omitName,omitPath){
         this.id = _.uniqueId(taskPrefix);
         this.thumb = thumb;   // 缩略图
         this.name = name;     // 图像文件名称
@@ -280,6 +280,9 @@ class Task {
         this.size = size;     // 图像文件的存储大小
         ////----- 图片尺寸相关相关
         this.dimensions = dimensions
+        ////----- 名称以及地址缩略显示
+        this.omitName = omitName;
+        this.omitPath = omitPath;
 
         /// ----- 展示样式相关
         this.style = {
@@ -294,7 +297,7 @@ class Task {
         this.fixOutDir = "";        // 指定的修改输出目录
         this.fixpath = "";          // 修改成功的文件路径
         this.stateInfo = {          // 修改运行状态
-            state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败
+            state: 0,               // 修改是否成功 0. 没有修改， 1，修改成功， -1修改失败 ,2 取消转换
             message: ""             // 修改结果的描述，如果是错误，描述错误，如果是成功，描述其定义内容
         }
     }
@@ -610,11 +613,14 @@ export default {
             var _styleClass = ['page__resize__task__item']
             if (item.stateInfo) {
 
-                if (item.stateInfo.state < 0) {
+                if (item.stateInfo.state == -1) {
                     _styleClass.push('isFixFailed')
                 }
-                if (item.stateInfo.state > 0) {
+                if (item.stateInfo.state == 1) {
                     _styleClass.push('isFixedSuccess')
+                }
+                if (item.stateInfo.state == 2) {
+                    _styleClass.push('isFixedCancel')
                 }
             }
 
@@ -625,8 +631,8 @@ export default {
             var that = this
             var progressStyle = 'black' // item.stateInfo.state === 0
             if (item.stateInfo) {
-                if (item.stateInfo.state < 0) progressStyle = 'accent'
-                if (item.stateInfo.state > 0) progressStyle = 'primary'
+                if (item.stateInfo.state == -1) progressStyle = 'accent'
+                if (item.stateInfo.state == 1) progressStyle = 'primary'
             }
 
             return progressStyle
@@ -679,7 +685,17 @@ export default {
                         {fileName: 'RAW_NIKON_D7100.NEF' + _prx, filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF' + _prx, fileSize: '27.5MB',fileDimensions:{data:{width:250,height:150}}},
                         {fileName: 'YDSC_0021.NEF', filePath:'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB',fileDimensions:{data:{width:512,height:512}}}
                     ], function(ele){
-                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions)
+                        if(ele.fileName.length > 50){
+                             ele.omitName = ele.fileName.substring(0,50) + "..."
+                        }else {
+                             ele.omitName = ele.fileName
+                        }
+                        if(ele.filePath.length > 50) {
+                            ele.omitPath = ele.filePath.substring(0,50) + "..."
+                        }else {
+                            ele.omitPath = ele.filePath
+                        }
+                        let taskObj = new Task("images/picture.svg", ele.fileName, ele.filePath, ele.fileSize ,ele.fileDimensions,ele.omitName,ele.omitPath)
                         that.taskList.push(taskObj)
                         console.log('taskID-files=', taskObj.id)
                         taskID2taskObj[taskObj.id] = taskObj
@@ -709,7 +725,7 @@ export default {
                 allowMulSelection: true
             }, function(){
                 for(let i =0; i < 5; ++i){
-                    var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB')
+                    var taskObj = new Task("images/folder.svg", "ImagesDir" + i, "/url/imageDir" + i, i + '22.2MB',"","ImagesDir" + i,"/url/imageDir" + i)
                     that.taskList.push(taskObj)
                     console.log('taskID-dir=', taskObj.id)
                     taskID2taskObj[taskObj.id] = taskObj
@@ -839,9 +855,25 @@ export default {
                 _.each(imageFiles,(fileObj, dinx) => {
                     checkFileExt = BS.b$.App.getFileExt(fileObj.filePath).toLowerCase()
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
+                        var dimensions = {}
+                        BS.b$.Binary.getImageFileInfo(
+                            {path:fileObj.filePath}
+                            ,function(info){
+                                dimensions.data = info.data
+                        })
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
-                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
+                            if(fileObj.fileName.length > 50){
+                                fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitName = fileObj.fileName
+                            }
+                            if(fileObj.filePath.length > 50) {
+                                fileObj.omitPath = fileObj.filePath.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitPath = fileObj.filePath
+                            }                            
+                            let taskObj = new Task("file://" + fileObj.filePath, fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr,dimensions,fileObj.omitName,fileObj.omitPath)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -849,7 +881,17 @@ export default {
                         // let taskObj = new Task("images/folder.svg", fileObj.fileName, fileObj.filePath,"")
                         let imgPath = BS.b$.App.getFileOrDirIconPath(fileObj.filePath)
                         if (!that.__findTaskObjExistWithPath(fileObj.filePath)){
-                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"")
+                            if(fileObj.fileName.length > 50){
+                                fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitName = fileObj.fileName
+                            }
+                            if(fileObj.filePath.length > 50) {
+                                fileObj.omitPath = fileObj.filePath.substring(0,50) + "..."
+                            }else {
+                                fileObj.omitPath = fileObj.filePath
+                            }  
+                            let taskObj = new Task(imgPath, fileObj.fileName, fileObj.filePath,"","",fileObj.omitName,fileObj.omitPath)
                             that.taskList.push(taskObj)
                             taskID2taskObj[taskObj.id] = taskObj
                         }
@@ -895,53 +937,25 @@ export default {
 
         startDo(){
             var that = this
-            console.log(that.onHandleTheTask)
             if(that.taskList.length > 0){
                 if(that.PercentageConversion){
-                    _.each(that.taskList, (taskObj, index) => {
-                        that.__abi__start_ResizeGifTask(taskObj.id, {
-                            src: taskObj.path,
-                            dest: that.lastOutputPath,
-                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
-                            overwrite: that.enableOverWriteOutput ? true : false,
-                            IsPercentValue:true,
-                            width: that.finalPercentage/100,
-                            height: 0
-                        }, (data) => {
-                            if (data.infoType === 'type_calltask_start'){
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 50,
-                                    state:0
-                                })
-                            }else if (data.infoType === 'type_calltask_success'){
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 100,
-                                    state: 1
-                                })
-                            }else if (data.infoType === 'type_calltask_error'){
-                                that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                    progress: 100,
-                                    state: -1,
-                                    message: data.detail_error || 'error'
-                                })
-                            }
-                            // check converting
-                            that.__checkTaskStateInfo()
-                        } )
-                    })
-                }else if(that.WidthHeightConversion && that.onBtnLock){
-                    if(isNaN(that.finalInputWidth)){
+                    if(that.percentage == 100){
+                        BS.b$.Notice.alert({
+                            message: that.$t('pages.resize.notice-no-prompt.message')
+                        })                        
+                        that.onBtnFitImageClick()
+                    }else {
                         _.each(that.taskList, (taskObj, index) => {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
                                 dest: that.lastOutputPath,
                                 enableIncludeMinImage: that.onHandleTheTask ? true : false,
                                 overwrite: that.enableOverWriteOutput ? true : false,
-                                IsPercentValue:false,
-                                width: 0,
-                                height: that.finalInputHeight
+                                IsPercentValue:true,
+                                width: that.finalPercentage/100,
+                                height: 0
                             }, (data) => {
-                                if (data.infoType === 'type_calltask_start'){
+                                if (data.infoType === 'type_calltask_log'){
                                     that.__updateInfoWithGif2apngTask(taskObj.id, {
                                         progress: 50,
                                         state:0
@@ -957,7 +971,57 @@ export default {
                                         state: -1,
                                         message: data.detail_error || 'error'
                                     })
+                                }else if (data.infoType === 'type_calltask_cancel') {
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 2,
+                                        message: that.$t('pages.resize.notice-no-cancel.message')
+                                    })
                                 }
+                                window.log('[x] infoType ===' + data.infoType)
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )
+                        })
+                    }
+                }else if(that.WidthHeightConversion && that.onBtnLock){
+                    if(isNaN(that.finalInputWidth)){
+                        _.each(that.taskList, (taskObj, index) => {
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                dest: that.lastOutputPath,
+                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                                overwrite: that.enableOverWriteOutput ? true : false,
+                                IsPercentValue:false,
+                                width: 0,
+                                height: that.finalInputHeight
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_log'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1,
+                                        message: data.detail_error || 'error'
+                                    })
+                                }else if (data.infoType === 'type_calltask_cancel') {
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 2,
+                                        message: that.$t('pages.resize.notice-no-cancel.message')
+                                    })
+                                }
+
+                                window.log('[x] infoType ===' + data.infoType)
+                                
                                 // check converting
                                 that.__checkTaskStateInfo()
                             } )
@@ -973,7 +1037,7 @@ export default {
                                 width: that.finalInputWidth,
                                 height: 0
                             }, (data) => {
-                                if (data.infoType === 'type_calltask_start'){
+                                if (data.infoType === 'type_calltask_log'){
                                     that.__updateInfoWithGif2apngTask(taskObj.id, {
                                         progress: 50,
                                         state:0
@@ -989,7 +1053,16 @@ export default {
                                         state: -1,
                                         message: data.detail_error || 'error'
                                     })
+                                }else if (data.infoType === 'type_calltask_cancel') {
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 2,
+                                        message: that.$t('pages.resize.notice-no-cancel.message')
+                                    })
                                 }
+
+                                window.log('[x] infoType ===' + data.infoType)
+
                                 // check converting
                                 that.__checkTaskStateInfo()
                             } )
@@ -1006,7 +1079,7 @@ export default {
                             width: that.finalInputWidth,
                             height: that.finalInputHeight
                         }, (data) => {
-                            if (data.infoType === 'type_calltask_start'){
+                            if (data.infoType === 'type_calltask_log'){
                                 that.__updateInfoWithGif2apngTask(taskObj.id, {
                                     progress: 50,
                                     state:0
@@ -1022,7 +1095,16 @@ export default {
                                     state: -1,
                                     message: data.detail_error || 'error'
                                 })
+                            }else if (data.infoType === 'type_calltask_cancel') {
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 2,
+                                    message: that.$t('pages.resize.notice-no-cancel.message')
+                                })
                             }
+
+                            window.log('[x] infoType ===' + data.infoType)
+
                             // check converting
                             that.__checkTaskStateInfo()
                         } )
@@ -1041,8 +1123,8 @@ export default {
                         // check converting
                         if (data.infoType === 'type_calltask_cancel'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 200,
-                                state:0
+                                progress: 100,
+                                state:2
                             })
                         }
                         that.__checkTaskStateInfo()
@@ -1076,9 +1158,16 @@ export default {
             console.assert(BS.b$.App.checkPathIsExist(_config.dest))
 
             var _command = []
+            var _dest = _config.dest
+            
+            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID + _.now()
+            that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
-            const transferTaskID =  _.uniqueId('(T.NO') + ')-' + taskID
-            that.__updateTaskObj(taskID, {fixOutDir:_config.dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            // Fix when the task is file obj
+            if (BS.b$.App.checkPathIsFile(_config.src)) {
+                _dest = _config.dest + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.gif'
+                that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
+            }
 
             // -- 声明输出json的路径
             var jsonFilePath = BS.b$.App.getNewTempFilePath(taskID + '.json') || "/usr/test.json"
@@ -1146,7 +1235,8 @@ export default {
             item.isWorking = false;
             // TODO：remove it from taskList
             item.progress = 0
-            item.stateInfo = 0
+            item.stateInfo.state = 0
+            item.stateInfo.message = 0
             taskID2taskObj[item.id] = null
 
             // remove from taskList
@@ -1156,12 +1246,8 @@ export default {
         onRemoveTaskItem(item, index) {
             console.log('item: ', item, 'index: ', index)
             var that = this
-
-            if(item.isWorking) {
-                // notice to server
-                that.__abi__cancel_Gif2apngTask(item.id)
-            }
-
+            // notice to server
+            that.__abi__cancel_Gif2apngTask(item.id)
             that.__removeTaskItem(item, index)
         },
 
