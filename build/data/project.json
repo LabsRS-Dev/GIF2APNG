@@ -17,9 +17,9 @@
         "CheckForUpdatePageURL": "https://gmagon.com/products/store/gmagon_gif/download.html",
 
         "autoOffset": true,
-        "minSize" : [800, 600],
-        "size" : [800, 600],
-        "#maxSize" : [800, 360],
+        "minSize" : [1024, 768],
+        "size" : [1024, 768],
+        "#maxSize" : [1024, 768],
         "hasTitleBar" : true,
         "hasShadow" : true,
         "hasTextured" : true,
