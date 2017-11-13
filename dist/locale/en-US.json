@@ -10,7 +10,7 @@
         },
         "discover":{
           "title":"Discover",
-          "tip":"Scan the online GIF file, support online search, download"
+          "tip":"Browse the online GIF file, support online search and download"
         },
         "convert":{
           "title": "Convert",
@@ -26,7 +26,7 @@
         },
         "download":{
           "title":"Download",
-          "tip":"User downloads of images and collection of management"
+          "tip":"Management of user downloads of images and atlas"
         }
       }
     },
@@ -43,7 +43,7 @@
   "pages": {
     "welcome":{
       "toolbar":{
-        "setting":"Options",
+        "setting":"Settings",
         "onlineDoc":"Online documentation",
         "onlineRoom": "Online community",
         "updateNews": "Latest news"
@@ -55,7 +55,7 @@
         "language":"Language settings:"
       },
       "dialog-config-output":{
-        "title":"Setting language",
+        "title":"Language-mode",
         "btnConfirm": "OK",
         "btnDeny": "Cancel"
       }
@@ -82,15 +82,15 @@
         "label":"Hot Tags:"
       },
       "recommend":{
-        "types":"Recommendation"
+        "types":"Personalized Recommendation"
       },
       "image-list":{
-        "title":"Description:"
+        "title":"Introduction:"
       }
     },
     "convert":{
       "toolbar":{
-        "import":"Import files",
+        "import":"Import GIF(.gif) files",
         "importDir":"Import directory",
         "remove":"Remove All",
         "outputFolder": "Output directory",
@@ -117,7 +117,7 @@
         "transferIsFault": "Offline"
       },
       "dialog-import-images":{
-        "title":"Import files",
+        "title":"Import GIF(.gif) files",
         "prompt":"Import"
       },
       "dialog-import-dir-images":{
@@ -164,11 +164,11 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
-        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
-        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start convert tasks.",
-        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all convert tasks.",
-        "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to add new tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" the button to set output path.",
+        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to convert.",
+        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to stop all tasks.",
+        "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to remove all tasks."
      ],
       "dialog-popover-confirm-edit":{
         "title":"Description of GIF",
@@ -179,7 +179,7 @@
     "resize":{
       "title":{
         "top":"Welcome to Resize",
-        "botton":"To get started with Resize,do any of the following:"
+        "botton":"To get started with Resize,do the following steps:"
       },
       "content":{
         "reply":"Undo",
@@ -191,7 +191,7 @@
         "importDir":"Import directory",
         "remove":"Remove All",
         "outputFolder": "Output directory",
-        "adjustSize" :"Fit Image",
+        "adjustSize" :"Image Resize",
         "fix":"Resize",
         "chancel":"Cancel all"
       },
@@ -287,9 +287,9 @@
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
         "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
-        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
-        "3. Click \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" button to Fit Image.",
-        "4. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to set output.",
+        "3. Click \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" button to resize image.",
+        "4. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resizing.",
         "5. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all resize tasks.",
         "6. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
       ],
@@ -298,10 +298,10 @@
           "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
           "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new task.",
           "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
-          "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resize task.",
-          "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop resize task.",
+          "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resizing.",
+          "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop resizing.",
           "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
-          "6. You can click \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" button to  undo the change."
+          "6. You can click \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" button to undo the change."
         ]
       },
       "dialog-popover-confirm-edit":{
@@ -325,7 +325,7 @@
         "search":"Search",
         "find":",found about",
         "img":"Images",
-        "collection":"Image Collection"
+        "collection":"Image altas"
       }
     },
     "download":{
@@ -337,7 +337,7 @@
       },
       "content":{
         "img":"Downloaded Images",
-        "collection":"Downloaded ImgCollection"
+        "collection":"Downloaded Image altas"
       },
       "dialog-config-output":{
         "title":"Output directory",
@@ -358,7 +358,7 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-        "1. Click \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
+        "1. Click \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" button to set output path.",
         "2. Click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
         "3. You can click \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download all the GIF images.",
         "4. You can click \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download the failed GIF images."
