@@ -308,7 +308,7 @@ export default {
         topName() {
             var that = this
             let path = that.$route.path
-            if(path.match(/Find/) || path.match(/resize/)){
+            if(path.match(/Find/)){
                 that.showCover = true
             }else{
                 that.showCover = false
