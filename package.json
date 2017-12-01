@@ -1,5 +1,5 @@
 {
-  "name": "gmagongif",
+  "name": "giftools",
   "version": "20171201.15.55",
   "description": "A process GIF animation tool.",
   "main": "dist/bundle.js",
@@ -35,8 +35,8 @@
     "README.md"
   ],
   "author": {
-    "name": "GMagon, Inc.",
-    "email": "support@gmagon.com"
+    "name": "Romanysoft/GMagon, Inc.",
+    "email": "app.romanysoft@gmail.com"
   },
   "license": "MIT",
   "bugs": {

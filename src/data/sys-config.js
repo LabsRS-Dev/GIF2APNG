@@ -47,7 +47,6 @@ const SysConfig = {
   docPage: internal.getDocPage() || 'https://gmagon.com/products/store/gamgon_gif/docs.html',
   newsDataUrl: internal.getNewsDataUrl() || 'https://gmagon.com/products/store/gmagon_gif/data/news.json',
   companyName: internal.getVendorName() || 'GMagon',
-  appReleaseDate: '2017/12/10',
   companyWebsiteHomepage: internal.getVendorWebSiteURL() || 'https://gmagon.com',
   support: internal.getSupportPageURL() || 'http://gmagon.com/support',
   // apiHost: 'https://api.gmagon.com/plugin/gif/api',

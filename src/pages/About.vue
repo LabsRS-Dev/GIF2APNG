@@ -32,7 +32,6 @@
           <span class="page-about__release__overstriking">
             {{ version }}
           </span>
-          <span class="page-about__release__space">({{appReleaseDate}})</span>
         </span>
       </div>
     </div>
@@ -60,7 +59,6 @@ export default {
     return {
         appName:  Routes.SysConfig.appName,
         version:  Routes.SysConfig.version,
-        appReleaseDate: Routes.SysConfig.appReleaseDate,
         companyName:Routes.SysConfig.companyName,
         companyWebsiteHomepage:Routes.SysConfig.companyWebsiteHomepage,
         homepage:Routes.SysConfig.homepage,

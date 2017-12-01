@@ -7,9 +7,6 @@ describe('test Sidebar.vue', () => {
   it('组件加载后，version应该是2.0.0', () => {
     expect(About.data().version).toEqual('2.0.0')
   })
-  it('组件加载后，appReleaseDate应该是2017/06/16', () => {
-    expect(About.data().appReleaseDate).toEqual('2017/06/16')
-  })
   it('组件加载后，companyName应该是GMagon', () => {
     expect(About.data().companyName).toEqual('GMagon')
   })
