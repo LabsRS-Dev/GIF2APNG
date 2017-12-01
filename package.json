@@ -1,6 +1,6 @@
 {
   "name": "gmagongif",
-  "version": "20171201.14.19",
+  "version": "20171201.15.55",
   "description": "A process GIF animation tool.",
   "main": "dist/bundle.js",
   "scripts": {
@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/LabsRS-Dev/GIF2APNG#readme",
   "dependencies": {
-    "dove.max.sdk": "20171201.9.40",
+    "dove.max.sdk": "^20171201.15.52",
     "echarts": "^3.7.0",
     "keen-ui": "^1.0.0",
     "vue": "^2.4.2",
