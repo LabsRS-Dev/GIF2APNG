@@ -16,7 +16,7 @@
         </transition>
 
         <div class="dove-docs-line"
-            @mousedown="onMouseStartDown(event)"
+            @mousedown="onMouseStartDown()"
             >
             <div class="dove-docs-line__top"></div>
             <div class="dove-docs-line__bottom"></div>
@@ -165,7 +165,7 @@ var certificate;   /////// 查询是否需要授权证书{必须满足为订阅�
 
 /////
 var mouseDownX;          //鼠标落点的X方向坐标
-var slideWidth ;         //侧边栏原始宽度
+var slideWidth ;         //侧边栏原始宽度              
 
 export default {
     data() {
@@ -267,14 +267,14 @@ export default {
             that.inputValue = item
             that.searchInputValue(item)
         },
-        onMouseStartDown(e){
+        onMouseStartDown(){
             var that = this
             var $ = Util.util.getJQuery$()
             var oLine = $(".dove-docs-line")
             var oSlide = $(".is-desktop")
             that.mouseDownX = event.clientX
             that.slideWidth = oSlide[0].offsetWidth
-            document.onmousemove = function(e){
+            document.onmousemove = function(){
                 var newWidth = that.slideWidth*1 + event.clientX*1 - that.mouseDownX
                 if(newWidth > 0){
                     oSlide[0].style.width = newWidth+'px'
@@ -287,7 +287,7 @@ export default {
                     }
                 }
             }
-            document.onmouseup = function(e){
+            document.onmouseup = function(){
                 document.onmousemove = null
                 document.onmouseup = null
                 oLine.releaseCapture && oLine.releaseCapture()               
@@ -308,10 +308,23 @@ export default {
         topName() {
             var that = this
             let path = that.$route.path
-            if(path.match(/Find/) || path.match(/resize/)){
+            if(path.match(/Find/)){
                 that.showCover = true
             }else{
                 that.showCover = false
+            }
+            if(path.match(/convert/)){
+                Util.util.reportInfo({
+                    'SYS_enter':'Enter the convert page...'
+                })
+            }else if(path.match(/resize_single/)){
+                Util.util.reportInfo({
+                    'SYS_enter':'Enter the resize_single page...'
+                })
+            }else if(path.match(/resize_batch/)){
+                Util.util.reportInfo({
+                    'SYS_enter':'Enter the resize_batch page...'
+                })
             }
         }       
     },
