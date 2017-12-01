@@ -1286,12 +1286,12 @@ caniuse-api@^2.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639, caniuse-db@^1.0.30000715:
-  version "1.0.30000775"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000775.tgz#04bccdd0214edf25b97f61a096609f7ad6904333"
+  version "1.0.30000776"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000776.tgz#08953131bcc8515e7074c587de94750d8402f55d"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000748, caniuse-lite@^1.0.30000770:
-  version "1.0.30000775"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000775.tgz#74d27feddc47f3c84cfbcb130c3092a35ebc2de2"
+  version "1.0.30000776"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000776.tgz#616d0f16fb8c7ac69f2ca344fbd501a24879816c"
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -2043,9 +2043,9 @@ domutils@^1.5.1:
     dom-serializer "0"
     domelementtype "1"
 
-dove.max.sdk@^1.2.0:
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/dove.max.sdk/-/dove.max.sdk-1.2.11.tgz#b9f591e5ed318177dd6e2e20aab25a1e7eb033c6"
+dove.max.sdk@20171201.9.40:
+  version "20171201.9.40"
+  resolved "https://registry.yarnpkg.com/dove.max.sdk/-/dove.max.sdk-20171201.9.40.tgz#1de9d2d8d3234e0786b5b3d031f169f17adc120a"
   dependencies:
     lodash "^4.17.4"
 
@@ -3823,8 +3823,8 @@ karma-coverage@^1.1.1:
     source-map "^0.5.1"
 
 karma-jasmine@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/karma-jasmine/-/karma-jasmine-1.1.0.tgz#22e4c06bf9a182e5294d1f705e3733811b810acf"
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/karma-jasmine/-/karma-jasmine-1.1.1.tgz#6fe840e75a11600c9d91e84b33c458e1c46a3529"
 
 karma-sourcemap-loader@^0.3.7:
   version "0.3.7"
