@@ -4,6 +4,7 @@
 		"${BUNDEL_RESOURCE}/public/project.json",
 		"${BUNDEL_RESOURCE}/public/project_mac.json",
 		"${BUNDEL_RESOURCE}/public/project_win.json",
-		"${BUNDEL_RESOURCE}/public/project-aff-qxf.json"
+		"${BUNDEL_RESOURCE}/public/project_mac_romanysoft.json",
+		"${BUNDEL_RESOURCE}/public/project_win_romanysoft.json"
 	]
 }

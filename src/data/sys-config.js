@@ -1,13 +1,10 @@
-import {
-  BS,
-  Observable,
-  Util,
-  _
-} from 'dove.max.sdk'
 /**
  * @author Ian
  * @created 2017-5-31 15:17:21
  */
+import {
+  BS
+} from 'dove.max.sdk'
 
 const internal = {
   getAppName: () => {
