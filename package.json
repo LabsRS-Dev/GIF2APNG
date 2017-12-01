@@ -1,6 +1,6 @@
 {
   "name": "gmagongif",
-  "version": "20171201.9.45",
+  "version": "20171201.14.19",
   "description": "A process GIF animation tool.",
   "main": "dist/bundle.js",
   "scripts": {
@@ -13,7 +13,8 @@
     "publish": "npm run build && webpack --config ./build/webpack.publish.js",
     "clean": "",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty --ext .js,.vue,.html ./",
-    "test": "npm run lint && karma start"
+    "test": "karma start",
+    "test:lint": "npm run lint"
   },
   "repository": {
     "type": "git",
