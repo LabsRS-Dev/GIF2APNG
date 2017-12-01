@@ -18,3 +18,4 @@ debug.log
 /dist_public
 /*.~$lock
 .DS_Store
+coverage

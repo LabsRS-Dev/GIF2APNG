@@ -7,10 +7,11 @@
                 :size="item.size"
                 :color="item.color"
                 :key="item.id"
+                :title="$t(item.tooltip)"
                 v-if="item.visiable"
                 v-for="(item, index) in actionList"
                 >
-                    <span :class="item.icon" :title="$t(item.tooltip)"></span>
+                    <span :class="item.icon"></span>
             </ui-icon-button>
 
             <ui-confirm

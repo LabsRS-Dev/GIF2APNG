@@ -15,8 +15,8 @@
     padding: rem-calc(10px);
     background: -webkit-gradient(linear, 100% 100%, 50% 10%, from(#fff), to(#f3f3f3), color-stop(.1,#fff));
     border: rem-calc(1px) solid #ccc;
-    -webkit-box-shadow: rem-calc(1px) rem-calc(1px) rem-calc(4px) rgba(0,0,0, 0.1);
-    -webkit-border-bottom-right-radius: rem-calc(60px) rem-calc(5px);
+    -webkit-box-shadow: rem-calc(5px) rem-calc(5px) rem-calc(5px) rgba(0,0,0, 0.1);
+    //-webkit-border-bottom-right-radius: rem-calc(60px) rem-calc(5px);
     // .image__single_ribbon{
     //   position:absolute;
     //   top:0; left: 0;
@@ -82,13 +82,21 @@
       .fa-hand-paper-o{
         color:$md-red;
       }
-      .imageBlur .imageCustomBlur{
-        filter: blur(5px);
-        position: absolute;
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        -webkit-filter: blur(5px);
-        -moz-filter: blur(5px);
+      .imageCustomBlur{
+        border-radius: rem-calc(5px);
+        border: rem-calc(1px) solid $md-grey-300;
+        content:none;
+        filter: blur(10px);
+        -webkit-filter: blur(10px);
+      }
+      .imageBlur{
+        border-radius: rem-calc(5px);
+        border: rem-calc(1px) solid $md-grey-300;
+        content:none;
+        max-width: 40vw;
+        max-height: 60vh;
+        filter: blur(10px);
+        -webkit-filter: blur(10px);
       }
       .ui-progress-linear{
         position: absolute;
@@ -114,40 +122,41 @@
       }
     }   
   }
-  .page__examples-app-doc__welcome__image__single:before{
-    content: '';
-    width: 98%;
-    z-index:-1;
-    height: 100%;
-    padding: 0 0 rem-calc(1px) 0;
-    position: absolute;
-    bottom:0; 
-    right:0;
-    background: -webkit-gradient(linear, 0% 20%, 0% 92%, from(#fff), to(#f9f9f9), color-stop(.1,#fff));
-    border: rem-calc(1px) solid #ccc;
-    -webkit-box-shadow: rem-calc(1px) rem-calc(1px) rem-calc(8px) rgba(0,0,0, 0.1);
-    -webkit-border-bottom-right-radius: rem-calc(60px) rem-calc(5px);
-    -webkit-transform: skew(2deg,2deg)
-                       translate(rem-calc(3px),rem-calc(8px))
-  }
-  .page__examples-app-doc__welcome__image__single:after{
-    content: '';
-    width: 98%;
-    z-index:-1;
-    height: 98%;
-    padding: 0 0 1px 0;
-    position: absolute;
-    bottom:0; 
-    right:0;
-    background: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#f3f3f3), to(#f6f6f6), color-stop(.1,#fff));
-    border: rem-calc(1px) solid #ccc;
-    -webkit-box-shadow: 0 0 rem-calc(8px) rgba(0,0,0, 0.1);
-    -webkit-transform: skew(2deg,2deg)
-                       translate(rem-calc(-1px),rem-calc(2px))   
-  }
+  // .page__examples-app-doc__welcome__image__single:before{
+  //   content: '';
+  //   width: 98%;
+  //   z-index:-1;
+  //   height: 100%;
+  //   padding: 0 0 rem-calc(1px) 0;
+  //   position: absolute;
+  //   bottom:0; 
+  //   right:0;
+  //   background: -webkit-gradient(linear, 0% 20%, 0% 92%, from(#fff), to(#f9f9f9), color-stop(.1,#fff));
+  //   border: rem-calc(1px) solid #ccc;
+  //   -webkit-box-shadow: rem-calc(1px) rem-calc(1px) rem-calc(8px) rgba(0,0,0, 0.1);
+  //   -webkit-border-bottom-right-radius: rem-calc(60px) rem-calc(5px);
+  //   -webkit-transform: skew(2deg,2deg)
+  //                      translate(rem-calc(3px),rem-calc(8px))
+  // }
+  // .page__examples-app-doc__welcome__image__single:after{
+  //   content: '';
+  //   width: 98%;
+  //   z-index:-1;
+  //   height: 98%;
+  //   padding: 0 0 1px 0;
+  //   position: absolute;
+  //   bottom:0; 
+  //   right:0;
+  //   background: -webkit-gradient(linear, 0% 20%, 0% 100%, from(#f3f3f3), to(#f6f6f6), color-stop(.1,#fff));
+  //   border: rem-calc(1px) solid #ccc;
+  //   -webkit-box-shadow: 0 0 rem-calc(8px) rgba(0,0,0, 0.1);
+  //   -webkit-transform: skew(2deg,2deg)
+  //                      translate(rem-calc(-1px),rem-calc(2px))   
+  // }
   .page__examples-app-doc__welcome__image__setting{
     display: flex;
     flex-direction: column;
+    width: rem-calc(250px);
     margin-top: rem-calc(100px);
     margin-left: rem-calc(10px);
     align-self:flex-start;

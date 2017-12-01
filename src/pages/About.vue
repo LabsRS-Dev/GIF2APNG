@@ -58,7 +58,6 @@ import IconsRef from '../data/icon.js'
 export default {
   data(){
     return {
-        switched:false,
         appName:  Routes.SysConfig.appName,
         version:  Routes.SysConfig.version,
         appReleaseDate: Routes.SysConfig.appReleaseDate,

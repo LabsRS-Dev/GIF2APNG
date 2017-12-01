@@ -5,7 +5,7 @@ import './extern.js'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import VueRouter from 'vue-router'
-import Vuex from 'vuex'
+// import Vuex from 'vuex'
 import { BS, Util, _ } from 'dove.max.sdk'
 
 // /----------- Components
@@ -34,11 +34,11 @@ const languageList = BS.b$.App.getCompatibleWebkitLanguageList()
 const localLanguagePackList = ['en-US', 'zh-CN']
 const lang = _.intersection(languageList, localLanguagePackList).toString()
 
-////
+// //
 Vue.use(http)
 Vue.http.options.emulateJSON = true
 
-function startApp(i18nObj) {
+function startApp (i18nObj) {
   // Use KeenUI
   Vue.use(KeenUI)
 
@@ -69,7 +69,7 @@ function startApp(i18nObj) {
   app.$mount('#app')
 }
 
-function main() {
+function main () {
   const bUseES6Fetch = false
   if (bUseES6Fetch) {
     languageConfiguration.___useES6Fetch(lang, startApp)
