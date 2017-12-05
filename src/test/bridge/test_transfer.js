@@ -1,4 +1,4 @@
-import { BS, Util, _ } from 'dove.max.sdk'
+import { _ } from 'dove.max.sdk'
 import { Transfer } from '../../bridge/transfer'
 
 

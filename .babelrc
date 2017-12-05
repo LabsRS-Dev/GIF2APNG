@@ -8,5 +8,10 @@
             "moduleName": "babel-runtime" // defaults to "babel-runtime"
          }]
     ], // npm install --save-dev babel-plugin-transform-runtime
-    "comments": false
+    "comments": false,
+    "env": {
+        "test": {
+          "plugins": [ "istanbul" ]
+        }
+    }
 }

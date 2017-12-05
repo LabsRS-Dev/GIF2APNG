@@ -1,4 +1,4 @@
-import Sidebar from '../../../src/pages/Sidebar.vue'
+import Sidebar from '../../src/pages/Sidebar.vue'
 import { BS } from 'dove.max.sdk'
 
 describe('test Sidebar.vue', () => {

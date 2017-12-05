@@ -1,4 +1,4 @@
-import Welcome from '../../../src/pages/GIF2APNG/Welcome.vue'
+import Welcome from '../../src/pages/GIF2APNG/Welcome.vue'
 
 describe('test Welcome.vue', () => {
   it('组件加载后，availableLanguageList应该包含English和简体中文', () => {

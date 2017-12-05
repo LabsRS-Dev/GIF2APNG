@@ -3,7 +3,7 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin') // 有问题，需要参考http://blog.csdn.net/zhangchao19890805/article/details/53150882
 const webpack = require('webpack')
 
-// const path = require('path')
+const path = require('path')
 const postcss_autoprefixer = require('autoprefixer')
 const postcss_cssnext = require('postcss-cssnext')
 const postcss_viewport_units = require('postcss-viewport-units')
@@ -24,9 +24,7 @@ module.exports = function (config) {
 
 
     // list of files / patterns to load in the browser
-    files: [
-      { pattern: 'test/unit/**/*.spec.js', watch: false }
-    ],
+    files: ['./test/unit/index.js'],
 
 
     // list of files to exclude
@@ -35,7 +33,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/unit/**/*.spec.js': ['webpack', 'sourcemap']
+      './test/unit/index.js': ['webpack', 'sourcemap']
     },
 
     // webpack 打包信息是否显示
@@ -45,7 +43,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage-istanbul'],
+    reporters: ['spec', 'coverage-istanbul'],
 
 
     // web server port
@@ -93,8 +91,13 @@ module.exports = function (config) {
         },
         extensions: ['.js', '.json', '.vue', '.scss']
       },
+      output: {
+        path: path.join(__dirname, '..', 'lib'),
+        filename: '[name].js',
+        libraryTarget: 'umd'
+      },
       module: {
-        rules: [
+        loaders: [
           {
             test: /\.js$/,
             loader: 'babel-loader',
@@ -109,11 +112,24 @@ module.exports = function (config) {
             test: /\.js$/,
             loader: 'istanbul-instrumenter-loader',
             exclude: /node_modules/,
+            include: /src/,
             enforce: 'post',
             options: {
               debug: true,
               preserveComments: true,
               esModules: true
+            }
+          },
+          {
+            test: /\.js$/,
+            loader: 'eslint-loader',
+            exclude: /node_modules/,
+            include: /src/,
+            enforce: 'pre',
+            options: {
+              eslint: {
+                configFile: '../.eslintrc.json'
+              }
             }
           },
           {
@@ -189,10 +205,9 @@ module.exports = function (config) {
         }
       },
       plugins: [
-        // 下面设置环境变量process.env是"testing"
         new webpack.DefinePlugin({
           'process.env': {
-            NODE_ENV: '"production"'
+            NODE_ENV: '"testing"'
           }
         }),
         // minify with dead-code elimination
@@ -214,6 +229,7 @@ module.exports = function (config) {
       'karma-chrome-launcher',
       'karma-jasmine',
       'karma-webpack',
+      'karma-spec-reporter',
       'karma-sourcemap-loader',
       'karma-coverage-istanbul-reporter',
       'jquery'
@@ -224,7 +240,6 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly', 'text-summary'],
       dir: './coverage',
       fixWebpackSourcePaths: true,
-      skipFilesWithNoCoverage: true,
       'report-config': {
         html: {
           subdir: 'html'

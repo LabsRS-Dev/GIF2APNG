@@ -1,4 +1,4 @@
-import Convert from '../../../src/pages/GIF2APNG/Convert.vue'
+import Convert from '../../src/pages/GIF2APNG/Convert.vue'
 
 describe('test Convert.vue', () => {
   it('组件加载后，data', () => {

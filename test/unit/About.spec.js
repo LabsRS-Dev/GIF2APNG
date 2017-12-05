@@ -1,4 +1,4 @@
-import About from '../../../src/pages/About.vue'
+import About from '../../src/pages/About.vue'
 import { BS } from 'dove.max.sdk'
 
 describe('test About.vue', () => {
