@@ -220,15 +220,25 @@ export default {
       var that = this
       const newsUrl = SysConfig.newsDataUrl
       var $ = Util.util.getJQuery$()
-      $.getJSON(newsUrl, function(data){
-        that.newsList = []
-        that.initFirstNews()
-        _.each(data.list, function(ele){
-            let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
-            that.newsList.push(newsObj)
-        })
-        store_newsList = that.newsList
-      })
+      try{
+        $.getJSON(newsUrl, function(data){
+            that.newsList = []
+            that.initFirstNews()
+            try {
+                _.each(data.list, function(ele){
+                    let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
+                    that.newsList.push(newsObj)
+                })
+                store_newsList = that.newsList
+            }catch(e) {
+            console.error(e)
+            }
+        }, function(){
+            that.initFirstNews()
+        })          
+      }catch (e) {
+          console.error(e)
+      }
     },
     onRemoveItem(item, index) {
       var that = this

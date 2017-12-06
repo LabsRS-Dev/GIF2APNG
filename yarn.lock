@@ -1285,9 +1285,13 @@ caniuse-api@^2.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639, caniuse-db@^1.0.30000715:
+caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   version "1.0.30000778"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000778.tgz#167c60e9542a2aa60537c446fb3881d853a3072a"
+
+caniuse-db@^1.0.30000715:
+  version "1.0.30000780"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000780.tgz#8d1977561d00ff0f0ed2b6b66140328ab4504c0a"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000770, caniuse-lite@^1.0.30000777:
   version "1.0.30000778"
@@ -2043,9 +2047,9 @@ domutils@^1.5.1:
     dom-serializer "0"
     domelementtype "1"
 
-dove.max.sdk@^20171201.15.52:
-  version "20171201.20.12"
-  resolved "https://registry.yarnpkg.com/dove.max.sdk/-/dove.max.sdk-20171201.20.12.tgz#8d63f7717eb88242c12cfee008f1666411e27d57"
+dove.max.sdk@^20171206.15.13:
+  version "20171206.15.13"
+  resolved "https://registry.yarnpkg.com/dove.max.sdk/-/dove.max.sdk-20171206.15.13.tgz#ebf819a5b137e688f180a3f16deb64b02a660024"
   dependencies:
     lodash "^4.17.4"
 
