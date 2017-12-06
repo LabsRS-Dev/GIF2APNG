@@ -36,14 +36,12 @@
       </div>
     </div>
     <div class="page__about__content__licenses">
-        <span>
-          {{$t('pages.abouts.licenses.content')}}
-          <span class="page-about__licenses__space">
-            <a class="page-content__homepage" target="_blank" :href="companyWebsiteHomepage">{{companyName}}</a>
-            <span class="page-content__homepage__company">{{$t('pages.abouts.licenses.company')}}</span>
-            <span class="page-content__homepage__reserved">{{$t('pages.abouts.licenses.reserved')}}</span>
-          </span>
-        </span>
+      <span class="page-about__licenses__space">
+        <span class="page-content__homepage__copyright">{{$t('pages.abouts.licenses.content')}}</span>
+        <a class="page-content__homepage" target="_blank" :href="companyWebsiteHomepage">{{companyName}}</a>
+        <span class="page-content__homepage__company">{{$t('pages.abouts.licenses.company')}}</span>
+        <span class="page-content__homepage__reserved">{{$t('pages.abouts.licenses.reserved')}}</span>
+      </span>
     </div>
   </section>
 </template>

@@ -3,7 +3,7 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin') // 有问题，需要参考http://blog.csdn.net/zhangchao19890805/article/details/53150882
 const webpack = require('webpack')
 
-const path = require('path')
+// const path = require('path')
 const postcss_autoprefixer = require('autoprefixer')
 const postcss_cssnext = require('postcss-cssnext')
 const postcss_viewport_units = require('postcss-viewport-units')
@@ -78,23 +78,19 @@ module.exports = function (config) {
 
     // webpack配置
     webpack: {
-      devtool: '#inline-source-map',
+      entry: './src/index.js',
       resolve: {
         modules: [
           options.paths.root,
           options.paths.resolve('node_modules')
         ],
         alias: {
+          'vue$': 'vue/dist/vue.js',
           'dove.max.sdk$': options.paths.resolveEx(dir_node_modules, '/dove.max.sdk/dist/dovemax-sdk.js'),
           'keen-ui$': options.paths.resolveEx(dir_node_modules, '/Keen-UI/dist/keen-ui.js'),
           'keen-ui-css$': options.paths.resolveEx(dir_node_modules, '/Keen-UI/dist/keen-ui.css')
         },
         extensions: ['.js', '.json', '.vue', '.scss']
-      },
-      output: {
-        path: path.join(__dirname, '..', 'lib'),
-        filename: '[name].js',
-        libraryTarget: 'umd'
       },
       module: {
         loaders: [
@@ -107,7 +103,6 @@ module.exports = function (config) {
               plugins: ['transform-runtime']
             }
           },
-          // 为了统计代码覆盖率，对 js 文件加入 istanbul-instrumenter-loader
           {
             test: /\.js$/,
             loader: 'istanbul-instrumenter-loader',
@@ -137,6 +132,7 @@ module.exports = function (config) {
             loader: 'vue-loader',
             options: {
               loaders: {
+                js: 'babel-loader',
                 scss: ExtractTextPlugin.extract({
                   use: 'css-loader!sass-loader',
                   fallback: 'vue-style-loader'
@@ -145,6 +141,9 @@ module.exports = function (config) {
                   use: 'css-loader!sass-loader',
                   fallback: 'vue-style-loader'
                 })
+              },
+              postLoaders: {
+                js: 'istanbul-instrumenter-loader?esModules=true'
               },
               postcss: [
                 postcss_cssnext,
@@ -162,17 +161,6 @@ module.exports = function (config) {
                   ]
                 })
               ]
-            }
-          },
-          {
-            test: /\.vue$/,
-            loader: 'istanbul-instrumenter-loader',
-            exclude: /node_modules|Down|Search|Find/,
-            enforce: 'post',
-            options: {
-              debug: true,
-              preserveComments: true,
-              esModules: true
             }
           },
           {
