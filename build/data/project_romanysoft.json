@@ -1,0 +1,56 @@
+{
+  "AppExInfoDescription" : "set App other information",
+  "AppExInfo" : {
+      "enableHttpServer" : false,
+      "onlyBuildInServer": false,
+      "enableNativeRate": false,
+
+      "VendorName": "Romanysoft",
+      "VendorWebSiteURL": "https://aws.romanysoft.com",
+      "NewsJsonURL":"https://aws.romanysoft.com/data/giftools/news.json",
+      "AdditionalConfigURL":"",
+      "SupportPageURL":"https://aws.romanysoft.com/support-center",
+      "SupportEmail":"app.romanysoft@gmail.com",
+
+      "BuyURL": "https://aws.romanysoft.com/giftools",
+      "FAQURL": "https://aws.romanysoft.com/faqs",
+
+      "HomePageURL": "https://aws.romanysoft.com/giftools",
+      "DocumentPageURL": "https://aws.romanysoft.com/giftools",
+      "RoadmapPageURL": "https://aws.romanysoft.com/giftools",
+      "ReportIssuePageURL": "https://aws.romanysoft.com/support-center",
+      "ViewLicensePageURL": "",
+      "ReleaseNotesPageURL": "https://aws.romanysoft.com/giftools",
+      "CheckForUpdatePageURL": "https://aws.romanysoft.com/giftools",
+
+      "autoOffset": true,
+      "minSize" : [1024, 768],
+      "size" : [1024, 768],
+      "#maxSize" : [1024, 768],
+      "hasTitleBar" : true,
+      "hasShadow" : true,
+      "hasTextured" : true,
+      "hasUnifiedTitleAndToolbarWindow" : true,
+      "hasCloseControls" : true,
+      "hasMinimizeControls" : true,
+      "hasResizeControls" : true,
+      "hasToolbarButtonControls" : true,
+      "hideCloseButton" : false,
+      "hideMiniaturizeButton": false,
+      "hideZoomButton" : false,
+      "hideToolbarButton" : false,
+      "hideDocumentIconButton" : false,
+      "hideDocumentVersionsButton" : false,
+      "hideFullScreenButton" : true,
+      "menuHideList" : [
+          {"tag":100,"hide":true},
+          {"tag":200,"hide":false}
+      ],
+      "menuTitleList" : [
+          {"tag":901,"title":"","method":"re", "descript":"About"},
+          {"tag":907,"title":"","method":"re", "descript":"Hide"},
+          {"tag":911,"title":"","method":"re", "descript":"Quit"}
+      ]
+  },
+  "EnableIAP" : false
+}
