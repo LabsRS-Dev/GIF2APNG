@@ -7,7 +7,7 @@
 
       "VendorName": "Romanysoft",
       "VendorWebSiteURL": "https://aws.romanysoft.com",
-      "NewsJsonURL":"",
+      "NewsJsonURL":"https://aws.romanysoft.com/data/giftools/news.json",
       "AdditionalConfigURL":"",
       "SupportPageURL":"https://aws.romanysoft.com/support-center",
       "SupportEmail":"app.romanysoft@gmail.com",

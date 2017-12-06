@@ -7,7 +7,7 @@
 
         "VendorName": "GMagon",
         "VendorWebSiteURL": "https://gmagon.com",
-        "NewsJsonURL":"",
+        "NewsJsonURL":"https://gmagon.com/products/store/gmagon_gif/data/news.json",
         "AdditionalConfigURL":"",
         "SupportPageURL":"https://gmagon.com/support/",
         "SupportEmail":"support@gmagon.com",
