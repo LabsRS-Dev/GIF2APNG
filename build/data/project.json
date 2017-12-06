@@ -5,13 +5,20 @@
         "onlyBuildInServer": false,
         "enableNativeRate": false,
 
+        "VendorName": "GMagon",
+        "VendorWebSiteURL": "https://gmagon.com",
+        "NewsJsonURL":"",
+        "AdditionalConfigURL":"",
+        "SupportPageURL":"https://gmagon.com/support/",
+        "SupportEmail":"support@gmagon.com",
+
         "BuyURL": "https://gmagon.com/products/store/gmagon_gif/buy.html",
         "FAQURL": "https://gmagon.com/products/store/gmagon_gif/faq.html",
 
         "HomePageURL": "https://gmagon.com/products/store/gmagon_gif/index.html",
         "DocumentPageURL": "https://gmagon.com/products/store/gmagon_gif/docs.html",
         "RoadmapPageURL": "https://gmagon.com/products/store/gmagon_gif/roadmap.html",
-        "ReportIssuePageURL": "https://github.com/Gmagon/support/issues/new",
+        "ReportIssuePageURL": "https://github.com/GMagon/support/issues/new",
         "ViewLicensePageURL": "https://gmagon.com/end-user-license-agreement.html",
         "ReleaseNotesPageURL": "https://gmagon.com/products/store/gmagon_gif/changelog.html",
         "CheckForUpdatePageURL": "https://gmagon.com/products/store/gmagon_gif/download.html",
