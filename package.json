@@ -1,6 +1,6 @@
 {
   "name": "giftools",
-  "version": "20171206.11.35",
+  "version": "20171207.14.26",
   "description": "A process GIF animation tool.",
   "main": "dist/bundle.js",
   "scripts": {
