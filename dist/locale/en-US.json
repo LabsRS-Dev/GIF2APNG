@@ -162,6 +162,9 @@
       "notice-no-process":{
         "message": "Please convert first, then output!"
       },
+      "notice-no-cancel":{
+        "message": "Cancel"
+      },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
         "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to add new tasks.",
@@ -233,6 +236,12 @@
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
         "message": "Remove all items?"
+      },
+      "dialog-confirm-isExist":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "Overwrite exsisting file?"
       },
       "dialog-config-output":{
         "title":"Settings",

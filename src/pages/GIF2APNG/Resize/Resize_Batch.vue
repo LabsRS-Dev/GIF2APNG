@@ -790,7 +790,6 @@ export default {
             cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
             cdg.callbackConfirm = () => { that.recordedDirDataValue() }
             cdg.callbackDeny = () => { that.resetDirDataValue() }
-            cdg.callbackClose = () => { }
             
             var dialog = that.$refs[cdg.ref]
             if(that.PercentageConversion){
@@ -801,7 +800,6 @@ export default {
 
         onBtnDoClick(){
             var that = this
-            const cdg = that.outputConfigDialog
             if(that.taskList.length === 0) {
                 return BS.b$.Notice.alert({
                     message: that.$t('pages.resize.notice-no-items.message')
@@ -809,16 +807,58 @@ export default {
             }
 
             console.log("-------------------- call export dir")
-            if(that.lastOutputPath==""){
-                cdg.callbackConfirm = () => {
-                    cdg.callbackConfirm && cdg.callbackConfirm()
-                    that.startDo()
+            if(that.percentage == 100){
+                BS.b$.Notice.alert({
+                    message: that.$t('pages.resize.notice-no-prompt.message')
+                })
+                that.initialInputWidth = that.inputWidthAll
+                that.initialInputHeight = that.inputHeightAll
+                that.initialPercentage = that.percentage       
+                that.initialPtConversion = that.PercentageConversion
+                that.initialW_HConversion = that.WidthHeightConversion        
+                that.initialHandleTask = that.onHandleTheTask 
+                that.initialBtnLock = that.onBtnLock
+                that.initialState = that.applyAllFileTask
+                var $ = Util.util.getJQuery$()
+                const cdg = that.changeDirConfigDialog
+                cdg.title = that.$t('pages.resize.dialog-config-change.title')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-config-change.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
+                cdg.callbackConfirm = () => { 
+                    that.recordedDirDataValue() 
+                    that.__checkTheLastOutputPathIsExist()
                 }
-                that.onBtnOutputFolderClick()
-            }else{
-                that.startDo()
+                cdg.callbackDeny = () => { that.resetDirDataValue() }
+
+                var dialog = that.$refs[cdg.ref]
+                if(that.PercentageConversion){
+                    $('.sliderRange').css('background-size', that.percentage +'% 100%' )
+                }
+                dialog.open()                            
+            } else {
+              that.__checkTheLastOutputPathIsExist()
             }
         },
+        __checkTheLastOutputPathIsExist(){
+            var that = this 
+            if(that.lastOutputPath==""){
+                const cdg = that.outputConfigDialog
+                cdg.title = that.$t('pages.resize.dialog-config-output.title')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
+                cdg.callbackConfirm = () => {
+                    that.saveOutputSettings()
+                    that.startDo()
+                }
+                cdg.callbackDeny = () => { that.resetOutputSettings() }
+                cdg.callbackClose = () => { that.resetOutputSettings() }
+                var dialog = that.$refs[cdg.ref]
+                dialog.open()
+            }else{
+                that.startDo()
+            }  
+        },
+
         onBtnStopDoClick(){
             var that = this
 
@@ -939,52 +979,48 @@ export default {
         startDo(){
             var that = this
             if(that.taskList.length > 0){
+                _.each(that.taskList,(taskObj) => {
+                    taskObj.stateInfo.state = 0
+                })
                 if(that.PercentageConversion){
-                    if(that.percentage == 100){
-                        BS.b$.Notice.alert({
-                            message: that.$t('pages.resize.notice-no-prompt.message')
-                        })                        
-                        that.onBtnFitImageClick()
-                    }else {
-                        _.each(that.taskList, (taskObj, index) => {
-                            that.__abi__start_ResizeGifTask(taskObj.id, {
-                                src: taskObj.path,
-                                dest: that.lastOutputPath,
-                                enableIncludeMinImage: that.onHandleTheTask ? true : false,
-                                overwrite: that.enableOverWriteOutput ? true : false,
-                                IsPercentValue:true,
-                                width: that.finalPercentage/100,
-                                height: 0
-                            }, (data) => {
-                                if (data.infoType === 'type_calltask_log'){
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                        progress: 50,
-                                        state:0
-                                    })
-                                }else if (data.infoType === 'type_calltask_success'){
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                        progress: 100,
-                                        state: 1
-                                    })
-                                }else if (data.infoType === 'type_calltask_error'){
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                        progress: 100,
-                                        state: -1,
-                                        message: data.detail_error || 'error'
-                                    })
-                                }else if (data.infoType === 'type_calltask_cancel') {
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                        progress: 100,
-                                        state: 2,
-                                        message: that.$t('pages.resize.notice-no-cancel.message')
-                                    })
-                                }
-                                window.log('[x] infoType ===' + data.infoType)
-                                // check converting
-                                that.__checkTaskStateInfo()
-                            } )
-                        })
-                    }
+                    _.each(that.taskList, (taskObj, index) => {
+                        that.__abi__start_ResizeGifTask(taskObj.id, {
+                            src: taskObj.path,
+                            dest: that.lastOutputPath,
+                            enableIncludeMinImage: that.onHandleTheTask ? true : false,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            IsPercentValue:true,
+                            width: that.finalPercentage/100,
+                            height: 0
+                        }, (data) => {
+                            if (data.infoType === 'type_calltask_log'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }else if (data.infoType === 'type_calltask_cancel') {
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 2,
+                                    message: that.$t('pages.resize.notice-no-cancel.message')
+                                })
+                            }
+                            // window.log('[x] infoType ===' + data.infoType)
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })
                 }else if(that.WidthHeightConversion && that.onBtnLock){
                     if(isNaN(that.finalInputWidth)){
                         _.each(that.taskList, (taskObj, index) => {
@@ -1021,7 +1057,7 @@ export default {
                                     })
                                 }
 
-                                window.log('[x] infoType ===' + data.infoType)
+                                // window.log('[x] infoType ===' + data.infoType)
                                 
                                 // check converting
                                 that.__checkTaskStateInfo()
@@ -1062,7 +1098,7 @@ export default {
                                     })
                                 }
 
-                                window.log('[x] infoType ===' + data.infoType)
+                                // window.log('[x] infoType ===' + data.infoType)
 
                                 // check converting
                                 that.__checkTaskStateInfo()
@@ -1104,7 +1140,7 @@ export default {
                                 })
                             }
 
-                            window.log('[x] infoType ===' + data.infoType)
+                            // window.log('[x] infoType ===' + data.infoType)
 
                             // check converting
                             that.__checkTaskStateInfo()
@@ -1181,7 +1217,7 @@ export default {
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
-            window.log("jsonfile = "+jsonFilePath)
+            // window.log("jsonfile = "+jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({

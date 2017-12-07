@@ -126,11 +126,11 @@
                         </div>
                         <div class="ui-toolbar__top__metainfo__toolbar">
                             <ui-icon-button
-                                @click="onOpenParentDir(item.fixOutDir)"
+                                @click="onOpenParentDir(item.fixOutDir)"``
                                 type="secondary"
                                 color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0"
+                                v-if="item.stateInfo.state == 1"
                                 >
                                 <span class="fa fa-folder-open-o fa-lg fa-fw" :title=" $t('pages.convert.task-item.open-parent-dir') "></span>
                             </ui-icon-button>
@@ -140,7 +140,7 @@
                                 type="secondary"
                                 color="black"
                                 size="small"
-                                v-if="item.stateInfo.state > 0 && checkOutputPathIsFile(item.fixpath)"
+                                v-if="item.stateInfo.state == 1 && checkOutputPathIsFile(item.fixpath)"
                                 >
                                 <span class="fa fa-eye fa-lg fa-fw" :title=" $t('pages.convert.task-item.review-in-file') "></span>
                             </ui-icon-button>
@@ -148,9 +148,9 @@
                     </div>
                     <div class="ui-toolbar__body">
                         <span
-                            :class="['ui-toolbar__top__taskMessage', item.stateInfo.state < 0 ? 'task-item-has-error': '']"
+                            :class="['ui-toolbar__top__taskMessage', item.stateInfo.state < 0 ? 'task-item-has-error':'task-item-has-cancel']"
                             :title="item.stateInfo.message"
-                            v-show="item.stateInfo.state < 0"
+                            v-show="item.stateInfo.state < 0 || item.stateInfo.state == 2"
                             >
                             {{ item.stateInfo.message }}
                         </span>
@@ -467,11 +467,14 @@ export default {
             var _styleClass = ['page__convert__task__item']
             if (item.stateInfo) {
 
-                if (item.stateInfo.state < 0) {
+                if (item.stateInfo.state == -1) {
                     _styleClass.push('isFixFailed')
                 }
-                if (item.stateInfo.state > 0) {
+                if (item.stateInfo.state == 1) {
                     _styleClass.push('isFixedSuccess')
+                }
+                if (item.stateInfo.state == 2) {
+                    _styleClass.push('isFixedCancel')
                 }
             }
 
@@ -482,8 +485,8 @@ export default {
             var that = this
             var progressStyle = 'black' // item.stateInfo.state === 0
             if (item.stateInfo) {
-                if (item.stateInfo.state < 0) progressStyle = 'accent'
-                if (item.stateInfo.state > 0) progressStyle = 'primary'
+                if (item.stateInfo.state == -1 ) progressStyle = 'accent'
+                if (item.stateInfo.state == 1 ) progressStyle = 'primary'
             }
 
             return progressStyle
@@ -633,11 +636,18 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.lastOutputPath==""){
-                cdg.callbackConfirm = () => { 
-                    cdg.callbackConfirm && cdg.callbackConfirm()
-                    that.startDo() 
+                const cdg = that.outputConfigDialog
+                cdg.title = that.$t('pages.resize.dialog-config-output.title')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
+                cdg.callbackConfirm = () => {
+                    that.saveOutputSettings()
+                    that.startDo()
                 }
-                that.onBtnOutputFolderClick()
+                cdg.callbackDeny = () => { that.resetOutputSettings() }
+                cdg.callbackClose = () => { that.resetOutputSettings() }
+                var dialog = that.$refs[cdg.ref]
+                dialog.open()
             }else{
                 that.startDo()
             }
@@ -781,6 +791,12 @@ export default {
                                 state: -1,
                                 message: data.detail_error || 'error'
                             })
+                        }else if (data.infoType === 'type_calltask_cancel') {
+                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                progress: 100,
+                                state: 2,
+                                message: that.$t('pages.convert.notice-no-cancel.message')
+                            })
                         }
                         // check converting
                         that.__checkTaskStateInfo()
@@ -799,8 +815,8 @@ export default {
                         // check converting
                         if (data.infoType === 'type_calltask_cancel'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 200,
-                                state:0
+                                progress: 100,
+                                state:2
                             })
                         }
                         that.__checkTaskStateInfo()

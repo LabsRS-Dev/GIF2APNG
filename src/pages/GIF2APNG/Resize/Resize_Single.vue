@@ -30,6 +30,22 @@
             </ui-confirm>
 
             <ui-confirm
+                class="page__confirm__dialog__isExist"
+                :autofocus="isExistConfirmDialog.autofocus"
+                :confirm-button-text="isExistConfirmDialog.confirmButtonText"
+                :deny-button-text="isExistConfirmDialog.denyButtonText"
+                :ref="isExistConfirmDialog.ref"
+                :title="isExistConfirmDialog.title"
+
+                @confirm="isExistConfirmDialog.callbackConfirm"
+                @deny="isExistConfirmDialog.callbackDeny"
+                @open="isExistConfirmDialog.callbackOpen"
+                @close="isExistConfirmDialog.callbackClose"
+                >
+                {{ isExistConfirmDialog.content }}
+            </ui-confirm>
+
+            <ui-confirm
                 :autofocus="outputConfigDialog.autofocus"
                 :confirm-button-text="outputConfigDialog.confirmButtonText"
                 :deny-button-text="outputConfigDialog.denyButtonText"
@@ -233,7 +249,7 @@ var taskID2taskObj =  {}
 
 //// 与设置相关的处理
 class Settings {
-    static key = "resize-page-settings"
+    static key = "resize_single-page-settings"
 
     static instance = null
     static shareInstance(){
@@ -352,7 +368,19 @@ export default {
                 callbackDeny: ()=>{},
                 callbackOpen: ()=>{},
                 callbackClose: ()=>{}
-            },            
+            },
+            isExistConfirmDialog:{
+                ref: 'isExistConfirmDialog',
+                autofocus: 'none',
+                confirmButtonText: 'Confirm',
+                denyButtonText: 'Deny',
+                title: '',
+                content: '',
+                callbackConfirm: ()=>{},
+                callbackDeny: ()=>{},
+                callbackOpen: ()=>{},
+                callbackClose: ()=>{}
+            },          
             outputConfigDialog:{
                 ref: 'outputConfigDialog',
                 autofocus: 'none',
@@ -708,7 +736,6 @@ export default {
 
         onBtnDoClick(){
             var that = this
-            const cdg = that.outputConfigDialog
             if(that.taskList.length === 0) {
                 return BS.b$.Notice.alert({
                     message: that.$t('pages.resize.notice-no-items.message')
@@ -717,11 +744,18 @@ export default {
 
             console.log("-------------------- call export dir")
             if(that.lastOutputPath==""){
+                const cdg = that.outputConfigDialog
+                cdg.title = that.$t('pages.resize.dialog-config-output.title')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
                 cdg.callbackConfirm = () => {
-                    cdg.callbackConfirm && cdg.callbackConfirm()
+                    that.saveOutputSettings()
                     that.startDo()
                 }
-                that.onBtnOutputFolderClick()
+                cdg.callbackDeny = () => { that.resetOutputSettings() }
+                cdg.callbackClose = () => { that.resetOutputSettings() }
+                var dialog = that.$refs[cdg.ref]
+                dialog.open()
             }else{
                 that.startDo()
             }
@@ -845,47 +879,146 @@ export default {
             that.showMaskLayerCancel = false
             if(that.taskList.length > 0){
                 _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_ResizeGifTask(taskObj.id, {
-                        src: taskObj.path,
-                        dest: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput ? true : false,
-                        enableIncludeMinImage:true,
-                        IsPercentValue:false,
-                        width: that.finalInputWidth,
-                        height: that.finalInputHeight
-                    }, (data) => {
-                        if (data.infoType === 'type_calltask_log'){
-                            that.showMaskLayer = true
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 50,
-                                state:0
-                            })
-                        }else if (data.infoType === 'type_calltask_success'){
-                            that.showMaskLayerSuccess = true
-                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: 1
-                            })
-                        }else if (data.infoType === 'type_calltask_error'){
-                            that.showMaskLayerError = true
-                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: -1
-                            })
-                        }else if (data.infoType === 'type_calltask_cancel') {
-                            that.showMaskLayerCancel = true
-                            $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
-                                progress: 100,
-                                state: 0
-                            })
+                    let fileName = BS.b$.App.getFileName(taskObj.path)
+                    let filePath = that.lastOutputPath + '/' + fileName
+                    if (that.enableOverWriteOutput == false && BS.b$.App.checkPathIsExist(filePath)){
+                        const cdg = that.isExistConfirmDialog
+                        cdg.title = that.$t('pages.resize.dialog-confirm-isExist.title')
+                        cdg.content = that.$t('pages.resize.dialog-confirm-isExist.message')
+                        cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-isExist.btnConfirm')
+                        cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-isExist.btnDeny')
+
+                        var dialog = that.$refs[cdg.ref]
+                        cdg.callbackConfirm = () =>{ 
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                dest: that.lastOutputPath,
+                                overwrite: true,
+                                enableIncludeMinImage:true,
+                                IsPercentValue:false,
+                                width: that.finalInputWidth,
+                                height: that.finalInputHeight
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_log'){
+                                    that.showMaskLayer = true
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.showMaskLayerSuccess = true
+                                    $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.showMaskLayerError = true
+                                    $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1
+                                    })
+                                }else if (data.infoType === 'type_calltask_cancel') {
+                                    that.showMaskLayerCancel = true
+                                    $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 0
+                                    })
+                                }
+                                // window.log('[x] infoType ===' + data.infoType)
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )  
                         }
-                        window.log('[x] infoType ===' + data.infoType)
-                        // check converting
-                        that.__checkTaskStateInfo()
-                    } )
+                        cdg.callbackDeny = () => { 
+                            that.__abi__start_ResizeGifTask(taskObj.id, {
+                                src: taskObj.path,
+                                dest: that.lastOutputPath,
+                                overwrite:false,
+                                enableIncludeMinImage:true,
+                                IsPercentValue:false,
+                                width: that.finalInputWidth,
+                                height: that.finalInputHeight
+                            }, (data) => {
+                                if (data.infoType === 'type_calltask_log'){
+                                    that.showMaskLayer = true
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 50,
+                                        state:0
+                                    })
+                                }else if (data.infoType === 'type_calltask_success'){
+                                    that.showMaskLayerSuccess = true
+                                    $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 1
+                                    })
+                                }else if (data.infoType === 'type_calltask_error'){
+                                    that.showMaskLayerError = true
+                                    $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: -1
+                                    })
+                                }else if (data.infoType === 'type_calltask_cancel') {
+                                    that.showMaskLayerCancel = true
+                                    $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                    that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                        progress: 100,
+                                        state: 0
+                                    })
+                                }
+                                // window.log('[x] infoType ===' + data.infoType)
+                                // check converting
+                                that.__checkTaskStateInfo()
+                            } )  
+                        }
+                        dialog.open()
+                    } else {
+                        that.__abi__start_ResizeGifTask(taskObj.id, {
+                            src: taskObj.path,
+                            dest: that.lastOutputPath,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            enableIncludeMinImage:true,
+                            IsPercentValue:false,
+                            width: that.finalInputWidth,
+                            height: that.finalInputHeight
+                        }, (data) => {
+                            if (data.infoType === 'type_calltask_log'){
+                                that.showMaskLayer = true
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.showMaskLayerSuccess = true
+                                $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.showMaskLayerError = true
+                                $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1
+                                })
+                            }else if (data.infoType === 'type_calltask_cancel') {
+                                that.showMaskLayerCancel = true
+                                $('.image__single__top__message').css('background-color','rgba(0,0,0,0)')
+                                that.__updateInfoWithGif2apngTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 0
+                                })
+                            }
+                            // window.log('[x] infoType ===' + data.infoType)
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )                        
+                    }
                 })
             }
         },
@@ -950,7 +1083,7 @@ export default {
 
             //DEBUG
             console.log("jsonfile = ", jsonFilePath)
-            window.log("jsonfile = "+jsonFilePath)
+            // window.log("jsonfile = "+jsonFilePath)
 
             // -- 生成json文件
             const jsonData = JSON.stringify({
@@ -1601,6 +1734,10 @@ export default {
                 }  
             }else {
                 that.isCustomRatio = false
+                that.showMaskLayer = false
+                that.showMaskLayerSuccess = false
+                that.showMaskLayerError = false
+                that.showMaskLayerCancel = false
                 ///  记录自定义转换的信息
                 that.changeCustomWidth = that.finalInputWidth
                 that.changeCustomHeight = that.finalInputHeight

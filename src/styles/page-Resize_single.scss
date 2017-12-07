@@ -276,3 +276,10 @@
     }
   }
 }
+.page__confirm__dialog__isExist{
+  .ui-modal__header{
+    .ui-modal__close-button{
+      display: none;
+    }
+  }
+}
