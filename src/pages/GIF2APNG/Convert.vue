@@ -1027,7 +1027,7 @@ export default {
                 yAxis: {
                     type : 'value',
                     axisLabel: {
-                        formatter:'{value}KB',
+                        formatter:'{value}MB',
                         textStyle:{
                             fontSize:'10'
                         }
