@@ -126,7 +126,7 @@
                         </div>
                         <div class="ui-toolbar__top__metainfo__toolbar">
                             <ui-icon-button
-                                @click="onOpenParentDir(item.fixOutDir)"``
+                                @click="onOpenParentDir(item.fixOutDir)"
                                 type="secondary"
                                 color="black"
                                 size="small"
@@ -766,6 +766,10 @@ export default {
         startDo(){
             var that = this
             if(that.taskList.length > 0){
+                _.each(that.taskList,(taskObj) => {
+                    taskObj.stateInfo.state = 0
+                    taskObj.stateInfo.progress = 0
+                })
                 _.each(that.taskList, (taskObj, index) => {
                     that.__abi__start_Gif2apngTask(taskObj.id, {
                         src: taskObj.path,
@@ -773,7 +777,7 @@ export default {
                         overwrite: that.enableOverWriteOutput ? true : false
                     }, (data) => {
                         console.warn('startDo data reback....')
-                        console.dir(data)    
+                        console.dir(data)
                         // process 
                         if (data.infoType === 'type_calltask_start'){
                             that.__updateInfoWithGif2apngTask(taskObj.id, {
@@ -851,7 +855,7 @@ export default {
             var _command = [],
                 _dest = _config.out
 
-            const transferTaskID =  _.uniqueId('onetask') + ',' + taskID
+            const transferTaskID =  _.uniqueId('onetask') + ',' + taskID + _.now()
             that.__updateTaskObj(taskID, {fixOutDir:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
 
             // Fix when the task is file obj

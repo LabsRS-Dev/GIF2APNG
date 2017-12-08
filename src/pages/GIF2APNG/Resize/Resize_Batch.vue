@@ -981,6 +981,7 @@ export default {
             if(that.taskList.length > 0){
                 _.each(that.taskList,(taskObj) => {
                     taskObj.stateInfo.state = 0
+                    taskObj.stateInfo.progress = 0
                 })
                 if(that.PercentageConversion){
                     _.each(that.taskList, (taskObj, index) => {
