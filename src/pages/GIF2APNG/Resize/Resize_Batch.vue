@@ -807,7 +807,7 @@ export default {
             }
 
             console.log("-------------------- call export dir")
-            if(that.percentage == 100){
+            if(that.percentage == 100 && that.PercentageConversion){
                 BS.b$.Notice.alert({
                     message: that.$t('pages.resize.notice-no-prompt.message')
                 })
@@ -1024,6 +1024,9 @@ export default {
                     })
                 }else if(that.WidthHeightConversion && that.onBtnLock){
                     if(isNaN(that.finalInputWidth)){
+                        if(that.finalInputHeight < 16){
+                           that.finalInputHeight = 16 
+                        }
                         _.each(that.taskList, (taskObj, index) => {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
@@ -1065,6 +1068,9 @@ export default {
                             } )
                         })
                     }else if(isNaN(that.finalInputHeight)){
+                        if(that.finalInputWidth < 16){
+                           that.finalInputWidth = 16 
+                        }                        
                         _.each(that.taskList, (taskObj, index) => {
                             that.__abi__start_ResizeGifTask(taskObj.id, {
                                 src: taskObj.path,
@@ -1107,6 +1113,12 @@ export default {
                         })
                     }
                 }else if(that.WidthHeightConversion && that.onBtnLock == false){
+                    if(that.finalInputWidth < 16){
+                        that.finalInputWidth = 16 
+                    }
+                    if(that.finalInputHeight < 16){
+                        that.finalInputHeight = 16 
+                    }
                     _.each(that.taskList, (taskObj, index) => {
                         that.__abi__start_ResizeGifTask(taskObj.id, {
                             src: taskObj.path,

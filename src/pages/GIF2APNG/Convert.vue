@@ -1005,8 +1005,8 @@ export default {
             var afterSize = BS.b$.App.fileSizeAtPath(item.fixpath)
             var beforeSizeBytes = parseInt(beforeSize)
             var afterSizeBytes = parseInt(afterSize)
-            var beforeModificationSize = that.bytesToSize(beforeSizeBytes)
-            var afterModificationSize = that.bytesToSize(afterSizeBytes)
+            var beforeModificationSize = Math.round(that.bytesToSize(beforeSizeBytes)*100)/100
+            var afterModificationSize = Math.round(that.bytesToSize(afterSizeBytes)*100)/100
             myChart.setOption({
                 title: {
                     text: that.$t('pages.convert.dialog-config-preview.chartTitle')
