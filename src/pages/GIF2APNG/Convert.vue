@@ -993,22 +993,34 @@ export default {
             that.openBeforeModificationThumb(item)
             that.openAfterModificationThumb(item)
         },
-        ///// 转化为KB/////////////////////////
+        ///// 字节转化为KB,MB/////////////////////////
         bytesToSize(bytes) {
-                var k = 1000
-                var i = Math.floor(Math.log(bytes) / Math.log(k))
-                return (bytes / Math.pow(k, i))
-            },
+            var size
+            if(bytes < 1000 * 1000){                                             //小于1MB，则转化成KB
+                size = (bytes/1000).toFixed(2) + "KB"
+            }else if(bytes < 1000 * 1000 * 1000){                                //小于1GB，则转化成MB
+                size = (bytes/(1000 * 1000)).toFixed(2) + "MB"
+            }
+            var sizeStr = size + ""                                                    //转成字符串
+            var index = sizeStr.indexOf(".")                                           //获取小数点处的索引
+            var dou = sizeStr.substr(index + 1 ,2)                                     //获取小数点后两位的值
+            if(dou == "00"){                                                           //判断后两位是否为00，如果是则删除00                
+                return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
+            }
+            return size
+        },
         //  信息对比绘制////////////////////////////////////////////////////////////////////////////////////////////////
         drawLineChart(item){
             var that = this
             var myChart = echarts.init(document.getElementById('info_echart_id'))
             var beforeSize = BS.b$.App.fileSizeAtPath(item.path)
             var afterSize = BS.b$.App.fileSizeAtPath(item.fixpath)
-            var beforeSizeBytes = parseInt(beforeSize)
-            var afterSizeBytes = parseInt(afterSize)
-            var beforeModificationSize = Math.round(that.bytesToSize(beforeSizeBytes)*100)/100
-            var afterModificationSize = Math.round(that.bytesToSize(afterSizeBytes)*100)/100
+            var beforeSizeBytes = that.bytesToSize(beforeSize)
+            var afterSizeBytes = that.bytesToSize(afterSize)
+            var unit = beforeSizeBytes.substring(beforeSizeBytes.length-2,beforeSizeBytes.length)
+            
+            var beforeModificationSize = Math.round(beforeSizeBytes.substring(0,beforeSizeBytes.length-2)*100)/100
+            var afterModificationSize = Math.round(afterSizeBytes.substring(0,afterSizeBytes.length-2)*100)/100
             myChart.setOption({
                 title: {
                     text: that.$t('pages.convert.dialog-config-preview.chartTitle')
@@ -1029,7 +1041,7 @@ export default {
                 yAxis: {
                     type : 'value',
                     axisLabel: {
-                        formatter:'{value}MB',
+                        formatter:'{value}'+ unit,
                         textStyle:{
                             fontSize:'10'
                         }
