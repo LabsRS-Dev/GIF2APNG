@@ -206,9 +206,7 @@ export default {
       list.push({
           title: SysConfig.appName + '\t Ver' + SysConfig.version ,
           date:'',
-          description:`
-            Welcome to Gmagon.com
-          `,
+          description:`Welcome to ` + SysConfig.appName,
           link: SysConfig.companyWebsiteHomepage
       })
       _.each(list, function(ele){
