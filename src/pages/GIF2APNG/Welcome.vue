@@ -182,6 +182,7 @@ export default {
     var that = this
     if(!hasInited){
       hasInited = true
+      that.initFirstNews()
       that.getNewList()
       that.__GetCurrentLanguage()
     }

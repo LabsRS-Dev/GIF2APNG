@@ -485,7 +485,9 @@ export default {
             })
 
             Transfer.bind("onDropDragFiles", function(info){
-                that.__importFilesOrDir(info.data)
+                if(that.$route.path.match(/resize_batch/)){
+                    that.__importFilesOrDir(info.data)                    
+                }
             })
 
             //TESTCode
