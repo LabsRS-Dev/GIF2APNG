@@ -70,11 +70,11 @@ module.exports = {
             },
             {
                 test: /\.j(s|sx)$/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
-
+                include: [
+                    options.paths.src.main,
+                    /swiper|dom7/
+                ],                                
+                loader: 'babel-loader'
             },
 
             {
