@@ -3,7 +3,7 @@
     see: http://caniuse.com/#search=calc 
     */
     width: 75%; // Fixed for macOS 10.7 old safari
-    width: calc(100% - #{rem-calc(202px)});
+    width: calc(100% - #{rem-calc(200px)});
     height: 100%;
     height: 100vh;
 
@@ -84,6 +84,23 @@
     .Forward{
         border-top-right-radius: rem-calc(5px);
         border-bottom-right-radius:  rem-calc(5px);
+    }
+}
+.dove-docs-content__toolbar-button__back{
+    display: flex;
+    margin-left: rem-calc(5px);
+    .dove-docs-content__toolbar-button__back__icon{
+        display: flex;
+        width:rem-calc(30px);
+        height: rem-calc(25px);
+        border: rem-calc(1px) solid $md-grey-400;
+        align-items: center;
+        justify-content: center;
+        border-radius: rem-calc(5px);
+        &:hover{
+            background-color: $md-grey-400;
+            cursor: pointer;
+        }
     }
 }
 .dove-docs-content__toolbar-search{
