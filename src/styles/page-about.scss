@@ -42,11 +42,11 @@
     }
   }
   .page__about__content__licenses{
-    padding: rem-calc(10px);
     display: flex;
-    min-height: 10%;
+    flex: 2;
+    height: 10%;
     font-size: rem-calc(14px);
-    align-items: center;
+    align-items: flex-end;
     .page-about__licenses__space{
       padding-left: rem-calc(2px);
       .page-content__homepage{

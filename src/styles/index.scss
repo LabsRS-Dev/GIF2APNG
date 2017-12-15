@@ -54,8 +54,8 @@ $page-content-font-color: $global-font-color;
 
 $page-content-padding: rem-calc(16px);
 $page-content-width:  calc(100% - #{$sidebar-default-width});
-$page-content-px-height: calc(100% -  #{$page-content-padding});
-$page-content-vh-height: calc((100vh - #{$sidebar__header-vh-height}) - #{$page-content-padding}); 
+$page-content-px-height:100%;
+$page-content-vh-height: calc((100vh - #{$sidebar__header-vh-height})); 
     
 
 
@@ -116,6 +116,7 @@ $desktop-min-height: 600px;
 @import 'page-app-doc';
 @import 'page-welcome';
 @import 'page-convert';
+@import 'page-convert_gif2apng';
 @import 'page-about';
 @import 'page-discover';
 @import 'page-discover-recommendation';

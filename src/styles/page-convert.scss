@@ -1,135 +1,37 @@
-.page__convert__task__item {
-  height: rem-calc(120px);
-  width: calc(100% - 8px);
-  
-  .ui-alert__content{
-      margin-top: rem-calc(-24px);
+.page__examples-app-doc__convert__content{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+  .page__examples-app-doc__convert__title-top{
+    font-size: rem-calc(20px);
+    margin-top: 16%; 
   }
-}
-.page__toolbar{
-  .ui-modal__container{
-    overflow: visible;
-    .ui-modal__body{
-      overflow-y: visible;
-    }
+  .page__examples-app-doc__convert__title-botton{
+    font-size: rem-calc(16px);
+    font-weight: bold;
+    margin-bottom: rem-calc(30px);
   }
-  .page__toolbar-app-doc__input-group{
+  .page__examples-app-doc__convert__button{
     display: flex;
-    flex-direction: column;
-    .page__toolbar-app-doc__input-browse{
+    flex-direction: row;
+    justify-content: center;
+    width:35vw;
+    .ui-button{
+      text-transform :none;
       display: flex;
-      align-items: center;
-      margin-top: rem-calc(14px);
-      margin-bottom: rem-calc(20px);
-      .ui-button {
-        padding: 0;
-        margin-left: rem-calc(5px);
-        height: rem-calc(26px);
-        border-radius: rem-calc(5px);
-      }
-      .ui-select {
-        flex: 1;
-        align-items: center;
-        margin: 0;
-        margin-left:rem-calc(8px) ;
-        padding: 0;
-        height: rem-calc(25px);
-        border-radius: rem-calc(5px);
-        border: rem-calc(1px) solid #adadad;
-        position: relative;
-        .ui-select__dropdown{
-            .ui-select-option{
-              font-size: rem-calc(11px);
-            }
-        }
-        .ui-select__display{
-          border: 0;
-          height: rem-calc(25px);
-          font-size: rem-calc(11px);
-          .ui-select__dropdown-button{
-            margin: 0 auto;
-          }
-        }
-        .ui-select-option{
-          height: rem-calc(28px);
-        }
-        .ui-select-option.is-selected{
-          color: rgba(0,0,0,.87);
-          background-color: #fff;
-          font-weight: 400;
-        }
-        .ui-select-option:hover{
-          background-color: $md-blue;
+      height: 20vh;
+      border-radius:rem-calc(15px);
+      .ui-button__content{
+        -webkit-align-items: center;  
+        display: flex;
+        flex-direction: column;
+        padding: rem-calc(5px);
+        img{
+          margin-bottom: rem-calc(10px);
         }
       }
     }
-    .page__toolbar-app-doc__input-cover{
-      display: flex;
-      .input-group-cover{
-        margin-left: rem-calc(4px);
-      }
-    }
-  }
-  .page__toolbar-app-doc__preview__info{
-    display: flex;
-    .page__toolbar-app-doc__preview__info__image{
-      display: flex;
-      flex-direction: column;
-      align-items:center;
-      justify-content:center;
-      height: rem-calc(220px);
-      flex: 1;
-      img{
-        margin: rem-calc(5px) 0 ;
-      }
-    }
-    .page__toolbar-app-doc__preview__info__echart {
-      width: rem-calc(400px);
-      height: rem-calc(220px);
-    }
-  }
-  .page__toolbar-app-doc__options{
-      display: flex;
-      align-items: center;
-      margin-top: rem-calc(14px);
-      margin-bottom: rem-calc(20px);
-      .ui-select {
-        width: rem-calc(200px);
-        align-items: center;
-        margin: 0;
-        margin-left:rem-calc(8px) ;
-        padding: 0;
-        height: rem-calc(25px);
-        border-radius: rem-calc(5px);
-        border: rem-calc(1px) solid #adadad;
-        position: relative;
-        .ui-select__dropdown{
-            .ui-select-option{
-              font-size: rem-calc(11px);
-            }
-        }
-        .ui-select__display{
-          border: 0;
-          height: rem-calc(25px);
-          font-size: rem-calc(11px);
-          .ui-select__dropdown-button{
-            margin: 0 auto;
-          }
-        }
-        .ui-select-option{
-          height: rem-calc(28px);
-        }
-        .ui-select__display-value{
-          margin-left:rem-calc(5px)
-        }
-        .ui-select-option.is-selected{
-          color: rgba(0,0,0,.87);
-          background-color: #fff;
-          font-weight: 400;
-        }
-        .ui-select-option:hover{
-          background-color: $md-blue;
-        }
-      }
   }
 }

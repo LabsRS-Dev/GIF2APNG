@@ -181,14 +181,14 @@
 <script>
 import { BS, Util, _, lodash } from 'dove.max.sdk'
 import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox, UiTextbox} from 'keen-ui'
-import {Transfer} from '../../bridge/transfer'
-import echarts from "echarts"
+import {Transfer} from '../../../bridge/transfer'
+import echarts from 'echarts'
 
-var baseID = "__page__convert__action__"
+var baseID = "__apng2gif__convert__action__"
 var baseIDIndex = -1
 
 
-const taskPrefix = 'convert-page-image-id-' + _.now()
+const taskPrefix = 'convert-apng2gif-image-id-' + _.now()
 class Task {
     constructor(thumb, name, path, size, omitName, omitPath){
         this.id = _.uniqueId(taskPrefix);
@@ -223,7 +223,7 @@ var taskList = []
 var taskID2taskObj = {}
 //// 与设置相关的处理
 class Settings {
-    static key = "convert-page-settings"
+    static key = "convert-apng2gif-settings"
 
     static instance = null
     static shareInstance(){
@@ -275,9 +275,9 @@ export default {
 
     data() {
         var that = this
-        console.log("convert.vue call data()")
+        console.log("convert_apng2gif.vue call data()")
         return {
-            welcomeContentID:'page__convert__welcome__id',
+            welcomeContentID:'apng2gif__convert__welcome__id',
             openEchartsId:'info_echart_id',
             beforePath:beforePath,
             afterPath:afterPath,
@@ -330,12 +330,12 @@ export default {
 
     beforeCreate(){
         var that = this
-        console.log('Convert.vue beforeCreate')
+        console.log('Convert_apng2gif.vue beforeCreate')
         // restore settings
         $LS$.restore()
         // init handlers
         if (!hasInited){
-            console.log('Convert.vue beforeCreate inited')
+            console.log('Convert_apng2gif.vue beforeCreate inited')
             hasInited = true
             Transfer.frontAgent.registerOnChannelFault(function () {
                 that.onTransferIsFault()
@@ -346,7 +346,7 @@ export default {
             })
 
             Transfer.bind("onDropDragFiles", function(info){
-                if(that.$route.path.match(/convert/)){
+                if(that.$route.path.match(/convert_apng2gif/)){
                     that.__importFilesOrDir(info.data)                    
                 }
             })
@@ -405,7 +405,7 @@ export default {
     },
 
     beforeDestroy() {
-        console.log('Convert.vue beforeDestroy()')
+        console.log('Convert_apng2gif.vue beforeDestroy()')
         clearInterval(this.progressInterval);
         this.saveOutputSettings()
     },

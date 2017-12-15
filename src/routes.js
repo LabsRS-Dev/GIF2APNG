@@ -5,7 +5,9 @@ import { SysConfig } from './data/sys-config.js'
 // /GIF2APNG
 import WelcomePage from './pages/GIF2APNG/Welcome.vue'
 import DiscoverPage from './pages/GIF2APNG/Find/Discover.vue'
-import ConvertPage from './pages/GIF2APNG/Convert.vue'
+import ConvertPage from './pages/GIF2APNG/Convert/Convert.vue'
+import Convert_gif2apng from './pages/GIF2APNG/Convert/Convert_gif2apng.vue'
+import Convert_apng2gif from './pages/GIF2APNG/Convert/Convert_apng2gif.vue'
 import ResizePage from './pages/GIF2APNG/Resize/Resize'
 import Resize_Single from './pages/GIF2APNG/Resize/Resize_Single'
 import Resize_Batch from './pages/GIF2APNG/Resize/Resize_Batch'
@@ -125,6 +127,16 @@ const menu = [{
       tipAsSubTitle: true,
       icon: icons.adjust,
       sourceUrl: ''
+    }, {
+      path: rootPath + '/convert/convert_gif2apng',
+      name: 'Convert_gif2apng',
+      show: false,
+      component: Convert_gif2apng
+    }, {
+      path: rootPath + '/convert/convert_apng2gif',
+      name: 'Convert_apng2gif',
+      show: false,
+      component: Convert_apng2gif
     }, {
       path: rootPath + '/resize',
       show: true,

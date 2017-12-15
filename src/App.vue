@@ -62,6 +62,12 @@
                         <span class="dove-docs-content__toolbar-button__icon Backward" @click="$router.go(-1)"><i class="fa fa-angle-left fa-lg fa-fw"></i></span>
                         <span class="dove-docs-content__toolbar-button__icon Forward" @click="$router.go(1)"><i class="fa fa-angle-right fa-lg fa-fw"></i></span>
                 </div>
+                <div 
+                    class="dove-docs-content__toolbar-button__back"
+                    v-if="$route.path.match(/convert_gif2apng/) || $route.path.match(/resize_single/) || $route.path.match(/resize_batch/)"
+                    >
+                        <span class="dove-docs-content__toolbar-button__back__icon" @click="$router.go(-1)"><i class="fa fa-angle-double-left fa-lg fa-fw"></i></span>
+                </div>
                 <div
                     class="dove-docs-content__toolbar-search"
                     v-if="$route.path.match(/Find/) || $route.path.match(/Search/)"
@@ -313,9 +319,13 @@ export default {
             }else{
                 that.showCover = false
             }
-            if(path.match(/convert/)){
+            if(path.match(/convert_gif2apng/)){
                 Util.util.reportInfo({
-                    'SYS_enter':'Enter the convert page...'
+                    'SYS_enter':'Enter the convert_gif2apng page...'
+                })
+            }else if(path.match(/convert_apng2gif/)){
+                Util.util.reportInfo({
+                    'SYS_enter':'Enter the convert_apng2gif page...'
                 })
             }else if(path.match(/resize_single/)){
                 Util.util.reportInfo({

@@ -89,13 +89,22 @@
       }
     },
     "convert":{
+      "title":{
+        "top":"欢迎来到格式转换页面",
+        "botton":"要开始使用页面，请点击下面的图标:"
+      },
+      "content":{
+        "tooltip_gif2apng":"gif转换为Apng",
+        "tooltip_apng2gif":"Apng转换为gif"
+      },
       "toolbar":{
         "import":"导入GIF动画文件",
         "importDir":"导入GIF动画目录",
         "remove":"清空导入",
         "outputFolder": "选择输出目录",
         "fix":"开始执行",
-        "chancel":"停止"
+        "chancel":"停止",
+        "previousPage":"返回上一级菜单"
       },
       "task-item":{
          "file-name": "名称：",
@@ -171,7 +180,8 @@
         "2. 点击 \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来设置输出路径.",
         "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
         "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
-        "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+        "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务.",
+        "6. 您可以点击 \"<i class='fa fa-angle-double-left fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来返回上一级菜单."
      ],
       "dialog-popover-confirm-edit":{
         "title":"GIF动画信息描述",
@@ -196,7 +206,8 @@
         "outputFolder": "选择输出目录",
         "adjustSize" :"图像尺寸调整",
         "fix":"开始执行",
-        "chancel":"停止"
+        "chancel":"停止",
+        "previousPage":"返回上一级菜单"
       },
       "task-item":{
          "file-name": "名称：",
@@ -300,7 +311,8 @@
         "3. 点击 \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来调整图像尺寸.",
         "4. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
         "5. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止所有任务.",
-        "6. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务."
+        "6. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除所有任务.",
+        "7. 您可以点击 \"<i class='fa fa-angle-double-left fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来返回上一级菜单."
      ],
      "single":{
         "welcome":[
@@ -310,7 +322,8 @@
           "3. 点击 \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来执行转换.",
           "4. 您可以点击 \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来停止任务.",
           "5. 您可以点击 \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来删除任务.",
-          "6. 您可以点击 \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来撤销改动."
+          "6. 您可以点击 \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来撤销改动.",
+          "7. 您可以点击 \"<i class='fa fa-angle-double-left fa-lg fa-fw' style='color:#000f;'></i>\" 按钮来返回上一级菜单."
       ]
      },
       "dialog-popover-confirm-edit":{

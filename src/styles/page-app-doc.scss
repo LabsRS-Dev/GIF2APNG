@@ -25,8 +25,12 @@
                     color: $global-font-color;
                     h1 {
                         font-size: $global-font-size;
+                        display: inline-block;
                     }
                     height: rem-calc(21px);
+                    .ui-modal__close-button{
+                        display: none;
+                    }
                 }
                 .ui-modal__body {
                     .ui-confirm__message {
@@ -112,6 +116,7 @@
 
         .ui-alert--type-info {
             .ui-alert__body {
+                -webkit-box-align: start;
                 background: $docs-content__taskitem-background;
                 color: $docs-content__taskitem-font-color;
                 font-size: rem-calc(13px);
@@ -129,6 +134,7 @@
 
         .ui-alert--type-success {
             .ui-alert__body {
+                -webkit-box-align: start;
                 background: $docs-content__taskitem-background;
                 color: $docs-content__taskitem-font-color;
                 font-size: rem-calc(13px);
@@ -253,7 +259,7 @@
         background: $page-content__footbar-background;
         border-radius: 8px;
         margin-top: rem-calc(4px);
-        margin-bottom: rem-calc(-28px);
+        margin-bottom: rem-calc(-12px);
         padding: rem-calc(4px);
         cursor: pointer;
         span {

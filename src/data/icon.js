@@ -9,7 +9,9 @@ const iconSet = {
   report: 'images/report.svg',
   reductIcon: 'images/logo_64x64.png',
   process_single: 'images/process_single.svg',
-  process_batch: 'images/process_batch.svg'
+  process_batch: 'images/process_batch.svg',
+  gif2apng: 'images/gif.svg',
+  apng2gif: 'images/png.svg'
 }
 
 // export

@@ -40,9 +40,9 @@
     border-bottom: $sidebar__header-border-bottom;
 
     .dove-docs-sidebar__header__info {
-        padding: 2vh;
         display: flex;
         flex-direction: column;
+        padding: rem-calc(15px) rem-calc(8px) rem-calc(15px) rem-calc(48px);
         .dove-docs-sidebar__header-product-name {
             color: $sidebar__header-font-color;
             font-size: rem-calc(18px);
@@ -169,10 +169,9 @@
             }
         }
 
-        .dove-docs-sidebar__menu-item__caption{
-            padding-left: rem-calc(12px);
-            //margin-left: rem-calc(-10px);
-        }
+        // .dove-docs-sidebar__menu-item__caption{
+        //     padding-left: rem-calc(12px);
+        // }
     }
 }
 ////// 侧边栏拖拽处理

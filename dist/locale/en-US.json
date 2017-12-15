@@ -89,13 +89,22 @@
       }
     },
     "convert":{
+      "title":{
+        "top":"Welcome to Convert",
+        "botton":"To get started with Convert,click the icon below:"
+      },
+      "content":{
+        "tooltip_gif2apng":"Convert Gif to Apng",
+        "tooltip_apng2gif":"Convert Apng to Gif"
+      },
       "toolbar":{
         "import":"Import GIF(.gif) files",
         "importDir":"Import directory",
         "remove":"Remove All",
         "outputFolder": "Output directory",
         "fix":"Convert",
-        "chancel":"Cancel all"
+        "chancel":"Cancel all",
+        "previousPage":"Previous Page"
       },
       "task-item":{
          "file-name": "Name：",
@@ -167,11 +176,12 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to add new tasks.",
-        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" the button to set output path.",
-        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to convert.",
-        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to stop all tasks.",
-        "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" the button to remove all tasks."
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" to add new tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" to set output path.",
+        "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" to convert.",
+        "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" to stop all tasks.",
+        "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" to remove all tasks.",
+        "6. You can click \"<i class='fa fa-angle-double-left fa-lg fa-fw' style='color:#000f;'></i>\" to return to the previous page."
      ],
       "dialog-popover-confirm-edit":{
         "title":"Description of GIF",
@@ -196,7 +206,8 @@
         "outputFolder": "Output directory",
         "adjustSize" :"Image Resize",
         "fix":"Resize",
-        "chancel":"Cancel all"
+        "chancel":"Cancel all",
+        "previousPage":"Previous Page"
       },
       "task-item":{
          "file-name": "Name：",
@@ -295,22 +306,24 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new tasks.",
-        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to set output.",
-        "3. Click \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" button to resize image.",
-        "4. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resizing.",
-        "5. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop all resize tasks.",
-        "6. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks."
+        "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" or \"<i class='fa fa-folder-open-o fa-lg fa-fw' style='color:#000f;'></i>\" to add new tasks.",
+        "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" to set output.",
+        "3. Click \"<i class='fa fa-cogs  fa-lg fa-fw' style='color:#000f;'></i>\" to resize image.",
+        "4. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" to start resizing.",
+        "5. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" to stop all resize tasks.",
+        "6. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" to remove all tasks.",
+        "7. You can click \"<i class='fa fa-angle-double-left fa-lg fa-fw' style='color:#000f;'></i>\" to return to the previous page."
       ],
       "single":{
         "welcome":[
           "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-          "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" button to add new task.",
-          "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" button to setting output.",
-          "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to start resizing.",
-          "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" button to stop resizing.",
-          "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
-          "6. You can click \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" button to undo the change."
+          "1. Click \"<i class='fa fa-file-image-o fa-lg fa-fw' style='color:#000f;'></i>\" to add new task.",
+          "2. Click \"<i class='fa fa-cog  fa-lg fa-fw' style='color:#000f;'></i>\" to setting output.",
+          "3. Click \"<i class='fa fa-play-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" to start resizing.",
+          "4. You can click \"<i class='fa fa-stop-circle-o fa-lg fa-fw' style='color:#000f;'></i>\" to stop resizing.",
+          "5. You can click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" to remove all tasks.",
+          "6. You can click \"<i class='fa fa-refresh fa-lg fa-fw' style='color:#000f;'></i>\" to undo the change.",
+          "7. You can click \"<i class='fa fa-angle-double-left fa-lg fa-fw' style='color:#000f;'></i>\" to return to the previous page."
         ]
       },
       "dialog-popover-confirm-edit":{
@@ -367,10 +380,10 @@
       },
       "welcome":[
         "<h3> <i class='fa fa-cubes fa-lg fa-fw'></i> Get Started </h3>",
-        "1. Click \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" button to set output path.",
-        "2. Click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" button to remove all tasks.",
-        "3. You can click \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download all the GIF images.",
-        "4. You can click \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" button to Re-Download the failed GIF images."
+        "1. Click \"<i class='fa fa-cog fa-lg fa-fw' style='color:#000f;'></i>\" to set output path.",
+        "2. Click \"<i class='fa fa-trash-o fa-lg fa-fw' style='color:#000f;'></i>\" to remove all tasks.",
+        "3. You can click \"<i class='fa fa-download fa-lg fa-fw' style='color:#000f;'></i>\" to Re-Download all the GIF images.",
+        "4. You can click \"<i class='fa fa-tasks fa-lg fa-fw' style='color:#000f;'></i>\" to Re-Download the failed GIF images."
      ]      
     },
     "abouts":{
