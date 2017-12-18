@@ -103,6 +103,23 @@
         }
     }
 }
+.dove-docs-content__toolbar-button__next{
+    display: flex;
+    margin-left: rem-calc(5px);
+    .dove-docs-content__toolbar-button__next__icon{
+        display: flex;
+        width:rem-calc(30px);
+        height: rem-calc(25px);
+        border: rem-calc(1px) solid $md-grey-400;
+        align-items: center;
+        justify-content: center;
+        border-radius: rem-calc(5px);
+        &:hover{
+            background-color: $md-grey-400;
+            cursor: pointer;
+        }
+    }
+}
 .dove-docs-content__toolbar-search{
     display: flex;
     flex-direction: column;

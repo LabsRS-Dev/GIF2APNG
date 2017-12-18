@@ -68,6 +68,12 @@
                     >
                         <span class="dove-docs-content__toolbar-button__back__icon" @click="$router.go(-1)"><i class="fa fa-angle-double-left fa-lg fa-fw"></i></span>
                 </div>
+                <div 
+                    class="dove-docs-content__toolbar-button__next"
+                    v-if="showNextPage"
+                    >
+                        <span class="dove-docs-content__toolbar-button__next__icon" @click="$router.push({ path: beforeNextRoute})"><i class="fa fa-angle-double-right fa-lg fa-fw"></i></span>
+                </div>
                 <div
                     class="dove-docs-content__toolbar-search"
                     v-if="$route.path.match(/Find/) || $route.path.match(/Search/)"
@@ -168,6 +174,7 @@ var inputValueInfo;
 var dataType;
 var hasInited = false ;
 var certificate;   /////// 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
+var beforeNextRoute;
 
 /////
 var mouseDownX;          //鼠标落点的X方向坐标
@@ -180,6 +187,8 @@ export default {
             showHotSearch:false,
             showTip: false,
             showCover:false,
+            showNextPage:false,
+            beforeNextRoute:beforeNextRoute,
             mouseDownX:mouseDownX,
             slideWidth:slideWidth,
             appName:SysConfig.appName,
@@ -336,7 +345,18 @@ export default {
                     'SYS_enter':'Enter the resize_batch page...'
                 })
             }
-        }       
+        },
+        '$route'(to,from){
+          var that = this
+          let toPath = to.path
+          let fromPath = from.path
+          if((fromPath.match(/resize_single|resize_batch/) && toPath.match(/resize/))||(fromPath.match(/convert_gif2apng|convert_apng2gif/)&& toPath.match(/convert/))){
+            that.showNextPage = true
+            that.beforeNextRoute = fromPath
+          } else {
+            that.showNextPage = false
+          }
+        } 
     },
     components: {
         VueI18n,

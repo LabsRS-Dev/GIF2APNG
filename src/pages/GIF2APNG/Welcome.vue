@@ -268,6 +268,7 @@ export default {
         }else if (item.id === 'action-online-room') {
             this.onBtnOnlineSupportClick()
         }else if (item.id === 'action-update-news') {
+            this.initFirstNews()
             this.getNewList()
         }
     },
