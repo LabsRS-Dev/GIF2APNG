@@ -181,10 +181,9 @@ export default {
   mounted(){
     var that = this
     if(!hasInited){
-      hasInited = true
-      that.initFirstNews()
-      that.getNewList()
-      that.__GetCurrentLanguage()
+        hasInited = true
+        that.getNewList()
+        that.__GetCurrentLanguage()
     }
   },
   computed: {
@@ -217,6 +216,7 @@ export default {
     },
     getNewList(){
       var that = this
+      that.newsList = []
       const newsUrl = SysConfig.newsDataUrl
       var $ = Util.util.getJQuery$()
       try{
@@ -232,9 +232,10 @@ export default {
             }catch(e) {
             console.error(e)
             }
-        }, function(){
+        })
+        if(that.newsList.length == 0){
             that.initFirstNews()
-        })          
+        }
       }catch (e) {
           console.error(e)
       }
@@ -268,7 +269,6 @@ export default {
         }else if (item.id === 'action-online-room') {
             this.onBtnOnlineSupportClick()
         }else if (item.id === 'action-update-news') {
-            this.initFirstNews()
             this.getNewList()
         }
     },

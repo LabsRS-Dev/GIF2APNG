@@ -603,6 +603,7 @@ export default {
                     that.onChangeTestFile = false
                     that.percentage = 100
                 }
+                $('.sliderRange').css('background-size', that.percentage +'% 100%' )
                 if(that.defaultCurWidth < clientWidth*0.4 && that.defaultCurHeight < clientHeight*0.6){
                     $('.sliderImage').css('width',that.defaultCurWidth)
                     $('.sliderImage').css('height',that.defaultCurHeight)
@@ -745,6 +746,24 @@ export default {
             }
 
             console.log("-------------------- call export dir")
+            if(that.percentage == 100 && that.enableMaintainAspectRatio && that.enableCustomRatio == false){
+                BS.b$.Notice.alert({
+                    message: that.$t('pages.resize.notice-no-prompt.message')
+                })
+            } else if(that.enableMaintainAspectRatio == false && that.inputWidth == that.defaultCurWidth && that.inputHeight == that.defaultCurHeight  && that.enableCustomRatio == false){
+                BS.b$.Notice.alert({
+                    message: that.$t('pages.resize.notice-no-prompt.message')
+                })
+            }else if(that.inputWidth == that.defaultCurWidth && that.inputHeight == that.defaultCurHeight  && that.enableCustomRatio){
+                BS.b$.Notice.alert({
+                    message: that.$t('pages.resize.notice-no-prompt.message')
+                })
+            }else {
+                that.__checkTheLastOutputPathIsExist()
+            }
+        },
+        __checkTheLastOutputPathIsExist(){
+            var that = this
             if(that.lastOutputPath==""){
                 const cdg = that.outputConfigDialog
                 cdg.title = that.$t('pages.resize.dialog-config-output.title')
@@ -1647,9 +1666,6 @@ export default {
         enableMaintainAspectRatio(val,oldVal){
             var that = this
             var $ = Util.util.getJQuery$()
-            if(val == false){
-                $("input[type=range]::-webkit-slider-thumb").css({'background':'red'})
-            }
             if(that.WidthFocus){
                 that.WidthFocus = false 
                 that.curWidth = that.finalInputWidth

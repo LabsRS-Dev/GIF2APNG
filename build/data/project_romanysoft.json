@@ -24,9 +24,9 @@
       "CheckForUpdatePageURL": "https://aws.romanysoft.com/giftools",
 
       "autoOffset": true,
-      "minSize" : [1024, 768],
-      "size" : [1024, 768],
-      "#maxSize" : [1024, 768],
+      "minSize" : [1000, 720],
+      "size" : [1000, 720],
+      "#maxSize" : [1000, 720],
       "hasTitleBar" : true,
       "hasShadow" : true,
       "hasTextured" : true,
