@@ -4,5 +4,40 @@
   "jshint.enable": false,
   "gotoSymbolStack.currentStackPosition": 0,
   "gotoSymbolStack.maxStackPosition": 0,
-  "gotoSymbolStack.filePositionInfo": []
+  "gotoSymbolStack.filePositionInfo": [],
+  "cSpell.language": ",en,en-GB,en-US",
+  "cSpell.enabledLanguageIds": [
+    "c",
+    "cpp",
+    "csharp",
+    "go",
+    "handlebars",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "latex",
+    "markdown",
+    "php",
+    "plaintext",
+    "python",
+    "restructuredtext",
+    "rust",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "yml"
+  ],
+  "emmet.syntaxProfiles": {
+    "vue-html": "html",
+    "vue": "html"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "html",
+    "vue"
+  ],
+  "eslint.options": {
+    "plugins": ["html"]
+  }
 }
