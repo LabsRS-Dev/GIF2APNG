@@ -70,11 +70,23 @@ const ToolsMap = {
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   'gif2apng': {
     type: ToolsType.NTASK,
-    cli: BS.b$.App.getAppPluginDir() + '/CLIgif2apng',
+    cli: BS.b$.App.getAppPluginDir() + '/gif2apng',
     command: [],
     mainThread: false
   },
   'stop.gif2apng': {
+    type: ToolsType.STOP_NTASK,
+    command: ['stop', 'calltask']
+  },
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  'apng2gif': {
+    type: ToolsType.NTASK,
+    cli: BS.b$.App.getAppPluginDir() + '/apng2gif',
+    command: [],
+    mainThread: false
+  },
+  'stop.apng2gif': {
     type: ToolsType.STOP_NTASK,
     command: ['stop', 'calltask']
   },
