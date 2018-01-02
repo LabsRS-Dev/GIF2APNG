@@ -42,7 +42,7 @@ export default{
            var that = this
            return [
                 {id:'action-gif2apng', visiable:true, icon:that.gif2apngIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_gif2apng"},
-                // {id:'action-apng2gif', visiable:true, icon:that.apng2gifIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_apng2gif"}
+                {id:'action-apng2gif', visiable:true, icon:that.apng2gifIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_apng2gif"}
            ]
         }
     },

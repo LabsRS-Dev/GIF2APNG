@@ -117,7 +117,7 @@
                                     <ui-autocomplete
                                         :suggestions="selectRatioList"
                                         v-model="ele.commonRatio"
-                                        :autofocus = "true"
+                                        @blur = "onApplieToAllItem()"
                                         >
                                     </ui-autocomplete>
                                 </ui-alert>
@@ -242,7 +242,7 @@
         constructor(){
             this.data = {
                 outputPaths: [],
-                selectRatio:['2:2','3:3','4:4','5:5','6:6'],
+                selectRatio:['1:1','3:2','4:3','15:7','16:9','25:17'],
                 lastSelectOutputPath: "",
                 enableOverwriteOutput: false,
                 maxSaveOutputPathCount: 5
@@ -640,7 +640,18 @@
                 var length = item.ratioCommon.length
                 let ratioObj = new Ratio('')
                 that.$set(item.ratioCommon,length,ratioObj)
-                console.log(that.taskList)
+                that.getAutofocus = true
+            },
+
+            onApplieToAllItem(){
+                var that = this
+                const cdg = that.confirmDialog
+                cdg.title = that.$t('pages.resize.dialog-confirm-remove-all.title')
+                cdg.content = that.$t('pages.resize.dialog-confirm-remove-all.message')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-remove-all.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-remove-all.btnDeny')
+                var dialog = that.$refs[cdg.ref]
+                dialog.open()
             },
 
             onRemoveRatioItem(item, ele, index) {

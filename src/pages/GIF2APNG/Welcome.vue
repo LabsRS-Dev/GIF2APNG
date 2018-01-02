@@ -93,6 +93,7 @@ import {UiIcon, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToo
 import {Transfer} from '../../bridge/transfer'
 import {SysConfig} from '../../data/sys-config'
 import { languageConfiguration } from '../../extern.js'
+import IconsRef from '../../data/icon.js'
 
 
 var store_newsList = []
@@ -160,6 +161,7 @@ export default {
   data(){
     return {
       newsList: store_newsList,
+      imgIcon:IconsRef.iconSet.reductIcon,
       lastLanguageSetting: $LS$.data.lastSelectLanguage,
       availableLanguageList: languageConfiguration.languageInfoMap(),
       optionsConfigDialog:{
@@ -209,7 +211,7 @@ export default {
           link: SysConfig.companyWebsiteHomepage
       })
       _.each(list, function(ele){
-          let newsObj = new News(ele.thumb || "images/logo_64x64.png", ele.title, ele.date, ele.description, ele.link)
+          let newsObj = new News(ele.thumb || that.imgIcon, ele.title, ele.date, ele.description, ele.link)
           that.newsList.push(newsObj)
       })
       store_newsList = that.newsList
