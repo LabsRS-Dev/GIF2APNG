@@ -18,7 +18,7 @@
         },
         "resize":{
           "title": "尺寸转换",
-          "tip": "转换GIF动画格式以及改变尺寸"
+          "tip": "改变GIF动画尺寸"
         },
         "search":{
           "title":"搜索或者输入名称",
@@ -197,7 +197,8 @@
       "content":{
         "reply":"撤销",
         "tooltip_single":"单独处理",
-        "tooltip_batch":"批量处理"
+        "tooltip_batch":"批量处理",
+        "normal_batch":"定制处理"
       },
       "toolbar":{
         "import":"导入GIF动画文件",
@@ -207,7 +208,9 @@
         "adjustSize" :"图像尺寸调整",
         "fix":"开始执行",
         "chancel":"停止",
-        "previousPage":"返回上一级菜单"
+        "previousPage":"返回上一级菜单",
+        "addRatio":"添加常用比例",
+        "removeRatio":"删除常用比例"
       },
       "task-item":{
          "file-name": "名称：",
@@ -260,6 +263,19 @@
         "btnDeny": "取消",
         "path":"输出路径:",
         "cover":"是否覆盖原有文件?"
+      },
+      "dialog-config-ratio":{
+        "title":"添加常用比例",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "ratio": "宽高比:",
+        "symbol": ":"
+      },
+      "dialog-config-removeRatio":{
+        "title":"删除常用比例",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "ratio": "宽高比:"
       },
       "dialog-config-change":{
         "title":"调节图片尺寸",

@@ -17,11 +17,11 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    width:35vw;
     .ui-button{
       text-transform :none;
       display: flex;
-      height: 20vh;
+      width: rem-calc(180px);
+      height: rem-calc(150px);
       border-radius:rem-calc(15px);
       .ui-button__content{
         -webkit-align-items: center;  

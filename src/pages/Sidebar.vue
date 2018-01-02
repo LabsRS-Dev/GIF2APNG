@@ -3,9 +3,11 @@
         <!--siderbar__header-->
         <div class="dove-docs-sidebar__header">
             <div class="dove-docs-sidebar__header__info">
+                <img :src='imgIcon' width="48" height="48" viewBox="0 0 48 48" >
                 <span class="dove-docs-sidebar__header-product-name">{{ appName }}</span>
                 <a
                     class="dove-docs-sidebar__header-version"
+                    v-show="false"
                     :href="homepage"
                     rel="noopener"
                     target="_blank"
@@ -78,6 +80,7 @@
 import { BS, Util, _ } from 'dove.max.sdk'
 import {UiIcon, UiCollapsible} from 'keen-ui'
 import Routes from './../routes.js'
+import IconsRef from '../data/icon.js'
 
 export default {
     data() {
@@ -85,8 +88,8 @@ export default {
             appName:  Routes.SysConfig.appName,
             version:  Routes.SysConfig.version,
             homepage: Routes.SysConfig.homepage,
-
-            menu: Routes.menu
+            menu: Routes.menu,
+            imgIcon:IconsRef.iconSet.reductIcon
         }
     },
 

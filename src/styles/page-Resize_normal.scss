@@ -1,0 +1,163 @@
+.page__Resize-normal{
+  .ui-alert{
+    overflow: visible;
+  }
+}
+.page__examples-app-doc-normal__item{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .ui-toolbar-normal__top {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    .ui-toolbar-normal__top__thumb{
+      display: flex;
+      align-items: center;
+      img{
+        border-radius: rem-calc(8px);
+      }
+    }
+    .ui-toolbar-normal__top__info{
+      display: flex;
+      flex-direction: column;
+      .ui-toolbar-normal__top__metainfo{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin: rem-calc(5px);
+        .ui-toolbar-normal__top__fileName{
+          width: 35%;
+        }
+        .ui-textbox{
+          flex: 1;
+          align-items: center;
+          margin: 0;
+          padding: 0;
+          height: rem-calc(25px);
+          border-radius: rem-calc(5px);
+          border: rem-calc(1px) solid #adadad;
+          position: relative;
+          .ui-textbox__input{
+            border: 0;
+            height: rem-calc(25px);
+            font-size: rem-calc(11px);
+            margin-left: rem-calc(5px);
+          }
+        }
+      }
+      .ui-toolbar-normal__top__selsct{
+        display: flex;
+        flex-wrap:wrap;
+        align-items:center;
+        .ui-alert{
+          width: rem-calc(140px);
+          margin: rem-calc(5px);
+          .ui-alert__body{
+            border-left:none;
+            padding: rem-calc(12px) rem-calc(8px);
+            .ui-alert__icon{
+              margin-right: rem-calc(5px);
+            }
+            .ui-alert__dismiss-button{
+              margin: -.25rem -.5rem -.25rem 0;
+            }
+            &:hover{
+              background: #fff;
+              box-shadow: 0 8px 17px 0 rgba(0,0,0,.25), 0 6px 20px 0 rgba(0,0,0,.2);
+            }
+            &:hover .ui-alert__icon , &:hover .ui-icon-button__icon , &:hover .ui-close-button__icon , &:hover a{
+              color: rgba(0,0,0,.25) !important;
+            }
+          }
+        }
+        .ui-autocomplete{
+          margin: 0;
+          padding: 0;
+          border-radius: rem-calc(5px);
+          border: rem-calc(1px) solid #adadad;
+          .ui-autocomplete__clear-button{
+            display: none;
+          }
+          .ui-autocomplete__input{
+            padding: 0 rem-calc(5px);
+            height: rem-calc(24px);
+            font-size: rem-calc(11px);
+            border-bottom:none;
+          }
+        }
+        .ui-fab{
+          margin-left: rem-calc(5px);
+        } 
+      }
+    }
+  }
+}
+.page__toolbar-app-doc__usual-ratio{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: rem-calc(14px);
+  .input-usual-ratio{
+    font-size: rem-calc(14px);
+    margin-right: rem-calc(10px);
+  }
+  .input-usual-ratio-symbol{
+    margin: 0 rem-calc(5px);
+  }
+  input {
+    margin: 0;
+    padding: 0 rem-calc(5px);
+    width: rem-calc(120px);
+    height: rem-calc(25px);
+    border-radius: rem-calc(5px);
+    border: rem-calc(1px) solid #adadad;
+  }
+}
+.page__toolbar-app-doc__remove-usual-ratio{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: rem-calc(14px);
+  .input-remove-usual-ratio{
+    font-size: rem-calc(14px);
+    margin-right: rem-calc(10px);
+  }
+  .ui-select {
+    flex: 1;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: rem-calc(25px);
+    border-radius: rem-calc(5px);
+    border: rem-calc(1px) solid #adadad;
+    position: relative;
+    .ui-select__dropdown {
+        .ui-select-option {
+            font-size: rem-calc(11px);
+        }
+    }
+    .ui-select__display {
+        border: 0;
+        height: rem-calc(25px);
+        font-size: rem-calc(11px);
+        .ui-select__dropdown-button {
+          margin: 0 auto;
+        }
+        .ui-select__display-value{
+          margin-left: rem-calc(5px);
+        }
+    }
+    .ui-select-option {
+        height: rem-calc(28px);
+    }
+    .ui-select-option.is-selected {
+        color: rgba(0, 0, 0, .87);
+        background-color: #fff;
+        font-weight: 400;
+    }
+    .ui-select-option:hover {
+        background-color: $md-blue;
+    }
+  }
+}

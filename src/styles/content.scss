@@ -48,11 +48,35 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: rem-calc(12px);
     flex-shrink: 0;
     z-index: $z-index-toolbar;
     border-bottom: $docs-content__toolbar-border-bottom;
 }
-
+.dove-docs-content__toolbar-annotation {
+    display: flex;
+    margin: 0 auto;
+    width: 100%; // max-width: rem-calc(1092px);
+    padding-left: rem-calc(12px);
+    padding-right: rem-calc(12px);
+    align-items: baseline;
+    user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; 
+    .dove-docs-content__toolbar-annotation-title{
+        margin: 0;
+        font-weight: 500;
+        font-size: 1.2rem;
+        user-select: none;
+    }
+    .dove-docs-content__toolbar-annotation-title__sub{
+        margin-left: rem-calc(5px);
+        font-weight: normal;
+        font-size: rem-calc(10px);
+        user-select: none;
+    }
+}
 .dove-docs-content__toolbar-content {
     margin: 0 auto;
     width: 100%; // max-width: rem-calc(1092px);

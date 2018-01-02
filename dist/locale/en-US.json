@@ -18,7 +18,7 @@
         },
         "resize":{
           "title": "Resize",
-          "tip": "Convert GIF(.gif) to animated PNG(.png) and resize"
+          "tip": "Resize GIF(.gif)"
         },
         "search":{
           "title":"Search or enter name",
@@ -35,7 +35,7 @@
       "menu":{
         "about":{
           "title": "About",
-          "tip": "Information about us"
+          "tip": "About us"
         }
       }
     }
@@ -197,7 +197,8 @@
       "content":{
         "reply":"Undo",
         "tooltip_single":"Single processing",
-        "tooltip_batch":"Batch processing"
+        "tooltip_batch":"Batch processing",
+        "normal_batch":"Custom aspect ratio"
       },
       "toolbar":{
         "import":"Import GIF(.gif) files",
@@ -207,7 +208,9 @@
         "adjustSize" :"Image Resize",
         "fix":"Resize",
         "chancel":"Cancel all",
-        "previousPage":"Previous Page"
+        "previousPage":"Previous Page",
+        "addRatio":"Add the usual ratio",
+        "removeRatio":"Remove the usual ratio"
       },
       "task-item":{
          "file-name": "Name：",
@@ -260,6 +263,19 @@
         "btnDeny": "Cancel",
         "path":"Output:",
         "cover":"Overwrite exsisting files?"
+      },
+      "dialog-config-ratio":{
+        "title":"Add the usual ratio",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "ratio": "Aspect ratio:",
+        "symbol": ":"
+      },
+      "dialog-config-removeRatio":{
+        "title":"Remove the usual ratio",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "ratio": "Aspect ratio:"
       },
       "dialog-config-change":{
         "title":"Adjust the image size",

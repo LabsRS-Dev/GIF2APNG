@@ -10,6 +10,7 @@ const iconSet = {
   reductIcon: 'images/logo_64x64.png',
   process_single: 'images/process_single.svg',
   process_batch: 'images/process_batch.svg',
+  process_normal: 'images/process_normal.svg',
   gif2apng: 'images/gif.svg',
   apng2gif: 'images/png.svg'
 }

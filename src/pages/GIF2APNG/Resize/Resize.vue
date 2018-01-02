@@ -34,7 +34,8 @@ export default{
     data(){
         return {
             singleIcon:IconsRef.iconSet.process_single,
-            batchIcon:IconsRef.iconSet.process_batch
+            batchIcon:IconsRef.iconSet.process_batch,
+            normalIcon:IconsRef.iconSet.process_normal
         }
     },
     computed:{
@@ -42,7 +43,8 @@ export default{
            var that = this
            return [
                 {id:'action-single', visiable:true, icon:that.singleIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_single"},
-                {id:'action-batch', visiable:true, icon:that.batchIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_batch"}
+                {id:'action-batch', visiable:true, icon:that.batchIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_batch"},
+                {id:'action-normal', visiable:true, icon:that.normalIcon, type:"secondary",tooltip:"pages.resize.content.normal_batch"}
            ]
         }
     },
@@ -53,6 +55,8 @@ export default{
                 this.onBtnSingleFilesClick()
             }else if (item.id === 'action-batch') {
                 this.onBtnBatchFilesClick()
+            }else if (item.id === 'action-normal') {
+                this.onBtnNormalFilesClick()
             }
         }, 
         onBtnSingleFilesClick(){
@@ -62,7 +66,11 @@ export default{
         onBtnBatchFilesClick(){
             var that = this
             that.$router.push({name:'Resize_Batch'})
-        }               
+        },
+        onBtnNormalFilesClick(){
+            var that = this
+            that.$router.push({name:'Resize_Normal'})           
+        }
     },
     components: {
         UiButton

@@ -74,6 +74,10 @@
                     >
                         <span class="dove-docs-content__toolbar-button__next__icon" @click="$router.push({ path: beforeNextRoute})"><i class="fa fa-angle-double-right fa-lg fa-fw"></i></span>
                 </div>
+                <div class="dove-docs-content__toolbar-annotation">
+                    <div class="dove-docs-content__toolbar-annotation-title">{{ $t($route.meta.title) }}</div>
+                    <div class="dove-docs-content__toolbar-annotation-title__sub">{{ $t($route.meta.tip) }}</div>
+                </div>
                 <div
                     class="dove-docs-content__toolbar-search"
                     v-if="$route.path.match(/Find/) || $route.path.match(/Search/)"

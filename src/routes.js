@@ -11,6 +11,7 @@ import Convert_apng2gif from './pages/GIF2APNG/Convert/Convert_apng2gif.vue'
 import ResizePage from './pages/GIF2APNG/Resize/Resize'
 import Resize_Single from './pages/GIF2APNG/Resize/Resize_Single'
 import Resize_Batch from './pages/GIF2APNG/Resize/Resize_Batch'
+import Resize_Normal from './pages/GIF2APNG/Resize/Resize_Normal'
 
 // /
 import Recommendation from './pages/GIF2APNG/Find/recommendation.vue'
@@ -130,6 +131,8 @@ const menu = [{
     }, {
       path: rootPath + '/convert/convert_gif2apng',
       name: 'Convert_gif2apng',
+      title: 'routes.common.menu.convert.title',
+      tip: 'routes.common.menu.convert.tip',
       show: false,
       component: Convert_gif2apng
     }, {
@@ -149,13 +152,24 @@ const menu = [{
     }, {
       path: rootPath + '/resize/resize_single',
       name: 'Resize_Single',
+      title: 'routes.common.menu.resize.title',
+      tip: 'routes.common.menu.resize.tip',
       show: false,
       component: Resize_Single
     }, {
       path: rootPath + '/resize/resize_batch',
       name: 'Resize_Batch',
+      title: 'routes.common.menu.resize.title',
+      tip: 'routes.common.menu.resize.tip',
       show: false,
       component: Resize_Batch
+    }, {
+      path: rootPath + '/resize/resize_normal',
+      name: 'Resize_Normal',
+      title: 'routes.common.menu.resize.title',
+      tip: 'routes.common.menu.resize.tip',
+      show: false,
+      component: Resize_Normal
     }, {
       path: rootPath + '/Down',
       show: false,

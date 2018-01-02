@@ -41,13 +41,17 @@
 
     .dove-docs-sidebar__header__info {
         display: flex;
-        flex-direction: column;
-        padding: rem-calc(15px) rem-calc(8px) rem-calc(15px) rem-calc(48px);
+        height: $docs-content__toolbar-px-height;
+        height: $docs-content__toolbar-vh-height;
+        padding: rem-calc(12px);
+        align-items: center;
+        img {
+            margin-left: rem-calc(8px);
+        }
         .dove-docs-sidebar__header-product-name {
+            margin-left: rem-calc(10px);
             color: $sidebar__header-font-color;
-            font-size: rem-calc(18px);
-            height: 4vh;
-            line-height: 4vh;
+            font-size: rem-calc(16px);
             font-weight: bold;
         }
 
