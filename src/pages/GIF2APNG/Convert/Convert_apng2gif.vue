@@ -83,9 +83,9 @@
                 <div class="page__toolbar-app-doc__preview__info">
                     <div class="page__toolbar-app-doc__preview__info__image">
                         <img :src="beforePath" width="64" height="64" viewBox="0 0 64 64" />
-                        <span class="preview__info__image__before">{{ $t('pages.convert.dialog-config-preview.before') }}</span>
+                        <span class="preview__info__image__before">{{ $t('pages.convert.dialog-config-apng2gif-preview.before') }}</span>
                         <img :src="afterPath" width="64" height="64" viewBox="0 0 64 64" />
-                        <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-preview.after') }}</span>
+                        <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-apng2gif-preview.after') }}</span>
                     </div>
                     <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
                 </div>
@@ -361,7 +361,7 @@ export default {
                         console.log(dateInfo)
                         if(progressInterval < 100){
                             progressInterval += 5
-                            Transfer.trigger('TestRunGif2apngTask', { data: {
+                            Transfer.trigger('TestRunApng2gifTask', { data: {
                                 taskID: task_id || that.taskList[0].id,
                                 messagePackage:{
                                 progress:progressInterval,
@@ -369,7 +369,7 @@ export default {
                             }})
                             if(dateInfo > 9){
                                 window.clearInterval(progressTask)
-                                Transfer.trigger('TestRunGif2apngTask', { data: {
+                                Transfer.trigger('TestRunApng2gifTask', { data: {
                                     taskID: task_id || that.taskList[0].id,
                                     messagePackage:{
                                     progress:progressInterval,
@@ -380,7 +380,7 @@ export default {
                             }
                         }else if(progressInterval = 100){
                             window.clearInterval(progressTask)
-                            Transfer.trigger('TestRunGif2apngTask', { data: {
+                            Transfer.trigger('TestRunApng2gifTask', { data: {
                                     taskID: task_id || that.taskList[0].id,
                                     messagePackage:{
                                     state: 1,
@@ -393,9 +393,9 @@ export default {
             }
 
 
-            Transfer.bind("TestRunGif2apngTask", function(info){
+            Transfer.bind("TestRunApng2gifTask", function(info){
                 const data = info.data
-                that.__updateInfoWithGif2apngTask(data.taskID, data.messagePackage)
+                that.__updateInfoWithApng2gifTask(data.taskID, data.messagePackage)
             })
         }
     },
@@ -692,7 +692,7 @@ export default {
                     checkFileExt = BS.b$.App.getFileExt(fileObj.filePath).toLowerCase()
                     if(BS.b$.App.checkPathIsFile(fileObj.filePath)){
                         // let taskObj = new Task("images/picture.svg", fileObj.fileName, fileObj.filePath, fileObj.fileSizeStr)
-                        if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'gif'){
+                        if (!that.__findTaskObjExistWithPath(fileObj.filePath) &&  checkFileExt == 'png'){
                             if(fileObj.fileName.length > 50){
                                 fileObj.omitName = fileObj.fileName.substring(0,50) + "..."
                             }else {
@@ -741,7 +741,7 @@ export default {
 
         },
 
-        __updateInfoWithGif2apngTask(taskID, data) {
+        __updateInfoWithApng2gifTask(taskID, data) {
             var that = this
             let curInfoWithTaskObj = taskID2taskObj[taskID]
             if (curInfoWithTaskObj) {
@@ -773,7 +773,7 @@ export default {
                     taskObj.stateInfo.progress = 0
                 })
                 _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_Gif2apngTask(taskObj.id, {
+                    that.__abi__start_Apng2gifTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
                         overwrite: that.enableOverWriteOutput ? true : false
@@ -782,23 +782,23 @@ export default {
                         console.dir(data)
                         // process 
                         if (data.infoType === 'type_calltask_start'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                            that.__updateInfoWithApng2gifTask(taskObj.id, {
                                 progress: 50,
                                 state:0
                             })
                         }else if (data.infoType === 'type_calltask_success'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                            that.__updateInfoWithApng2gifTask(taskObj.id, {
                                 progress: 100,
                                 state: 1
                             })
                         }else if (data.infoType === 'type_calltask_error'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                            that.__updateInfoWithApng2gifTask(taskObj.id, {
                                 progress: 100,
                                 state: -1,
                                 message: data.detail_error || 'error'
                             })
                         }else if (data.infoType === 'type_calltask_cancel') {
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                            that.__updateInfoWithApng2gifTask(taskObj.id, {
                                 progress: 100,
                                 state: 2,
                                 message: that.$t('pages.convert.notice-no-cancel.message')
@@ -817,10 +817,10 @@ export default {
             if(!notice) return
             if(that.taskList.length > 0 && that.isConvertWorking) {
                 _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__cancel_Gif2apngTask(taskObj.id,(data) => {
+                    that.__abi__cancel_Apng2gifTask(taskObj.id,(data) => {
                         // check converting
                         if (data.infoType === 'type_calltask_cancel'){
-                            that.__updateInfoWithGif2apngTask(taskObj.id, {
+                            that.__updateInfoWithApng2gifTask(taskObj.id, {
                                 progress: 100,
                                 state:2
                             })
@@ -832,13 +832,13 @@ export default {
         },
 
         /**
-        * @function __abi__start_Gif2apngTask   调用处理gif转换成apng格式任务
+        * @function __abi__start_Apng2gifTask   调用处理gif转换成apng格式任务
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Object} config 调用的配置选项
         * @param  {Function} handler 回调处理
         * @return {Object} {this}
         */
-        __abi__start_Gif2apngTask(taskID, config, handler = (data)=>{}){
+        __abi__start_Apng2gifTask(taskID, config, handler = (data)=>{}){
             var that = this
             const _config = _.extend({
                 src: '',  // 要处理的文件或者目录的路径
@@ -862,24 +862,26 @@ export default {
 
             // Fix when the task is file obj
             if (BS.b$.App.checkPathIsFile(_config.src)) {
-                _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.png'
+                _dest = _config.out + '/' + BS.b$.App.getFileNameWithoutExt(_config.src) + '.gif'
                 that.__updateTaskObj(taskID, {fixOutDir:_dest, fixpath:_dest}, (taskObj) => { taskObj.associatedTransferTaskIds.push(transferTaskID)})
             }
 
             // -- 命令行参数格式化
-            const commandFormat = '['   +
+            const commandFormat = '["%input%","%output%",'+
                                     '"' + _config.compression  + '",' +
                                     '"' + _config.iterations  + '",' +
                                     (_config.overwrite ? '"-ow",' : '') +
                                     (_config.keepPalette ? '"-kp",' : '') +
-                                    '"%input%","%output%"]'
+                                    ']'
             var fm_command = commandFormat
             fm_command = fm_command.replace(/%input%/g, _config.src)
             fm_command = fm_command.replace(/%output%/g, _dest)
             _command = window.eval(fm_command)
 
+            console.log(_command)
+
             /// call process task
-            Transfer.Tools.call('gif2apng', {
+            Transfer.Tools.call('apng2gif', {
                 taskID: transferTaskID,
                 command: _command
             }, (data) => {
@@ -890,12 +892,12 @@ export default {
         },
 
         /**
-        * @function __abi__cancel_Gif2apngTask 调用停止处理gif转换成apng格式任务
+        * @function __abi__cancel_Apng2gifTask 调用停止处理apng转换成gif格式任务
         * @param  {String/Number} taskID 指定任务ID
         * @param  {Function} handler 回调处理
         * @return {type} {description}
         */
-        __abi__cancel_Gif2apngTask(taskID, handler = (data)=>{}){
+        __abi__cancel_Apng2gifTask(taskID, handler = (data)=>{}){
             var that = this
 
             // 检查必要数值
@@ -903,7 +905,7 @@ export default {
             let curTaskObj = taskID2taskObj[taskID]
             _.each(curTaskObj.associatedTransferTaskIds, (transferTaskId) => {
                 /// call process task
-                Transfer.Tools.call('stop.gif2apng', {
+                Transfer.Tools.call('stop.apng2gif', {
                     taskID: transferTaskId
                 }, (data) => {
                     handler && handler(data)
@@ -934,7 +936,7 @@ export default {
 
             if(item.isWorking) {
                 // notice to server
-                that.__abi__cancel_Gif2apngTask(item.id)
+                that.__abi__cancel_Apng2gifTask(item.id)
             }
 
             that.__removeTaskItem(item, index)
@@ -1032,7 +1034,7 @@ export default {
                     }
                 },
                 legend: {
-                    data:['.Gif','.Apng']
+                    data:['.Apng','.Gif']
                 },
                 xAxis: {
                     type : 'category',
@@ -1048,11 +1050,11 @@ export default {
                     }
                 },
                 series: [{
-                    name: '.Gif',
+                    name: '.Apng',
                     type: 'bar',
                     data: [beforeModificationSize]
                 },{
-                    name: '.Apng',
+                    name: '.Gif',
                     type: 'bar',
                     data: [afterModificationSize]
                 }]

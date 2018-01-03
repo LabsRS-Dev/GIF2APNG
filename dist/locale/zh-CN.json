@@ -14,11 +14,31 @@
         },
         "convert":{
           "title": "格式转换",
+          "tip": "转换格式"
+        },
+        "convert_gif2apng":{
+          "title": "格式转换",
           "tip": "转换GIF动画格式"
+        },
+        "convert_apng2gif":{
+          "title": "格式转换",
+          "tip": "转换Png动画格式"
         },
         "resize":{
           "title": "尺寸转换",
           "tip": "改变GIF动画尺寸"
+        },
+        "resize_single":{
+          "title": "尺寸转换",
+          "tip": "单独改变GIF动画尺寸"
+        },
+        "resize_batch":{
+          "title": "尺寸转换",
+          "tip": "批量改变GIF动画尺寸"
+        },
+        "resize_normal":{
+          "title": "尺寸转换",
+          "tip": "按不同常用比例改变GIF动画尺寸"
         },
         "search":{
           "title":"搜索或者输入名称",
@@ -154,10 +174,16 @@
         "title":"信息预览",
         "btnConfirm": "确定",
         "btnDeny": "取消",
-        "before":"Gif",
-        "after":"Apng",
         "chartTitle":"数据对比图",
         "xAxis":"文件大小"
+      },
+      "dialog-config-gif2apng-preview":{
+        "before":"Gif",
+        "after":"Apng"
+      },
+      "dialog-config-apng2gif-preview":{
+        "before":"Apng",
+        "after":"Gif"
       },
       "dialog-confirm-stop-fix":{
         "title":"确认操作",

@@ -33,6 +33,15 @@ import Download_Album from './pages/GIF2APNG/Down/download_Album.vue'
 // Config SystemConfig
 const icons = IconsRef.iconSet
 const rootPath = '/' + SysConfig.appName
+const rootID = SysConfig.appID
+
+var showResize = true
+
+if (rootID === 'com.gmagon.app.macos.gmagongif' || rootID === 'com.romanysoft.app.macos.giftools' || rootID === 'com.romanysoft.app.macos.xdebugapp') {
+  showResize = true
+} else if (rootID === 'com.romanysoft.app.macos.APNGToGifConverter') {
+  showResize = false
+}
 
 // Config menu
 const menu = [{
@@ -131,18 +140,20 @@ const menu = [{
     }, {
       path: rootPath + '/convert/convert_gif2apng',
       name: 'Convert_gif2apng',
-      title: 'routes.common.menu.convert.title',
-      tip: 'routes.common.menu.convert.tip',
+      title: 'routes.common.menu.convert_gif2apng.title',
+      tip: 'routes.common.menu.convert_gif2apng.tip',
       show: false,
       component: Convert_gif2apng
     }, {
       path: rootPath + '/convert/convert_apng2gif',
       name: 'Convert_apng2gif',
+      title: 'routes.common.menu.convert_apng2gif.title',
+      tip: 'routes.common.menu.convert_apng2gif.tip',
       show: false,
       component: Convert_apng2gif
     }, {
       path: rootPath + '/resize',
-      show: true,
+      show: showResize,
       component: ResizePage,
       title: 'routes.common.menu.resize.title',
       tip: 'routes.common.menu.resize.tip',
@@ -152,22 +163,22 @@ const menu = [{
     }, {
       path: rootPath + '/resize/resize_single',
       name: 'Resize_Single',
-      title: 'routes.common.menu.resize.title',
-      tip: 'routes.common.menu.resize.tip',
+      title: 'routes.common.menu.resize_single.title',
+      tip: 'routes.common.menu.resize_single.tip',
       show: false,
       component: Resize_Single
     }, {
       path: rootPath + '/resize/resize_batch',
       name: 'Resize_Batch',
-      title: 'routes.common.menu.resize.title',
-      tip: 'routes.common.menu.resize.tip',
+      title: 'routes.common.menu.resize_batch.title',
+      tip: 'routes.common.menu.resize_batch.tip',
       show: false,
       component: Resize_Batch
     }, {
       path: rootPath + '/resize/resize_normal',
       name: 'Resize_Normal',
-      title: 'routes.common.menu.resize.title',
-      tip: 'routes.common.menu.resize.tip',
+      title: 'routes.common.menu.resize_normal.title',
+      tip: 'routes.common.menu.resize_normal.tip',
       show: false,
       component: Resize_Normal
     }, {

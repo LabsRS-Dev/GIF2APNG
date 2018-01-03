@@ -14,11 +14,31 @@
         },
         "convert":{
           "title": "Convert",
+          "tip": "Convert format"
+        },
+        "convert_gif2apng":{
+          "title": "Convert",
           "tip": "Convert GIF(.gif) to animated PNG(.png)"
+        },
+        "convert_apng2gif":{
+          "title": "Convert",
+          "tip": "Convert animated PNG(.png) to GIF(.gif)"
         },
         "resize":{
           "title": "Resize",
           "tip": "Resize GIF(.gif)"
+        },
+        "resize_single":{
+          "title": "Resize",
+          "tip": "Resize a GIF(.gif)"
+        },
+        "resize_batch":{
+          "title": "Resize",
+          "tip": "Resize a batch of GIF(.gif)"
+        },
+        "resize_normal":{
+          "title": "Resize",
+          "tip": "Resize the GIF(.gif) as usual"
         },
         "search":{
           "title":"Search or enter name",
@@ -154,10 +174,16 @@
         "title":"Preview info",
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
-        "before":"Gif",
-        "after":"Apng",
         "chartTitle":"Comparison",
         "xAxis":"File size"
+      },
+      "dialog-config-gif2apng-preview":{
+        "before":"Gif",
+        "after":"Apng"
+      },
+      "dialog-config-apng2gif-preview":{
+        "before":"Apng",
+        "after":"Gif"
       },
       "dialog-confirm-stop-fix":{
         "title":"Confirm",

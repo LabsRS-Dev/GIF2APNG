@@ -29,21 +29,29 @@
 <script>
 import {UiButton} from 'keen-ui';
 import IconsRef from '../../../data/icon.js'
+import { SysConfig } from '../../../data/sys-config.js'
 
 export default{
     data(){
         return {
             gif2apngIcon:IconsRef.iconSet.gif2apng,
-            apng2gifIcon:IconsRef.iconSet.apng2gif
+            apng2gifIcon:IconsRef.iconSet.apng2gif,
+            rootID:SysConfig.appID,
+            showGif2Apng:true
         }
     },
     computed:{
         actionList() {
-           var that = this
-           return [
-                {id:'action-gif2apng', visiable:true, icon:that.gif2apngIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_gif2apng"},
-                {id:'action-apng2gif', visiable:true, icon:that.apng2gifIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_apng2gif"}
-           ]
+            var that = this
+            if (that.rootID === 'com.gmagon.app.macos.gmagongif' || that.rootID === 'com.romanysoft.app.macos.giftools'|| that.rootID === 'com.romanysoft.app.macos.xdebugapp') {
+                that.showGif2Apng = true
+            } else if (that.rootID === 'com.romanysoft.app.macos.APNGToGifConverter') {
+                that.showGif2Apng = false
+            }
+            return [
+                 {id:'action-gif2apng', visiable:that.showGif2Apng, icon:that.gif2apngIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_gif2apng"},
+                 {id:'action-apng2gif', visiable:true, icon:that.apng2gifIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_apng2gif"}
+            ]
         }
     },
     methods:{

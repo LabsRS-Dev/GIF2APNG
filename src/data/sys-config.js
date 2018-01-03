@@ -36,11 +36,15 @@ const internal = {
   },
   getSupportEmail: () => {
     return BS.b$.App.getSupportEmail()
+  },
+  getAppId: () => {
+    return BS.b$.App.getAppId()
   }
 }
 
 
 const SysConfig = {
+  appID: internal.getAppId(),
   appName: internal.getAppName() || 'GMagon GIF',
   version: internal.getAppVersion() || '20171210.10.35',
   homepage: internal.getHomePage() || 'https://gmagon.com/products/store/gmagon_gif/index.html',

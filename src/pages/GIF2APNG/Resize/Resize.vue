@@ -44,7 +44,7 @@ export default{
            return [
                 {id:'action-single', visiable:true, icon:that.singleIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_single"},
                 {id:'action-batch', visiable:true, icon:that.batchIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_batch"},
-                {id:'action-normal', visiable:true, icon:that.normalIcon, type:"secondary",tooltip:"pages.resize.content.normal_batch"}
+                // {id:'action-normal', visiable:true, icon:that.normalIcon, type:"secondary",tooltip:"pages.resize.content.normal_batch"}
            ]
         }
     },

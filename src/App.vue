@@ -64,7 +64,7 @@
                 </div>
                 <div 
                     class="dove-docs-content__toolbar-button__back"
-                    v-if="$route.path.match(/convert_gif2apng/) || $route.path.match(/resize_single/) || $route.path.match(/resize_batch/)"
+                    v-if="$route.path.match(/convert_gif2apng/) || $route.path.match(/convert_apng2gif/) || $route.path.match(/resize_single/) || $route.path.match(/resize_batch/) || $route.path.match(/resize_normal/)"
                     >
                         <span class="dove-docs-content__toolbar-button__back__icon" @click="$router.go(-1)"><i class="fa fa-angle-double-left fa-lg fa-fw"></i></span>
                 </div>
@@ -354,7 +354,7 @@ export default {
           var that = this
           let toPath = to.path
           let fromPath = from.path
-          if((fromPath.match(/resize_single|resize_batch/) && toPath.match(/resize/))||(fromPath.match(/convert_gif2apng|convert_apng2gif/)&& toPath.match(/convert/))){
+          if((fromPath.match(/resize_single|resize_batch|resize_normal/) && toPath.match(/resize/))||(fromPath.match(/convert_gif2apng|convert_apng2gif/)&& toPath.match(/convert/))){
             that.showNextPage = true
             that.beforeNextRoute = fromPath
           } else {

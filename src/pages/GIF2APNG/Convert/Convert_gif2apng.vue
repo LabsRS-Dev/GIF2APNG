@@ -83,9 +83,9 @@
                 <div class="page__toolbar-app-doc__preview__info">
                     <div class="page__toolbar-app-doc__preview__info__image">
                         <img :src="beforePath" width="64" height="64" viewBox="0 0 64 64" />
-                        <span class="preview__info__image__before">{{ $t('pages.convert.dialog-config-preview.before') }}</span>
+                        <span class="preview__info__image__before">{{ $t('pages.convert.dialog-config-gif2apng-preview.before') }}</span>
                         <img :src="afterPath" width="64" height="64" viewBox="0 0 64 64" />
-                        <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-preview.after') }}</span>
+                        <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-gif2apng-preview.after') }}</span>
                     </div>
                     <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
                 </div>
