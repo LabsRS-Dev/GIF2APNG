@@ -2,13 +2,22 @@
     "Description": "System bootstrap config",
 	"BootStrapList": [
 		"${BUNDEL_RESOURCE}/public/project.json",
+		"${BUNDEL_RESOURCE}/public/project_${APP_ID}.json",
 		"${BUNDEL_RESOURCE}/public/project_mac.json",
 		"${BUNDEL_RESOURCE}/public/project_win.json",
+		"${BUNDEL_RESOURCE}/public/project_mac_${APP_ID}.json",
+		"${BUNDEL_RESOURCE}/public/project_win_${APP_ID}.json",
 		"${BUNDEL_RESOURCE}/public/project_gmagon.json",
 		"${BUNDEL_RESOURCE}/public/project_mac_gmagon.json",
 		"${BUNDEL_RESOURCE}/public/project_win_gmagon.json",
 		"${BUNDEL_RESOURCE}/public/project_romanysoft.json",
 		"${BUNDEL_RESOURCE}/public/project_mac_romanysoft.json",
-		"${BUNDEL_RESOURCE}/public/project_win_romanysoft.json"
+		"${BUNDEL_RESOURCE}/public/project_win_romanysoft.json",
+		"${BUNDEL_RESOURCE}/public/project_gmagon_${APP_ID}.json",
+		"${BUNDEL_RESOURCE}/public/project_mac_gmagon_${APP_ID}.json",
+		"${BUNDEL_RESOURCE}/public/project_win_gmagon_${APP_ID}.json",
+		"${BUNDEL_RESOURCE}/public/project_romanysoft_${APP_ID}.json",
+		"${BUNDEL_RESOURCE}/public/project_mac_romanysoft_${APP_ID}.json",
+		"${BUNDEL_RESOURCE}/public/project_win_romanysoft_${APP_ID}.json"
 	]
 }

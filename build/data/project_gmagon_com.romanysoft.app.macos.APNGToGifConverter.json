@@ -1,0 +1,56 @@
+{
+    "AppExInfoDescription" : "set App other information",
+    "AppExInfo" : {
+        "enableHttpServer" : false,
+        "onlyBuildInServer": false,
+        "enableNativeRate": false,
+
+        "VendorName": "GMagon",
+        "VendorWebSiteURL": "https://gmagon.com",
+        "NewsJsonURL":"https://aws.gmagon.com/data/apngtogifconverter/news.json",
+        "AdditionalConfigURL":"",
+        "SupportPageURL":"https://aws.gmagon.com/support/",
+        "SupportEmail":"support@gmagon.com",
+
+        "BuyURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "FAQURL": "https://aws.gmagon.com/apngtogifconverter/",
+
+        "HomePageURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "DocumentPageURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "RoadmapPageURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "ReportIssuePageURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "ViewLicensePageURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "ReleaseNotesPageURL": "https://aws.gmagon.com/apngtogifconverter/",
+        "CheckForUpdatePageURL": "https://aws.gmagon.com/apngtogifconverter/",
+
+        "autoOffset": true,
+        "minSize" : [1000, 720],
+        "size" : [1000, 720],
+        "#maxSize" : [1000, 720],
+        "hasTitleBar" : true,
+        "hasShadow" : true,
+        "hasTextured" : true,
+        "hasUnifiedTitleAndToolbarWindow" : true,
+        "hasCloseControls" : true,
+        "hasMinimizeControls" : true,
+        "hasResizeControls" : true,
+        "hasToolbarButtonControls" : true,
+        "hideCloseButton" : false,
+        "hideMiniaturizeButton": false,
+        "hideZoomButton" : false,
+        "hideToolbarButton" : false,
+        "hideDocumentIconButton" : false,
+        "hideDocumentVersionsButton" : false,
+        "hideFullScreenButton" : true,
+        "menuHideList" : [
+            {"tag":100,"hide":true},
+            {"tag":200,"hide":false}
+        ],
+        "menuTitleList" : [
+            {"tag":901,"title":"","method":"re", "descript":"About"},
+            {"tag":907,"title":"","method":"re", "descript":"Hide"},
+            {"tag":911,"title":"","method":"re", "descript":"Quit"}
+        ]
+    },
+    "EnableIAP" : false
+}
