@@ -82,6 +82,8 @@ import {UiIcon, UiCollapsible} from 'keen-ui'
 import Routes from './../routes.js'
 import IconsRef from '../data/icon.js'
 
+var hasInited = false;     // 是否初始过
+
 export default {
     data() {
         return {
@@ -90,6 +92,18 @@ export default {
             homepage: Routes.SysConfig.homepage,
             menu: Routes.menu,
             imgIcon:IconsRef.iconSet.reductIcon
+        }
+    },
+
+    mounted(){
+        var that = this
+        var $ = Util.util.getJQuery$()
+        if(!hasInited){
+            hasInited = true
+            if(that.appName.length > 12){
+                $('.dove-docs-sidebar__header-product-name').css('display','none')
+                $('.dove-docs-sidebar__header__info').css('padding-left','40px')
+            }
         }
     },
 
