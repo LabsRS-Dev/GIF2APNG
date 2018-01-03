@@ -40,6 +40,11 @@ module.exports = {
             // a watch or webpack-dev-server build. Setting this
             // to `true` copies all files.
             copyUnmodified: true
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
         })
     ]
 };

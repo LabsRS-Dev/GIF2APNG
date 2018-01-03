@@ -11,6 +11,16 @@ const dir_sdk = dir_nACommonJS + '/sdk'
 const dir_vue =  dir_nACommonJS + '/common/vue.js'
 const dir_node_modules = options.paths.resolve('node_modules')
 
+const compatible_browsers = [
+    'last 10 version',
+    'last 10 Chrome versions',
+    'ios >= 4',
+    'ie > 8',
+    'Firefox ESR',
+    'Firefox >= 3',
+    'Safari >= 2'
+]
+
 module.exports = {
     resolve: {
         modules: [
@@ -51,19 +61,14 @@ module.exports = {
                         // configured in the script specific webpack configs
                     },
                     postcss: [
-                        postcss_cssnext,
+                        postcss_cssnext({
+                            warnForDuplicates: false,
+                            browsers: compatible_browsers
+                        }),
                         postcss_viewport_units,
                         postcss_vmin,
                         postcss_autoprefixer({
-                            browsers: [
-                                'last 5 version',
-                                'last 5 Chrome versions',
-                                'ios >= 4',
-                                'ie > 9',
-                                'Firefox ESR',
-                                'Firefox >= 3',
-                                'Safari >= 2'
-                            ]
+                            browsers: compatible_browsers
                         })
                     ]
                 }
