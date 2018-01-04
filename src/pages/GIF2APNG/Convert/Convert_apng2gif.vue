@@ -90,6 +90,42 @@
                     <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
                 </div>
             </ui-confirm>
+
+            <ui-confirm
+                :autofocus="advancedConfigDialog.autofocus"
+                :confirm-button-text="advancedConfigDialog.confirmButtonText"
+                :deny-button-text="advancedConfigDialog.denyButtonText"
+                :ref="advancedConfigDialog.ref"
+                :title="advancedConfigDialog.title"
+
+                @confirm="advancedConfigDialog.callbackConfirm"
+                @deny="advancedConfigDialog.callbackDeny"
+                @open="advancedConfigDialog.callbackOpen"
+                @close="advancedConfigDialog.callbackClose"
+                >
+                <div class="page__toolbar-app-doc__settings">
+                    <div class="page__toolbar-app-doc__settings__adjust">
+                        <span class="settings__adjust__level">{{ $t('pages.convert.dialog-config-settings.level') }}</span>
+                        <input type="range" min="1" max="100" v-model.number="percentage" class="sliderRange">
+                        <span class="settings__adjust__maximum">{{percentage}}</span>
+                        <span class="settings__adjust__default">{{ '('+ $t('pages.convert.dialog-config-settings.default') + ')' }}</span>
+                    </div>
+                    <div class="page__toolbar-app-doc__settings__color">
+                        <div class="page__toolbar-app-doc__settings__color__content">
+                            <ui-checkbox
+                                v-model="enableOverWriteSettings"
+                                >
+                            </ui-checkbox>
+                            <ui-alert
+                                :dismissible="false" 
+                                remove-icon
+                                >
+                            </ui-alert>
+                        </div>
+                        <Chrome v-model="colors" />
+                    </div>
+                </div>
+            </ui-confirm>
         </div>
 
         <div class="page__examples page__examples-app-doc">
@@ -183,6 +219,7 @@ import { BS, Util, _, lodash } from 'dove.max.sdk'
 import {UiIcon, UiSelect, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear,UiCheckbox, UiTextbox} from 'keen-ui'
 import {Transfer} from '../../../bridge/transfer'
 import echarts from 'echarts'
+import { Chrome } from 'vue-color'
 
 var baseID = "__apng2gif__convert__action__"
 var baseIDIndex = -1
@@ -270,6 +307,30 @@ var hasInited = false     // 是否初始过
 ///////  预览
 var beforePath = ''      // 原图片地址
 var afterPath = ''       //修改后图片地址
+////
+var defaultProps = {
+  hex: '#194d33',
+  hsl: {
+    h: 150,
+    s: 0.5,
+    l: 0.2,
+    a: 1
+  },
+  hsv: {
+    h: 150,
+    s: 0.66,
+    v: 0.30,
+    a: 1
+  },
+  rgba: {
+    r: 25,
+    g: 77,
+    b: 51,
+    a: 1
+  },
+  a: 1
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -283,7 +344,10 @@ export default {
             afterPath:afterPath,
             planSelectModel: '',
             taskList: taskList,
+            colors: defaultProps,
+            percentage:255,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
+            enableOverWriteSettings:false,
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
@@ -315,6 +379,17 @@ export default {
             },
             previewConfirmDialog:{
                 ref: 'previewConfirmDialog',
+                autofocus: 'none',
+                confirmButtonText: 'Confirm',
+                denyButtonText: 'Deny',
+                title: '',
+                callbackConfirm: ()=>{},
+                callbackDeny: ()=>{},
+                callbackOpen: ()=>{},
+                callbackClose: ()=>{},
+            },
+            advancedConfigDialog:{
+                ref: 'advancedConfigDialog',
                 autofocus: 'none',
                 confirmButtonText: 'Confirm',
                 denyButtonText: 'Deny',
@@ -414,10 +489,11 @@ export default {
         actionList() {
            var that = this
            return [
-                {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.import"},
+                {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importPng"},
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importDir"},
                 {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.remove"},
                 {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
+                // {id:'action-settings', visiable:true, color:"black", icon:"fa fa-cogs fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.advancedSettings"},
                 {id:'action-do', visiable:!that.isConvertWorking, color:"black", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
@@ -514,6 +590,8 @@ export default {
                 this.onBtnDoClick()
             }else if (item.id === 'action-stop') {
                 this.onBtnStopDoClick()
+            }else if (item.id === 'action-settings') {
+                this.onBtnSettingsClick()
             }
         },
 
@@ -523,7 +601,7 @@ export default {
             console.log("-------------------- call import files")
             // call bs
             BS.b$.importFiles({
-                title: this.$t('pages.convert.dialog-import-images.title'),
+                title: this.$t('pages.convert.dialog-import-images.titlePng'),
                 prompt: this.$t('pages.convert.dialog-import-images.prompt'),
                 allowMulSelection: true,
                 types:[] // Note: too many formats
@@ -627,12 +705,25 @@ export default {
             dialog.open()
         },
 
+        onBtnSettingsClick(){
+            var that = this
+            const cdg = that.advancedConfigDialog
+            cdg.title = that.$t('pages.convert.dialog-config-settings.title')
+            cdg.confirmButtonText = that.$t('pages.convert.dialog-config-settings.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.convert.dialog-config-settings.btnDeny')
+            cdg.callbackConfirm = () => {}
+            cdg.callbackDeny = () => {}
+            
+            var dialog = that.$refs[cdg.ref]
+            dialog.open()
+        },
+
         onBtnDoClick(){
             var that = this
             const cdg = that.outputConfigDialog
             if(that.taskList.length === 0) {
                 return BS.b$.Notice.alert({
-                    message: that.$t('pages.convert.notice-no-items.message')
+                    message: that.$t('pages.convert.notice-no-items.messagePng')
                 })
             }
 
@@ -1090,7 +1181,8 @@ export default {
         UiSelect,
         UiConfirm,
         UiProgressLinear,
-        UiCheckbox
+        UiCheckbox,
+        Chrome
     }
 }
 </script>

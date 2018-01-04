@@ -119,12 +119,21 @@
       },
       "toolbar":{
         "import":"导入GIF动画文件",
-        "importDir":"导入GIF动画目录",
+        "importPng":"导入PNG动画文件",
+        "importDir":"导入动画目录",
         "remove":"清空导入",
         "outputFolder": "选择输出目录",
         "fix":"开始执行",
         "chancel":"停止",
-        "previousPage":"返回上一级菜单"
+        "previousPage":"返回上一级菜单",
+        "advancedSettings":"高级设置"
+      },
+      "dialog-config-settings":{
+        "title":"高级设置",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "level":"透明度的阈值:",
+        "default":"默认值: 128"
       },
       "task-item":{
          "file-name": "名称：",
@@ -147,6 +156,7 @@
       },
       "dialog-import-images":{
         "title":"请选择要导入的GIF动画文件",
+        "titlePng":"请选择要导入的PNG动画文件",
         "prompt":"导入"
       },
       "dialog-import-dir-images":{
@@ -192,7 +202,8 @@
         "message": "确定要终止所有操作吗？"
       },
       "notice-no-items":{
-        "message": "请先导入GIF动画文件，然后再执行处理！"
+        "message": "请先导入GIF动画文件，然后再执行处理！",
+        "messagePng": "请先导入PNG动画文件，然后再执行处理！"
       },
       "notice-no-process":{
         "message": "请先执行处理，然后再执行输出！"

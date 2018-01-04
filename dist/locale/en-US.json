@@ -119,12 +119,21 @@
       },
       "toolbar":{
         "import":"Import GIF(.gif) files",
+        "importPng":"Import PNG(.png) files",
         "importDir":"Import directory",
         "remove":"Remove All",
         "outputFolder": "Output directory",
         "fix":"Convert",
         "chancel":"Cancel all",
-        "previousPage":"Previous Page"
+        "previousPage":"Previous Page",
+        "advancedSettings":"Advanced Settings"
+      },
+      "dialog-config-settings":{
+        "title":"Advanced Settings",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "level":"Transparency Threshold Level:",
+        "default":"default: 128"
       },
       "task-item":{
          "file-name": "Name：",
@@ -147,6 +156,7 @@
       },
       "dialog-import-images":{
         "title":"Import GIF(.gif) files",
+        "titlePng":"Import PNG(.png) files",
         "prompt":"Import"
       },
       "dialog-import-dir-images":{
@@ -192,7 +202,8 @@
         "message": "Cancel all converted tasks?"
       },
       "notice-no-items":{
-        "message": "Please import GIF files first, then convert!"
+        "message": "Please import GIF files first, then convert!",
+        "messagePng": "Please import PNG files first, then convert!"
       },
       "notice-no-process":{
         "message": "Please convert first, then output!"

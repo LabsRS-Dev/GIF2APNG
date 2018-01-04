@@ -124,6 +124,7 @@
     "tether-drop": "^1.4.2",
     "tether-tooltip": "^1.2.0",
     "url-loader": "^0.6.2",
+    "vue-color": "^2.4.3",
     "vue-hot-reload-api": "^2.0.11",
     "vue-loader": "^13.6.2",
     "vue-style-loader": "^3.0.3",
