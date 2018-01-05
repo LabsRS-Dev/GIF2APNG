@@ -106,23 +106,30 @@
                 <div class="page__toolbar-app-doc__settings">
                     <div class="page__toolbar-app-doc__settings__adjust">
                         <span class="settings__adjust__level">{{ $t('pages.convert.dialog-config-settings.level') }}</span>
-                        <input type="range" min="1" max="100" v-model.number="percentage" class="sliderRange">
+                        <input type="range" min="1" max="255" v-model.number="percentage" class="sliderRange">
                         <span class="settings__adjust__maximum">{{percentage}}</span>
                         <span class="settings__adjust__default">{{ '('+ $t('pages.convert.dialog-config-settings.default') + ')' }}</span>
                     </div>
                     <div class="page__toolbar-app-doc__settings__color">
                         <div class="page__toolbar-app-doc__settings__color__content">
-                            <ui-checkbox
-                                v-model="enableOverWriteSettings"
-                                >
-                            </ui-checkbox>
-                            <ui-alert
-                                :dismissible="false" 
-                                remove-icon
-                                >
-                            </ui-alert>
+                            <div class="settings__color__content-checkbox">
+                                <ui-checkbox
+                                    v-model="enableOverWriteSettings"
+                                    >
+                                </ui-checkbox>
+                                <span>{{ $t('pages.convert.dialog-config-settings.color') }}</span>
+                                <ui-alert
+                                    :dismissible="false" 
+                                    remove-icon
+                                    >
+                                    {{ colors.hex }}
+                                </ui-alert>                                    
+                            </div>
+                            <div class="settings__color__content-hint">
+                                {{ '('+ $t('pages.convert.dialog-config-settings.colorDefault') + ')' }}
+                            </div>
                         </div>
-                        <Chrome v-model="colors" />
+                        <Chrome v-model="colors"/>
                     </div>
                 </div>
             </ui-confirm>
@@ -136,7 +143,7 @@
                 <p 
                     v-html="item"
                     :key="index"
-                    v-for="(item, index) in $t('pages.convert.welcome')">
+                    v-for="(item, index) in $t('pages.convert.welcomePng')">
                 </p>
             </div>    
             <ui-alert
@@ -307,10 +314,17 @@ var hasInited = false     // 是否初始过
 ///////  预览
 var beforePath = ''      // 原图片地址
 var afterPath = ''       //修改后图片地址
+//////  设置还原到之前的状态 
+var beforePercentage;    // 还原到之前的百分比值
+var beforeEnableSettings;// 还原到之前的checkbox状态
+var beforeColor;         // 还原到之前的颜色状态
+
 ////
+var finalPercentage;     // 确认时百分比
+var finalColor;          // 确认是的颜色(十六进制)
 var defaultProps = {
-  hex: '#194d33',
-  hsl: {
+    hex: '#194d33',
+    hsl: {
     h: 150,
     s: 0.5,
     l: 0.2,
@@ -337,6 +351,9 @@ export default {
     data() {
         var that = this
         console.log("convert_apng2gif.vue call data()")
+        var that = this
+        var defaultSides = 128
+        var stats = Array.apply(null, { length: defaultSides }).map(function () { return 100 })
         return {
             welcomeContentID:'apng2gif__convert__welcome__id',
             openEchartsId:'info_echart_id',
@@ -345,9 +362,15 @@ export default {
             planSelectModel: '',
             taskList: taskList,
             colors: defaultProps,
-            percentage:255,
+            beforeColor:defaultProps,
+            percentage:defaultSides,
+            beforePercentage:defaultSides,
+            stats : stats,
+            finalPercentage:finalPercentage,
+            finalColor:finalColor,
             enableOverWriteOutput: $LS$.data.enableOverwriteOutput,
             enableOverWriteSettings:false,
+            beforeEnableSettings:false,
             isConvertWorking: false,
             transferIsNormal: Transfer.isRunning,  // Is transfer is working normal?
             progressInterval: null,  // 进度条轮询
@@ -493,7 +516,7 @@ export default {
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importDir"},
                 {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.remove"},
                 {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
-                // {id:'action-settings', visiable:true, color:"black", icon:"fa fa-cogs fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.advancedSettings"},
+                {id:'action-settings', visiable:true, color:"black", icon:"fa fa-cogs fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.advancedSettings"},
                 {id:'action-do', visiable:!that.isConvertWorking, color:"black", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
@@ -707,15 +730,43 @@ export default {
 
         onBtnSettingsClick(){
             var that = this
+            var $ = Util.util.getJQuery$()
             const cdg = that.advancedConfigDialog
             cdg.title = that.$t('pages.convert.dialog-config-settings.title')
             cdg.confirmButtonText = that.$t('pages.convert.dialog-config-settings.btnConfirm')
             cdg.denyButtonText = that.$t('pages.convert.dialog-config-settings.btnDeny')
-            cdg.callbackConfirm = () => {}
-            cdg.callbackDeny = () => {}
+            cdg.callbackConfirm = () => { that.saveColorSettings()}
+            cdg.callbackDeny = () => { that.resetColorSettings() }
             
             var dialog = that.$refs[cdg.ref]
+            if(that.enableOverWriteSettings == false){
+                $('.sliderRange').css('background-size', (that.percentage*100)/256 +'% 100%' )
+            }
             dialog.open()
+        },
+
+        saveColorSettings(){
+            var that = this
+            if(that.enableOverWriteSettings){
+                that.finalColor = that.colors.hex
+                console.log('true:'+ that.finalPercentage)
+                console.log('true:'+ that.finalColor)
+            }else {
+                that.finalPercentage = that.percentage
+                $('.sliderRange').css('background-size', (that.finalPercentage*100)/256 +'% 100%' )
+                console.log('false:'+ that.finalPercentage)
+                console.log('false:'+ that.finalColor)
+            }
+            that.beforePercentage = that.percentage
+            that.beforeColor = that.colors
+            that.beforeEnableSettings = that.enableOverWriteSettings
+        },
+
+        resetColorSettings(){
+            var that = this
+            that.percentage = that.beforePercentage
+            that.colors = that.beforeColor
+            that.enableOverWriteSettings = that.beforeEnableSettings
         },
 
         onBtnDoClick(){
@@ -863,42 +914,120 @@ export default {
                     taskObj.stateInfo.state = 0
                     taskObj.stateInfo.progress = 0
                 })
-                _.each(that.taskList, (taskObj, index) => {
-                    that.__abi__start_Apng2gifTask(taskObj.id, {
-                        src: taskObj.path,
-                        out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput ? true : false
-                    }, (data) => {
-                        console.warn('startDo data reback....')
-                        console.dir(data)
-                        // process 
-                        if (data.infoType === 'type_calltask_start'){
-                            that.__updateInfoWithApng2gifTask(taskObj.id, {
-                                progress: 50,
-                                state:0
-                            })
-                        }else if (data.infoType === 'type_calltask_success'){
-                            that.__updateInfoWithApng2gifTask(taskObj.id, {
-                                progress: 100,
-                                state: 1
-                            })
-                        }else if (data.infoType === 'type_calltask_error'){
-                            that.__updateInfoWithApng2gifTask(taskObj.id, {
-                                progress: 100,
-                                state: -1,
-                                message: data.detail_error || 'error'
-                            })
-                        }else if (data.infoType === 'type_calltask_cancel') {
-                            that.__updateInfoWithApng2gifTask(taskObj.id, {
-                                progress: 100,
-                                state: 2,
-                                message: that.$t('pages.convert.notice-no-cancel.message')
-                            })
-                        }
-                        // check converting
-                        that.__checkTaskStateInfo()
-                    } )
-                })
+                if(that.percentage == 128 && that.enableOverWriteSettings == false){
+                    _.each(that.taskList, (taskObj, index) => {
+                        that.__abi__start_Apng2gifTask(taskObj.id, {
+                            src: taskObj.path,
+                            out: that.lastOutputPath,
+                            overwrite: that.enableOverWriteOutput ? true : false
+                        }, (data) => {
+                            console.warn('startDo data reback....')
+                            console.dir(data)
+                            // process 
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }else if (data.infoType === 'type_calltask_cancel') {
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 2,
+                                    message: that.$t('pages.convert.notice-no-cancel.message')
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })                    
+                }else if(that.percentage !== 128 && that.enableOverWriteSettings == false){
+                    _.each(that.taskList, (taskObj, index) => {
+                        that.__abi__start_Apng2gifTask(taskObj.id, {
+                            src: taskObj.path,
+                            out: that.lastOutputPath,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            level:that.finalPercentage
+                        }, (data) => {
+                            console.warn('startDo data reback....')
+                            console.dir(data)
+                            // process 
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }else if (data.infoType === 'type_calltask_cancel') {
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 2,
+                                    message: that.$t('pages.convert.notice-no-cancel.message')
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })                       
+                }else if(that.enableOverWriteSettings){
+                    _.each(that.taskList, (taskObj, index) => {
+                        that.__abi__start_Apng2gifTask(taskObj.id, {
+                            src: taskObj.path,
+                            out: that.lastOutputPath,
+                            overwrite: that.enableOverWriteOutput ? true : false,
+                            color:that.finalColor
+                        }, (data) => {
+                            console.warn('startDo data reback....')
+                            console.dir(data)
+                            // process 
+                            if (data.infoType === 'type_calltask_start'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 50,
+                                    state:0
+                                })
+                            }else if (data.infoType === 'type_calltask_success'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 1
+                                })
+                            }else if (data.infoType === 'type_calltask_error'){
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: -1,
+                                    message: data.detail_error || 'error'
+                                })
+                            }else if (data.infoType === 'type_calltask_cancel') {
+                                that.__updateInfoWithApng2gifTask(taskObj.id, {
+                                    progress: 100,
+                                    state: 2,
+                                    message: that.$t('pages.convert.notice-no-cancel.message')
+                                })
+                            }
+                            // check converting
+                            that.__checkTaskStateInfo()
+                        } )
+                    })    
+                }
             }
         },
 
@@ -935,9 +1064,8 @@ export default {
                 src: '',  // 要处理的文件或者目录的路径
                 out: '',  // 输出目录
                 overwrite: false,      // 是否覆盖已有文件
-                compression: '-z1',    // 压缩方式： -z0: zlib compression; -z1: 7zip compression (default); -z2: Zopfli compression
-                iterations: '-i' + 15, // 迭代数量：-i##: number of iterations (default -i15) for 7zip and Zopfli
-                keepPalette: false     // 保持调色信息
+                level:'',              // 透明度的阈值(默认为128)
+                color:''               // 背景色(默认为"#808080",当使用color时,level为默认的128)
             }, config)
 
             // 检查必要数值
@@ -958,16 +1086,24 @@ export default {
             }
 
             // -- 命令行参数格式化
-            const commandFormat = '["%input%","%output%",'+
-                                    '"' + _config.compression  + '",' +
-                                    '"' + _config.iterations  + '",' +
-                                    (_config.overwrite ? '"-ow",' : '') +
-                                    (_config.keepPalette ? '"-kp",' : '') +
+            if(that.percentage == 128 && that.enableOverWriteSettings == false){
+                const commandFormat = '["%input%","%output%",'+
+                                    (_config.overwrite ? '"-ow"' : '') +
                                     ']'
-            var fm_command = commandFormat
-            fm_command = fm_command.replace(/%input%/g, _config.src)
-            fm_command = fm_command.replace(/%output%/g, _dest)
-            _command = window.eval(fm_command)
+                var fm_command = commandFormat
+                fm_command = fm_command.replace(/%input%/g, _config.src)
+                fm_command = fm_command.replace(/%output%/g, _dest)
+                _command = window.eval(fm_command)
+            }else {
+                const commandFormat = '["%input%","%output%",'+
+                                    (that.enableOverWriteSettings ? '"-b","' + _config.color  + '",' : '"-t","' + _config.level  + '",') +
+                                    (_config.overwrite ? '"-ow"' : '') +
+                                    ']'
+                var fm_command = commandFormat
+                fm_command = fm_command.replace(/%input%/g, _config.src)
+                fm_command = fm_command.replace(/%output%/g, _dest)
+                _command = window.eval(fm_command)
+            }
 
             console.log(_command)
 
@@ -1167,6 +1303,40 @@ export default {
             }else {
                 return false
             }
+        }
+    },
+    watch:{
+        percentage(newSides, oldSides){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            $('.sliderRange').css('background-size', (newSides*100)/256 +'% 100%' )
+            var sidesDifference = newSides - oldSides
+            if (sidesDifference > 0) {
+                for (var i = 1; i <= sidesDifference; i++) {
+                    that.stats.push(100)
+                }
+            } else {
+                var absoluteSidesDifference = Math.abs(sidesDifference)
+                for (var i = 1; i <= absoluteSidesDifference; i++) {
+                    that.stats.shift()
+                }
+            }           
+        },
+        colors(newColors, oldColors){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            $('.settings__color__content-checkbox .ui-alert__body').css('background-color', newColors.hex)
+        },
+        enableOverWriteSettings(value){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            if(value == true){
+                $(".sliderRange").attr("disabled",true)
+                $('.sliderRange').css('background-size', '0% 100%')
+            }else{
+                $(".sliderRange").attr("disabled",false)
+                $('.sliderRange').css('background-size', (that.percentage*100)/256 +'% 100%')     
+            } 
         }
     },
 
