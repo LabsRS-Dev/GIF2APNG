@@ -37,20 +37,26 @@ export default{
             gif2apngIcon:IconsRef.iconSet.gif2apng,
             apng2gifIcon:IconsRef.iconSet.apng2gif,
             rootID:SysConfig.appID,
-            showGif2Apng:true
+            showGif2Apng:true,
+            showApng2Gif:true
         }
     },
     computed:{
         actionList() {
             var that = this
-            if (that.rootID === 'com.gmagon.app.macos.gmagongif' || that.rootID === 'com.romanysoft.app.macos.giftools'|| that.rootID === 'com.romanysoft.app.macos.xdebugapp') {
+            if (that.rootID === 'com.gmagon.app.macos.gmagongif' || that.rootID === 'com.romanysoft.app.macos.giftools' || that.rootID === 'com.romanysoft.app.macos.xdebugapp') {
                 that.showGif2Apng = true
+                that.showApng2Gif = true
             } else if (that.rootID === 'com.romanysoft.app.macos.APNGToGifConverter') {
                 that.showGif2Apng = false
+                that.showApng2Gif = true
+            } else if (that.rootID === 'com.romanysoft.app.macos.GifToAPNGConverter'){
+                that.showGif2Apng = true
+                that.showApng2Gif = false
             }
             return [
                  {id:'action-gif2apng', visiable:that.showGif2Apng, icon:that.gif2apngIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_gif2apng"},
-                 {id:'action-apng2gif', visiable:true, icon:that.apng2gifIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_apng2gif"}
+                 {id:'action-apng2gif', visiable:that.showApng2Gif, icon:that.apng2gifIcon, type:"secondary",tooltip:"pages.convert.content.tooltip_apng2gif"}
             ]
         }
     },

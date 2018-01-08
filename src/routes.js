@@ -39,7 +39,7 @@ var showResize = true
 
 if (rootID === 'com.gmagon.app.macos.gmagongif' || rootID === 'com.romanysoft.app.macos.giftools' || rootID === 'com.romanysoft.app.macos.xdebugapp') {
   showResize = true
-} else if (rootID === 'com.romanysoft.app.macos.APNGToGifConverter') {
+} else if (rootID === 'com.romanysoft.app.macos.APNGToGifConverter' || rootID === 'com.romanysoft.app.macos.GifToAPNGConverter') {
   showResize = false
 }
 

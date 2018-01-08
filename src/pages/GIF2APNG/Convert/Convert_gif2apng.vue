@@ -90,6 +90,31 @@
                     <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
                 </div>
             </ui-confirm>
+
+            <ui-confirm
+                :autofocus="advancedConfigDialog.autofocus"
+                :confirm-button-text="advancedConfigDialog.confirmButtonText"
+                :deny-button-text="advancedConfigDialog.denyButtonText"
+                :ref="advancedConfigDialog.ref"
+                :title="advancedConfigDialog.title"
+
+                @confirm="advancedConfigDialog.callbackConfirm"
+                @deny="advancedConfigDialog.callbackDeny"
+                @open="advancedConfigDialog.callbackOpen"
+                @close="advancedConfigDialog.callbackClose"
+                >
+                <div class="page__toolbar-app-doc__settings__mode">
+                    <h3 class="page__toolbar-app-doc__settings__selectMode">{{ $t('pages.convert.dialog-config-settings.mode') }}</h3>
+                    <div class="page__toolbar-app-doc__settings__select">
+                        <span class="select-input-group-addon">{{ $t('pages.convert.dialog-config-settings.compression') }}</span>
+                        <ui-select
+                            :options="availableCompressionList"
+                            v-model="lastSelectCompression"
+                            >
+                        </ui-select>
+                    </div>
+                </div>
+            </ui-confirm>
         </div>
 
         <div class="page__examples page__examples-app-doc">
@@ -270,6 +295,8 @@ var hasInited = false     // 是否初始过
 ///////  预览
 var beforePath = ''      // 原图片地址
 var afterPath = ''       //修改后图片地址
+///////  压缩模式
+var lastCompressionMode = ''
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default {
 
@@ -289,6 +316,11 @@ export default {
             progressInterval: null,  // 进度条轮询
             lastOutputPath: $LS$.data.lastSelectOutputPath,
             availableOutputPathList: $LS$.data.outputPaths,
+            lastSelectCompression:'7zip(default)',
+            availableCompressionList:['7zip(default)','Zopfli','zlib'],
+            lastCompression:'7zip(default)',
+            lastCompressionMode:lastCompressionMode,
+            beforeCompression:'7zip(default)',
 
             confirmDialog:{
                 ref: 'default',
@@ -315,6 +347,17 @@ export default {
             },
             previewConfirmDialog:{
                 ref: 'previewConfirmDialog',
+                autofocus: 'none',
+                confirmButtonText: 'Confirm',
+                denyButtonText: 'Deny',
+                title: '',
+                callbackConfirm: ()=>{},
+                callbackDeny: ()=>{},
+                callbackOpen: ()=>{},
+                callbackClose: ()=>{},
+            },
+            advancedConfigDialog:{
+                ref: 'advancedConfigDialog',
                 autofocus: 'none',
                 confirmButtonText: 'Confirm',
                 denyButtonText: 'Deny',
@@ -418,6 +461,7 @@ export default {
                 {id:'action-importDir', visiable:true, color:"black", icon:"fa fa-folder-open-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.importDir"},
                 {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.remove"},
                 {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.outputFolder"},
+                {id:'action-settings', visiable:true, color:"black", icon:"fa fa-cogs fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.convert.toolbar.advancedSettings"},
                 {id:'action-do', visiable:!that.isConvertWorking, color:"black", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.fix"},
                 {id:'action-stop', visiable:that.isConvertWorking, color:"red", icon:"fa fa-hand-paper-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.convert.toolbar.chancel"}
            ]
@@ -514,6 +558,8 @@ export default {
                 this.onBtnDoClick()
             }else if (item.id === 'action-stop') {
                 this.onBtnStopDoClick()
+            }else if (item.id === 'action-settings') {
+                this.onBtnSettingsClick()
             }
         },
 
@@ -625,6 +671,30 @@ export default {
 
             var dialog = that.$refs[cdg.ref]
             dialog.open()
+        },
+
+        onBtnSettingsClick(){
+            var that = this
+            var $ = Util.util.getJQuery$()
+            const cdg = that.advancedConfigDialog
+            cdg.title = that.$t('pages.convert.dialog-config-settings.title')
+            cdg.confirmButtonText = that.$t('pages.convert.dialog-config-settings.btnConfirm')
+            cdg.denyButtonText = that.$t('pages.convert.dialog-config-settings.btnDeny')
+            cdg.callbackConfirm = () => { that.saveSelectSettings() }
+            cdg.callbackDeny = () => { that.resetSelectSettings() }
+            
+            var dialog = that.$refs[cdg.ref]
+            dialog.open()
+        },
+        saveSelectSettings(){
+            var that = this
+            that.beforeCompression = that.lastSelectCompression
+            that.lastCompression = that.lastSelectCompression
+        },
+        resetSelectSettings(){
+            var that = this
+            that.lastSelectCompression = that.beforeCompression
+            that.lastCompression = that.beforeCompression
         },
 
         onBtnDoClick(){
@@ -768,6 +838,13 @@ export default {
         startDo(){
             var that = this
             if(that.taskList.length > 0){
+                if(that.lastCompression === 'zlib'){
+                    that.lastCompressionMode = '-z0'
+                }else if(that.lastCompression === '7zip(default)'){
+                    that.lastCompressionMode = '-z1'
+                }else if(that.lastCompression === 'Zopfli'){
+                    that.lastCompressionMode = '-z2'
+                }
                 _.each(that.taskList,(taskObj) => {
                     taskObj.stateInfo.state = 0
                     taskObj.stateInfo.progress = 0
@@ -776,7 +853,8 @@ export default {
                     that.__abi__start_Gif2apngTask(taskObj.id, {
                         src: taskObj.path,
                         out: that.lastOutputPath,
-                        overwrite: that.enableOverWriteOutput ? true : false
+                        overwrite: that.enableOverWriteOutput ? true : false,
+                        compression:that.lastCompressionMode
                     }, (data) => {
                         console.warn('startDo data reback....')
                         console.dir(data)

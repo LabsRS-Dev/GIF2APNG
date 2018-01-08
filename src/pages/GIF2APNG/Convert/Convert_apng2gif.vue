@@ -143,7 +143,7 @@
                 <p 
                     v-html="item"
                     :key="index"
-                    v-for="(item, index) in $t('pages.convert.welcomePng')">
+                    v-for="(item, index) in $t('pages.convert.welcome')">
                 </p>
             </div>    
             <ui-alert
@@ -735,7 +735,7 @@ export default {
             cdg.title = that.$t('pages.convert.dialog-config-settings.title')
             cdg.confirmButtonText = that.$t('pages.convert.dialog-config-settings.btnConfirm')
             cdg.denyButtonText = that.$t('pages.convert.dialog-config-settings.btnDeny')
-            cdg.callbackConfirm = () => { that.saveColorSettings()}
+            cdg.callbackConfirm = () => { that.saveColorSettings() }
             cdg.callbackDeny = () => { that.resetColorSettings() }
             
             var dialog = that.$refs[cdg.ref]

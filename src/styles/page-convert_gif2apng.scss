@@ -124,5 +124,57 @@
         }
       }
   }
+  .page__toolbar-app-doc__settings__mode{
+    display: flex;
+    flex-direction: column;
+    .page__toolbar-app-doc__settings__selectMode{
+      margin-top: 0;
+    }
+    .page__toolbar-app-doc__settings__select{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .select-input-group-addon{
+        margin-right: rem-calc(10px);
+      }
+      .ui-select {
+        width: rem-calc(200px);
+        align-items: center;
+        margin: 0;
+        margin-left:rem-calc(8px) ;
+        padding: 0;
+        height: rem-calc(25px);
+        border-radius: rem-calc(5px);
+        border: rem-calc(1px) solid #adadad;
+        position: relative;
+        .ui-select__dropdown{
+            .ui-select-option{
+              font-size: rem-calc(11px);
+            }
+        }
+        .ui-select__display{
+          border: 0;
+          height: rem-calc(25px);
+          font-size: rem-calc(11px);
+          .ui-select__dropdown-button{
+            margin: 0 auto;
+          }
+        }
+        .ui-select-option{
+          height: rem-calc(28px);
+        }
+        .ui-select__display-value{
+          margin-left:rem-calc(5px)
+        }
+        .ui-select-option.is-selected{
+          color: rgba(0,0,0,.87);
+          background-color: #fff;
+          font-weight: 400;
+        }
+        .ui-select-option:hover{
+          background-color: $md-blue;
+        }
+      }
+    }
+  }
 }
-  

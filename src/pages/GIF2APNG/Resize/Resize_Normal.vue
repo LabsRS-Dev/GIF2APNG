@@ -117,7 +117,7 @@
                                     <ui-autocomplete
                                         :suggestions="selectRatioList"
                                         v-model="ele.commonRatio"
-                                        @blur = "onApplieToAllItem()"
+                                        :autofocus = "true"
                                         >
                                     </ui-autocomplete>
                                 </ui-alert>
@@ -534,7 +534,7 @@
                         that.ratioList = []
                         var commonList = []
                         _.each(that.selectRatioList,function(ele){
-                            commonList.push({fileCommonRatio:ele}) 
+                            commonList.push({fileCommonRatio:ele})
                         })
                         _.each(commonList,function(ele){
                             let ratioObj = new Ratio(ele.fileCommonRatio)
@@ -641,17 +641,6 @@
                 let ratioObj = new Ratio('')
                 that.$set(item.ratioCommon,length,ratioObj)
                 that.getAutofocus = true
-            },
-
-            onApplieToAllItem(){
-                var that = this
-                const cdg = that.confirmDialog
-                cdg.title = that.$t('pages.resize.dialog-confirm-remove-all.title')
-                cdg.content = that.$t('pages.resize.dialog-confirm-remove-all.message')
-                cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-remove-all.btnConfirm')
-                cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-remove-all.btnDeny')
-                var dialog = that.$refs[cdg.ref]
-                dialog.open()
             },
 
             onRemoveRatioItem(item, ele, index) {
@@ -789,6 +778,6 @@
             UiCollapsible,
             UiAutocomplete,
             UiFab
-        }      
+        }
     }
 </script>
