@@ -26,25 +26,6 @@
         flex-direction: row;
         width: 100%;
         margin: rem-calc(5px);
-        .ui-toolbar-normal__top__fileName{
-          width: 35%;
-        }
-        .ui-textbox{
-          flex: 1;
-          align-items: center;
-          margin: 0;
-          padding: 0;
-          height: rem-calc(25px);
-          border-radius: rem-calc(5px);
-          border: rem-calc(1px) solid #adadad;
-          position: relative;
-          .ui-textbox__input{
-            border: 0;
-            height: rem-calc(25px);
-            font-size: rem-calc(11px);
-            margin-left: rem-calc(5px);
-          }
-        }
       }
       .ui-toolbar-normal__top__selsct{
         display: flex;
@@ -71,11 +52,14 @@
             }
           }
         }
+        .ui-progress-circular {
+          position: absolute;
+          left: rem-calc(4px);
+          top: rem-calc(8px);
+        }
         .ui-autocomplete{
           margin: 0;
           padding: 0;
-          border-radius: rem-calc(5px);
-          border: rem-calc(1px) solid #adadad;
           .ui-autocomplete__clear-button{
             display: none;
           }
@@ -83,7 +67,8 @@
             padding: 0 rem-calc(5px);
             height: rem-calc(24px);
             font-size: rem-calc(11px);
-            border-bottom:none;
+            border-radius: rem-calc(5px);
+            border: rem-calc(1px) solid #adadad;
           }
         }
         .ui-fab{
@@ -93,71 +78,87 @@
     }
   }
 }
-.page__toolbar-app-doc__usual-ratio{
+.page__toolbar-app-doc__input-addRatio{
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: rem-calc(14px);
-  .input-usual-ratio{
-    font-size: rem-calc(14px);
-    margin-right: rem-calc(10px);
-  }
-  .input-usual-ratio-symbol{
-    margin: 0 rem-calc(5px);
-  }
-  input {
-    margin: 0;
-    padding: 0 rem-calc(5px);
-    width: rem-calc(120px);
-    height: rem-calc(25px);
-    border-radius: rem-calc(5px);
-    border: rem-calc(1px) solid #adadad;
-  }
-}
-.page__toolbar-app-doc__remove-usual-ratio{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: rem-calc(14px);
-  .input-remove-usual-ratio{
-    font-size: rem-calc(14px);
-    margin-right: rem-calc(10px);
-  }
-  .ui-select {
-    flex: 1;
+  flex-direction: column;
+  .page__toolbar-app-doc__input-complete{
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    margin: 0;
-    padding: 0;
-    height: rem-calc(25px);
-    border-radius: rem-calc(5px);
-    border: rem-calc(1px) solid #adadad;
-    position: relative;
-    .ui-select__dropdown {
-        .ui-select-option {
-            font-size: rem-calc(11px);
-        }
+    margin:rem-calc(5px);
+    input{
+      width: rem-calc(80px);
+      height: rem-calc(28px);
+      border: rem-calc(1px) solid #adadad;
+      border-radius: rem-calc(5px);
+      margin: 0 rem-calc(8px);
+      padding: 0 rem-calc(5px);
     }
-    .ui-select__display {
+    .ui-select {
+      width: rem-calc(50px);
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      height: rem-calc(28px);
+      border-radius: rem-calc(5px);
+      border: rem-calc(1px) solid #adadad;
+      position: relative;
+      .ui-select__dropdown{
+          min-width: rem-calc(50px);
+          .ui-select-option{
+            font-size: rem-calc(11px);
+          }
+      }
+      .ui-select__display{
         border: 0;
-        height: rem-calc(25px);
+        height: rem-calc(28px);
         font-size: rem-calc(11px);
-        .ui-select__dropdown-button {
+        .ui-select__dropdown-button{
           margin: 0 auto;
         }
-        .ui-select__display-value{
-          margin-left: rem-calc(5px);
-        }
-    }
-    .ui-select-option {
+      }
+      .ui-select-option{
         height: rem-calc(28px);
-    }
-    .ui-select-option.is-selected {
-        color: rgba(0, 0, 0, .87);
+      }
+      .ui-select__display-value{
+        margin-left:rem-calc(11px)
+      }
+      .ui-select-option.is-selected{
+        color: rgba(0,0,0,.87);
         background-color: #fff;
         font-weight: 400;
-    }
-    .ui-select-option:hover {
+      }
+      .ui-select-option:hover{
         background-color: $md-blue;
+      }
+    }
+  }
+  .page__toolbar-app-doc__input-checkbox{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin:rem-calc(5px);
+    height: rem-calc(28px);
+    .page__toolbar-app-doc__input-allRatio{
+      display: flex;
+      align-items: center;
+      margin-right: rem-calc(20px);
+      .ui-checkbox{
+        margin:0;
+      }
+      .input-allRatio-group-addon{
+        margin-left: rem-calc(5px);
+      }
+    }
+    .page__toolbar-app-doc__input-commonRatio{
+      display: flex;
+      align-items: center;
+      .ui-checkbox{
+        margin:0;
+      }
+      .input-commonRatio-group-addon{
+        margin-left: rem-calc(5px);
+      }
     }
   }
 }

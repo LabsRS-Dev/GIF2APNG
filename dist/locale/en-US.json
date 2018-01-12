@@ -291,7 +291,17 @@
         "title":"Confirm",
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
-        "message": "Remove all items?"
+        "message": "Remove all items?",
+        "allRatio":"Apply to the all items?"
+      },      
+      "dialog-config-addRatio":{
+        "title":"Add Ratio",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "ratio":"Percentage :",
+        "aspect":"width-height:",
+        "allRatio":"Apply to the all items?",
+        "commonRatio":"Add the usual ratio?"
       },
       "dialog-confirm-isExist":{
         "title":"Confirm",
@@ -305,19 +315,6 @@
         "btnDeny": "Cancel",
         "path":"Output:",
         "cover":"Overwrite exsisting files?"
-      },
-      "dialog-config-ratio":{
-        "title":"Add the usual ratio",
-        "btnConfirm": "OK",
-        "btnDeny": "Cancel",
-        "ratio": "Aspect ratio:",
-        "symbol": ":"
-      },
-      "dialog-config-removeRatio":{
-        "title":"Remove the usual ratio",
-        "btnConfirm": "OK",
-        "btnDeny": "Cancel",
-        "ratio": "Aspect ratio:"
       },
       "dialog-config-change":{
         "title":"Adjust the image size",
@@ -357,7 +354,7 @@
         "message": "Cancel"
       },
       "notice-no-items":{
-        "message": "Please import GIF files first, then convert!"
+        "message": "Please import GIF files first, then resize!"
       },
       "notice-no-process":{
         "message": "Please convert first, then output!"

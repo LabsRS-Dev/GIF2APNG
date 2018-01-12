@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/LabsRS-Dev/GIF2APNG#readme",
   "dependencies": {
-    "dove.max.sdk": "^20180108.10.19",
+    "dove.max.sdk": "20180110.21.18",
     "echarts": "^3.7.0",
     "keen-ui": "^1.0.0",
     "vue": "^2.5.13",

@@ -291,7 +291,17 @@
         "title":"确认操作",
         "btnConfirm": "确定",
         "btnDeny": "取消",
-        "message": "确定要清空任务列表吗？"
+        "message": "确定要清空任务列表吗？",
+        "allRatio":"应用到所有项目?"
+      },
+      "dialog-config-addRatio":{
+        "title":"添加比率",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "ratio":"百分比:",
+        "aspect":"宽高 :",
+        "allRatio":"应用到所有项目?",
+        "commonRatio":"添加到常用比例?"
       },
       "dialog-confirm-isExist":{
         "title":"确认操作",
@@ -305,19 +315,6 @@
         "btnDeny": "取消",
         "path":"输出路径:",
         "cover":"是否覆盖原有文件?"
-      },
-      "dialog-config-ratio":{
-        "title":"添加常用比例",
-        "btnConfirm": "确定",
-        "btnDeny": "取消",
-        "ratio": "宽高比:",
-        "symbol": ":"
-      },
-      "dialog-config-removeRatio":{
-        "title":"删除常用比例",
-        "btnConfirm": "确定",
-        "btnDeny": "取消",
-        "ratio": "宽高比:"
       },
       "dialog-config-change":{
         "title":"调节图片尺寸",
