@@ -36,7 +36,7 @@
           margin: rem-calc(5px);
           .ui-alert__body{
             border-left:none;
-            padding: rem-calc(12px) rem-calc(8px);
+            padding: rem-calc(15px) rem-calc(8px);
             .ui-alert__icon{
               margin-right: rem-calc(5px);
             }
@@ -55,7 +55,16 @@
         .ui-progress-circular {
           position: absolute;
           left: rem-calc(4px);
-          top: rem-calc(8px);
+          top: rem-calc(11px);
+        }
+        .ui-toolbar-normal__top__selsct__prompt{
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          font-size: rem-calc(11px);
+          color: rgb(255, 100, 0);
+          width: rem-calc(140px);
+          text-align: center;
         }
         .ui-autocomplete{
           margin: 0;

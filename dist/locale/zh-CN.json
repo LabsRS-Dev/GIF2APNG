@@ -252,7 +252,8 @@
         "chancel":"停止",
         "previousPage":"返回上一级菜单",
         "addRatio":"添加常用比例",
-        "removeRatio":"删除常用比例"
+        "removeRatio":"删除常用比例",
+        "tooltip":"正确格式: xx%或AAxBB"
       },
       "task-item":{
          "file-name": "名称：",

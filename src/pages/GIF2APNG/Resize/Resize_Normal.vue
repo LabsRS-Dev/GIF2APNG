@@ -83,9 +83,11 @@
                             <span class="input-complete-group-addon" v-show = "aspectType">{{ $t('pages.resize.dialog-config-addRatio.ratio') }}</span>
                             <span class="input-complete-group-addon" v-show = "!aspectType">{{ $t('pages.resize.dialog-config-addRatio.aspect') }}</span>
                             <input
-                                type="number"
-                                autofocus
-                                v-model.number ="newWidthRatio"
+                                type="text"
+                                :value ="newWidthRatio"
+                                @input = "handleInput"
+                                @blur = "getFinalWidth"
+                                minLength = 1 maxLength = 4
                                 >
                             </input>
                             <ui-select
@@ -94,9 +96,12 @@
                                 >
                             </ui-select>
                             <input
-                                type ="number"
+                                type ="text"
                                 v-show = "!aspectType"
-                                v-model.number ="newHeightRatio"
+                                @input = "handleInput"
+                                :value ="newHeightRatio"
+                                @blur = "getFinalHeight"
+                                minLength = 1 maxLength = 4
                                 >
                             </input>
                         </div>
@@ -167,14 +172,15 @@
                                     <ui-autocomplete
                                         :suggestions="selectRatioList"
                                         v-model="ele.commonRatio"
-                                        @blur="checkTheInputIsCorrect(ele.commonRatio,$event)"
+                                        @blur="checkTheInputIsCorrect(ele,$event)"
                                         :autofocus = "true"
                                         >
                                     </ui-autocomplete>
+                                    <span class="ui-toolbar-normal__top__selsct__prompt" v-show = "ele.style.showToolTip">{{ $t('pages.resize.toolbar.tooltip')}}</span>
                                 </ui-alert>
                                 <ui-fab 
                                     size="small"
-                                    :title="$t('pages.resize.toolbar.addRatio')"
+                                    :title="$t('pages.resize.toolbar.addRatio')" 
                                     @click = "onAddRatioClick(item,event)"
                                     >
                                     <span class="ui-toolbar-normal__top__selsct__icon"><i class="fa fa-plus fa-lg fa-fw"></i></span>
@@ -238,6 +244,7 @@
             /// ----- 展示样式相关
             this.style = {
                 show: true,
+                showToolTip:false,
                 type: "info"
             };
 
@@ -274,7 +281,7 @@
         constructor(){
             this.data = {
                 outputPaths: [],
-                selectRatio:['10%','25%','50%','75%'],
+                selectRatio:['10%','50%','75%'],
                 lastSelectOutputPath: "",
                 enableOverwriteOutput: false,
                 maxSaveOutputPathCount: 5
@@ -408,6 +415,10 @@
         },
 
         methods:{
+            handleInput(e){
+                var that = this
+                e.target.value = e.target.value.replace(/[^\d]/g,'')
+            },
             // ------------------------- on Transfer Events
             onTransferIsNoraml() {
                 var that = this
@@ -452,6 +463,9 @@
             onRemoveTaskItem(item, index) {
                 console.log('item: ', item, 'index: ', index)
                 var that = this
+                _.each(item.ratioCommon,(ele)=>{
+                    that.__abi__cancel_Gif2apngTask(ele.id)
+                })
                 that.__removeTaskItem(item, index)
             },
 
@@ -465,8 +479,7 @@
                     ele.stateInfo.state = 0
                     ele.stateInfo.message = 0
                 })
-                taskID2taskObj[item.id] = null
-
+                _.omit(taskID2taskObj, [item.id])
                 // remove from taskList
                 that.taskList.splice(index, 1)
             },
@@ -665,7 +678,7 @@
                 cdg.denyButtonText = that.$t('pages.resize.dialog-config-addRatio.btnDeny')
                 var dialog = that.$refs[cdg.ref]
                 cdg.callbackConfirm = () => { that.__addAllRatioItem(item) }
-                cdg.callbackDeny = () => {}
+                cdg.callbackDeny = () => { that.__resetRatioItem()}
                 dialog.open()
             },
 
@@ -775,13 +788,35 @@
                 that.lastsymbol = '%'
             },
 
-            checkTheInputIsCorrect(value,$event){
+            __resetRatioItem(){
+                var that = this
+                that.newWidthRatio = 0
+                that.newHeightRatio = 0
+                that.enableApplyAllItems = false
+                that.enableAddUsualRatio = false
+                that.lastsymbol = '%'
+            },
+
+            checkTheInputIsCorrect(ele,$event){
                 var that = this 
-                if(/^(100|[1-9]?\d(\.\d\d?\d?)?)%$/.test(value) || /^\d*x\d*$/.test(value) || value == ''){
+                if(/^(100|[1-9]?\d(\.\d\d?\d?)?)%$/.test(ele.commonRatio) || /^\d*x\d*$/.test(ele.commonRatio) || ele.commonRatio == ''){
                     $($event.target).css('border', '1px solid #adadad')
+                    ele.style.showToolTip = false
+                    ele.style.type = "info"
                 } else {
-                    $($event.target).css('border', '2px solid red')
+                    $($event.target).css('border', '2px solid rgb(255, 100, 0)')
+                    ele.style.showToolTip = true
                 }
+            },
+
+            getFinalWidth(e){
+                var that = this
+                that.newWidthRatio = e.target.value
+            },
+
+            getFinalHeight(e){
+                var that = this
+                that.newHeightRatio = e.target.value
             },
 
             onRemoveRatioItem(item, ele, index) {
@@ -977,62 +1012,68 @@
                         })
                     })
                     _.each(that.taskList, (taskObj, index) => {
-                        let name = BS.b$.App.getFileNameWithoutExt(taskObj.path)
-                        _.each(taskObj.ratioCommon,(ele,exp) => {
-                            that.lastResizeValue = ele.commonRatio
-                            let lastWidth;
-                            let lastHeight;
-                            let currentAspectType;
-                            let cursorOne = ele.commonRatio.indexOf('%')
-                            let cursorTwo = ele.commonRatio.indexOf('x')
-                            if( cursorOne !== -1){
-                                let length = ele.commonRatio.length
-                                lastWidth = parseInt(ele.commonRatio.substring(0,cursorOne))/100
-                                lastHeight = 0
-                                currentAspectType = true
-                            } else if(cursorTwo !== -1){
-                                let length = ele.commonRatio.length
-                                lastWidth = parseInt(ele.commonRatio.substring(0,cursorTwo))
-                                lastHeight = parseInt(ele.commonRatio.substring(cursorTwo + 1,length))
-                                currentAspectType = false
-                            }
-                            that.__abi__start_ResizeGifTask(ele.id, {
-                                src: taskObj.path,
-                                dest: that.lastOutputPath + '/'+ name + '('+ ele.commonRatio +').gif',
-                                enableIncludeMinImage:true,
-                                overwrite: that.enableOverWriteOutput ? true : false,
-                                IsPercentValue:currentAspectType ? true : false,
-                                width: lastWidth,
-                                height: lastHeight
-                            }, (data) => {
-                                if (data.infoType === 'type_calltask_log'){
-                                    that.__updateInfoWithGif2apngTask(taskObj.id,ele.id, {
-                                        progress: 50,
-                                        state:0
-                                    })
-                                }else if (data.infoType === 'type_calltask_success'){
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
-                                        progress: 100,
-                                        state: 1
-                                    })
-                                }else if (data.infoType === 'type_calltask_error'){
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
-                                        progress: 100,
-                                        state: -1,
-                                        message: data.detail_error || 'error'
-                                    })
-                                }else if (data.infoType === 'type_calltask_cancel') {
-                                    that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
-                                        progress: 100,
-                                        state: 2,
-                                        message: that.$t('pages.resize.notice-no-cancel.message')
-                                    })
+                        if(taskObj.ratioCommon.length !== 0){
+                            let name = BS.b$.App.getFileNameWithoutExt(taskObj.path)
+                            _.each(taskObj.ratioCommon,(ele,exp) => {
+                                if(ele.style.showToolTip || ele.commonRatio == ''){
+                                    ele.style.type = "error"
+                                }else{
+                                    that.lastResizeValue = ele.commonRatio
+                                    let lastWidth;
+                                    let lastHeight;
+                                    let currentAspectType;
+                                    let cursorOne = ele.commonRatio.indexOf('%')
+                                    let cursorTwo = ele.commonRatio.indexOf('x')
+                                    if( cursorOne !== -1){
+                                        let length = ele.commonRatio.length
+                                        lastWidth = parseInt(ele.commonRatio.substring(0,cursorOne))/100
+                                        lastHeight = 0
+                                        currentAspectType = true
+                                    } else if(cursorTwo !== -1){
+                                        let length = ele.commonRatio.length
+                                        lastWidth = parseInt(ele.commonRatio.substring(0,cursorTwo))
+                                        lastHeight = parseInt(ele.commonRatio.substring(cursorTwo + 1,length))
+                                        currentAspectType = false
+                                    }
+                                    that.__abi__start_ResizeGifTask(ele.id, {
+                                        src: taskObj.path,
+                                        dest: that.lastOutputPath + '/'+ name + '('+ ele.commonRatio +').gif',
+                                        enableIncludeMinImage:true,
+                                        overwrite: that.enableOverWriteOutput ? true : false,
+                                        IsPercentValue:currentAspectType ? true : false,
+                                        width: lastWidth,
+                                        height: lastHeight
+                                    }, (data) => {
+                                        if (data.infoType === 'type_calltask_log'){
+                                            that.__updateInfoWithGif2apngTask(taskObj.id,ele.id, {
+                                                progress: 50,
+                                                state:0
+                                            })
+                                        }else if (data.infoType === 'type_calltask_success'){
+                                            that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
+                                                progress: 100,
+                                                state: 1
+                                            })
+                                        }else if (data.infoType === 'type_calltask_error'){
+                                            that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
+                                                progress: 100,
+                                                state: -1,
+                                                message: data.detail_error || 'error'
+                                            })
+                                        }else if (data.infoType === 'type_calltask_cancel') {
+                                            that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
+                                                progress: 100,
+                                                state: 2,
+                                                message: that.$t('pages.resize.notice-no-cancel.message')
+                                            })
+                                        }
+                                        // window.log('[x] infoType ===' + data.infoType)
+                                        // check converting
+                                        that.__checkTaskStateInfo()
+                                    } )                                                                                          
                                 }
-                                // window.log('[x] infoType ===' + data.infoType)
-                                // check converting
-                                that.__checkTaskStateInfo()
-                            } )
-                        })
+                            })                            
+                        }
                     })
                 }
             },
@@ -1080,8 +1121,8 @@
 
                 // 检查必要数值
                 console.assert(taskID)
-                console.assert(BS.b$.App.checkPathIsExist(_config.src))
-                console.assert(BS.b$.App.checkPathIsExist(_config.dest))
+                // console.assert(BS.b$.App.checkPathIsExist(_config.src))
+                // console.assert(BS.b$.App.checkPathIsExist(_config.dest))
 
                 var _command = []
                 var _dest = _config.dest

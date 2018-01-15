@@ -252,7 +252,8 @@
         "chancel":"Cancel all",
         "previousPage":"Previous Page",
         "addRatio":"Add the usual ratio",
-        "removeRatio":"Remove the usual ratio"
+        "removeRatio":"Remove the usual ratio",
+        "tooltip":"Format: xx% or AAxBB"
       },
       "task-item":{
          "file-name": "Name：",
