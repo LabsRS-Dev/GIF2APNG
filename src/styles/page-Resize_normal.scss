@@ -52,6 +52,11 @@
             }
           }
         }
+        .ui-alert--type-info{
+          .ui-alert__icon {
+            color: $md-blue;
+          }
+        }
         .ui-progress-circular {
           position: absolute;
           left: rem-calc(4px);
@@ -62,7 +67,7 @@
           left: 0;
           bottom: 0;
           font-size: rem-calc(11px);
-          color: rgb(255, 100, 0);
+          color: #7f7f7f;
           width: rem-calc(140px);
           text-align: center;
         }

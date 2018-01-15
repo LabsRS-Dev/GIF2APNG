@@ -799,7 +799,7 @@
 
             checkTheInputIsCorrect(ele,$event){
                 var that = this 
-                if(/^(100|[1-9]?\d(\.\d\d?\d?)?)%$/.test(ele.commonRatio) || /^\d*x\d*$/.test(ele.commonRatio) || ele.commonRatio == ''){
+                if(/^(100|[1-9]?\d(\.\d\d?\d?)?)%$/.test(ele.commonRatio) || /^\d+x\d+$/.test(ele.commonRatio) || ele.commonRatio == ''){
                     $($event.target).css('border', '1px solid #adadad')
                     ele.style.showToolTip = false
                     ele.style.type = "info"
@@ -1035,42 +1035,48 @@
                                         lastHeight = parseInt(ele.commonRatio.substring(cursorTwo + 1,length))
                                         currentAspectType = false
                                     }
-                                    that.__abi__start_ResizeGifTask(ele.id, {
-                                        src: taskObj.path,
-                                        dest: that.lastOutputPath + '/'+ name + '('+ ele.commonRatio +').gif',
-                                        enableIncludeMinImage:true,
-                                        overwrite: that.enableOverWriteOutput ? true : false,
-                                        IsPercentValue:currentAspectType ? true : false,
-                                        width: lastWidth,
-                                        height: lastHeight
-                                    }, (data) => {
-                                        if (data.infoType === 'type_calltask_log'){
-                                            that.__updateInfoWithGif2apngTask(taskObj.id,ele.id, {
-                                                progress: 50,
-                                                state:0
-                                            })
-                                        }else if (data.infoType === 'type_calltask_success'){
-                                            that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
-                                                progress: 100,
-                                                state: 1
-                                            })
-                                        }else if (data.infoType === 'type_calltask_error'){
-                                            that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
-                                                progress: 100,
-                                                state: -1,
-                                                message: data.detail_error || 'error'
-                                            })
-                                        }else if (data.infoType === 'type_calltask_cancel') {
-                                            that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
-                                                progress: 100,
-                                                state: 2,
-                                                message: that.$t('pages.resize.notice-no-cancel.message')
-                                            })
-                                        }
-                                        // window.log('[x] infoType ===' + data.infoType)
-                                        // check converting
-                                        that.__checkTaskStateInfo()
-                                    } )                                                                                          
+                                    if(currentAspectType == true && lastWidth == 0){
+                                        ele.style.type = "error"
+                                    }else if(currentAspectType == false && (lastWidth == 0 || lastHeight ==0)){
+                                        ele.style.type = "error"
+                                    }else {
+                                        that.__abi__start_ResizeGifTask(ele.id, {
+                                            src: taskObj.path,
+                                            dest: that.lastOutputPath + '/'+ name + '('+ ele.commonRatio +').gif',
+                                            enableIncludeMinImage:true,
+                                            overwrite: that.enableOverWriteOutput ? true : false,
+                                            IsPercentValue:currentAspectType ? true : false,
+                                            width: lastWidth,
+                                            height: lastHeight
+                                        }, (data) => {
+                                            if (data.infoType === 'type_calltask_log'){
+                                                that.__updateInfoWithGif2apngTask(taskObj.id,ele.id, {
+                                                    progress: 50,
+                                                    state:0
+                                                })
+                                            }else if (data.infoType === 'type_calltask_success'){
+                                                that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
+                                                    progress: 100,
+                                                    state: 1
+                                                })
+                                            }else if (data.infoType === 'type_calltask_error'){
+                                                that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
+                                                    progress: 100,
+                                                    state: -1,
+                                                    message: data.detail_error || 'error'
+                                                })
+                                            }else if (data.infoType === 'type_calltask_cancel') {
+                                                that.__updateInfoWithGif2apngTask(taskObj.id, ele.id, {
+                                                    progress: 100,
+                                                    state: 2,
+                                                    message: that.$t('pages.resize.notice-no-cancel.message')
+                                                })
+                                            }
+                                            // window.log('[x] infoType ===' + data.infoType)
+                                            // check converting
+                                            that.__checkTaskStateInfo()
+                                        } )                                          
+                                    }                                      
                                 }
                             })                            
                         }
