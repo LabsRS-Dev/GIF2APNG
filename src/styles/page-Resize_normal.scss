@@ -14,6 +14,7 @@
     .ui-toolbar-normal__top__thumb{
       display: flex;
       align-items: center;
+      width: rem-calc(64px);
       img{
         border-radius: rem-calc(8px);
       }
@@ -21,6 +22,7 @@
     .ui-toolbar-normal__top__info{
       display: flex;
       flex-direction: column;
+      -webkit-flex:1;
       .ui-toolbar-normal__top__metainfo{
         display: flex;
         flex-direction: row;
