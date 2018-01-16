@@ -877,7 +877,9 @@
                             attr.stateInfo.message = 0
                         }
                     })
-                    el.ratioCommon.splice(index, 1)
+                    if(index !== undefined){
+                        el.ratioCommon.splice(index, 1)                        
+                    }
                 })
             },
 
