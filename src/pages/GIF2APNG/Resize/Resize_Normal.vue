@@ -133,7 +133,7 @@
                     <p
                         v-html="item"
                         :key="index"
-                        v-for="(item, index) in $t('pages.resize.welcome')">
+                        v-for="(item, index) in $t('pages.resize.welcomeNormal')">
                     </p>
                 </div>
                 <ui-alert
