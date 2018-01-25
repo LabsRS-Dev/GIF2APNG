@@ -27,7 +27,81 @@
         display: flex;
         flex-direction: row;
         width: 100%;
-        margin: rem-calc(5px);
+        margin: 0 rem-calc(5px) rem-calc(5px);
+        .ui-toolbar-normal__top__fileName{
+          height: rem-calc(32px);
+          padding-top: rem-calc(5px);
+        }
+        .ui-toolbar-normal__top__button{
+          display: flex;
+          flex-direction: row;
+          margin-left: rem-calc(10px);
+          .ui-button{
+            text-transform: none;
+          }
+          .ui-select {
+            width: rem-calc(135px);
+            align-items: center;
+            justify-content: center;
+            margin: 0 0 0 rem-calc(10px);
+            padding: 0;
+            height: rem-calc(32px);
+            background: none;
+            background-color: #eee;            
+            border: none;
+            cursor: pointer;
+            border-radius: rem-calc(2px);
+            box-shadow: 0 0 2px rgba(0,0,0,.12), 0 2px 2px rgba(0,0,0,.2);
+            -webkit-transition: box-shadow .1s;
+            transition: box-shadow .1s;
+            position: relative;
+            .ui-select__dropdown{
+              min-width: auto;
+              .ui-select__search{
+                .ui-select__search-input{
+                  height: rem-calc(33px);
+                  font-size: rem-calc(13px);
+                  padding-left: rem-calc(32px);
+                }
+                .ui-select__search-icon{
+                  top:rem-calc(6px);
+                  left:rem-calc(6px);
+                }
+              }
+              .ui-select-option{
+                font-size: rem-calc(13px);
+              }
+            }
+            .ui-select__display{
+              border: 0;
+              height: rem-calc(32px);
+              font-size: rem-calc(13px);
+              .ui-select__display-value{
+                text-align: center;
+              }
+              .ui-select__dropdown-button{
+                margin: 0 auto;
+              }
+            }
+            .ui-select-option{
+              height: rem-calc(32px);
+            }
+            .ui-select-option > .ui-select-option:first-child{
+              background-color: red;
+            }
+            .ui-select__display-value{
+              margin-left:rem-calc(13px)
+            }
+            .ui-select-option.is-selected{
+              color: rgba(0,0,0,.87);
+              background-color: #fff;
+              font-weight: 400;
+            }
+            .ui-select-option:hover{
+              background-color: $md-blue;
+            }
+          }
+        }
       }
       .ui-toolbar-normal__top__selsct{
         display: flex;
@@ -174,6 +248,282 @@
       }
       .input-commonRatio-group-addon{
         margin-left: rem-calc(5px);
+      }
+    }
+  }
+}
+.page__toolbar-app-doc__template{
+  display: flex;
+  flex-direction: column;
+  .page__toolbar-app-doc__template__Save{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: rem-calc(10px);
+    .ui-textbox{
+      width: rem-calc(300px);
+      height: rem-calc(28px);
+      padding: 0 rem-calc(5px);
+      margin: 0 0 0 rem-calc(5px);
+      border-radius: rem-calc(5px);
+      border: rem-calc(1px) solid #adadad;
+    }
+    .ui-textbox__input{
+      border-bottom: none;
+      font-size: rem-calc(13px);
+      height: rem-calc(26px);
+    }
+  }
+}
+.page__toolbar-app-doc__input__rename {
+  display: flex;
+  flex-direction: column;
+  border: rem-calc(1px) solid #adadad;
+  border-radius: rem-calc(8px);
+  padding: rem-calc(10px);
+  -webkit-box-shadow: 0 6px 10px 0 rgba(0,0,0,.1), 0 6px 10px 0 rgba(0,0,0,.1);
+  .page__toolbar-app-doc__input__outputPath{
+    display: flex;
+    flex-direction: column;
+    border-bottom: rem-calc(1px) solid #adadad;
+    .page__toolbar-app-doc__input__browse {
+        display: flex;
+        align-items: center;
+        margin-bottom: rem-calc(15px);
+        .input-group-addon{
+          width: rem-calc(85px);
+        }
+        .ui-button {
+            padding: 0;
+            width: rem-calc(80px);
+            margin-left: rem-calc(5px);
+            border-radius: rem-calc(5px);
+        }
+        .ui-select {
+            width: rem-calc(280px);
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            height: rem-calc(32px);
+            border-radius: rem-calc(5px);
+            border: rem-calc(1px) solid #adadad;
+            position: relative;
+            .ui-select__dropdown {
+                .ui-select-option {
+                    font-size: rem-calc(13px);
+                }
+            }
+            .ui-select__display {
+                border: 0;
+                height: rem-calc(32px);
+                font-size: rem-calc(13px);
+                .ui-select__display-value{
+                  padding-left: rem-calc(10px);
+                }
+                .ui-select__dropdown-button {
+                    margin: 0 auto;
+                }
+            }
+            .ui-select-option {
+                height: rem-calc(32px);
+            }
+            .ui-select-option.is-selected {
+                color: rgba(0, 0, 0, .87);
+                background-color: #fff;
+                font-weight: 400;
+            }
+            .ui-select-option:hover {
+                background-color: $md-blue;
+            }
+        }
+    }
+    .page__toolbar-app-doc__input__cover{
+      display: flex;
+      .input-group-cover{
+        margin-left: rem-calc(5px);
+      }
+    } 
+  }
+  .page__toolbar-app-doc__input__outputName{
+    display: flex;
+    flex-direction: column;
+    .page__toolbar-app-doc__input__fileName {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin: rem-calc(15px) 0;
+      .input-output-fileName{
+        width: rem-calc(85px);
+      }
+      .input-output-ToolTip{
+        position: absolute;
+        width: rem-calc(180px);
+        padding: 0 0 0 rem-calc(5px);
+        top: rem-calc(-25px);
+        left: rem-calc(85px);
+        border: rem-calc(1px) solid #adadad;
+        border-radius: rem-calc(5px);
+        background-color: #adadad;
+      }
+      .ui-button {
+          padding: 0;
+          width: rem-calc(80px);
+          margin-left: rem-calc(5px);
+          border-radius: rem-calc(5px);
+      }
+      .ui-textbox{
+        width: rem-calc(250px);
+        height: rem-calc(32px);
+        padding: 0 rem-calc(5px);
+        margin: 0;
+        border-top-left-radius: rem-calc(5px);
+        border-bottom-left-radius: rem-calc(5px);
+        border: rem-calc(1px) solid #adadad;
+        border-right: none;
+      }
+      .ui-textbox__input{
+        border-bottom: none;
+        font-size: rem-calc(13px);
+        height: rem-calc(30px);
+      }
+      .ui-select {
+          width: rem-calc(30px);
+          align-items: center;
+          margin: 0;
+          padding: 0;
+          height: rem-calc(32px);
+          border-top-right-radius: rem-calc(5px);
+          border-bottom-right-radius: rem-calc(5px);
+          border: rem-calc(1px) solid #adadad;
+          position: relative;
+          .ui-select__dropdown {
+              width: rem-calc(280px);
+              left: rem-calc(-250px);
+              .ui-select-option {
+                  font-size: rem-calc(13px);
+              }
+          }
+          .ui-select__display {
+              border: 0;
+              height: rem-calc(32px);
+              font-size: rem-calc(13px);
+              .ui-select__display-value{
+                display: none;
+              }
+              .ui-select__dropdown-button {
+                  margin: 0 auto;
+                  position: absolute;
+                  left: rem-calc(5px);
+                  top: rem-calc(8px);
+              }
+          }
+          .ui-select-option {
+            position: relative;
+            height: rem-calc(32px);
+            .ui-select-option__checkbox{
+              position: absolute;
+              top: rem-calc(4px);
+              right: rem-calc(12px);              
+            }
+          }
+          .ui-select-option.is-selected {
+              color: rgba(0, 0, 0, .87);
+              background-color: #fff;
+              font-weight: 400;
+          }
+          .ui-select-option:hover {
+              background-color: $md-blue;
+          }
+      }
+    }
+    .page__toolbar-app-doc__input__sequence{
+      display: flex;
+      align-items: center;
+      .ui-checkbox{
+        margin: 0;
+      }
+      .input-start-sequence{
+        margin: 0 rem-calc(5px);
+      }
+      input {
+        width: rem-calc(60px);
+        height: rem-calc(28px);
+        padding: 0 rem-calc(5px);
+        margin: 0 rem-calc(5px);
+      }
+    } 
+  }
+}
+.page__toolbar-app-doc__preview__confirmDialog{
+  .ui-button--color-default{
+    display: none;
+  }
+}
+.page__toolbar-app-doc__preview__formList{
+  display: flex;
+  flex-direction: column;
+  width: rem-calc(480px);
+  height: rem-calc(200px);
+  .page__toolbar-app-doc__preview__confirm{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: rem-calc(20px);
+    .original__FileName{
+      padding: 0 0 0 rem-calc(5px);
+      width: 50%;
+      border-bottom: rem-calc(1px) solid #adadad;
+    }
+    .output__FileName{
+      padding: 0 0 0 rem-calc(5px);
+      width: 50%;
+      border-bottom: rem-calc(1px) solid #adadad;
+    }
+  }
+  .page__toolbar-app-doc__preview__allNameList{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: rem-calc(180px);
+    overflow: auto;
+    .page__toolbar-app-doc__preview__list{
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      flex-shrink:0;
+      .page__toolbar-app-doc__preview__nameList{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        .page__toolbar-app-doc__preview__original__FileName{
+          display: flex;
+          width: 50%;
+          border-bottom: rem-calc(1px) dashed #adadad; 
+          .preview__nameList__original{
+            width: 100%;
+            display: block;
+            overflow: hidden; 
+            white-space: nowrap; 
+            text-overflow: ellipsis; 
+            padding: 0 0 0 rem-calc(5px);
+            font-size: rem-calc(12px);
+          }
+        }
+        .page__toolbar-app-doc__preview__output__FileName{
+          display: flex;
+          flex-direction: column;
+          width: 50%;
+          border-bottom: rem-calc(1px) dashed #adadad; 
+          .preview__nameList__output{
+            width: 100%;
+            display: block;
+            overflow: hidden; 
+            white-space: nowrap; 
+            text-overflow: ellipsis; 
+            padding: 0 0 0 rem-calc(10px);
+            font-size: rem-calc(12px);
+          }
+        }
       }
     }
   }

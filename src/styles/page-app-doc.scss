@@ -33,6 +33,7 @@
                     }
                 }
                 .ui-modal__body {
+                    padding-bottom: 0;
                     .ui-confirm__message {
                         font-size: $global-font-size;
                     }
@@ -42,9 +43,6 @@
             .page__toolbar-app-doc__input-group {
                 display: flex;
                 flex-direction: column;
-
-                font-size: rem-calc(11px);
-
                 .page__toolbar-app-doc__input-browse {
                     display: flex;
                     align-items: center;
@@ -53,7 +51,6 @@
                     .ui-button {
                         padding: 0;
                         margin-left: rem-calc(5px);
-                        height: rem-calc(26px);
                         border-radius: rem-calc(5px);
                     }
                     .ui-select {
@@ -62,25 +59,28 @@
                         margin: 0;
                         margin-left: rem-calc(8px);
                         padding: 0;
-                        height: rem-calc(25px);
+                        height: rem-calc(32px);
                         border-radius: rem-calc(5px);
                         border: rem-calc(1px) solid #adadad;
                         position: relative;
                         .ui-select__dropdown {
                             .ui-select-option {
-                                font-size: rem-calc(11px);
+                                font-size: rem-calc(13px);
                             }
                         }
                         .ui-select__display {
                             border: 0;
-                            height: rem-calc(25px);
-                            font-size: rem-calc(11px);
+                            height: rem-calc(32px);
+                            font-size: rem-calc(13px);
+                            .ui-select__display-value{
+                                padding-left: rem-calc(10px);
+                            }
                             .ui-select__dropdown-button {
                                 margin: 0 auto;
                             }
                         }
                         .ui-select-option {
-                            height: rem-calc(28px);
+                            height: rem-calc(32px);
                         }
                         .ui-select-option.is-selected {
                             color: rgba(0, 0, 0, .87);
@@ -92,6 +92,12 @@
                         }
                     }
                 }
+                .page__toolbar-app-doc__input-cover{
+                    display: flex;
+                    .input-group-cover{
+                      margin-left: rem-calc(4px);
+                    }
+                } 
             }
         }
 

@@ -182,6 +182,7 @@
         "btnConfirm": "确定",
         "btnDeny": "取消",
         "path":"输出路径:",
+        "fileName":"输出文件名",
         "cover":"是否覆盖原有文件"
       },
       "dialog-config-preview":{
@@ -255,6 +256,39 @@
         "removeRatio":"删除常用比例",
         "tooltip":"正确格式: xx%或AAxBB"
       },
+      "button":{
+        "save":"存为模板",
+        "load":"载入模板"
+      },
+      "dialog-confirm-template":{
+        "title":"保存为模板",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "name": "模板名称:",
+        "note": "注意:",
+        "content": "名称不要超过8个字."
+      },
+      "dialog-confirm-preview":{
+        "title":"预览",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "original": "原文件名",
+        "output": "输出文件名"
+      },
+      "dialog-confirm-format":{
+        "fileName":"原文件名",
+        "uppercaseName":"原文件名(大写)",
+        "lowercaseName":"原文件名(小写)",
+        "info":"转换信息",
+        "date":"时间日期"
+      },
+      "dialog-confirm-cover":{
+        "title":"确认操作",
+        "btnConfirm": "确定",
+        "btnDeny": "取消",
+        "message": "已存在同名模板,是否覆盖原模板?",
+        "content":"应用到所有项目?"
+      },
       "task-item":{
          "file-name": "名称：",
          "file-path": "路径：",
@@ -315,7 +349,12 @@
         "btnConfirm": "确定",
         "btnDeny": "取消",
         "path":"输出路径:",
-        "cover":"是否覆盖原有文件?"
+        "fileName":"输出文件名",
+        "sequence" :"开始序列:",
+        "Preview" :"预览",
+        "cover":"是否覆盖原有文件?",
+        "toolTip":"请输入合法的文件名称",
+        "placeholder":"输入或选择文件名称"
       },
       "dialog-config-change":{
         "title":"调节图片尺寸",

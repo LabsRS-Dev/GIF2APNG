@@ -34,35 +34,128 @@
                     :deny-button-text="outputConfigDialog.denyButtonText"
                     :ref="outputConfigDialog.ref"
                     :title="outputConfigDialog.title"
+                    :closeOnConfirm="false"
 
                     @confirm="outputConfigDialog.callbackConfirm"
                     @deny="outputConfigDialog.callbackDeny"
                     @open="outputConfigDialog.callbackOpen"
                     @close="outputConfigDialog.callbackClose"
                     >
-                    <div class="page__toolbar-app-doc__input-group">
-                        <div class="page__toolbar-app-doc__input-browse">
-                            <span class="input-group-addon">{{ $t('pages.resize.dialog-config-output.path') }}</span>
-                            <ui-select
-                                :options="availableOutputPathList"
-                                v-model="lastOutputPath"
-                                >
-                            </ui-select>
-                            <ui-button
-                                type="secondary"
-                                size="small"
-                                color="primary"
-                                @click="onOpenSelectOutDir()"
-                                >
-                                <i class="fa fa-folder-open fa-lg"></i>
-                            </ui-button>
+                    <ui-confirm
+                        class = "page__toolbar-app-doc__preview__confirmDialog"
+                        :autofocus="previewConfirmDialog.autofocus"
+                        :confirm-button-text="previewConfirmDialog.confirmButtonText"
+                        :deny-button-text="previewConfirmDialog.denyButtonText"
+                        :ref="previewConfirmDialog.ref"
+                        :title="previewConfirmDialog.title"
+
+                        @confirm="previewConfirmDialog.callbackConfirm"
+                        @deny="previewConfirmDialog.callbackDeny"
+                        @open="previewConfirmDialog.callbackOpen"
+                        @close="previewConfirmDialog.callbackClose"
+                        >
+                        <div class="page__toolbar-app-doc__preview__formList">
+                            <div class="page__toolbar-app-doc__preview__confirm">
+                                <span class="original__FileName">{{$t('pages.resize.dialog-confirm-preview.original')}}</span>
+                                <span class="output__FileName">{{$t('pages.resize.dialog-confirm-preview.output')}}</span>
+                            </div>
+                            <div class="page__toolbar-app-doc__preview__allNameList">
+                                <div 
+                                    class="page__toolbar-app-doc__preview__list"
+                                    v-for="item in originalFileName"
+                                    >
+                                    <div 
+                                        class="page__toolbar-app-doc__preview__nameList"
+                                        v-for="(ele , index) in item"
+                                        >
+                                            <div class="page__toolbar-app-doc__preview__original__FileName">
+                                                <span class="preview__nameList__original" :title="index">{{ index }}</span>
+                                            </div>
+                                            <div class="page__toolbar-app-doc__preview__output__FileName">
+                                                <span
+                                                    class="preview__nameList__output"
+                                                    :title="el"
+                                                    v-for="el in ele"
+                                                    >
+                                                    {{ el }}
+                                                </span>
+                                            </div>
+                                    </div>
+                                </div>                                
+                            </div>
+
                         </div>
-                        <div class="page__toolbar-app-doc__input-cover">
-                            <ui-checkbox
-                                v-model="enableOverWriteOutput"
-                                >
-                            </ui-checkbox>
-                            <span class="input-group-cover">{{ $t('pages.resize.dialog-config-output.cover') }}</span>
+                    </ui-confirm>
+                    <div class="page__toolbar-app-doc__input__rename">
+                        <div class="page__toolbar-app-doc__input__outputPath">
+                            <div class="page__toolbar-app-doc__input__browse">
+                                <span class="input-group-addon">{{ $t('pages.resize.dialog-config-output.path') }}</span>
+                                <ui-select
+                                    :options="availableOutputPathList"
+                                    v-model="lastOutputPath"
+                                    >
+                                </ui-select>
+                                <ui-button
+                                    raised
+                                    type="secondary"
+                                    size="small"
+                                    color="primary"
+                                    @click="onOpenSelectOutDir()"
+                                    >
+                                    <i class="fa fa-folder-open fa-lg"></i>
+                                </ui-button>
+                            </div>
+                            <div class="page__toolbar-app-doc__input__cover">
+                                <ui-checkbox
+                                    v-model="enableOverWriteOutput"
+                                    >
+                                </ui-checkbox>
+                                <span class="input-group-cover">{{ $t('pages.resize.dialog-config-output.cover') }}</span>
+                            </div>                            
+                        </div>
+                        <div class="page__toolbar-app-doc__input__outputName">
+                            <div class="page__toolbar-app-doc__input__fileName">
+                                <span class="input-output-fileName">{{ $t('pages.resize.dialog-config-output.fileName') }}</span>
+                                <ui-textbox
+                                    v-model="getOutputName"
+                                    :placeholder="$t('pages.resize.dialog-config-output.placeholder')"
+                                    @focus = "onResetFileNameToolTip()"
+                                    @blur="onCheckOutputFileName()"
+                                    >
+                                </ui-textbox>
+                                <ui-select
+                                    multiple
+                                    ref ="resetSelect"
+                                    :options="availableOutputNameList"
+                                    v-model="lastOutputName"
+                                    >
+                                </ui-select>
+                                <ui-button
+                                    raised
+                                    type="secondary"
+                                    size="small"
+                                    color="primary"
+                                    @click="onOpenPreviewInfo"
+                                    >
+                                    <span>{{ $t('pages.resize.dialog-config-output.Preview') }}</span>
+                                </ui-button>
+                                <span class="input-output-ToolTip" v-show="showFileNameToolTip">{{ $t('pages.resize.dialog-config-output.toolTip') }}</span>
+                            </div>
+                            <div class="page__toolbar-app-doc__input__sequence">
+                                <ui-checkbox
+                                    v-model="enableAddSequence"
+                                    >
+                                </ui-checkbox>
+                                <span class="input-start-sequence">{{ $t('pages.resize.dialog-config-output.sequence') }}</span>                           
+                                <input
+                                    type="text"
+                                    :value ="sequenceNumber"
+                                    @input = "handleInput"
+                                    @blur = "getSequenceNumber"
+                                    minLength = 1 maxLength = 4
+                                    >
+                                </input>
+                            </div>
                         </div>
                     </div>
                 </ui-confirm>
@@ -123,6 +216,35 @@
                         </div>
                     </div>
                 </ui-confirm>
+                <ui-confirm
+                    :autofocus="templateConfirmDialog.autofocus"
+                    :confirm-button-text="templateConfirmDialog.confirmButtonText"
+                    :deny-button-text="templateConfirmDialog.denyButtonText"
+                    :ref="templateConfirmDialog.ref"
+                    :title="templateConfirmDialog.title"
+
+                    @confirm="templateConfirmDialog.callbackConfirm"
+                    @deny="templateConfirmDialog.callbackDeny"
+                    @open="templateConfirmDialog.callbackOpen"
+                    @close="templateConfirmDialog.callbackClose"
+                    >
+                    <div class="page__toolbar-app-doc__template">
+                        <div class="page__toolbar-app-doc__template__Save">
+                            <span class="template__Save">{{ $t('pages.resize.dialog-confirm-template.name') }}</span>
+                            <ui-textbox
+                                v-model="lastTemplateName"
+                                :maxlength = "16"
+                                :enforceMaxlength = "true"
+                                >
+                            </ui-textbox>
+                        </div>
+                        <div class="page__toolbar-app-doc__template__Note">
+                            <span class="template__Note__icon"><i class="fa fa-exclamation-circle fa-lg fa-fw"></i></span>
+                            <span class="template__Note">{{ $t('pages.resize.dialog-confirm-template.note') }}</span>
+                            <span class="template__Note__content">{{ $t('pages.resize.dialog-confirm-template.content') }}</span>
+                        </div>
+                    </div>
+                </ui-confirm>
             </div>
 
             <div class="page__examples page__examples-app-doc page__Resize-normal">
@@ -158,6 +280,22 @@
                                         {{ item.dimensions ? '(' + item.dimensions.data.width + 'x' + item.dimensions.data.height  + ')' : '' }}
                                     </sup>
                                 </strong>
+                                <div class="ui-toolbar-normal__top__button">
+                                    <ui-button 
+                                        raised 
+                                        size="small"
+                                        @click = "onSaveAsTemplate(item)"
+                                        >
+                                        {{$t('pages.resize.button.save')}}
+                                    </ui-button>
+                                    <ui-select
+                                        has-search
+                                        :options="templateStrings"
+                                        :value="$t('pages.resize.button.load')"
+                                        @input = "onChangeTemplate(item,$event)"
+                                        >
+                                    </ui-select>
+                                </div>
                             </div>
                             <div class="ui-toolbar-normal__top__selsct">
                                 <ui-alert
@@ -264,7 +402,10 @@
     var taskList = []
     var ratioList = []
     var taskID2taskObj =  {}
-    var lastResizeValue;   //        最终输入后台的字符串
+    var lastResizeValue;        //        最终输入后台的字符串
+    var lastTemplateName;       //        最终存入的模板名称
+    var originalFileName = [];  //        预览时原文件名数组
+
 
     //// 与设置相关的处理
     class Settings {
@@ -281,6 +422,8 @@
         constructor(){
             this.data = {
                 outputPaths: [],
+                templateList:{'General template':['10%','50%','75%']},
+                selectTemplate:['General template'],
                 selectRatio:['10%','50%','75%'],
                 lastSelectOutputPath: "",
                 enableOverwriteOutput: false,
@@ -313,6 +456,7 @@
 
     export default {
         data() {
+            var that = this
             return {
                 taskList: taskList,
                 ratioList:ratioList,
@@ -326,6 +470,22 @@
                 taskID2taskObj: {},
                 lastOutputPath: $LS$.data.lastSelectOutputPath,
                 availableOutputPathList: $LS$.data.outputPaths,
+                templateStrings: $LS$.data.selectTemplate,
+                originalFileName:originalFileName,
+                lastTemplateName:"",
+                sequenceNumber:1,
+                getOutputName:"",
+                lastOutputName:"",
+                availableOutputNameList:[
+                    that.$t('pages.resize.dialog-confirm-format.fileName'),
+                    that.$t('pages.resize.dialog-confirm-format.uppercaseName'),
+                    that.$t('pages.resize.dialog-confirm-format.lowercaseName'),
+                    that.$t('pages.resize.dialog-confirm-format.info'),
+                    that.$t('pages.resize.dialog-confirm-format.date')
+                ],
+                enableAddSequence:false,
+                checkFileNme:true,
+                showFileNameToolTip:false,
                 selectRatioList: $LS$.data.selectRatio,
                 aspectType:true,
                 availableSymbolList:['%','x'],
@@ -358,6 +518,28 @@
                 },
                 outputConfigDialog:{
                     ref: 'outputConfigDialog',
+                    autofocus: 'none',
+                    confirmButtonText: 'Confirm',
+                    denyButtonText: 'Deny',
+                    title: '',
+                    callbackConfirm: ()=>{},
+                    callbackDeny: ()=>{},
+                    callbackOpen: ()=>{},
+                    callbackClose: ()=>{},
+                },
+                templateConfirmDialog:{
+                    ref: 'templateConfirmDialog',
+                    autofocus: 'none',
+                    confirmButtonText: 'Confirm',
+                    denyButtonText: 'Deny',
+                    title: '',
+                    callbackConfirm: ()=>{},
+                    callbackDeny: ()=>{},
+                    callbackOpen: ()=>{},
+                    callbackClose: ()=>{},
+                },
+                previewConfirmDialog:{
+                    ref: 'previewConfirmDialog',
                     autofocus: 'none',
                     confirmButtonText: 'Confirm',
                     denyButtonText: 'Deny',
@@ -406,7 +588,6 @@
                 var that = this
                 return [
                     {id:'action-import', visiable:true, color:"black", icon:"fa fa-file-image-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.import"},
-                    {id:'action-outputFolder', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.outputFolder"},
                     {id:'action-do', visiable:true, color:"black", icon:"fa fa-play-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.fix"},
                     {id:'action-stop', visiable:true, color:"black", icon:"fa fa-stop-circle-o fa-lg fa-fw", size:"small", type:"secondary",  tooltip:"pages.resize.toolbar.chancel"},
                     {id:'action-remove', visiable:true, color:"black", icon:"fa fa-trash-o fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.resize.toolbar.remove"}
@@ -484,6 +665,118 @@
                 that.taskList.splice(index, 1)
             },
 
+            onSaveAsTemplate(item){
+                var that = this
+                const cdg = that.templateConfirmDialog
+                cdg.title = that.$t('pages.resize.dialog-confirm-template.title')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-template.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-template.btnDeny')
+                var dialog = that.$refs[cdg.ref]
+                cdg.callbackConfirm = () =>{ that.saveTemplateSettings(item) }
+                cdg.callbackDeny = () =>{ that.resetTemplateSettings() }
+                dialog.open()
+            },
+
+            saveTemplateSettings(item){
+                var that = this
+                if(that.lastTemplateName !== ''){
+                    let index = _.indexOf(that.templateStrings,that.lastTemplateName)
+                    if(index == -1){
+                        let ratioTemplate = []
+                        _.each(item.ratioCommon,(ele) => {
+                            ratioTemplate.push(ele.commonRatio)
+                        })
+                        $LS$.data.templateList[that.lastTemplateName] = ratioTemplate
+                        $LS$.data.selectTemplate.push(that.lastTemplateName)
+
+                        $LS$.save()        
+                        that.lastTemplateName = ''
+                    }else {
+                        const cdg = that.confirmDialog
+                        cdg.title = that.$t('pages.resize.dialog-confirm-cover.title')
+                        cdg.content = that.$t('pages.resize.dialog-confirm-cover.message')
+                        cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-cover.btnConfirm')
+                        cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-cover.btnDeny')
+
+                        var dialog = that.$refs[cdg.ref]
+                        cdg.callbackConfirm = () =>{ that.saveCoverSettings(item) }
+                        cdg.callbackDeny = () =>{ that.onSaveAsTemplate(item) }
+                        dialog.open()
+                    }                    
+                }
+            },
+
+            resetTemplateSettings(){
+                var that = this
+                that.lastTemplateName = ''
+            },
+
+            saveCoverSettings(item){
+                var that = this
+                let ratioTemplate = []
+                _.each(item.ratioCommon,(ele) => {
+                    ratioTemplate.push(ele.commonRatio)
+                })
+                $LS$.data.templateList[that.lastTemplateName] = ratioTemplate
+
+                $LS$.save()        
+                that.lastTemplateName = ''      
+            },
+
+            onChangeTemplate(item,value){
+                var that = this 
+                const cdg = that.confirmDialog
+                cdg.title = that.$t('pages.resize.dialog-confirm-cover.title')
+                cdg.content = that.$t('pages.resize.dialog-confirm-cover.content')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-cover.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-cover.btnDeny')
+
+                var dialog = that.$refs[cdg.ref]
+                cdg.callbackConfirm = () =>{ that.onApplyAllItems(value) }
+                cdg.callbackDeny = () =>{ that.onApplyOnlyItem(item,value) }
+                dialog.open()
+            },
+
+            onApplyAllItems(value){
+                var that = this
+                _.each(that.taskList,(ele) => {
+                    if(ele.ratioCommon.length > 0){
+                        _.each(ele.ratioCommon,(el) => {
+                            el.isWorking = false;
+                            el.progress = 0
+                            el.stateInfo.state = 0
+                            el.stateInfo.message = 0
+                        })
+                        ele.ratioCommon.length = 0      
+                    }
+                })
+                let newTemplate = $LS$.data.templateList[value]
+                _.each(that.taskList,(ele) => {
+                    _.each(newTemplate,(el) => {
+                        let ratioObj = new Ratio(el)
+                        ele.ratioCommon.push(ratioObj)
+                    })                    
+                })
+            },
+
+            onApplyOnlyItem(item,value){
+                var that = this
+                if(item.ratioCommon.length > 0){
+                    _.each(item.ratioCommon,(ele) => {
+                        ele.isWorking = false;
+                        ele.progress = 0
+                        ele.stateInfo.state = 0
+                        ele.stateInfo.message = 0
+                    })
+                    item.ratioCommon.length = 0
+                }
+                let newTemplate = $LS$.data.templateList[value]
+                _.each(newTemplate,(el) => {
+                    let ratioObj = new Ratio(el)
+                    item.ratioCommon.push(ratioObj)
+                })
+            },
+
             // -------------------------- Tool bar
             onToolBtnClick(index, item) {
                 console.log('onToolBtnClick', index)
@@ -492,8 +785,6 @@
                     this.onBtnImportFilesClick()
                 }else if (item.id === 'action-remove') {
                     this.onBtnRemoveAllClick()
-                }else if (item.id === 'action-outputFolder') {
-                    this.onBtnOutputFolderClick()
                 }else if (item.id === 'action-do') {
                     this.onBtnDoClick()
                 }else if (item.id === 'action-stop') {
@@ -563,22 +854,6 @@
                 }
             },
 
-            onBtnOutputFolderClick(){
-                var that = this
-                console.log("-------------------- call output dir")
-                console.dir(that.availableOutputPathList)
-
-                const cdg = that.outputConfigDialog
-                cdg.title = that.$t('pages.resize.dialog-config-output.title')
-                cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
-                cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
-                cdg.callbackConfirm = () => { that.saveOutputSettings() }
-                cdg.callbackDeny = () => { that.resetOutputSettings() }
-
-                var dialog = that.$refs[cdg.ref]
-                dialog.open()
-            },
-
             onBtnDoClick(){
                 var that = this
                 if(that.taskList.length === 0) {
@@ -592,21 +867,26 @@
 
             __checkTheLastOutputPathIsExist(){
                 var that = this
-                if(that.lastOutputPath == ""){
-                    const cdg = that.outputConfigDialog
-                    cdg.title = that.$t('pages.resize.dialog-config-output.title')
-                    cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
-                    cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
-                    cdg.callbackConfirm = () => {
+                that.getOutputName = ''
+                that.enableAddSequence = false
+                that.sequenceNumber = 1
+                that.$refs["resetSelect"].reset()
+                const cdg = that.outputConfigDialog
+                cdg.title = that.$t('pages.resize.dialog-config-output.title')
+                cdg.confirmButtonText = that.$t('pages.resize.dialog-config-output.btnConfirm')
+                cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
+                cdg.callbackConfirm = () => {
+                    if(that.checkFileNme){
+                        dialog.close()
                         that.saveOutputSettings()
                         that.startDo()
+                    }else {
+                        that.showFileNameToolTip = true
                     }
-                    cdg.callbackDeny = () => { that.resetOutputSettings() }
-                    var dialog = that.$refs[cdg.ref]
-                    dialog.open()
-                }else{
-                    that.startDo()
                 }
+                cdg.callbackDeny = () => { that.resetOutputSettings() }
+                var dialog = that.$refs[cdg.ref]
+                dialog.open()
             },
 
             onBtnStopDoClick(){
@@ -1005,6 +1285,7 @@
 
             startDo(){
                 var that = this
+                let sequence = that.sequenceNumber - 1
                 if(that.taskList.length > 0){
                     _.each(that.taskList,(taskObj) => {
                         _.each(taskObj.ratioCommon,(ele) => {
@@ -1015,7 +1296,7 @@
                     })
                     _.each(that.taskList, (taskObj, index) => {
                         if(taskObj.ratioCommon.length !== 0){
-                            let name = BS.b$.App.getFileNameWithoutExt(taskObj.path)
+                            let fileName = BS.b$.App.getFileNameWithoutExt(taskObj.path)
                             _.each(taskObj.ratioCommon,(ele,exp) => {
                                 if(ele.style.showToolTip || ele.commonRatio == ''){
                                     ele.style.type = "error"
@@ -1023,6 +1304,7 @@
                                     that.lastResizeValue = ele.commonRatio
                                     let lastWidth;
                                     let lastHeight;
+                                    let lastName;
                                     let currentAspectType;
                                     let cursorOne = ele.commonRatio.indexOf('%')
                                     let cursorTwo = ele.commonRatio.indexOf('x')
@@ -1037,6 +1319,60 @@
                                         lastHeight = parseInt(ele.commonRatio.substring(cursorTwo + 1,length))
                                         currentAspectType = false
                                     }
+                                    if(that.getOutputName !== ''){
+                                        let list = []
+                                        let indexList = []
+                                        let nameList = _.words(that.getOutputName,/[^<>$]*/g)
+                                        let compactNameList = _.compact(nameList)
+                                        _.each(compactNameList,(att) => {
+                                            var ind = _.indexOf(that.availableOutputNameList,att)
+                                            if(ind == -1){
+                                                list.push(att)
+                                            }else if(ind == 0){
+                                                list.push(fileName)
+                                            }else if(ind == 1){
+                                                let name = _.toUpper(fileName)
+                                                list.push(name)
+                                            }else if(ind == 2){
+                                                let name = _.toLower(fileName)
+                                                list.push(name)
+                                            }else if(ind == 3){
+                                                list.push('(' + ele.commonRatio + ')')
+                                            }else if(ind == 4){
+                                                let thedate = new Date()
+                                                let year = thedate.getFullYear()
+                                                let month = thedate.getMonth()
+                                                let date = thedate.getDate()
+                                                let hour = thedate.getHours()
+                                                let minu = thedate.getMinutes()
+                                                let sec = thedate.getSeconds()
+                                                month = month + 1
+                                                if (month < 10) month = "0" + month
+                                                if (date < 10) date = "0" + date
+                                                if (hour < 10) hour = "0" + hour
+                                                if (minu < 10) minu = "0" + minu
+                                                if (sec < 10) sec = "0" + sec
+                                                let time = year + '-' + month + '-' + date + ' ' + hour + "-" + minu + "-" + sec
+                                                list.push('(' + time + ')')
+                                            }
+                                            if(ind == 3){
+                                                indexList.push(ind)
+                                            }
+                                        })
+                                        if(that.enableAddSequence == false && indexList.length == 0){
+                                            that.enableAddSequence = true
+                                        }
+                                        if(that.enableAddSequence){
+                                            sequence = sequence + 1
+                                            list.push(sequence)
+                                        }
+                                        list.push('.gif')
+                                        lastName = _.join(list,'')
+                                    }else {
+                                        that.enableAddSequence = true
+                                        sequence = sequence + 1
+                                        lastName = sequence + '.gif'
+                                    }
                                     if(currentAspectType == true && lastWidth == 0){
                                         ele.style.type = "error"
                                     }else if(currentAspectType == false && (lastWidth == 0 || lastHeight ==0)){
@@ -1044,7 +1380,7 @@
                                     }else {
                                         that.__abi__start_ResizeGifTask(ele.id, {
                                             src: taskObj.path,
-                                            dest: that.lastOutputPath + '/'+ name + '('+ ele.commonRatio +').gif',
+                                            dest: that.lastOutputPath + '/' + lastName,
                                             enableIncludeMinImage:true,
                                             overwrite: that.enableOverWriteOutput ? true : false,
                                             IsPercentValue:currentAspectType ? true : false,
@@ -1207,8 +1543,160 @@
                 curTaskObj.associatedTransferTaskIds = []
 
                 return that
-            }
+            },
 
+            getSequenceNumber(e){
+                var that = this
+                that.sequenceNumber = e.target.value
+                if(that.sequenceNumber == ''){
+                    that.sequenceNumber = 1
+                }
+            },
+
+            ////  匹配输出文件名的字符串
+            onCheckOutputFileName(){
+                var that = this 
+                var str = that.checkTheStrIsTrue(that.getOutputName)
+                if(!/[<>]/.test(str)){
+                    let list = that.getOutputName.match(/\<(.+?)\>/g)
+                    _.each(list,(ele) => {
+                        let name = ele.substring(ele.indexOf("<")+1,ele.indexOf(">"))
+                        let index = _.indexOf(that.availableOutputNameList,name)
+                        if(index == -1){
+                            that.checkFileNme = false
+                        }else {
+                            that.checkFileNme = true
+                            that.showFileNameToolTip = false
+                        }
+                    })
+                }else {
+                    that.checkFileNme = false
+                }
+                if(that.checkFileNme){
+                    let list = that.getOutputName.match(/\<(.+?)\>/g)
+                    that.$refs["resetSelect"]._props.value.length = 0
+                    _.each(list,(ele) => {
+                        let name = ele.substring(ele.indexOf("<")+1,ele.indexOf(">"))
+                        let index = _.indexOf(that.availableOutputNameList,name)
+                        if(index !== -1){
+                            that.$refs["resetSelect"]._props.value.push(name)
+                        }
+                    })
+                }
+            },
+
+            ////  匹配输出文件名的字符串
+            checkTheStrIsTrue(str){
+                var that = this
+                if(/[<][^<>]*[>]/.test(str)){  
+                    str = str.replace(/[<][^<>]*[>]/g, '')
+                    return that.checkTheStrIsTrue(str)
+                }else{  
+                    return str
+                }
+            },
+
+            onResetFileNameToolTip(){
+                var that = this
+                that.showFileNameToolTip = false
+            },
+            
+            onOpenPreviewInfo(){
+                var that = this
+                if(that.checkFileNme){
+                    that.originalFileName = []
+                    let sequence = that.sequenceNumber - 1
+                    const cdg = that.previewConfirmDialog
+                    cdg.title = that.$t('pages.resize.dialog-confirm-preview.title')
+                    cdg.confirmButtonText = that.$t('pages.resize.dialog-confirm-preview.btnConfirm')
+                    cdg.denyButtonText = that.$t('pages.resize.dialog-confirm-preview.btnDeny')
+                    if(that.getOutputName !== ''){
+                        _.each(that.taskList,(ele)=>{
+                            let outputName = []
+                            // let fileName = ele.name
+                            let fileName = BS.b$.App.getFileNameWithoutExt(ele.path)
+                            let outputNameObj = {}
+                            _.each(ele.ratioCommon,(att)=>{
+                                let list = []
+                                let indexList = []
+                                let nameList = _.words(that.getOutputName,/[^<>$]*/g)
+                                let compactNameList = _.compact(nameList)
+                                _.each(compactNameList,(el)=>{
+                                    var index = _.indexOf(that.availableOutputNameList,el)
+                                    if(index == -1){
+                                        list.push(el)
+                                    }else if(index == 0){
+                                        list.push(fileName)
+                                    }else if(index == 1){
+                                        let name = _.toUpper(fileName)
+                                        list.push(name)
+                                    }else if(index == 2){
+                                        let name = _.toLower(fileName)
+                                        list.push(name)
+                                    }else if(index == 3){
+                                        list.push('(' + att.commonRatio + ')')
+                                    }else if(index == 4){
+                                        let thedate = new Date()
+                                        let year = thedate.getFullYear()
+                                        let month = thedate.getMonth()
+                                        let date = thedate.getDate()
+                                        let hour = thedate.getHours()
+                                        let minu = thedate.getMinutes()
+                                        let sec = thedate.getSeconds()
+                                        month = month + 1
+                                        if (month < 10) month = "0" + month
+                                        if (date < 10) date = "0" + date
+                                        if (hour < 10) hour = "0" + hour
+                                        if (minu < 10) minu = "0" + minu
+                                        if (sec < 10) sec = "0" + sec
+                                        let time = year + '-' + month + '-' + date + ' ' + hour + "-" + minu + "-" + sec
+                                        list.push('(' + time + ')')
+                                    }
+                                    if(index == 3){
+                                        indexList.push(index)
+                                    }
+                                })
+                                if(that.enableAddSequence == false && indexList.length == 0){
+                                    that.enableAddSequence = true
+                                }
+                                if(that.enableAddSequence){
+                                    sequence = sequence + 1
+                                    list.push(sequence)
+                                }
+                                list.push('.gif')
+                                let lastName = _.join(list,'')
+                                outputName.push(lastName)
+                            })
+                            outputNameObj[fileName] = outputName
+                            that.originalFileName.push(outputNameObj)
+                        })
+                        console.log(that.originalFileName)
+                    }else {
+                        that.enableAddSequence = true
+                        _.each(that.taskList,(ele)=>{
+                            let outputName = []
+                            // let fileName = ele.name
+                            let fileName = BS.b$.App.getFileNameWithoutExt(ele.path)
+                            let outputNameObj = {}
+                            _.each(ele.ratioCommon,(att)=>{
+                                let list = []
+                                sequence = sequence + 1
+                                let lastName = sequence + '.gif'
+                                outputName.push(lastName)
+                            })
+                            outputNameObj[fileName] = outputName
+                            that.originalFileName.push(outputNameObj)
+                        })
+                        console.log(that.originalFileName)
+                    }
+                    var dialog = that.$refs[cdg.ref]
+                    cdg.callbackConfirm = () =>{}
+                    cdg.callbackDeny = () =>{}
+                    dialog.open()                    
+                } else {
+                    that.showFileNameToolTip = true
+                }
+            }
         },
         watch:{
             lastsymbol(newVal,oldVal){
@@ -1217,6 +1705,17 @@
                     that.aspectType = false
                 }else if(newVal === '%'){
                     that.aspectType = true
+                }
+            },
+            lastOutputName(newVal,oldVal){
+                var that = this
+                if(newVal.length > oldVal.length){
+                    var currentName = _.differenceWith(newVal, oldVal, _.isEqual)
+                    that.getOutputName = that.getOutputName + '<'+ currentName[0] +'>'
+                }else {
+                    var presentName = _.differenceWith(oldVal, newVal, _.isEqual)
+                    var alternateFile = '<' + presentName[0] + '>'
+                    that.getOutputName = that.getOutputName.replace(alternateFile,"")
                 }
             }
         },

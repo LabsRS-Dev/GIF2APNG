@@ -181,7 +181,8 @@
         "title":"Output directory",
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
-        "path":"Path:",
+        "path":"Output Path:",
+        "fileName":"Output Name:",
         "cover":"Overwrite exsisting files?"
       },
       "dialog-config-preview":{
@@ -255,6 +256,39 @@
         "removeRatio":"Remove the usual ratio",
         "tooltip":"Format: xx% or AAxBB"
       },
+      "button":{
+        "save":"Save as template",
+        "load":"Load a template"
+      },
+      "dialog-confirm-template":{
+        "title":"Save as template",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "name": "Template name:",
+        "note": "Note:",
+        "content": "The template name should not exceed 16 characters."
+      },
+      "dialog-confirm-preview":{
+        "title":"Preview",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "original": "Original fileName",
+        "output": "Output fileName"
+      },
+      "dialog-confirm-format":{
+        "fileName":"FileName",
+        "uppercaseName":"FileName(upper-case)",
+        "lowercaseName":"FileName(lower-case)",
+        "info":"Resize information",
+        "date":"Date and Time"
+      },
+      "dialog-confirm-cover":{
+        "title":"Confirm",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel",
+        "message": "A template already has the same name, do you want to replace it?",
+        "content":"Apply to the all items?"
+      },
       "task-item":{
          "file-name": "Name：",
          "file-path": "Path：",
@@ -314,8 +348,13 @@
         "title":"Settings",
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
-        "path":"Output:",
-        "cover":"Overwrite exsisting files?"
+        "path":"Output Path:",
+        "fileName":"Output Name:",
+        "sequence" :"Start sequence from:",
+        "Preview" :"Preview",
+        "cover":"Overwrite exsisting files?",
+        "toolTip":"Please enter a valid file name",
+        "placeholder":"Enter or select the file name"
       },
       "dialog-config-change":{
         "title":"Adjust the image size",

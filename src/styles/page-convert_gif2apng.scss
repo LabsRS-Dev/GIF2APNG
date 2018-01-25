@@ -5,63 +5,6 @@
       overflow-y: visible;
     }
   }
-  .page__toolbar-app-doc__input-group{
-    display: flex;
-    flex-direction: column;
-    .page__toolbar-app-doc__input-browse{
-      display: flex;
-      align-items: center;
-      margin-top: rem-calc(14px);
-      margin-bottom: rem-calc(20px);
-      .ui-button {
-        padding: 0;
-        margin-left: rem-calc(5px);
-        height: rem-calc(26px);
-        border-radius: rem-calc(5px);
-      }
-      .ui-select {
-        flex: 1;
-        align-items: center;
-        margin: 0;
-        margin-left:rem-calc(8px) ;
-        padding: 0;
-        height: rem-calc(25px);
-        border-radius: rem-calc(5px);
-        border: rem-calc(1px) solid #adadad;
-        position: relative;
-        .ui-select__dropdown{
-            .ui-select-option{
-              font-size: rem-calc(11px);
-            }
-        }
-        .ui-select__display{
-          border: 0;
-          height: rem-calc(25px);
-          font-size: rem-calc(11px);
-          .ui-select__dropdown-button{
-            margin: 0 auto;
-          }
-        }
-        .ui-select-option{
-          height: rem-calc(28px);
-        }
-        .ui-select-option.is-selected{
-          color: rgba(0,0,0,.87);
-          background-color: #fff;
-          font-weight: 400;
-        }
-        .ui-select-option:hover{
-          background-color: $md-blue;
-        }
-      }
-    }
-    .page__toolbar-app-doc__input-cover{
-      display: flex;
-      .input-group-cover{
-        margin-left: rem-calc(4px);
-      }
-    }
-  }
   .page__toolbar-app-doc__preview__info{
     display: flex;
     .page__toolbar-app-doc__preview__info__image{

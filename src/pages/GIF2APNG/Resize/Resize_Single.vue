@@ -66,6 +66,7 @@
                             >
                         </ui-select>
                         <ui-button
+                            raised
                             type="secondary"
                             size="small"
                             color="primary"
