@@ -56,7 +56,7 @@
                     <div class="ui-toolbar__top__metainfo">
                             <img :src="item.thumb" width="48" height="48" viewBox="0 0 48 48" />
                               <strong class="ui-toolbar__top__news__title">
-                                  <a :click="$t('pages.welcome.task-item.onOpenLink') ">
+                                  <a :href="$t('pages.welcome.task-item.onOpenLink')" @click="onOpenLink(item.link)" >
                                   {{ item.title }}
                                   </a>
                                   <sup class="ui-toolbar__top__news__date">
