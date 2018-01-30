@@ -102,321 +102,412 @@
     </div>
 </template>
 <script>
-    import Pagination from '../Search/pagination.vue'
-    import { BS, Util, _ } from 'dove.max.sdk'
-    import {UiPopover,UiConfirm,UiIconButton} from 'keen-ui'
-    import IconsRef from '../../../data/icon.js'
-    import VLoading from './loading.vue'
-    import Vue from 'vue'
-    import { DownloadHandler } from '../../../data/downlaod-manager'
+import Pagination from '../Search/pagination.vue'
+import { BS, Util, _ } from 'dove.max.sdk'
+import { UiPopover, UiConfirm, UiIconButton } from 'keen-ui'
+import { Transfer } from '../../../bridge/transfer'
+import VLoading from './loading.vue'
+import { DownloadHandler } from '../../../data/downlaod-manager'
 
-    const imgPrefix = 'children-material-image-id-' + _.now()
-    class Label {
-        constructor(name,thumb,size,image,introduce,previewCount,downloadCount,shareCount,collectionCount,imgID){
-            this.id = _.uniqueId(imgPrefix);
-            this.name = name;                              // 图像名称
-            this.thumb = thumb;                            // 图像缩略图
-            this.size = size;                              // 图像的大小
-            this.image = image;                            // 图像的路径
-            this.introduce = introduce;                    // 图片的描述
-            this.previewCount = previewCount;              // 图片浏览次数
-            this.downloadCount = downloadCount;            // 图片下载次数
-            this.shareCount = shareCount;                  // 图片分享次数
-            this.collectionCount = collectionCount;        // 图片收藏次数
-            this.imgID = imgID;                            // 图片自身ID       
+const imgPrefix = 'children-material-image-id-' + _.now()
+class Label {
+  constructor (
+    name,
+    thumb,
+    size,
+    image,
+    introduce,
+    previewCount,
+    downloadCount,
+    shareCount,
+    collectionCount,
+    imgID
+  ) {
+    this.id = _.uniqueId(imgPrefix)
+    this.name = name // 图像名称
+    this.thumb = thumb // 图像缩略图
+    this.size = size // 图像的大小
+    this.image = image // 图像的路径
+    this.introduce = introduce // 图片的描述
+    this.previewCount = previewCount // 图片浏览次数
+    this.downloadCount = downloadCount // 图片下载次数
+    this.shareCount = shareCount // 图片分享次数
+    this.collectionCount = collectionCount // 图片收藏次数
+    this.imgID = imgID // 图片自身ID
+  }
+}
+//
+const materialPrefix = 'material-id-' + _.now()
+class Material {
+  constructor (thumb, name, tags) {
+    this.id = _.uniqueId(materialPrefix)
+    this.thumb = thumb // 分类图标
+    this.name = name // 分类名称
+    this.tags = tags // 标签类
+  }
+}
+
+//
+const LPage = {
+  TagPage: 10
+}
+var current_logic_page = ''
+var click_logic_page = ''
+
+//
+var labelList = []
+var materialList = []
+var hotList = []
+var hasInited = false
+var total
+var current
+var imagePreview = ''
+var imageID
+var labelButton
+export default {
+  data () {
+    return {
+      labelButton: labelButton,
+      labelList: labelList,
+      hotList: hotList,
+      hotLabelList: {},
+      materialList: materialList,
+      imagePreview: imagePreview,
+      imageID: imageID,
+      total: total, // 记录总条数
+      display: 20, // 每页显示条数
+      current: current, // 当前的页数
+      showLoading: false,
+      itemsConfirmDialog: {
+        ref: 'itemsConfirmDialog',
+        autofocus: 'none',
+        confirmButtonText: 'Confirm',
+        denyButtonText: 'Deny',
+        title: '',
+        callbackConfirm: () => {},
+        callbackDeny: () => {},
+        callbackOpen: () => {},
+        callbackClose: () => {}
+      }
+    }
+  },
+  mounted () {
+    var that = this
+    if (!hasInited) {
+      hasInited = true
+      Transfer.http.call('get.data_categories_tags_item', {}, info => {
+        _.each(info.data, function (ele) {
+          var fileThumb = ele.thumb
+          var fileName = ele.name
+          var fileTags = ele.tags
+          const materialObj = new Material(fileThumb, fileName, fileTags)
+          that.materialList.push(materialObj)
+          that.hotLabelList[materialObj.id] = materialObj
+        })
+        that.getHotLabelList()
+      })
+      that.getCheckAllTagStyle()
+    }
+  },
+  computed: {
+    actionList () {
+      return [
+        // {id:'action-share',name:'分享', visiable:true, icon:"fa fa-share-square-o fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-share"},
+        // {id:'action-collect',name:'收藏', visiable:true, icon:"fa fa-user-plus fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-collect"},
+        {
+          id: 'action-download',
+          name: '下载',
+          visiable: true,
+          icon: 'fa fa-download fa-lg fa-fw',
+          size: 'normal',
+          type: 'secondary',
+          tooltip: 'pages.discover.toolbar.import-download'
         }
+      ]
     }
-    /////
-    const materialPrefix = 'material-id-' + _.now()
-    class Material{
-        constructor(thumb,name,tags){
-            this.id = _.uniqueId(materialPrefix);
-            this.thumb = thumb;     // 分类图标
-            this.name = name;       // 分类名称
-            this.tags = tags;       // 标签类
+  },
+  methods: {
+    getWritePermission (ele, item) {
+      var that = this
+      if (ele.id === 'action-share') {
+        that.getShareCountWritePermission(item)
+      } else if (ele.id === 'action-collect') {
+        that.getCollectCountWritePermission(item)
+      } else if (ele.id === 'action-download') {
+        that.getDownloadCountWritePermission(item)
+      }
+    },
+    getShareCountWritePermission (item) {
+      //   记录分享次数
+      const machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call(
+        'get.items_share',
+        { machine_id: machineCode, id: item.imgID },
+        info => {
+          console.log('记录成功')
         }
-    }
-
-    /////
-    const LPage = {
-        TagPage: 10
-    }
-    var current_logic_page = "";
-    var click_logic_page = "";
-
-    /////
-    var labelList = [];
-    var materialList = [];
-    var hotList = [];
-    var hasInited = false;
-    var total;
-    var current ;
-    var imagePreview ='';
-    var imageID;
-    var labelButton;
-    export default{
-        data(){
-            return{
-                labelButton:labelButton,
-                labelList:labelList,
-                hotList:hotList,
-                hotLabelList:{},
-                materialList:materialList,
-                imagePreview:imagePreview,
-                imageID:imageID,
-                total: total,             // 记录总条数
-                display: 20,              // 每页显示条数
-                current: current,         // 当前的页数
-                showLoading:false,
-                itemsConfirmDialog:{
-                    ref:'itemsConfirmDialog',
-                    autofocus: 'none',
-                    confirmButtonText: 'Confirm',
-                    denyButtonText: 'Deny',
-                    title: '',
-                    callbackConfirm: ()=>{},
-                    callbackDeny: ()=>{},
-                    callbackOpen: ()=>{},
-                    callbackClose: ()=>{}
-                }
-            }
-        },
-        mounted(){
-            var that = this
-            if(!hasInited){
-                hasInited = true
-                Transfer.http.call('get.data_categories_tags_item',{},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileThumb = ele.thumb
-                        var fileName = ele.name
-                        var fileTags = ele.tags
-                        let materialObj = new Material(fileThumb,fileName,fileTags)
-                        that.materialList.push(materialObj)
-                        that.hotLabelList[materialObj.id] = materialObj
-                    })
-                    that.getHotLabelList()
-                })
-                that.getCheckAllTagStyle()
-            }
-        },
-        computed:{
-            actionList() {
-                var that = this
-                return [
-                    //{id:'action-share',name:'分享', visiable:true, icon:"fa fa-share-square-o fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-share"},
-                    //{id:'action-collect',name:'收藏', visiable:true, icon:"fa fa-user-plus fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-collect"},
-                    {id:'action-download', name:'下载',visiable:true, icon:"fa fa-download fa-lg fa-fw", size:"normal", type:"secondary",tooltip:"pages.discover.toolbar.import-download"}
-                ]
-            }
-        },
-        methods:{
-            getWritePermission(ele, item){
-                var that = this
-                if(ele.id === 'action-share') {
-                    that.getShareCountWritePermission(item)
-                }else if (ele.id === 'action-collect') {
-                    that.getCollectCountWritePermission(item)
-                }else if (ele.id === 'action-download') {
-                    that.getDownloadCountWritePermission(item)
-                }
-            },
-            getShareCountWritePermission(item){
-                var that = this
-                //////////////////////////////////////////   记录分享次数
-                let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_share',{"machine_id":machineCode,"id":item.imgID},(info) => {
-                    console.log('记录成功')
-                })
-            },
-            getCollectCountWritePermission(item){
-                var that = this
-                //////////////////////////////////////////   记录收藏次数
-                let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_collection',{"machine_id":machineCode,"id":item.imgID},(info) => {
-                    console.log('记录成功')
-                })
-            },
-            getDownloadCountWritePermission(item){
-                var that = this
-                //////////////////////////////////////////   记录下载次数
-                let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_download',{"machine_id":machineCode,"id":item.imgID},(info) => {
-                    console.log('记录成功')
-                })
-                DownloadHandler.add(item)
-            },
-            getHotLabelList(){
-                var that = this
-                var tagsArr = []
-                _.each(materialList,(ele) => {
-                    let cdg = that.hotLabelList[ele.id].tags
-                    tagsArr.push(cdg)
-                })
-                let tagsLists = _.flatten(tagsArr,true)
-                let labelArr = _.sortBy(tagsLists,'download').reverse().slice(0,8)
-                _.each(labelArr,(ele) => {
-                    that.hotList.push(ele)
-                })
-            },
-            cheackButtonSwitch(el){
-                var that = this
-                var checkHot = []
-                _.each(hotList,(ele) => {
-                   checkHot.push(ele.name)
-                })
-                if(checkHot.indexOf(el.name) != -1){
-                    return true
-                }else {
-                    return false
-                }
-            },
-            getLabelChange(ele){
-                var that = this
-                that.labelButton = ele.name
-                that.__UpdateTheDataList(ele.id)
-            },
-            getCheckAllTagStyle(){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $('.label__popover__custom__content__tag__space').css('opacity','0')
-                $('.label__popover__custom__content__tag__select').css('opacity','0')
-                $('.label__popover__custom__content__title').css('border','1px solid #2196f3')
-                $('.label__popover__custom__content__select').css('opacity','1')
-                that.labelButton = that.$t('pages.discover.task-item.types')
-                that.$refs.popover.close()
-                that.labelList.length = 0
-                that.showLoading = false
-                Transfer.http.call('get.items',{"page":1,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileThumb = ele.thumb
-                        var fileSize = ele.size
-                        var fileImage = ele.url
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        var fileDownloadCount = ele.download_quantity
-                        var fileShareCount = ele.share_quantity
-                        var fileCollectionCount = ele.collection_quantity
-                        var fileImgID = ele.id
-                        let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                })
-                current_logic_page = ''
-            },
-            getCheckTagStyle($event,ele){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $("span").filter(".label__popover__custom__content__tag__space").css('opacity','0')
-                $("span").filter(".label__popover__custom__content__tag__select").css('opacity','0')
-                $(event.target).css('opacity','1')
-                $(event.target).next().css('opacity','1')
-                $('.label__popover__custom__content__title').css('border','1px solid #e0e0e0')
-                $('.label__popover__custom__content__select').css('opacity','0')
-                current_logic_page = LPage.TagPage
-                click_logic_page = ele.id
-                that.labelButton = ele.name
-                that.__UpdateTheDataList(ele.id, 1)
-                that.$refs.popover.close()
-            },
-            autoShowButton($event){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $(event.target).next().css({'opacity':'1'})
-            },
-            autoDisplayButton($event){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $(event.target).next().css({'opacity':'0'})
-            },
-            autoShowButtonAgain($event){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $(event.target).css({'opacity':'1'})
-            },
-            autoDisplayButtonAgain($event){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $(event.target).css({'opacity':'0'})
-            },
-            getItemsEnlargeFigureImage(item){
-                var that = this
-
-                //////////////////////////////////////////   记录浏览次数
-                let machineCode = BS.b$.App.getSerialNumber()
-                Transfer.http.call('get.items_preview',{"machine_id":machineCode,"id":item.imgID},(info) => {
-                    console.log('记录成功')
-                })
-
-                const cdg = that.itemsConfirmDialog
-                cdg.title = that.$t('pages.discover.dialog-confirm.title')
-                cdg.confirmButtonText = that.$t('pages.discover.dialog-confirm.btnConfirm')
-                cdg.denyButtonText = that.$t('pages.discover.dialog-confirm.btnDeny')
-                var dialog = that.$refs[cdg.ref]
-                that.imagePreview = item.image
-                that.imageID = item
-                dialog.open()
-            },
-            __UpdateTheDataList(el, curPage){
-                var that = this
-                that.labelList.length = 0
-                that.showLoading = false
-                Transfer.http.callEx('get.items_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileThumb = ele.thumb
-                        var fileSize = ele.size
-                        var fileImage = ele.url
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        var fileDownloadCount = ele.download_quantity
-                        var fileShareCount = ele.share_quantity
-                        var fileCollectionCount = ele.collection_quantity
-                        var fileImgID = ele.id
-                        let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                    that.current = curPage
-                })
-            },
-            pagechange(currentPage){
-                var that = this
-                that.current = currentPage
-                if (current_logic_page == LPage.TagPage) {
-                    that.__UpdateTheDataList(click_logic_page, that.current)
-                }else {
-                    that.labelList.length = 0
-                    that.showLoading = false
-                    Transfer.http.call('get.items',{"page":that.current,"per_page":that.display},(info) => {
-                        _.each(info.data,function(ele){
-                            var fileName = ele.name
-                            var fileThumb = ele.thumb
-                            var fileSize = ele.size
-                            var fileImage = ele.url
-                            var fileIntroduce = ele.description
-                            var filePreviewCount = ele.preview_quantity
-                            var fileDownloadCount = ele.download_quantity
-                            var fileShareCount = ele.share_quantity
-                            var fileCollectionCount = ele.collection_quantity
-                            var fileImgID = ele.id
-                            let labelObj = new Label(fileName,fileThumb,fileSize,fileImage,fileIntroduce,filePreviewCount,fileDownloadCount,fileShareCount,fileCollectionCount,fileImgID)
-                            that.labelList.push(labelObj)
-                        })
-                        that.showLoading = !that.showLoading
-                    })
-                }
-            }
-        },
-        components:{
-            UiPopover,
-            UiConfirm,
-            Pagination,
-            UiIconButton,
-            VLoading
+      )
+    },
+    getCollectCountWritePermission (item) {
+      //  记录收藏次数
+      const machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call(
+        'get.items_collection',
+        { machine_id: machineCode, id: item.imgID },
+        info => {
+          console.log('记录成功')
         }
+      )
+    },
+    getDownloadCountWritePermission (item) {
+      //   记录下载次数
+      const machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call(
+        'get.items_download',
+        { machine_id: machineCode, id: item.imgID },
+        info => {
+          console.log('记录成功')
+        }
+      )
+      DownloadHandler.add(item)
+    },
+    getHotLabelList () {
+      var that = this
+      var tagsArr = []
+      _.each(materialList, ele => {
+        const cdg = that.hotLabelList[ele.id].tags
+        tagsArr.push(cdg)
+      })
+      const tagsLists = _.flatten(tagsArr, true)
+      const labelArr = _.sortBy(tagsLists, 'download')
+        .reverse()
+        .slice(0, 8)
+      _.each(labelArr, ele => {
+        that.hotList.push(ele)
+      })
+    },
+    cheackButtonSwitch (el) {
+      var checkHot = []
+      _.each(hotList, ele => {
+        checkHot.push(ele.name)
+      })
+      if (checkHot.indexOf(el.name) !== -1) {
+        return true
+      } else {
+        return false
+      }
+    },
+    getLabelChange (ele) {
+      var that = this
+      that.labelButton = ele.name
+      that.__UpdateTheDataList(ele.id)
+    },
+    getCheckAllTagStyle () {
+      var that = this
+      var $ = Util.util.getJQuery$()
+      $('.label__popover__custom__content__tag__space').css('opacity', '0')
+      $('.label__popover__custom__content__tag__select').css('opacity', '0')
+      $('.label__popover__custom__content__title').css(
+        'border',
+        '1px solid #2196f3'
+      )
+      $('.label__popover__custom__content__select').css('opacity', '1')
+      that.labelButton = that.$t('pages.discover.task-item.types')
+      that.$refs.popover.close()
+      that.labelList.length = 0
+      that.showLoading = false
+      Transfer.http.call(
+        'get.items',
+        { page: 1, per_page: that.display },
+        info => {
+          _.each(info.data, function (ele) {
+            var fileName = ele.name
+            var fileThumb = ele.thumb
+            var fileSize = ele.size
+            var fileImage = ele.url
+            var fileIntroduce = ele.description
+            var filePreviewCount = ele.preview_quantity
+            var fileDownloadCount = ele.download_quantity
+            var fileShareCount = ele.share_quantity
+            var fileCollectionCount = ele.collection_quantity
+            var fileImgID = ele.id
+            const labelObj = new Label(
+              fileName,
+              fileThumb,
+              fileSize,
+              fileImage,
+              fileIntroduce,
+              filePreviewCount,
+              fileDownloadCount,
+              fileShareCount,
+              fileCollectionCount,
+              fileImgID
+            )
+            that.labelList.push(labelObj)
+          })
+          that.showLoading = !that.showLoading
+          that.total = info.paginate.total
+        }
+      )
+      current_logic_page = ''
+    },
+    getCheckTagStyle ($event, ele) {
+      var that = this
+      var $ = Util.util.getJQuery$()
+      $('span')
+        .filter('.label__popover__custom__content__tag__space')
+        .css('opacity', '0')
+      $('span')
+        .filter('.label__popover__custom__content__tag__select')
+        .css('opacity', '0')
+      $(event.target).css('opacity', '1')
+      $(event.target)
+        .next()
+        .css('opacity', '1')
+      $('.label__popover__custom__content__title').css(
+        'border',
+        '1px solid #e0e0e0'
+      )
+      $('.label__popover__custom__content__select').css('opacity', '0')
+      current_logic_page = LPage.TagPage
+      click_logic_page = ele.id
+      that.labelButton = ele.name
+      that.__UpdateTheDataList(ele.id, 1)
+      that.$refs.popover.close()
+    },
+    autoShowButton ($event) {
+      var $ = Util.util.getJQuery$()
+      $(event.target)
+        .next()
+        .css({ opacity: '1' })
+    },
+    autoDisplayButton ($event) {
+      var $ = Util.util.getJQuery$()
+      $(event.target)
+        .next()
+        .css({ opacity: '0' })
+    },
+    autoShowButtonAgain ($event) {
+      var $ = Util.util.getJQuery$()
+      $(event.target).css({ opacity: '1' })
+    },
+    autoDisplayButtonAgain ($event) {
+      var $ = Util.util.getJQuery$()
+      $(event.target).css({ opacity: '0' })
+    },
+    getItemsEnlargeFigureImage (item) {
+      var that = this
+
+      //  记录浏览次数
+      const machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call(
+        'get.items_preview',
+        { machine_id: machineCode, id: item.imgID },
+        info => {
+          console.log('记录成功')
+        }
+      )
+
+      const cdg = that.itemsConfirmDialog
+      cdg.title = that.$t('pages.discover.dialog-confirm.title')
+      cdg.confirmButtonText = that.$t(
+        'pages.discover.dialog-confirm.btnConfirm'
+      )
+      cdg.denyButtonText = that.$t('pages.discover.dialog-confirm.btnDeny')
+      var dialog = that.$refs[cdg.ref]
+      that.imagePreview = item.image
+      that.imageID = item
+      dialog.open()
+    },
+    __UpdateTheDataList (el, curPage) {
+      var that = this
+      that.labelList.length = 0
+      that.showLoading = false
+      Transfer.http.callEx(
+        'get.items_tag_id',
+        { url: el },
+        { page: curPage, per_page: that.display },
+        info => {
+          _.each(info.data, function (ele) {
+            var fileName = ele.name
+            var fileThumb = ele.thumb
+            var fileSize = ele.size
+            var fileImage = ele.url
+            var fileIntroduce = ele.description
+            var filePreviewCount = ele.preview_quantity
+            var fileDownloadCount = ele.download_quantity
+            var fileShareCount = ele.share_quantity
+            var fileCollectionCount = ele.collection_quantity
+            var fileImgID = ele.id
+            const labelObj = new Label(
+              fileName,
+              fileThumb,
+              fileSize,
+              fileImage,
+              fileIntroduce,
+              filePreviewCount,
+              fileDownloadCount,
+              fileShareCount,
+              fileCollectionCount,
+              fileImgID
+            )
+            that.labelList.push(labelObj)
+          })
+          that.showLoading = !that.showLoading
+          that.total = info.paginate.total
+          that.current = curPage
+        }
+      )
+    },
+    pagechange (currentPage) {
+      var that = this
+      that.current = currentPage
+      if (current_logic_page === LPage.TagPage) {
+        that.__UpdateTheDataList(click_logic_page, that.current)
+      } else {
+        that.labelList.length = 0
+        that.showLoading = false
+        Transfer.http.call(
+          'get.items',
+          { page: that.current, per_page: that.display },
+          info => {
+            _.each(info.data, function (ele) {
+              var fileName = ele.name
+              var fileThumb = ele.thumb
+              var fileSize = ele.size
+              var fileImage = ele.url
+              var fileIntroduce = ele.description
+              var filePreviewCount = ele.preview_quantity
+              var fileDownloadCount = ele.download_quantity
+              var fileShareCount = ele.share_quantity
+              var fileCollectionCount = ele.collection_quantity
+              var fileImgID = ele.id
+              const labelObj = new Label(
+                fileName,
+                fileThumb,
+                fileSize,
+                fileImage,
+                fileIntroduce,
+                filePreviewCount,
+                fileDownloadCount,
+                fileShareCount,
+                fileCollectionCount,
+                fileImgID
+              )
+              that.labelList.push(labelObj)
+            })
+            that.showLoading = !that.showLoading
+          }
+        )
+      }
     }
+  },
+  components: {
+    UiPopover,
+    UiConfirm,
+    Pagination,
+    UiIconButton,
+    VLoading
+  }
+}
 </script>

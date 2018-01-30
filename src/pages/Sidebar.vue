@@ -77,39 +77,39 @@
 
 
 <script>
-import { BS, Util, _ } from 'dove.max.sdk'
-import {UiIcon, UiCollapsible} from 'keen-ui'
+import { Util } from 'dove.max.sdk'
+import { UiIcon, UiCollapsible } from 'keen-ui'
 import Routes from './../routes.js'
 import IconsRef from '../data/icon.js'
 
-var hasInited = false;     // 是否初始过
+var hasInited = false // 是否初始过
 
 export default {
-    data() {
-        return {
-            appName:  Routes.SysConfig.appName,
-            version:  Routes.SysConfig.version,
-            homepage: Routes.SysConfig.homepage,
-            menu: Routes.menu,
-            imgIcon:IconsRef.iconSet.reductIcon
-        }
-    },
-
-    mounted(){
-        var that = this
-        var $ = Util.util.getJQuery$()
-        if(!hasInited){
-            hasInited = true
-            if(that.appName.length > 12){
-                $('.dove-docs-sidebar__header-product-name').css('display','none')
-                $('.dove-docs-sidebar__header__info').css('padding-left','40px')
-            }
-        }
-    },
-
-    components: {
-        UiIcon,
-        UiCollapsible
+  data () {
+    return {
+      appName: Routes.SysConfig.appName,
+      version: Routes.SysConfig.version,
+      homepage: Routes.SysConfig.homepage,
+      menu: Routes.menu,
+      imgIcon: IconsRef.iconSet.reductIcon
     }
+  },
+
+  mounted () {
+    var that = this
+    var $ = Util.util.getJQuery$()
+    if (!hasInited) {
+      hasInited = true
+      if (that.appName.length > 12) {
+        $('.dove-docs-sidebar__header-product-name').css('display', 'none')
+        $('.dove-docs-sidebar__header__info').css('padding-left', '40px')
+      }
+    }
+  },
+
+  components: {
+    UiIcon,
+    UiCollapsible
+  }
 }
 </script>

@@ -2,20 +2,14 @@
  * @author Ian
  * @created 2017-04-28 16:48:21
  */
-import {
-  BS
-} from 'dove.max.sdk'
-import {
-  SysConfig
-} from '../data/sys-config'
-
+import { BS } from 'dove.max.sdk'
+import { SysConfig } from '../data/sys-config'
 
 const ToolsType = {
   WS: 'websocket-server',
   NTASK: 'native-task',
   STOP_NTASK: 'stop-native-task'
 }
-
 
 const ToolsMap = {
   // common
@@ -66,9 +60,8 @@ const ToolsMap = {
     action: 'stopModify'
   },
 
-
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  'gif2apng': {
+  gif2apng: {
     type: ToolsType.NTASK,
     cli: BS.b$.App.getAppPluginDir() + '/gif2apng',
     command: [],
@@ -80,7 +73,7 @@ const ToolsMap = {
   },
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  'apng2gif': {
+  apng2gif: {
     type: ToolsType.NTASK,
     cli: BS.b$.App.getAppPluginDir() + '/apng2gif',
     command: [],
@@ -93,7 +86,7 @@ const ToolsMap = {
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////////
   // gif 图像文件尺寸改变
-  'resize_gif': {
+  resize_gif: {
     type: ToolsType.NTASK,
     cli: BS.b$.App.getAppPluginDir() + '/cli_img_resize',
     command: [],
@@ -106,7 +99,7 @@ const ToolsMap = {
 
   // //////////////////////////////////////////////////////////////////////////////////////////////////
   // 文件下载器
-  'downloader': {
+  downloader: {
     type: ToolsType.NTASK,
     cli: BS.b$.App.getAppPluginDir() + '/curl',
     command: [],
@@ -236,9 +229,4 @@ const ServerAPIMap = {
 // //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // export
-export {
-  ToolsMap,
-  ToolsType,
-  ServerAPIMap,
-  ServerAPIType
-}
+export { ToolsMap, ToolsType, ServerAPIMap, ServerAPIType }

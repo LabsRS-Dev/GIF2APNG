@@ -62,7 +62,7 @@ const languageConfiguration = {
     return languageListInfo
   },
 
-    /**
+  /**
    * 由于ES6 中的Fetch函数，暂时还不能使用Babel转换成ES5标准的，所以统一使用jQuery来处理
    * 参考：
    * 1. https://www.npmjs.com/package/isomorphic-fetch

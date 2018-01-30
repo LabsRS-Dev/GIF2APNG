@@ -12,14 +12,14 @@
   </dd>
 </template>
 <script >
-
-
+import { Transfer } from '../../../bridge/transfer'
+import { BS } from 'dove.max.sdk'
 export default {
   props: {
     imgSrc: {
       required: true
     },
-    imgUrl:{
+    imgUrl: {
       required: true
     },
     introduce: {
@@ -28,38 +28,38 @@ export default {
     previewCount: {
       default: 0
     },
-    shareCount:{
+    shareCount: {
       default: 0
     },
-    downloadCount:{
+    downloadCount: {
       default: 0
     },
-    collectionCount:{
+    collectionCount: {
       default: 0
     },
-    url:{
-      default:''
+    url: {
+      default: ''
     },
-    imageName:String
+    imageName: String
   },
   data () {
-    return {
-
-    }
+    return {}
   },
-  methods:{
-    registrationPreviewCount (){
+  methods: {
+    registrationPreviewCount () {
       var that = this
       console.log(that.url)
-      ////////////////////////////////////////////   记录浏览次数
-      let machineCode = BS.b$.App.getSerialNumber()
-      Transfer.http.call('get.sets_preview',{"machine_id":machineCode,"id":that.url},(info) => {
-        console.log('记录成功')
-      })
+      // 记录浏览次数
+      const machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call(
+        'get.sets_preview',
+        { machine_id: machineCode, id: that.url },
+        info => {
+          console.log('记录成功')
+        }
+      )
     }
   },
-  components:{
-
-  }
+  components: {}
 }
 </script>

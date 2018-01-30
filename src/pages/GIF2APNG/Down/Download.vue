@@ -19,17 +19,16 @@
 </template>
 
 <script>
-  export default{
-    name:'nav',
-    computed:{
-      topName() {
-        var that = this
-        let path = that.$route.path
-        path = path.substr(path.lastIndexOf('/') + 1)
-        return path
-      }
-    },
-    watch:{
+export default {
+  name: 'nav',
+  computed: {
+    topName () {
+      var that = this
+      let path = that.$route.path
+      path = path.substr(path.lastIndexOf('/') + 1)
+      return path
     }
-  }
+  },
+  watch: {}
+}
 </script>

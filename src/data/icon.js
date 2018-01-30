@@ -1,8 +1,5 @@
-
 // defined iconset
-import {
-  BS
-} from 'dove.max.sdk'
+import { BS } from 'dove.max.sdk'
 
 const internal = {
   getAppId: () => {

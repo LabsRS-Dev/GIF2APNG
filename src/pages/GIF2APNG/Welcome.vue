@@ -89,298 +89,355 @@
 
 <script>
 import { BS, Util, _ } from 'dove.max.sdk'
-import {UiIcon, UiTabs, UiTab, UiConfirm, UiButton, UiIconButton, UiAlert, UiToolbar, UiProgressLinear} from 'keen-ui';
-import {Transfer} from '../../bridge/transfer'
-import {SysConfig} from '../../data/sys-config'
+import {
+  UiIcon,
+  UiTabs,
+  UiTab,
+  UiConfirm,
+  UiButton,
+  UiIconButton,
+  UiAlert,
+  UiToolbar,
+  UiProgressLinear
+} from 'keen-ui'
+import { SysConfig } from '../../data/sys-config'
 import { languageConfiguration } from '../../extern.js'
 import IconsRef from '../../data/icon.js'
 
-
 var store_newsList = []
 class News {
-  constructor(thumb, title, date, description, link) {
+  constructor (thumb, title, date, description, link) {
     this.id = _.uniqueId('welcome-news-id-')
-    this.thumb = thumb             // 缩略图
-    this.title = title             // 新闻标题
-    this.date = date               // 新闻创建的时间
+    this.thumb = thumb // 缩略图
+    this.title = title // 新闻标题
+    this.date = date // 新闻创建的时间
     this.description = description // 新闻描述
-    this.link = link               // 新闻的链接地址
+    this.link = link // 新闻的链接地址
 
-    /// ------- 展示样式相关
+    // ------- 展示样式相关
     this.style = {
       show: true,
-      type: "info"
+      type: 'info'
     }
   }
 }
 
-//// 与设置相关的处理
+// 与设置相关的处理
 class Settings {
-    static key = "welcome-page-settings"
+  static key = 'welcome-page-settings'
 
-    static instance = null
-    static shareInstance(){
-        if (!Settings.instance){
-            Settings.instance = new Settings()
-        }
-        return Settings.instance
+  static instance = null
+  static shareInstance () {
+    if (!Settings.instance) {
+      Settings.instance = new Settings()
     }
+    return Settings.instance
+  }
 
-    constructor(){
-        this.data = {
-            lastSelectLanguage: ""
-        }
+  constructor () {
+    this.data = {
+      lastSelectLanguage: ''
     }
+  }
 
-    restore(){
-        var ls = window.localStorage
-        var local = {}
-        if(ls){
-            var str = ls.getItem(Settings.key)
-            if(_.isString(str)){
-                local = JSON.parse(str)
-                this.data = _.extend(this.data, local)
-            }
-        }
+  restore () {
+    var ls = window.localStorage
+    var local = {}
+    if (ls) {
+      var str = ls.getItem(Settings.key)
+      if (_.isString(str)) {
+        local = JSON.parse(str)
+        this.data = _.extend(this.data, local)
+      }
     }
+  }
 
-    save(){
-        var ls = window.localStorage;
-        if(ls){
-            ls.setItem(Settings.key, JSON.stringify(this.data))
-        }
+  save () {
+    var ls = window.localStorage
+    if (ls) {
+      ls.setItem(Settings.key, JSON.stringify(this.data))
     }
+  }
 }
 
 var $LS$ = Settings.shareInstance()
-///
-var hasInited = false;     // 是否初始过
-////////////////////////////////////////////////////////
+var hasInited = false // 是否初始过
 
 export default {
-  data(){
+  data () {
     return {
       newsList: store_newsList,
-      imgIcon:IconsRef.iconSet.reductIcon,
+      imgIcon: IconsRef.iconSet.reductIcon,
       lastLanguageSetting: $LS$.data.lastSelectLanguage,
       availableLanguageList: languageConfiguration.languageInfoMap(),
-      optionsConfigDialog:{
-          ref: 'optionsConfigDialog',
-          autofocus: 'none',
-          confirmButtonText: 'Confirm',
-          denyButtonText: 'Deny',
-          title: '',
-          callbackConfirm: ()=>{},
-          callbackDeny: ()=>{},
-          callbackOpen: ()=>{},
-          callbackClose: ()=>{},
+      optionsConfigDialog: {
+        ref: 'optionsConfigDialog',
+        autofocus: 'none',
+        confirmButtonText: 'Confirm',
+        denyButtonText: 'Deny',
+        title: '',
+        callbackConfirm: () => {},
+        callbackDeny: () => {},
+        callbackOpen: () => {},
+        callbackClose: () => {}
       }
     }
   },
-  beforeCreate(){
-      $LS$.restore()
+  beforeCreate () {
+    $LS$.restore()
   },
-  mounted(){
+  mounted () {
     var that = this
-    if(!hasInited){
-        hasInited = true
-        that.getNewList()
-        that.__GetCurrentLanguage()
+    if (!hasInited) {
+      hasInited = true
+      that.getNewList()
+      that.__GetCurrentLanguage()
     }
   },
   computed: {
-    actionList() {
-      var that = this
+    actionList () {
       return [
-        {id:'action-setting', visiable:true, color:"black", icon:"fa fa-cog fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.setting"},
-        {id:'action-online-doc', visiable:true, color:"black", icon:"fa fa-book fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.onlineDoc"},
-        {id:'action-online-room', visiable:true, color:"black", icon:"fa fa-users fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.onlineRoom"},
-        {id:'action-update-news', visiable:true, color:"black", icon:"fa fa-rss fa-lg fa-fw", size:"small", type:"secondary", tooltip:"pages.welcome.toolbar.updateNews"}
+        {
+          id: 'action-setting',
+          visiable: true,
+          color: 'black',
+          icon: 'fa fa-cog fa-lg fa-fw',
+          size: 'small',
+          type: 'secondary',
+          tooltip: 'pages.welcome.toolbar.setting'
+        },
+        {
+          id: 'action-online-doc',
+          visiable: true,
+          color: 'black',
+          icon: 'fa fa-book fa-lg fa-fw',
+          size: 'small',
+          type: 'secondary',
+          tooltip: 'pages.welcome.toolbar.onlineDoc'
+        },
+        {
+          id: 'action-online-room',
+          visiable: true,
+          color: 'black',
+          icon: 'fa fa-users fa-lg fa-fw',
+          size: 'small',
+          type: 'secondary',
+          tooltip: 'pages.welcome.toolbar.onlineRoom'
+        },
+        {
+          id: 'action-update-news',
+          visiable: true,
+          color: 'black',
+          icon: 'fa fa-rss fa-lg fa-fw',
+          size: 'small',
+          type: 'secondary',
+          tooltip: 'pages.welcome.toolbar.updateNews'
+        }
       ]
     }
   },
-  methods:{
-    initFirstNews(){
+  methods: {
+    initFirstNews () {
       console.log('initFirstNews')
       var that = this
       var list = []
       list.push({
-          title: SysConfig.appName + '\t Ver' + SysConfig.version ,
-          date:'',
-          description:`Welcome to ` + SysConfig.appName,
-          link: SysConfig.companyWebsiteHomepage
+        title: SysConfig.appName + '\t Ver' + SysConfig.version,
+        date: '',
+        description: `Welcome to ` + SysConfig.appName,
+        link: SysConfig.companyWebsiteHomepage
       })
-      _.each(list, function(ele){
-          let newsObj = new News(ele.thumb || that.imgIcon, ele.title, ele.date, ele.description, ele.link)
-          that.newsList.push(newsObj)
+      _.each(list, function (ele) {
+        const newsObj = new News(
+          ele.thumb || that.imgIcon,
+          ele.title,
+          ele.date,
+          ele.description,
+          ele.link
+        )
+        that.newsList.push(newsObj)
       })
       store_newsList = that.newsList
     },
-    getNewList(){
+    getNewList () {
       var that = this
       that.newsList = []
       const newsUrl = SysConfig.newsDataUrl
       var $ = Util.util.getJQuery$()
-      try{
-        $.getJSON(newsUrl, function(data){
-            that.newsList = []
-            that.initFirstNews()
-            try {
-                _.each(data.list, function(ele){
-                    let newsObj = new News(ele.thumb || "images/picture.svg", ele.title, ele.date, ele.description, ele.link)
-                    that.newsList.push(newsObj)
-                })
-                store_newsList = that.newsList
-            }catch(e) {
+      try {
+        $.getJSON(newsUrl, function (data) {
+          that.newsList = []
+          that.initFirstNews()
+          try {
+            _.each(data.list, function (ele) {
+              const newsObj = new News(
+                ele.thumb || 'images/picture.svg',
+                ele.title,
+                ele.date,
+                ele.description,
+                ele.link
+              )
+              that.newsList.push(newsObj)
+            })
+            store_newsList = that.newsList
+          } catch (e) {
             console.error(e)
-            }
+          }
         })
-        if(that.newsList.length == 0){
-            that.initFirstNews()
+        if (that.newsList.length === 0) {
+          that.initFirstNews()
         }
-      }catch (e) {
-          console.error(e)
+      } catch (e) {
+        console.error(e)
       }
     },
-    onRemoveItem(item, index) {
+    onRemoveItem (item, index) {
       var that = this
       // remove from taskList
-       that.newsList.splice(index, 1)
-       store_newsList = that.newsList
+      that.newsList.splice(index, 1)
+      store_newsList = that.newsList
     },
 
-    
     // ------------------------- Style
-    getItemStyleClass(item){
+    getItemStyleClass (item) {
       var _styleClass = ['']
       return _styleClass
     },
 
-    onOpenLink(link){
+    onOpenLink (link) {
       BS.b$.App.open(link)
     },
 
     // -------------------------- Tool bar
-    onToolBtnClick(index, item){
-        console.log('onToolBtnClick', index)
+    onToolBtnClick (index, item) {
+      console.log('onToolBtnClick', index)
 
-        if(item.id === 'action-setting') {
-            this.onBtnSettingClick()
-        }else if (item.id === 'action-online-doc') {
-            this.onBtnOnlineDocClick()
-        }else if (item.id === 'action-online-room') {
-            this.onBtnOnlineSupportClick()
-        }else if (item.id === 'action-update-news') {
-            this.getNewList()
-        }
+      if (item.id === 'action-setting') {
+        this.onBtnSettingClick()
+      } else if (item.id === 'action-online-doc') {
+        this.onBtnOnlineDocClick()
+      } else if (item.id === 'action-online-room') {
+        this.onBtnOnlineSupportClick()
+      } else if (item.id === 'action-update-news') {
+        this.getNewList()
+      }
     },
 
-    onBtnSettingClick(){
+    onBtnSettingClick () {
       var that = this
-      console.log("-------------------- call options dir")
+      console.log('-------------------- call options dir')
       const cdg = that.optionsConfigDialog
       cdg.title = that.$t('pages.welcome.dialog-config-output.title')
-      cdg.confirmButtonText = that.$t('pages.welcome.dialog-config-output.btnConfirm')
+      cdg.confirmButtonText = that.$t(
+        'pages.welcome.dialog-config-output.btnConfirm'
+      )
       cdg.denyButtonText = that.$t('pages.welcome.dialog-config-output.btnDeny')
-      cdg.callbackConfirm = () => { that.saveLanguageSettings() }
-      cdg.callbackDeny = () => { that.resetLanguageSettings() }
-      cdg.callbackClose = () => { that.resetLanguageSettings() }
+      cdg.callbackConfirm = () => {
+        that.saveLanguageSettings()
+      }
+      cdg.callbackDeny = () => {
+        that.resetLanguageSettings()
+      }
+      cdg.callbackClose = () => {
+        that.resetLanguageSettings()
+      }
       var dialog = that.$refs[cdg.ref]
       dialog.open()
     },
 
-    __GetCurrentLanguage() {
-        var that = this
-        var languageInfo = BS.b$.App.getCompatibleGoogleLanguageInfo().local
-        var infoKeys =  Object.getOwnPropertyNames(languageInfo)
-        var languageMap = BS.b$.App.nativeApple2WebKitLanguageMap
-        var language = BS.b$.App.getAppleLanguage()
-        var mapKeys;
-        var site;
-        _.pickBy(languageMap , function(value, key) { 
-            var current = _.indexOf(value,language)
-            if(current !== -1){
-                mapKeys = value
-                return mapKeys
-            }
-        })
-        _.each(mapKeys,function(ele){
-            var cur = _.indexOf(infoKeys,ele)
-            if(cur !== -1){
-                site = ele
-                return site
-            }
-        })
-        that.lastLanguageSetting = languageInfo[site]
-        $LS$.data.lastSelectLanguage = that.lastLanguageSetting
-        $LS$.save()
-    },
-
-    __switchLanguageSettings(){
-        var that = this
-        var languageInfo = BS.b$.App.getCompatibleGoogleLanguageInfo().local
-        var infoKeys =  Object.getOwnPropertyNames(languageInfo)
-        var languageMap = BS.b$.App.nativeApple2WebKitLanguageMap
-        var mapKeys = Object.getOwnPropertyNames(languageMap)
-        var localLanguagePackList = ['en-US','zh-CN']
-        var langInfo
-        var lastLangInfo
-        var valueList = []
-        for(var i = 0;i<infoKeys.length;i++){
-            if(languageInfo[infoKeys[i]] == that.lastLanguageSetting){
-                langInfo = infoKeys[i]
-                break;
-            }
+    __GetCurrentLanguage () {
+      var that = this
+      var languageInfo = BS.b$.App.getCompatibleGoogleLanguageInfo().local
+      var infoKeys = Object.getOwnPropertyNames(languageInfo)
+      var languageMap = BS.b$.App.nativeApple2WebKitLanguageMap
+      var language = BS.b$.App.getAppleLanguage()
+      var mapKeys
+      var site
+      _.pickBy(languageMap, function (value, key) {
+        var current = _.indexOf(value, language)
+        if (current !== -1) {
+          mapKeys = value
+          return mapKeys
         }
-        for(var i = 0;i<mapKeys.length;i++){
-            valueList = languageMap[mapKeys[i]]
-            if(valueList.indexOf(langInfo) > -1){
-                 lastLangInfo = _.intersection(valueList,localLanguagePackList).toString()
-                break;
-            }
+      })
+      _.each(mapKeys, function (ele) {
+        var cur = _.indexOf(infoKeys, ele)
+        if (cur !== -1) {
+          site = ele
+          return site
         }
-        return lastLangInfo
+      })
+      that.lastLanguageSetting = languageInfo[site]
+      $LS$.data.lastSelectLanguage = that.lastLanguageSetting
+      $LS$.save()
     },
 
-    saveLanguageSettings(){
-        var that = this
-        $LS$.data.lastSelectLanguage = that.lastLanguageSetting
-        $LS$.save()
-        var switchLanguageMap = that.__switchLanguageSettings()
-        languageConfiguration.switchLanguage(switchLanguageMap)
-    },
-    resetLanguageSettings(){
-        var that = this
-        that.lastLanguageSetting = $LS$.data.lastSelectLanguage
+    __switchLanguageSettings () {
+      var that = this
+      var languageInfo = BS.b$.App.getCompatibleGoogleLanguageInfo().local
+      var infoKeys = Object.getOwnPropertyNames(languageInfo)
+      var languageMap = BS.b$.App.nativeApple2WebKitLanguageMap
+      var mapKeys = Object.getOwnPropertyNames(languageMap)
+      var localLanguagePackList = ['en-US', 'zh-CN']
+      var langInfo
+      var lastLangInfo
+      var valueList = []
+      for (let i = 0; i < infoKeys.length; i++) {
+        if (languageInfo[infoKeys[i]] === that.lastLanguageSetting) {
+          langInfo = infoKeys[i]
+          break
+        }
+      }
+      for (let i = 0; i < mapKeys.length; i++) {
+        valueList = languageMap[mapKeys[i]]
+        if (valueList.indexOf(langInfo) > -1) {
+          lastLangInfo = _.intersection(
+            valueList,
+            localLanguagePackList
+          ).toString()
+          break
+        }
+      }
+      return lastLangInfo
     },
 
-    onBtnOnlineDocClick(){
+    saveLanguageSettings () {
+      var that = this
+      $LS$.data.lastSelectLanguage = that.lastLanguageSetting
+      $LS$.save()
+      var switchLanguageMap = that.__switchLanguageSettings()
+      languageConfiguration.switchLanguage(switchLanguageMap)
+    },
+    resetLanguageSettings () {
+      var that = this
+      that.lastLanguageSetting = $LS$.data.lastSelectLanguage
+    },
+
+    onBtnOnlineDocClick () {
       console.log(SysConfig.docPage)
       BS.b$.App.open(SysConfig.docPage)
     },
 
-    onBtnOnlineSupportClick(){
+    onBtnOnlineSupportClick () {
       console.log(SysConfig.support)
       BS.b$.App.open(SysConfig.support)
     },
 
     // -------------------------- Page UiButton
-    onPageBtnClick(index, item){
+    onPageBtnClick (index, item) {
       console.log('onPageBtnClick', index)
     }
   },
   components: {
-      UiIcon,
-      UiTabs,
-      UiTab,
-      UiButton,
-      UiIconButton,
-      UiAlert,
-      UiToolbar,
-      UiConfirm,
-      UiProgressLinear
+    UiIcon,
+    UiTabs,
+    UiTab,
+    UiButton,
+    UiIconButton,
+    UiAlert,
+    UiToolbar,
+    UiConfirm,
+    UiProgressLinear
   }
 }
-
-
 </script>

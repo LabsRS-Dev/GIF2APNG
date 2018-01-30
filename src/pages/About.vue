@@ -47,38 +47,38 @@
 </template>
 
 <script>
-import { BS, Util, _ } from 'dove.max.sdk'
-import {UiButton,UiTextbox,UiRadioGroup,UiSwitch} from 'keen-ui'
+import { BS } from 'dove.max.sdk'
+import { UiButton, UiTextbox, UiRadioGroup, UiSwitch } from 'keen-ui'
 import Routes from './../routes.js'
 import IconsRef from '../data/icon.js'
 
 export default {
-  data(){
+  data () {
     return {
-        appName:  Routes.SysConfig.appName,
-        version:  Routes.SysConfig.version,
-        companyName:Routes.SysConfig.companyName,
-        companyWebsiteHomepage:Routes.SysConfig.companyWebsiteHomepage,
-        homepage:Routes.SysConfig.homepage,
-        support:Routes.SysConfig.support,
-        imgIcon:IconsRef.iconSet.reductIcon
+      appName: Routes.SysConfig.appName,
+      version: Routes.SysConfig.version,
+      companyName: Routes.SysConfig.companyName,
+      companyWebsiteHomepage: Routes.SysConfig.companyWebsiteHomepage,
+      homepage: Routes.SysConfig.homepage,
+      support: Routes.SysConfig.support,
+      imgIcon: IconsRef.iconSet.reductIcon
     }
   },
 
-  methods:{
-    onHelpBtnClick(){
+  methods: {
+    onHelpBtnClick () {
       BS.b$.App.open(this.homepage)
     },
-    onSupportBtnClick(){
+    onSupportBtnClick () {
       BS.b$.App.open(this.support)
     }
   },
 
   components: {
-        UiButton,
-        UiTextbox,
-        UiRadioGroup,
-        UiSwitch
+    UiButton,
+    UiTextbox,
+    UiRadioGroup,
+    UiSwitch
   }
 }
 </script>

@@ -59,220 +59,283 @@
     </div>
 </template>
 <script>
+import ImageCover from './imageCover.vue'
+import Pagination from '../Search/pagination.vue'
+import { Util, _ } from 'dove.max.sdk'
+import { UiPopover } from 'keen-ui'
+import { Transfer } from '../../../bridge/transfer'
+import VLoading from './loading.vue'
 
-    import ImageCover from './imageCover.vue'
-    import Pagination from '../Search/pagination.vue'
-    import { BS, Util, _ } from 'dove.max.sdk'
-    import {UiPopover} from 'keen-ui'
-    import IconsRef from '../../../data/icon.js'
-    import {Transfer} from '../../../bridge/transfer'
-    import VLoading from './loading.vue'
+const labelPrefix = 'children-classification-image-id-' + _.now()
+class Label {
+  constructor (
+    name,
+    image,
+    imgUrl,
+    introduce,
+    previewCount,
+    shareCount,
+    downloadCount,
+    collectionCount,
+    urlPostfix
+  ) {
+    this.id = _.uniqueId(labelPrefix)
+    this.name = name // 图像文件名称
+    this.image = image // 图像文件的缩略图
+    this.imgUrl = imgUrl // 图像文件的路径
+    this.introduce = introduce // 图片文件的描述
+    this.previewCount = previewCount // 图片文件浏览次数
+    this.shareCount = shareCount // 图片文件分享次数
+    this.downloadCount = downloadCount // 图片文件下载次数
+    this.collectionCount = collectionCount // 图片文件收藏次数
+    this.urlPostfix = urlPostfix // 图片文件跳转地址后缀
+  }
+}
+//
+const categoryPrefix = 'category-id-' + _.now()
+class Category {
+  constructor (thumb, name, tags) {
+    this.id = _.uniqueId(categoryPrefix)
+    this.thumb = thumb // 分类图标
+    this.name = name // 分类名称
+    this.tags = tags // 标签类
+  }
+}
+//
+const LPage = {
+  TagPage: 10
+}
+var current_logic_page = ''
+var click_logic_page = ''
 
-    const labelPrefix = 'children-classification-image-id-' + _.now()
-    class Label {
-        constructor(name, image,imgUrl,introduce,previewCount,shareCount,downloadCount,collectionCount,urlPostfix){
-            this.id = _.uniqueId(labelPrefix);
-            this.name = name;                        // 图像文件名称
-            this.image = image;                      // 图像文件的缩略图
-            this.imgUrl = imgUrl;                    // 图像文件的路径
-            this.introduce = introduce;              // 图片文件的描述
-            this.previewCount = previewCount;        // 图片文件浏览次数
-            this.shareCount = shareCount;            // 图片文件分享次数
-            this.downloadCount = downloadCount;      // 图片文件下载次数
-            this.collectionCount = collectionCount;  // 图片文件收藏次数
-            this.urlPostfix = urlPostfix;            // 图片文件跳转地址后缀
+//
+var labelList = []
+var categoryList = []
+var hotList = []
+var hasInited = false
+var total
+var current
+var labelButton
+export default {
+  data () {
+    return {
+      labelButton: labelButton,
+      labelList: labelList,
+      hotList: hotList,
+      hotLabelList: {},
+      categoryList: categoryList,
+      total: total, // 记录总条数
+      display: 20, // 每页显示条数
+      current: current, // 当前的页数
+      showLoading: false
+    }
+  },
+  mounted () {
+    var that = this
+    if (!hasInited) {
+      hasInited = true
+      Transfer.http.call('get.data_categories_tags_set', {}, info => {
+        _.each(info.data, function (ele) {
+          var fileThumb = ele.thumb
+          var fileName = ele.name
+          var fileTags = ele.tags
+          const categoryObj = new Category(fileThumb, fileName, fileTags)
+          that.categoryList.push(categoryObj)
+          console.log(categoryObj.id)
+          that.hotLabelList[categoryObj.id] = categoryObj
+        })
+        that.getHotLabelList()
+      })
+      that.getCheckAllTagStyle()
+    }
+  },
+  methods: {
+    getHotLabelList () {
+      var that = this
+      var tagsArr = []
+      _.each(categoryList, ele => {
+        const cdg = that.hotLabelList[ele.id].tags
+        tagsArr.push(cdg)
+      })
+      const tagsLists = _.flatten(tagsArr, true)
+      const labelArr = _.sortBy(tagsLists, 'download')
+        .reverse()
+        .slice(0, 8)
+      _.each(labelArr, ele => {
+        that.hotList.push(ele)
+      })
+    },
+    cheackButtonSwitch (el) {
+      var checkHot = []
+      _.each(hotList, ele => {
+        checkHot.push(ele.name)
+      })
+      if (checkHot.indexOf(el.name) !== -1) {
+        return true
+      } else {
+        return false
+      }
+    },
+    getLabelChange (ele) {
+      var that = this
+      that.labelButton = ele.name
+      that.__UpdateTheDataList(ele.id)
+    },
+    getCheckAllTagStyle () {
+      var that = this
+      var $ = Util.util.getJQuery$()
+      $('.label__popover__custom__content__tag__space').css('opacity', '0')
+      $('.label__popover__custom__content__tag__select').css('opacity', '0')
+      $('.label__popover__custom__content__title').css(
+        'border',
+        '1px solid #2196f3'
+      )
+      $('.label__popover__custom__content__select').css('opacity', '1')
+      that.labelButton = that.$t('pages.discover.task-item.types')
+      that.$refs.popover.close()
+      that.labelList.length = 0
+      that.showLoading = false
+      Transfer.http.call(
+        'get.sets',
+        { page: 1, per_page: that.display },
+        info => {
+          _.each(info.data, function (ele) {
+            var fileName = ele.name
+            var fileImage = ele.thumb
+            var fileImgUrl = ele.url
+            var fileIntroduce = ele.description
+            var filePreviewCount = ele.preview_quantity
+            var fileShareCount = ele.share_quantity
+            var fileDownloadCount = ele.download_quantity
+            var fileCollectionCount = ele.collection_quantity
+            var fileUrlPostfix = ele.id
+            const labelObj = new Label(
+              fileName,
+              fileImage,
+              fileImgUrl,
+              fileIntroduce,
+              filePreviewCount,
+              fileShareCount,
+              fileDownloadCount,
+              fileCollectionCount,
+              fileUrlPostfix
+            )
+            that.labelList.push(labelObj)
+          })
+          that.showLoading = !that.showLoading
+          that.total = info.paginate.total
         }
-    }
-    /////
-    const categoryPrefix = 'category-id-' + _.now()
-    class Category{
-        constructor(thumb,name,tags){
-            this.id = _.uniqueId(categoryPrefix);
-            this.thumb = thumb;     // 分类图标
-            this.name = name;       // 分类名称
-            this.tags = tags;       // 标签类
+      )
+      current_logic_page = ''
+    },
+    getCheckTagStyle ($event, ele) {
+      var that = this
+      var $ = Util.util.getJQuery$()
+      $('span')
+        .filter('.label__popover__custom__content__tag__space')
+        .css('opacity', '0')
+      $('span')
+        .filter('.label__popover__custom__content__tag__select')
+        .css('opacity', '0')
+      $(event.target).css('opacity', '1')
+      $(event.target)
+        .next()
+        .css('opacity', '1')
+      $('.label__popover__custom__content__title').css(
+        'border',
+        '1px solid #e0e0e0'
+      )
+      $('.label__popover__custom__content__select').css('opacity', '0')
+      current_logic_page = LPage.TagPage
+      click_logic_page = ele.id
+      that.labelButton = ele.name
+      that.__UpdateTheDataList(ele.id, 1)
+      that.$refs.popover.close()
+    },
+    __UpdateTheDataList (el, curPage) {
+      var that = this
+      that.labelList.length = 0
+      that.showLoading = false
+      Transfer.http.callEx(
+        'get.sets_tag_id',
+        { url: el },
+        { page: curPage, per_page: that.display },
+        info => {
+          _.each(info.data, function (ele) {
+            var fileName = ele.name
+            var fileImage = ele.thumb
+            var fileImgUrl = ele.url
+            var fileIntroduce = ele.description
+            var filePreviewCount = ele.preview_quantity
+            var fileShareCount = ele.share_quantity
+            var fileDownloadCount = ele.download_quantity
+            var fileCollectionCount = ele.collection_quantity
+            var fileUrlPostfix = ele.id
+            const labelObj = new Label(
+              fileName,
+              fileImage,
+              fileImgUrl,
+              fileIntroduce,
+              filePreviewCount,
+              fileShareCount,
+              fileDownloadCount,
+              fileCollectionCount,
+              fileUrlPostfix
+            )
+            that.labelList.push(labelObj)
+          })
+          that.showLoading = !that.showLoading
+          that.total = info.paginate.total
+          that.current = curPage
         }
+      )
+    },
+    pagechange (currentPage) {
+      var that = this
+      that.current = currentPage
+      if (current_logic_page === LPage.TagPage) {
+        that.__UpdateTheDataList(click_logic_page, that.current)
+      } else {
+        that.labelList.length = 0
+        that.showLoading = false
+        Transfer.http.call(
+          'get.sets',
+          { page: that.current, per_page: that.display },
+          info => {
+            _.each(info.data, function (ele) {
+              var fileName = ele.name
+              var fileImage = ele.thumb
+              var fileImgUrl = ele.url
+              var fileIntroduce = ele.description
+              var filePreviewCount = ele.preview_quantity
+              var fileShareCount = ele.share_quantity
+              var fileDownloadCount = ele.download_quantity
+              var fileCollectionCount = ele.collection_quantity
+              var fileUrlPostfix = ele.id
+              const labelObj = new Label(
+                fileName,
+                fileImage,
+                fileImgUrl,
+                fileIntroduce,
+                filePreviewCount,
+                fileShareCount,
+                fileDownloadCount,
+                fileCollectionCount,
+                fileUrlPostfix
+              )
+              that.labelList.push(labelObj)
+            })
+            that.showLoading = !that.showLoading
+          }
+        )
+      }
     }
-    /////
-    const LPage = {
-        TagPage: 10
-    }
-    var current_logic_page = "";
-    var click_logic_page = "";
-
-    /////
-    var labelList = [];
-    var categoryList = [];
-    var hotList = [];
-    var hasInited = false;
-    var total;
-    var current;
-    var labelButton;
-    export default{
-        data(){
-            return{
-                labelButton:labelButton,
-                labelList:labelList,
-                hotList:hotList,
-                hotLabelList:{},
-                categoryList:categoryList,
-                total: total,             // 记录总条数
-                display: 20,              // 每页显示条数
-                current: current,         // 当前的页数
-                showLoading:false
-            }
-        },
-        mounted(){
-            var that = this
-            if(!hasInited){
-                hasInited = true
-                Transfer.http.call('get.data_categories_tags_set',{},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileThumb = ele.thumb
-                        var fileName = ele.name
-                        var fileTags = ele.tags
-                        let categoryObj = new Category(fileThumb,fileName,fileTags)
-                        that.categoryList.push(categoryObj)
-                        console.log(categoryObj.id)
-                        that.hotLabelList[categoryObj.id] = categoryObj
-                    })
-                    that.getHotLabelList()
-                })
-                that.getCheckAllTagStyle()
-            }
-        },
-        methods:{
-            getHotLabelList(){
-                var that = this
-                var tagsArr = []
-                _.each(categoryList,(ele) => {
-                    let cdg = that.hotLabelList[ele.id].tags
-                    tagsArr.push(cdg)
-                })
-                let tagsLists = _.flatten(tagsArr,true)
-                let labelArr = _.sortBy(tagsLists,'download').reverse().slice(0,8)
-                _.each(labelArr,(ele) => {
-                    that.hotList.push(ele)
-                })
-            },
-            cheackButtonSwitch(el){
-                var that = this
-                var checkHot = []
-                _.each(hotList,(ele) => {
-                   checkHot.push(ele.name)
-                })
-                if(checkHot.indexOf(el.name) != -1){
-                    return true
-                }else {
-                    return false
-                }
-            },
-            getLabelChange(ele){
-                var that = this
-                that.labelButton = ele.name
-                that.__UpdateTheDataList(ele.id)
-            },
-            getCheckAllTagStyle(){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $('.label__popover__custom__content__tag__space').css('opacity','0')
-                $('.label__popover__custom__content__tag__select').css('opacity','0')
-                $('.label__popover__custom__content__title').css('border','1px solid #2196f3')
-                $('.label__popover__custom__content__select').css('opacity','1')
-                that.labelButton = that.$t('pages.discover.task-item.types')
-                that.$refs.popover.close()
-                that.labelList.length = 0
-                that.showLoading = false
-                Transfer.http.call('get.sets',{"page":1,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileImage = ele.thumb
-                        var fileImgUrl = ele.url
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        var fileShareCount = ele.share_quantity
-                        var fileDownloadCount = ele.download_quantity
-                        var fileCollectionCount = ele.collection_quantity
-                        var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                })
-                current_logic_page = ''
-            },
-            getCheckTagStyle($event,ele){
-                var that = this
-                var $ = Util.util.getJQuery$()
-                $("span").filter(".label__popover__custom__content__tag__space").css('opacity','0')
-                $("span").filter(".label__popover__custom__content__tag__select").css('opacity','0')
-                $(event.target).css('opacity','1')
-                $(event.target).next().css('opacity','1')
-                $('.label__popover__custom__content__title').css('border','1px solid #e0e0e0')
-                $('.label__popover__custom__content__select').css('opacity','0')
-                current_logic_page = LPage.TagPage
-                click_logic_page = ele.id
-                that.labelButton = ele.name
-                that.__UpdateTheDataList(ele.id, 1)
-                that.$refs.popover.close()
-            },
-            __UpdateTheDataList(el, curPage){
-                var that = this
-                that.labelList.length = 0
-                that.showLoading = false
-                Transfer.http.callEx('get.sets_tag_id',{url:el},{"page":curPage,"per_page":that.display},(info) => {
-                    _.each(info.data,function(ele){
-                        var fileName = ele.name
-                        var fileImage = ele.thumb
-                        var fileImgUrl = ele.url
-                        var fileIntroduce = ele.description
-                        var filePreviewCount = ele.preview_quantity
-                        var fileShareCount = ele.share_quantity
-                        var fileDownloadCount = ele.download_quantity
-                        var fileCollectionCount = ele.collection_quantity
-                        var fileUrlPostfix = ele.id
-                        let labelObj = new Label(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
-                        that.labelList.push(labelObj)
-                    })
-                    that.showLoading = !that.showLoading
-                    that.total = info.paginate.total
-                    that.current = curPage
-                })
-            },
-            pagechange(currentPage){
-                var that = this
-                that.current = currentPage
-                if (current_logic_page == LPage.TagPage) {
-                    that.__UpdateTheDataList(click_logic_page, that.current)
-                }else {
-                    that.labelList.length = 0
-                    that.showLoading = false
-                    Transfer.http.call('get.sets',{"page":that.current,"per_page":that.display},(info) => {
-                        _.each(info.data,function(ele){
-                            var fileName = ele.name
-                            var fileImage = ele.thumb
-                            var fileImgUrl = ele.url
-                            var fileIntroduce = ele.description
-                            var filePreviewCount = ele.preview_quantity
-                            var fileShareCount = ele.share_quantity
-                            var fileDownloadCount = ele.download_quantity
-                            var fileCollectionCount = ele.collection_quantity
-                            var fileUrlPostfix = ele.id
-                            let labelObj = new Label(fileName,fileImage,fileImgUrl,fileIntroduce,filePreviewCount,fileShareCount,fileDownloadCount,fileCollectionCount,fileUrlPostfix)
-                            that.labelList.push(labelObj)
-                        })
-                        that.showLoading = !that.showLoading
-                    })
-                }
-            }
-        },
-        components:{
-            ImageCover,
-            UiPopover,
-            Pagination,
-            VLoading
-        }
-    }
-
+  },
+  components: {
+    ImageCover,
+    UiPopover,
+    Pagination,
+    VLoading
+  }
+}
 </script>

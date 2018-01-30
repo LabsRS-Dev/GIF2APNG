@@ -37,256 +37,281 @@ const rootID = SysConfig.appID
 
 var showResize = true
 
-if (rootID === 'com.gmagon.app.macos.gmagongif' || rootID === 'com.romanysoft.app.macos.giftools' || rootID === 'com.romanysoft.app.macos.xdebugapp') {
+if (
+  rootID === 'com.gmagon.app.macos.gmagongif' ||
+  rootID === 'com.romanysoft.app.macos.giftools' ||
+  rootID === 'com.romanysoft.app.macos.xdebugapp'
+) {
   showResize = true
-} else if (rootID === 'com.romanysoft.app.macos.APNGToGifConverter' || rootID === 'com.romanysoft.app.macos.GifToAPNGConverter') {
+} else if (
+  rootID === 'com.romanysoft.app.macos.APNGToGifConverter' ||
+  rootID === 'com.romanysoft.app.macos.GifToAPNGConverter'
+) {
   showResize = false
 }
 
 // Config menu
-const menu = [{
-  title: 'routes.common.title',
-  isExpand: true,
-  enableExpand: false,
-  visible: true,
-  menu: [
-    {
-      path: '',
-      redirect: rootPath + '/welcome',
-      show: false
-    }, {
-      path: rootPath + '/welcome',
-      show: true,
-      component: WelcomePage,
-      title: 'routes.common.menu.welcome.title',
-      tip: 'routes.common.menu.welcome.tip',
-      tipAsSubTitle: true,
-      icon: icons.adjust,
-      sourceUrl: ''
-    }, {
-      path: rootPath + '/Find',
-      show: false,
-      component: DiscoverPage,
-      title: 'routes.common.menu.discover.title',
-      tip: 'routes.common.menu.discover.tip',
-      tipAsSubTitle: true,
-      icon: icons.adjust,
-      sourceUrl: '',
-      redirect: { name: 'Recommendation' },
-      children: [
-        {
-          name: 'Recommendation',
-          tipAsSubTitle: true,
-          tip: 'routes.common.menu.discover.tip',
-          path: 'recommendation',
-          component: Recommendation
-        },
-        {
-          path: 'classification',
-          component: Classification
-        },
-        {
-          path: 'material',
-          component: Material
-        },
-        {
-          path: 'topRank',
-          component: TopRank
-        }
-      ]
-    }, {
-      path: rootPath + '/Find/ImageList/:id',
-      show: false,
-      component: ImageList,
-      children: [
-        {
-          name: 'ImageList',
-          path: 'imgFileList',
-          component: ImgFileList
-        },
-        {
-          path: 'discuss',
-          component: Discuss
-        },
-        {
-          path: 'collector',
-          component: Collector
-        }
-      ]
-    }, {
-      path: rootPath + '/Search',
-      show: false,
-      component: Seek,
-      children: [
-        {
-          name: 'Single',
-          path: 'Single',
-          component: Single
-        }, {
-          name: 'Album',
-          path: 'Album',
-          component: Album
-        }
-      ]
-    }, {
-      path: rootPath + '/convert',
-      show: true,
-      component: ConvertPage,
-      title: 'routes.common.menu.convert.title',
-      tip: 'routes.common.menu.convert.tip',
-      tipAsSubTitle: true,
-      icon: icons.adjust,
-      sourceUrl: ''
-    }, {
-      path: rootPath + '/convert/convert_gif2apng',
-      name: 'Convert_gif2apng',
-      title: 'routes.common.menu.convert_gif2apng.title',
-      tip: 'routes.common.menu.convert_gif2apng.tip',
-      show: false,
-      component: Convert_gif2apng
-    }, {
-      path: rootPath + '/convert/convert_apng2gif',
-      name: 'Convert_apng2gif',
-      title: 'routes.common.menu.convert_apng2gif.title',
-      tip: 'routes.common.menu.convert_apng2gif.tip',
-      show: false,
-      component: Convert_apng2gif
-    }, {
-      path: rootPath + '/resize',
-      show: showResize,
-      component: ResizePage,
-      title: 'routes.common.menu.resize.title',
-      tip: 'routes.common.menu.resize.tip',
-      tipAsSubTitle: true,
-      icon: icons.adjust,
-      sourceUrl: ''
-    }, {
-      path: rootPath + '/resize/resize_single',
-      name: 'Resize_Single',
-      title: 'routes.common.menu.resize_single.title',
-      tip: 'routes.common.menu.resize_single.tip',
-      show: false,
-      component: Resize_Single
-    }, {
-      path: rootPath + '/resize/resize_batch',
-      name: 'Resize_Batch',
-      title: 'routes.common.menu.resize_batch.title',
-      tip: 'routes.common.menu.resize_batch.tip',
-      show: false,
-      component: Resize_Batch
-    }, {
-      path: rootPath + '/resize/resize_normal',
-      name: 'Resize_Normal',
-      title: 'routes.common.menu.resize_normal.title',
-      tip: 'routes.common.menu.resize_normal.tip',
-      show: false,
-      component: Resize_Normal
-    }, {
-      path: rootPath + '/Down',
-      show: false,
-      component: Download,
-      title: 'routes.common.menu.download.title',
-      tip: 'routes.common.menu.download.tip',
-      tipAsSubTitle: true,
-      icon: icons.adjust,
-      sourceUrl: '',
-      redirect: { name: 'Download_Single' },
-      children: [
-        {
-          name: 'Download_Single',
-          path: 'Download_Single',
-          component: Download_Single
-        }, {
-          name: 'Download_Album',
-          path: 'Download_Album',
-          component: Download_Album
-        }
-      ]
-    }
-  ]
-},
-{
-  title: 'routes.set.title',
-  isExpand: true,
-  enableExpand: false,
-  visible: true,
-  menu: [
-    {
-      path: '/about',
-      show: true,
-      component: AboutPage,
-      title: 'routes.set.menu.about.title',
-      tip: 'routes.set.menu.about.tip',
-      tipAsSubTitle: true,
-      icon: icons.discover,
-      sourceUrl: ''
-    }
-  ]
-},
-{
-  title: '我的应用',
-  isExpand: true,
-  enableExpand: false,
-  visible: false,
-  menu: [
-    {
-      path: '/MyTool/local',
-      show: true,
-      component: AboutPage,
-      title: '本地应用',
-      tip: '',
-      icon: icons.discover,
-      sourceUrl: ''
-    }, {
-      path: '/MyTool/download',
-      show: true,
-      component: AboutPage,
-      title: '下载管理',
-      tip: '',
-      icon: icons.discover,
-      sourceUrl: ''
-    }, {
-      path: '/MyTool/cloud',
-      show: false,
-      component: AboutPage,
-      title: '我的应用云盘',
-      tip: '',
-      icon: icons.discover,
-      sourceUrl: ''
-    }, {
-      path: '/MyTool/author',
-      show: true,
-      component: AboutPage,
-      title: '我关注的应用开发者',
-      tip: '',
-      icon: icons.discover,
-      sourceUrl: ''
-    }
-  ]
-},
-{
-  title: '创建的应用清单',
-  isExpand: false,
-  enableExpand: true,
-  visible: false,
-  menu: []
-},
-{
-  title: '收藏的应用清单',
-  isExpand: false,
-  enableExpand: true,
-  visible: false,
-  menu: [
-    {
-      path: '/ui-about',
-      component: AboutPage,
-      title: 'About',
-      tip: '',
-      icon: icons.discover,
-      sourceUrl: ''
-    }
-  ]
-}
+const menu = [
+  {
+    title: 'routes.common.title',
+    isExpand: true,
+    enableExpand: false,
+    visible: true,
+    menu: [
+      {
+        path: '',
+        redirect: rootPath + '/welcome',
+        show: false
+      },
+      {
+        path: rootPath + '/welcome',
+        show: true,
+        component: WelcomePage,
+        title: 'routes.common.menu.welcome.title',
+        tip: 'routes.common.menu.welcome.tip',
+        tipAsSubTitle: true,
+        icon: icons.adjust,
+        sourceUrl: ''
+      },
+      {
+        path: rootPath + '/Find',
+        show: false,
+        component: DiscoverPage,
+        title: 'routes.common.menu.discover.title',
+        tip: 'routes.common.menu.discover.tip',
+        tipAsSubTitle: true,
+        icon: icons.adjust,
+        sourceUrl: '',
+        redirect: { name: 'Recommendation' },
+        children: [
+          {
+            name: 'Recommendation',
+            tipAsSubTitle: true,
+            tip: 'routes.common.menu.discover.tip',
+            path: 'recommendation',
+            component: Recommendation
+          },
+          {
+            path: 'classification',
+            component: Classification
+          },
+          {
+            path: 'material',
+            component: Material
+          },
+          {
+            path: 'topRank',
+            component: TopRank
+          }
+        ]
+      },
+      {
+        path: rootPath + '/Find/ImageList/:id',
+        show: false,
+        component: ImageList,
+        children: [
+          {
+            name: 'ImageList',
+            path: 'imgFileList',
+            component: ImgFileList
+          },
+          {
+            path: 'discuss',
+            component: Discuss
+          },
+          {
+            path: 'collector',
+            component: Collector
+          }
+        ]
+      },
+      {
+        path: rootPath + '/Search',
+        show: false,
+        component: Seek,
+        children: [
+          {
+            name: 'Single',
+            path: 'Single',
+            component: Single
+          },
+          {
+            name: 'Album',
+            path: 'Album',
+            component: Album
+          }
+        ]
+      },
+      {
+        path: rootPath + '/convert',
+        show: true,
+        component: ConvertPage,
+        title: 'routes.common.menu.convert.title',
+        tip: 'routes.common.menu.convert.tip',
+        tipAsSubTitle: true,
+        icon: icons.adjust,
+        sourceUrl: ''
+      },
+      {
+        path: rootPath + '/convert/convert_gif2apng',
+        name: 'Convert_gif2apng',
+        title: 'routes.common.menu.convert_gif2apng.title',
+        tip: 'routes.common.menu.convert_gif2apng.tip',
+        show: false,
+        component: Convert_gif2apng
+      },
+      {
+        path: rootPath + '/convert/convert_apng2gif',
+        name: 'Convert_apng2gif',
+        title: 'routes.common.menu.convert_apng2gif.title',
+        tip: 'routes.common.menu.convert_apng2gif.tip',
+        show: false,
+        component: Convert_apng2gif
+      },
+      {
+        path: rootPath + '/resize',
+        show: showResize,
+        component: ResizePage,
+        title: 'routes.common.menu.resize.title',
+        tip: 'routes.common.menu.resize.tip',
+        tipAsSubTitle: true,
+        icon: icons.adjust,
+        sourceUrl: ''
+      },
+      {
+        path: rootPath + '/resize/resize_single',
+        name: 'Resize_Single',
+        title: 'routes.common.menu.resize_single.title',
+        tip: 'routes.common.menu.resize_single.tip',
+        show: false,
+        component: Resize_Single
+      },
+      {
+        path: rootPath + '/resize/resize_batch',
+        name: 'Resize_Batch',
+        title: 'routes.common.menu.resize_batch.title',
+        tip: 'routes.common.menu.resize_batch.tip',
+        show: false,
+        component: Resize_Batch
+      },
+      {
+        path: rootPath + '/resize/resize_normal',
+        name: 'Resize_Normal',
+        title: 'routes.common.menu.resize_normal.title',
+        tip: 'routes.common.menu.resize_normal.tip',
+        show: false,
+        component: Resize_Normal
+      },
+      {
+        path: rootPath + '/Down',
+        show: false,
+        component: Download,
+        title: 'routes.common.menu.download.title',
+        tip: 'routes.common.menu.download.tip',
+        tipAsSubTitle: true,
+        icon: icons.adjust,
+        sourceUrl: '',
+        redirect: { name: 'Download_Single' },
+        children: [
+          {
+            name: 'Download_Single',
+            path: 'Download_Single',
+            component: Download_Single
+          },
+          {
+            name: 'Download_Album',
+            path: 'Download_Album',
+            component: Download_Album
+          }
+        ]
+      }
+    ]
+  },
+  {
+    title: 'routes.set.title',
+    isExpand: true,
+    enableExpand: false,
+    visible: true,
+    menu: [
+      {
+        path: '/about',
+        show: true,
+        component: AboutPage,
+        title: 'routes.set.menu.about.title',
+        tip: 'routes.set.menu.about.tip',
+        tipAsSubTitle: true,
+        icon: icons.discover,
+        sourceUrl: ''
+      }
+    ]
+  },
+  {
+    title: '我的应用',
+    isExpand: true,
+    enableExpand: false,
+    visible: false,
+    menu: [
+      {
+        path: '/MyTool/local',
+        show: true,
+        component: AboutPage,
+        title: '本地应用',
+        tip: '',
+        icon: icons.discover,
+        sourceUrl: ''
+      },
+      {
+        path: '/MyTool/download',
+        show: true,
+        component: AboutPage,
+        title: '下载管理',
+        tip: '',
+        icon: icons.discover,
+        sourceUrl: ''
+      },
+      {
+        path: '/MyTool/cloud',
+        show: false,
+        component: AboutPage,
+        title: '我的应用云盘',
+        tip: '',
+        icon: icons.discover,
+        sourceUrl: ''
+      },
+      {
+        path: '/MyTool/author',
+        show: true,
+        component: AboutPage,
+        title: '我关注的应用开发者',
+        tip: '',
+        icon: icons.discover,
+        sourceUrl: ''
+      }
+    ]
+  },
+  {
+    title: '创建的应用清单',
+    isExpand: false,
+    enableExpand: true,
+    visible: false,
+    menu: []
+  },
+  {
+    title: '收藏的应用清单',
+    isExpand: false,
+    enableExpand: true,
+    visible: false,
+    menu: [
+      {
+        path: '/ui-about',
+        component: AboutPage,
+        title: 'About',
+        tip: '',
+        icon: icons.discover,
+        sourceUrl: ''
+      }
+    ]
+  }
 ]
 
 // Generate a Vue Router compatible routes map from the menu
