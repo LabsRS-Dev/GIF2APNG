@@ -122,257 +122,277 @@
 
 <script>
 import VueI18n from 'vue-i18n'
-import {UiIcon,UiButton,UiIconButton,UiTextbox} from 'keen-ui'
+import { UiIcon, UiButton, UiIconButton, UiTextbox } from 'keen-ui'
+import { Transfer } from './bridge/transfer'
 import { SysConfig } from './data/sys-config.js'
 import Sidebar from './pages/Sidebar.vue'
 import { BS, Util, _ } from 'dove.max.sdk'
 import Vue from 'vue'
 
-
-//// 与设置相关的处理
+// 与设置相关的处理
 class Search {
-    static key = "search-page-setting"
+  static key = 'search-page-setting'
 
-    static result = null
-    static shareResult(){
-        if (!Search.result){
-            Search.result = new Search()
-        }
-        return Search.result
+  static result = null
+  static shareResult () {
+    if (!Search.result) {
+      Search.result = new Search()
     }
+    return Search.result
+  }
 
-    constructor(){
-        this.data = {
-            searchList: [],
-            lastSelectInputValue: "",
-            maxSaveInputValueCount: 10
-        };
-        this.vueBus = new Vue();         // 使用Vue建立的Bus通讯
+  constructor () {
+    this.data = {
+      searchList: [],
+      lastSelectInputValue: '',
+      maxSaveInputValueCount: 10
     }
+    this.vueBus = new Vue() // 使用Vue建立的Bus通讯
+  }
 
-    restore(){
-        var ls = window.localStorage
-        var local = {}
-        if(ls){
-            var str = ls.getItem(Search.key)
-            if(_.isString(str)){
-                local = JSON.parse(str)
-                this.data = _.extend(this.data, local)
-            }
-        }
+  restore () {
+    var ls = window.localStorage
+    var local = {}
+    if (ls) {
+      var str = ls.getItem(Search.key)
+      if (_.isString(str)) {
+        local = JSON.parse(str)
+        this.data = _.extend(this.data, local)
+      }
     }
+  }
 
-    save(){
-        var ls = window.localStorage;
-        if(ls){
-            ls.setItem(Search.key, JSON.stringify(this.data))
-        }
+  save () {
+    var ls = window.localStorage
+    if (ls) {
+      ls.setItem(Search.key, JSON.stringify(this.data))
     }
+  }
 }
 
 var $LS$ = Search.shareResult()
 window.$LS$ = $LS$
-var singleInfo;
-var albumInfo;
-var inputValueInfo;
-var dataType;
-var hasInited = false ;
-var certificate;   /////// 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
-var beforeNextRoute;
+var singleInfo
+var albumInfo
+var dataType
+var hasInited = false
+var certificate // 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
+var beforeNextRoute
 
-/////
-var mouseDownX;          //鼠标落点的X方向坐标
-var slideWidth ;         //侧边栏原始宽度              
+//
+var mouseDownX // 鼠标落点的X方向坐标
+var slideWidth // 侧边栏原始宽度
 
 export default {
-    data() {
-        return {
-            showSidebar: false,
-            showHotSearch:false,
-            showTip: false,
-            showCover:false,
-            showNextPage:false,
-            beforeNextRoute:beforeNextRoute,
-            mouseDownX:mouseDownX,
-            slideWidth:slideWidth,
-            appName:SysConfig.appName,
-            searchRecordList:$LS$.data.searchList,
-            lastInputValue:$LS$.data.lastSelectInputValue,
-            inputValueInfo:$LS$.vueBus,
-            dataType:dataType,
-            inputValue:'',
-            singleInfo:singleInfo,
-            albumInfo:albumInfo
-        }
-    },
-    beforeCreate(){
-        var that = this
-        console.log('App.Vue');
-        $LS$.restore()
-    },
-    beforeDestroy() {
-        this.saveSearchInputValue()
-    },
-    mounted(){
-        var that = this
-        if(!hasInited){
-            hasInited = true
-            let machineCode = BS.b$.App.getSerialNumber()
-            Transfer.http.call('registered.machine_code',{"op":"create","where":{"id":machineCode},"data":{"id":machineCode}},(info) => {
-                Transfer.http.call('get.users',{"op":"create","where":{"machine_id":machineCode},"data":{"machine_id":machineCode}},(info) => {
-                    console.log('机器码注册完成')
-                })
-            })
-            that.certificate = BS.b$.App.getIsNeedCertificate() //true;    /////// 查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
-        }
-    },
-    methods:{
-        autoShowTip(){
-            var that = this
-            that.showTip = !that.showTip
-        },
-        onClearInputValue(){
-            var that = this
-            that.lastInputValue = ''
-        },
-        getInputValues(e){
-            var that = this
-            if(event.keyCode==13){
-                if(that.lastInputValue !== ""){
-                    var lastValue = that.lastInputValue.toLocaleLowerCase().replace(/\s+/,' ')
-                    that.inputValue=that.lastInputValue
-                    if(that.searchRecordList.indexOf(lastValue) == -1){
-                        that.searchRecordList.unshift(lastValue)
-                        that.lastInputValue = ''
-                        if(that.searchRecordList.length > $LS$.data.maxSaveInputValueCount){
-                            that.searchRecordList.splice($LS$.data.maxSaveInputValueCount, 1)
-                        }
-                    }else{
-                        that.lastInputValue = ''
-                    }
-                }
-                that.searchInputValue()
-                that.saveSearchInputValue()
-                var input = document.getElementById("inputID")
-                input.blur()
-                return false
-            }
-        },
-        searchInputValue(){
-            var that = this
-            that.lastInputValue = ''
-            var stt_tmp = "description like '%" +that.inputValue+ "%'"
-            var tmp_where = {
-                "where": stt_tmp,
-                "page" :1,
-                "per_page":20
-            }
-            Transfer.http.call('get.data_items',tmp_where,(info) => {
-                that.singleInfo = info
-                that.dataType = info.paginate.total
-                console.log(that.singleInfo)
-                that.inputValueInfo.$emit('to-single-data',that.singleInfo)
-            })
-            that.$router.push({name:'Single'})
-        },
-        saveSearchInputValue(){
-            var  that = this
-            $LS$.data.searchList = that.searchRecordList
-            $LS$.save()
-        },
-        chooseInputValue(item){
-            var that = this
-            that.lastInputValue = item
-            that.inputValue = item
-            that.searchInputValue(item)
-        },
-        onMouseStartDown(){
-            var that = this
-            var $ = Util.util.getJQuery$()
-            var oLine = $(".dove-docs-line")
-            var oSlide = $(".is-desktop")
-            that.mouseDownX = event.clientX
-            that.slideWidth = oSlide[0].offsetWidth
-            document.onmousemove = function(){
-                var newWidth = that.slideWidth*1 + event.clientX*1 - that.mouseDownX
-                if(newWidth > 0){
-                    oSlide[0].style.width = newWidth+'px'
-                    if(newWidth >= 400){
-                        oLine[0].style.left = '400px'
-                    }else if(newWidth <= 200){
-                        oLine[0].style.left = '200px'                        
-                    }else if(200 < newWidth < 400){
-                        oLine[0].style.left = newWidth+'px'
-                    }
-                }
-            }
-            document.onmouseup = function(){
-                document.onmousemove = null
-                document.onmouseup = null
-                oLine.releaseCapture && oLine.releaseCapture()               
-            }
-            oLine.setCapture && oLine.setCapture()
-            return false            
-        }
-    },
-    computed: {
-        topName() {
-            var that = this
-            let path = that.$route.path
-            path = path.substr(path.lastIndexOf('/') + 1)
-            return path
-        }
-    },
-    watch:{
-        topName() {
-            var that = this
-            let path = that.$route.path
-            if(path.match(/Find/)){
-                that.showCover = true
-            }else{
-                that.showCover = false
-            }
-            if(path.match(/convert_gif2apng/)){
-                Util.util.reportInfo({
-                    'SYS_enter':'Enter the convert_gif2apng page...'
-                })
-            }else if(path.match(/convert_apng2gif/)){
-                Util.util.reportInfo({
-                    'SYS_enter':'Enter the convert_apng2gif page...'
-                })
-            }else if(path.match(/resize_single/)){
-                Util.util.reportInfo({
-                    'SYS_enter':'Enter the resize_single page...'
-                })
-            }else if(path.match(/resize_batch/)){
-                Util.util.reportInfo({
-                    'SYS_enter':'Enter the resize_batch page...'
-                })
-            }
-        },
-        '$route'(to,from){
-          var that = this
-          let toPath = to.path
-          let fromPath = from.path
-          if((fromPath.match(/resize_single|resize_batch|resize_normal/) && toPath.match(/resize/))||(fromPath.match(/convert_gif2apng|convert_apng2gif/)&& toPath.match(/convert/))){
-            that.showNextPage = true
-            that.beforeNextRoute = fromPath
-          } else {
-            that.showNextPage = false
-          }
-        } 
-    },
-    components: {
-        VueI18n,
-        UiIcon,
-        UiButton,
-        UiIconButton,
-        UiTextbox,
-        Sidebar
+  data () {
+    return {
+      showSidebar: false,
+      showHotSearch: false,
+      showTip: false,
+      showCover: false,
+      showNextPage: false,
+      beforeNextRoute: beforeNextRoute,
+      mouseDownX: mouseDownX,
+      slideWidth: slideWidth,
+      appName: SysConfig.appName,
+      searchRecordList: $LS$.data.searchList,
+      lastInputValue: $LS$.data.lastSelectInputValue,
+      inputValueInfo: $LS$.vueBus,
+      certificate: certificate,
+      dataType: dataType,
+      inputValue: '',
+      singleInfo: singleInfo,
+      albumInfo: albumInfo
     }
+  },
+  beforeCreate () {
+    console.log('App.Vue')
+    $LS$.restore()
+  },
+  beforeDestroy () {
+    this.saveSearchInputValue()
+  },
+  mounted () {
+    var that = this
+    if (!hasInited) {
+      hasInited = true
+      const machineCode = BS.b$.App.getSerialNumber()
+      Transfer.http.call(
+        'registered.machine_code',
+        { op: 'create', where: { id: machineCode }, data: { id: machineCode } },
+        info => {
+          Transfer.http.call(
+            'get.users',
+            {
+              op: 'create',
+              where: { machine_id: machineCode },
+              data: { machine_id: machineCode }
+            },
+            info => {
+              console.log('机器码注册完成')
+            }
+          )
+        }
+      )
+      that.certificate = BS.b$.App.getIsNeedCertificate() // true;查询是否需要授权证书{必须满足为订阅产品及没有有效注册}
+    }
+  },
+  methods: {
+    autoShowTip () {
+      var that = this
+      that.showTip = !that.showTip
+    },
+    onClearInputValue () {
+      var that = this
+      that.lastInputValue = ''
+    },
+    getInputValues (e) {
+      var that = this
+      if (event.keyCode === 13) {
+        if (that.lastInputValue !== '') {
+          var lastValue = that.lastInputValue
+            .toLocaleLowerCase()
+            .replace(/\s+/, ' ')
+          that.inputValue = that.lastInputValue
+          if (that.searchRecordList.indexOf(lastValue) === -1) {
+            that.searchRecordList.unshift(lastValue)
+            that.lastInputValue = ''
+            if (
+              that.searchRecordList.length > $LS$.data.maxSaveInputValueCount
+            ) {
+              that.searchRecordList.splice($LS$.data.maxSaveInputValueCount, 1)
+            }
+          } else {
+            that.lastInputValue = ''
+          }
+        }
+        that.searchInputValue()
+        that.saveSearchInputValue()
+        var input = document.getElementById('inputID')
+        input.blur()
+        return false
+      }
+    },
+    searchInputValue () {
+      var that = this
+      that.lastInputValue = ''
+      var stt_tmp = "description like '%" + that.inputValue + "%'"
+      var tmp_where = {
+        where: stt_tmp,
+        page: 1,
+        per_page: 20
+      }
+      Transfer.http.call('get.data_items', tmp_where, info => {
+        that.singleInfo = info
+        that.dataType = info.paginate.total
+        console.log(that.singleInfo)
+        that.inputValueInfo.$emit('to-single-data', that.singleInfo)
+      })
+      that.$router.push({ name: 'Single' })
+    },
+    saveSearchInputValue () {
+      var that = this
+      $LS$.data.searchList = that.searchRecordList
+      $LS$.save()
+    },
+    chooseInputValue (item) {
+      var that = this
+      that.lastInputValue = item
+      that.inputValue = item
+      that.searchInputValue(item)
+    },
+    onMouseStartDown () {
+      var that = this
+      var $ = Util.util.getJQuery$()
+      var oLine = $('.dove-docs-line')
+      var oSlide = $('.is-desktop')
+      that.mouseDownX = event.clientX
+      that.slideWidth = oSlide[0].offsetWidth
+      document.onmousemove = function () {
+        var newWidth = that.slideWidth * 1 + event.clientX * 1 - that.mouseDownX
+        if (newWidth > 0) {
+          oSlide[0].style.width = newWidth + 'px'
+          if (newWidth >= 400) {
+            oLine[0].style.left = '400px'
+          } else if (newWidth <= 200) {
+            oLine[0].style.left = '200px'
+          } else {
+            oLine[0].style.left = newWidth + 'px'
+          }
+        }
+      }
+      document.onmouseup = function () {
+        document.onmousemove = null
+        document.onmouseup = null
+        oLine.releaseCapture && oLine.releaseCapture()
+      }
+      oLine.setCapture && oLine.setCapture()
+      return false
+    }
+  },
+  computed: {
+    topName () {
+      var that = this
+      let path = that.$route.path
+      path = path.substr(path.lastIndexOf('/') + 1)
+      return path
+    }
+  },
+  watch: {
+    topName () {
+      var that = this
+      const path = that.$route.path
+      if (path.match(/Find/)) {
+        that.showCover = true
+      } else {
+        that.showCover = false
+      }
+      if (path.match(/convert_gif2apng/)) {
+        Util.util.reportInfo({
+          SYS_enter: 'Enter the convert_gif2apng page...'
+        })
+      } else if (path.match(/convert_apng2gif/)) {
+        Util.util.reportInfo({
+          SYS_enter: 'Enter the convert_apng2gif page...'
+        })
+      } else if (path.match(/resize_single/)) {
+        Util.util.reportInfo({
+          SYS_enter: 'Enter the resize_single page...'
+        })
+      } else if (path.match(/resize_batch/)) {
+        Util.util.reportInfo({
+          SYS_enter: 'Enter the resize_batch page...'
+        })
+      }
+    },
+    $route (to, from) {
+      var that = this
+      const toPath = to.path
+      const fromPath = from.path
+      if (
+        (fromPath.match(/resize_single|resize_batch|resize_normal/) &&
+          toPath.match(/resize/)) ||
+        (fromPath.match(/convert_gif2apng|convert_apng2gif/) &&
+          toPath.match(/convert/))
+      ) {
+        that.showNextPage = true
+        that.beforeNextRoute = fromPath
+      } else {
+        that.showNextPage = false
+      }
+    }
+  },
+  components: {
+    VueI18n,
+    UiIcon,
+    UiButton,
+    UiIconButton,
+    UiTextbox,
+    Sidebar
+  }
 }
 </script>
 
 <style lang="scss">
-    @import './styles/index.scss'
+@import './styles/index.scss';
 </style>

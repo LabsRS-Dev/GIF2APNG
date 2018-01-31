@@ -27,53 +27,71 @@
 </template>
 
 <script>
-import {UiButton} from 'keen-ui';
+import { UiButton } from 'keen-ui'
 import IconsRef from '../../../data/icon.js'
 
-export default{
-    data(){
-        return {
-            singleIcon:IconsRef.iconSet.process_single,
-            batchIcon:IconsRef.iconSet.process_batch,
-            normalIcon:IconsRef.iconSet.process_normal
-        }
-    },
-    computed:{
-        actionList() {
-           var that = this
-           return [
-                {id:'action-single', visiable:true, icon:that.singleIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_single"},
-                {id:'action-batch', visiable:true, icon:that.batchIcon, type:"secondary",tooltip:"pages.resize.content.tooltip_batch"},
-                {id:'action-normal', visiable:true, icon:that.normalIcon, type:"secondary",tooltip:"pages.resize.content.normal_batch"}
-           ]
-        }
-    },
-    methods:{
-        onToolBtnClick(index, item){
-            console.log('onToolBtnClick', index)
-            if(item.id === 'action-single') {
-                this.onBtnSingleFilesClick()
-            }else if (item.id === 'action-batch') {
-                this.onBtnBatchFilesClick()
-            }else if (item.id === 'action-normal') {
-                this.onBtnNormalFilesClick()
-            }
-        }, 
-        onBtnSingleFilesClick(){
-            var that = this
-            that.$router.push({name:'Resize_Single'})
-        },
-        onBtnBatchFilesClick(){
-            var that = this
-            that.$router.push({name:'Resize_Batch'})
-        },
-        onBtnNormalFilesClick(){
-            var that = this
-            that.$router.push({name:'Resize_Normal'})           
-        }
-    },
-    components: {
-        UiButton
+export default {
+  data () {
+    return {
+      singleIcon: IconsRef.iconSet.process_single,
+      batchIcon: IconsRef.iconSet.process_batch,
+      normalIcon: IconsRef.iconSet.process_normal
     }
+  },
+  computed: {
+    actionList () {
+      var that = this
+      return [
+        {
+          id: 'action-single',
+          visiable: true,
+          icon: that.singleIcon,
+          type: 'secondary',
+          tooltip: 'pages.resize.content.tooltip_single'
+        },
+        {
+          id: 'action-batch',
+          visiable: true,
+          icon: that.batchIcon,
+          type: 'secondary',
+          tooltip: 'pages.resize.content.tooltip_batch'
+        },
+        {
+          id: 'action-normal',
+          visiable: true,
+          icon: that.normalIcon,
+          type: 'secondary',
+          tooltip: 'pages.resize.content.normal_batch'
+        }
+      ]
+    }
+  },
+  methods: {
+    onToolBtnClick (index, item) {
+      console.log('onToolBtnClick', index)
+      if (item.id === 'action-single') {
+        this.onBtnSingleFilesClick()
+      } else if (item.id === 'action-batch') {
+        this.onBtnBatchFilesClick()
+      } else if (item.id === 'action-normal') {
+        this.onBtnNormalFilesClick()
+      }
+    },
+    onBtnSingleFilesClick () {
+      var that = this
+      that.$router.push({ name: 'Resize_Single' })
+    },
+    onBtnBatchFilesClick () {
+      var that = this
+      that.$router.push({ name: 'Resize_Batch' })
+    },
+    onBtnNormalFilesClick () {
+      var that = this
+      that.$router.push({ name: 'Resize_Normal' })
+    }
+  },
+  components: {
+    UiButton
+  }
 }
 </script>

@@ -1,14 +1,5 @@
-import {
-  BS,
-  Observable,
-  Util,
-  _
-} from 'dove.max.sdk'
-import {
-  ToolsMap,
-  ToolsType,
-  ServerAPIMap
-} from './tools_map.js'
+import { BS, Observable, Util, _ } from 'dove.max.sdk'
+import { ToolsMap, ToolsType, ServerAPIMap } from './tools_map.js'
 
 // -----------------------------------------------------------------
 // 交互处理
@@ -16,8 +7,6 @@ const AgentClient = BS.b$.AgentClient
 const AgentServer = BS.b$.AgentServer
 
 const __$p$ = {
-
-
   // 通用方式来配置单一的服务器模式, 你可以在后端服务覆盖已有的配置信息
   serverConfig: {
     ip: '127.0.0.1', // 127.0.0.1
@@ -110,11 +99,15 @@ const __$p$ = {
 //  绑定工具
 __$p$.Common = {
   sendMessage: (options = {}, handler, one = false) => {
-    __$p$.send({
-      data: 'Hello'
-    }, function (data) {
-      handler && handler(data)
-    }, one)
+    __$p$.send(
+      {
+        data: 'Hello'
+      },
+      function (data) {
+        handler && handler(data)
+      },
+      one
+    )
   },
   runWSTask: (cli = '', action = '', options = {}, handler, one = false) => {
     const debugMode = false
@@ -123,7 +116,8 @@ __$p$.Common = {
         task_id: options.taskID, // 任务ID
         cli: cli, // 动态调用的模块
         reload: false, // 默认是false, 支持热部署, 是否重新加载动态模块
-        command: [ // 命令
+        command: [
+          // 命令
           {
             action: action,
             data: options.data,
@@ -137,36 +131,54 @@ __$p$.Common = {
         msg_type: 'c_task_exec'
       }
 
-      __$p$.send(info, data => {
-        if (data.task_id === options.taskID) { // 只处理本任务的返回数据
-          handler && handler(data)
-        }
-      }, one)
+      __$p$.send(
+        info,
+        data => {
+          if (data.task_id === options.taskID) {
+            // 只处理本任务的返回数据
+            handler && handler(data)
+          }
+        },
+        one
+      )
     } else {
       handler && handler()
     }
   },
-  runNativeTask: (cli = '', mainThread = false, options = {}, handler, one = false) => {
+  runNativeTask: (
+    cli = '',
+    mainThread = false,
+    options = {},
+    handler,
+    one = false
+  ) => {
     const debugMode = false
     if (debugMode === false) {
       const info = {
         task_id: options.taskID || _.uniqueId('native-fork-task-'),
-        commands: [{
-          appPath: cli,
-          command: options.command || [],
-          mainThread: mainThread
-        }]
+        commands: [
+          {
+            appPath: cli,
+            command: options.command || [],
+            mainThread: mainThread
+          }
+        ]
       }
 
-      __$p$.send(info, data => {
-        try {
-          if (data.queueInfo.id === options.taskID) { // 只处理本任务的返回数据
-            handler && handler(data)
+      __$p$.send(
+        info,
+        data => {
+          try {
+            if (data.queueInfo.id === options.taskID) {
+              // 只处理本任务的返回数据
+              handler && handler(data)
+            }
+          } catch (e) {
+            console.error(e)
           }
-        } catch (e) {
-          console.error(e)
-        }
-      }, one)
+        },
+        one
+      )
     } else {
       handler && handler()
     }
@@ -181,11 +193,16 @@ __$p$.Common = {
         taskMethodWay: 'sendEvent'
       }
 
-      __$p$.send(info, data => {
-        if (data.task_id === taskID) { // 只处理本任务的返回数据
-          handler && handler(data)
-        }
-      }, one)
+      __$p$.send(
+        info,
+        data => {
+          if (data.task_id === taskID) {
+            // 只处理本任务的返回数据
+            handler && handler(data)
+          }
+        },
+        one
+      )
     } else {
       handler && handler()
     }
@@ -205,12 +222,18 @@ __$p$.Tools = {
       if (cfg.type === ToolsType.WS) {
         __$p$.Common.runWSTask(cfg.cli, cfg.action, options, handler, one)
       } else if (cfg.type === ToolsType.NTASK) {
-        __$p$.Common.runNativeTask(cfg.cli, cfg.mainThread, options, handler, one)
+        __$p$.Common.runNativeTask(
+          cfg.cli,
+          cfg.mainThread,
+          options,
+          handler,
+          one
+        )
       } else if (cfg.type === ToolsType.STOP_NTASK) {
         __$p$.Common.stopNativeTask(options.taskID, cfg.command, handler, one)
       }
     } else {
-      console.warn('Error: Not found the \'' + toolKey + '\' config tool...')
+      console.warn("Error: Not found the '" + toolKey + "' config tool...")
     }
   }
 }
@@ -236,7 +259,12 @@ __$p$.http = {
     const $ = Util.util.getJQuery$()
     return $.ajax(config)
   },
-  call: function (apiKey, options = {}, handler = () => {}, testHandler = () => {}) {
+  call: function (
+    apiKey,
+    options = {},
+    handler = () => {},
+    testHandler = () => {}
+  ) {
     var t$ = this
     if (t$.useTest) {
       testHandler && testHandler()
@@ -248,10 +276,16 @@ __$p$.http = {
     if (cfg) {
       t$.sub_call(cfg.api, cfg.type, options, handler)
     } else {
-      console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+      console.warn("Error: Not found the '" + apiKey + "' config http...")
     }
   },
-  callEx: function (apiKey, extend = {}, options = {}, handler = () => {}, testHandler = () => {}) {
+  callEx: function (
+    apiKey,
+    extend = {},
+    options = {},
+    handler = () => {},
+    testHandler = () => {}
+  ) {
     var t$ = this
     if (t$.useTest) {
       testHandler && testHandler()
@@ -261,17 +295,19 @@ __$p$.http = {
 
     // const $ = Util.util.getJQuery$()
     const cfg = ServerAPIMap[apiKey]
-    var extObj = _.extend({
-      url: ''
-    }, extend)
+    var extObj = _.extend(
+      {
+        url: ''
+      },
+      extend
+    )
     if (cfg) {
       t$.sub_call(cfg.api + extObj.url, cfg.type, options, handler)
     } else {
-      console.warn('Error: Not found the \'' + apiKey + '\' config http...')
+      console.warn("Error: Not found the '" + apiKey + "' config http...")
     }
   }
 }
-
 
 var TransferClass = Observable.extend(__$p$)
 var Transfer = new TransferClass()
@@ -285,6 +321,4 @@ $(document).ready(function () {
   window.Transfer = Transfer
 })
 
-export {
-  Transfer
-}
+export { Transfer }

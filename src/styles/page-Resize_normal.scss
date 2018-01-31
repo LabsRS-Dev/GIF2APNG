@@ -163,6 +163,25 @@
         }
         .ui-fab{
           margin-left: rem-calc(5px);
+          padding: rem-calc(2px) rem-calc(6px);
+          .ui-fab__icon{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: rem-calc(28px);
+            height: rem-calc(28px);
+            .ui-toolbar-normal__top__selsct__icon{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: rem-calc(28px);
+              height: rem-calc(28px);
+              i{
+                height: rem-calc(28px);
+                line-height: rem-calc(28px);
+              }
+            }
+          }              
         } 
       }
     }

@@ -20,12 +20,11 @@
   </section>
 </template>
 <script>
-////////////////////////////////////////////////////////
 
 export default {
-  name:'navigation',
+  name: 'navigation',
   computed: {
-    topName() {
+    topName () {
       var that = this
       let path = that.$route.path
       path = path.substr(path.lastIndexOf('/') + 1)

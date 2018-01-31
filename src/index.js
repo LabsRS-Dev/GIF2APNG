@@ -15,9 +15,7 @@ import Routes from './routes'
 import http from 'vue-resource'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 
-import {
-  languageConfiguration
-} from './extern.js'
+import { languageConfiguration } from './extern.js'
 
 // Allow inspection, even in production mode
 Vue.config.devtools = true

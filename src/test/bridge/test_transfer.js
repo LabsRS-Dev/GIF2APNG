@@ -6,8 +6,8 @@ window.$TS = {
 
   getExifImageThumb: function () {
     var taskList = [
-        { id: '001', fileName: 'RAW_NIKON_D7100.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB' },
-        { id: '002', fileName: 'YDSC_0021.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB' }
+      { id: '001', fileName: 'RAW_NIKON_D7100.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB' },
+      { id: '002', fileName: 'YDSC_0021.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB' }
     ]
 
     var srcImagesMap = {}
@@ -44,8 +44,8 @@ window.$TS = {
    */
   getExifInfo: function () {
     var taskList = [
-        { id: '001', fileName: 'RAW_NIKON_D7100.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB' },
-        { id: '002', fileName: 'YDSC_0021.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB' }
+      { id: '001', fileName: 'RAW_NIKON_D7100.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\RAW_NIKON_D7100.NEF', fileSize: '27.5MB' },
+      { id: '002', fileName: 'YDSC_0021.NEF', filePath: 'D:\\TestResource\\exif_sample_images\\Nikon\\corrupted\\YDSC_0021.NEF', fileSize: '10.7MB' }
     ]
 
     var srcImagesMap = {}
