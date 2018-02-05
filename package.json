@@ -46,6 +46,7 @@
   },
   "homepage": "https://github.com/LabsRS-Dev/GIF2APNG#readme",
   "dependencies": {
+    "dateformat": "^3.0.2",
     "dove.max.sdk": "^20180124.10.5",
     "echarts": "^4.0.2",
     "keen-ui": "^1.0.0",

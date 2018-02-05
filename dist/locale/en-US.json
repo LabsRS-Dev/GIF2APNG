@@ -274,12 +274,25 @@
         "original": "Original fileName",
         "output": "Output fileName"
       },
+      "dialog-confirm-settings":{
+        "title":"Rename Selected Layers",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      },
       "dialog-confirm-format":{
-        "fileName":"FileName",
-        "uppercaseName":"FileName(upper-case)",
-        "lowercaseName":"FileName(lower-case)",
-        "info":"Resize information",
-        "date":"Date and Time"
+        "fileName":"FileName:fn(d)",
+        "uppercaseName":"FileName(upper-case):fn(u)",
+        "lowercaseName":"FileName(lower-case):fn(l)",
+        "info":"Resize information:info",
+        "dateTime":"Date and Time(default):dt(d)",
+        "shortDate":"Date(short):d(s)",
+        "fullDate":"Date(full):d(f)",
+        "shortTime":"Time(short):t(s)",
+        "fullTime":"Time(full):t(f)",
+        "isoDate":"Date(ISO):d(i)",
+        "isoTime":"Time(ISO):t(i)",
+        "isoDateTime":"Date and Time(ISO):dt(i)",
+        "isoUtcDateTime":"Date and Time(ISO UTC):dt(i u)"
       },
       "dialog-confirm-cover":{
         "title":"Confirm",
@@ -350,10 +363,14 @@
         "path":"Output Path:",
         "fileName":"Output Name:",
         "sequence" :"Start sequence from:",
-        "Preview" :"Preview",
+        "Preview" :"Preview:",
+        "keywords" :"Keywords",
+        "rename" :"Name:",
         "cover":"Overwrite exsisting files?",
         "toolTip":"Please enter a valid file name",
-        "placeholder":"Enter or select the file name"
+        "placeholder":"Enter or click the icon on the right",
+        "original":"Original:",
+        "prompt":"Enter or click the keywords below"
       },
       "dialog-config-change":{
         "title":"Adjust the image size",

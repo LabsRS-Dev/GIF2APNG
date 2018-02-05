@@ -275,11 +275,19 @@
         "output": "输出文件名"
       },
       "dialog-confirm-format":{
-        "fileName":"原文件名",
-        "uppercaseName":"原文件名(大写)",
-        "lowercaseName":"原文件名(小写)",
-        "info":"转换信息",
-        "date":"时间日期"
+        "fileName":"原文件名:fn(d)",
+        "uppercaseName":"原文件名(大写):fn(u)",
+        "lowercaseName":"原文件名(小写):fn(l)",
+        "info":"转换信息:info",
+        "dateTime":"日期和时间(默认):dt(d)",
+        "shortDate":"日期(短的):d(s)",
+        "fullDate":"日期(完整):d(f)",
+        "shortTime":"时间(短的):t(s)",
+        "fullTime":"时间(完整):t(f)",
+        "isoDate":"日期(ISO):d(i)",
+        "isoTime":"时间(ISO):t(i)",
+        "isoDateTime":"日期和时间(ISO):dt(i)",
+        "isoUtcDateTime":"日期和时间(ISO UTC):dt(i u)"
       },
       "dialog-confirm-cover":{
         "title":"确认操作",
@@ -350,10 +358,14 @@
         "path":"输出路径:",
         "fileName":"输出文件名",
         "sequence" :"开始序列:",
-        "Preview" :"预览",
+        "Preview" :"预览:",
+        "keywords" :"关键词",
+        "rename" :"名称:",
         "cover":"是否覆盖原有文件?",
         "toolTip":"请输入合法的文件名称",
-        "placeholder":"输入或选择文件名称"
+        "placeholder":"输入或点击右边的图标",
+        "original":"原文件:",
+        "prompt":"输入或点击下面的关键词"
       },
       "dialog-config-change":{
         "title":"调节图片尺寸",
@@ -379,6 +391,11 @@
         "btnDeny": "取消",
         "before":"Gif",
         "after":"Apng"
+      },
+      "dialog-confirm-settings":{
+        "title":"选择重命名",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
       },
       "dialog-confirm-stop-fix":{
         "title":"确认操作",

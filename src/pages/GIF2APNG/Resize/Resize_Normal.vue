@@ -42,51 +42,68 @@
                     @close="outputConfigDialog.callbackClose"
                     >
                     <ui-confirm
-                        class = "page__toolbar-app-doc__preview__confirmDialog"
-                        :autofocus="previewConfirmDialog.autofocus"
-                        :confirm-button-text="previewConfirmDialog.confirmButtonText"
-                        :deny-button-text="previewConfirmDialog.denyButtonText"
-                        :ref="previewConfirmDialog.ref"
-                        :title="previewConfirmDialog.title"
+                        :autofocus="settingsConfirmDialog.autofocus"
+                        :confirm-button-text="settingsConfirmDialog.confirmButtonText"
+                        :deny-button-text="settingsConfirmDialog.denyButtonText"
+                        :ref="settingsConfirmDialog.ref"
+                        :title="settingsConfirmDialog.title"
+                        :closeOnConfirm="false"
 
-                        @confirm="previewConfirmDialog.callbackConfirm"
-                        @deny="previewConfirmDialog.callbackDeny"
-                        @open="previewConfirmDialog.callbackOpen"
-                        @close="previewConfirmDialog.callbackClose"
+                        @confirm="settingsConfirmDialog.callbackConfirm"
+                        @deny="settingsConfirmDialog.callbackDeny"
+                        @open="settingsConfirmDialog.callbackOpen"
+                        @close="settingsConfirmDialog.callbackClose"
                         >
-                        <div class="page__toolbar-app-doc__preview__formList">
-                            <div class="page__toolbar-app-doc__preview__confirm">
-                                <span class="original__FileName">{{$t('pages.resize.dialog-confirm-preview.original')}}</span>
-                                <span class="output__FileName">{{$t('pages.resize.dialog-confirm-preview.output')}}</span>
-                            </div>
-                            <div class="page__toolbar-app-doc__preview__allNameList">
-                                <div 
-                                    class="page__toolbar-app-doc__preview__list"
-                                    :key="index"
-                                    v-for="(item, index) in originalFileName"
-                                    >
-                                    <div 
-                                        class="page__toolbar-app-doc__preview__nameList"
-                                        :key="att"
-                                        v-for="(ele , att) in item"
+                        <div class="page__toolbar-app-doc__rename__formList">
+                            <div class="page__toolbar-app-doc__rename__formList__header">
+                                <div class="page__toolbar-app-doc__input__formList">
+                                    <h3 class="input-rename-fileName">{{ $t('pages.resize.dialog-config-output.rename') }}</h3>
+                                    <ui-autocomplete
+                                        v-model="getOutputName"
+                                        :placeholder="$t('pages.resize.dialog-config-output.prompt')"
+                                        :limit = "limitNumber"
+                                        @select = "getSuggestionsValue"
+                                        :suggestions="availableOutputNameList"
                                         >
-                                            <div class="page__toolbar-app-doc__preview__original__FileName">
-                                                <span class="preview__nameList__original" :title="att">{{ att }}</span>
-                                            </div>
-                                            <div class="page__toolbar-app-doc__preview__output__FileName">
-                                                <span
-                                                    class="preview__nameList__output"
-                                                    :title="el"
-                                                    :key="len"
-                                                    v-for="(el,len) in ele"
-                                                    >
-                                                    {{ el }}
-                                                </span>
-                                            </div>
-                                    </div>
-                                </div>                                
+                                    </ui-autocomplete>
+                                    <span class="input-rename-ToolTip" v-show="showFileNameToolTip">{{ $t('pages.resize.dialog-config-output.toolTip') }}</span>
+                                </div>
+                                <div class="page__toolbar-app-doc__input__sequence">
+                                    <ui-checkbox
+                                        v-model="enableAddSequence"
+                                        >
+                                    </ui-checkbox>
+                                    <span class="input-rename-sequence">{{ $t('pages.resize.dialog-config-output.sequence') }}</span>                           
+                                    <input
+                                        type="text"
+                                        :value ="sequenceNumber"
+                                        @input = "handleInput"
+                                        @focus= "getBeforeSequenceNumber"
+                                        @blur = "getSequenceNumber"
+                                        minLength = 1 maxLength = 4
+                                    >
+                                </div>
                             </div>
-
+                            <div class="page__toolbar-app-doc__rename__formList__body">
+                              <h3 class="input-rename-keywords-title">{{ $t('pages.resize.dialog-config-output.keywords') }}</h3>
+                              <div class="input-rename-keywords">
+                                  <ui-button
+                                      raised
+                                      size = "small"
+                                      color = "green"
+                                      type = "secondary"
+                                      :key="index"
+                                      v-for="(item,index) in availableOutputNameList"
+                                      @click="onOpenSelectOutputName(item)"
+                                      >
+                                      {{ item }}
+                                  </ui-button>
+                              </div>
+                            </div>
+                            <div class="page__toolbar-app-doc__rename__formList__footer">
+                                <h3 class="input-rename-preview">{{ $t('pages.resize.dialog-config-output.Preview') }}</h3>
+                                <span class="input-rename-preview-content">{{ onPreviewOutName }}</span>
+                            </div>                        
                         </div>
                     </ui-confirm>
                     <div class="page__toolbar-app-doc__input__rename">
@@ -119,44 +136,26 @@
                         <div class="page__toolbar-app-doc__input__outputName">
                             <div class="page__toolbar-app-doc__input__fileName">
                                 <span class="input-output-fileName">{{ $t('pages.resize.dialog-config-output.fileName') }}</span>
-                                <ui-textbox
+                                <ui-autocomplete
                                     v-model="getOutputName"
                                     :placeholder="$t('pages.resize.dialog-config-output.placeholder')"
-                                    @focus = "onResetFileNameToolTip()"
-                                    @blur="onCheckOutputFileName()"
+                                    :limit = "limitNumber"
+                                    @select = "getSuggestionsValue"
+                                    :suggestions="availableOutputNameList"
                                     >
-                                </ui-textbox>
-                                <ui-select
-                                    multiple
-                                    ref ="resetSelect"
-                                    :options="availableOutputNameList"
-                                    v-model="lastOutputName"
-                                    >
-                                </ui-select>
-                                <ui-button
-                                    raised
-                                    type="secondary"
-                                    size="small"
-                                    color="primary"
-                                    @click="onOpenPreviewInfo"
-                                    >
-                                    <span>{{ $t('pages.resize.dialog-config-output.Preview') }}</span>
-                                </ui-button>
+                                </ui-autocomplete>
+                                <span class="input-output-fileName-setting" @click="onOpenSettings()"><i class="fa fa-pencil fa-lg"></i></span>
                                 <span class="input-output-ToolTip" v-show="showFileNameToolTip">{{ $t('pages.resize.dialog-config-output.toolTip') }}</span>
                             </div>
-                            <div class="page__toolbar-app-doc__input__sequence">
-                                <ui-checkbox
-                                    v-model="enableAddSequence"
-                                    >
-                                </ui-checkbox>
-                                <span class="input-start-sequence">{{ $t('pages.resize.dialog-config-output.sequence') }}</span>                           
-                                <input
-                                    type="text"
-                                    :value ="sequenceNumber"
-                                    @input = "handleInput"
-                                    @blur = "getSequenceNumber"
-                                    minLength = 1 maxLength = 4
-                                >
+                            <div class="page__toolbar-app-doc__input__comparison">
+                                <div class="page__toolbar-app-doc__input__comparison__header">
+                                    <span class="input-comparison-original">{{ $t('pages.resize.dialog-config-output.original') }}</span>
+                                    <span class="input-comparison-original-content">{{ onOriginalOutName }}</span>
+                                </div>
+                                <div class="page__toolbar-app-doc__input__comparison__footer">
+                                    <span class="input-comparison-preview">{{ $t('pages.resize.dialog-config-output.Preview') }}</span>
+                                    <span class="input-comparison-preview-content">{{ onPreviewOutName }}</span>
+                                </div>                              
                             </div>
                         </div>
                     </div>
@@ -259,75 +258,75 @@
                     </p>
                 </div>
                 <ui-alert
-                :type="item.style.type"
-                :key="item.id"
-                removeIcon
+                  :type="item.style.type"
+                  :key="item.id"
+                  removeIcon
 
-                @dismiss="onRemoveTaskItem(item, index)"
+                  @dismiss="onRemoveTaskItem(item, index)"
 
-                v-show="item.style.show"
-                v-for="(item, index) in taskList">
-                <div class="page__examples-app-doc-normal__item" :data-taskid="item.id">
-                    <div class="ui-toolbar-normal__top">
-                        <div class="ui-toolbar-normal__top__thumb">
-                            <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" />
-                        </div>
-                        <div class="ui-toolbar-normal__top__info">
-                            <div class="ui-toolbar-normal__top__metainfo">
-                                <strong class="ui-toolbar-normal__top__fileName" :title=" $t('pages.resize.task-item.file-name') +  item.name">
-                                    {{ item.omitName }}
-                                    <sup class="ui-toolbar-normal__top__fileSize" :title=" $t('pages.resize.task-item.file-size') +  item.size ">
-                                        {{ item.dimensions ? '(' + item.dimensions.data.width + 'x' + item.dimensions.data.height  + ')' : '' }}
-                                    </sup>
-                                </strong>
-                                <div class="ui-toolbar-normal__top__button">
-                                    <ui-button 
-                                        raised 
-                                        size="small"
-                                        @click = "onSaveAsTemplate(item)"
-                                        >
-                                        {{$t('pages.resize.button.save')}}
-                                    </ui-button>
-                                    <ui-select
-                                        has-search
-                                        :options="templateStrings"
-                                        :value="$t('pages.resize.button.load')"
-                                        @input = "onChangeTemplate(item,$event)"
-                                        >
-                                    </ui-select>
-                                </div>
-                            </div>
-                            <div class="ui-toolbar-normal__top__selsct">
-                                <ui-alert
-                                    :class="getItemStyleClass(ele)"
-                                    :type="ele.style.type"
-                                    :key="ele.id"
-                                    v-show="ele.style.show"
-                                    @dismiss="onRemoveRatioItem(item, ele, index)"
-                                    v-for="(ele, index) in item.ratioCommon"
-                                    >
-                                    <ui-progress-circular color="multi-color" v-show="getImageProgressShow(ele)"></ui-progress-circular>
-                                    <ui-autocomplete
-                                        :suggestions="selectRatioList"
-                                        v-model="ele.commonRatio"
-                                        @blur="checkTheInputIsCorrect(ele,$event)"
-                                        :autofocus = "true"
-                                        >
-                                    </ui-autocomplete>
-                                    <span class="ui-toolbar-normal__top__selsct__prompt" v-show = "ele.style.showToolTip">{{ $t('pages.resize.toolbar.tooltip')}}</span>
-                                </ui-alert>
-                                <ui-fab 
-                                    size="small"
-                                    :title="$t('pages.resize.toolbar.addRatio')" 
-                                    @click = "onAddRatioClick(item,event)"
-                                    >
-                                    <span class="ui-toolbar-normal__top__selsct__icon"><i class="fa fa-plus fa-lg fa-fw"></i></span>
-                                </ui-fab>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </ui-alert>
+                  v-show="item.style.show"
+                  v-for="(item, index) in taskList"
+                  >
+                  <div class="page__examples-app-doc-normal__item" :data-taskid="item.id">
+                      <div class="ui-toolbar-normal__top">
+                          <div class="ui-toolbar-normal__top__thumb">
+                              <img :src="item.thumb" width="64" height="64" viewBox="0 0 64 64" />
+                          </div>
+                          <div class="ui-toolbar-normal__top__info">
+                              <div class="ui-toolbar-normal__top__metainfo">
+                                  <strong class="ui-toolbar-normal__top__fileName" :title=" $t('pages.resize.task-item.file-name') +  item.name">
+                                      {{ item.omitName }}
+                                      <sup class="ui-toolbar-normal__top__fileSize" :title=" $t('pages.resize.task-item.file-size') +  item.size ">
+                                          {{ item.dimensions ? '(' + item.dimensions.data.width + 'x' + item.dimensions.data.height  + ')' : '' }}
+                                      </sup>
+                                  </strong>
+                                  <div class="ui-toolbar-normal__top__button">
+                                      <ui-button 
+                                          raised 
+                                          size="small"
+                                          @click = "onSaveAsTemplate(item)"
+                                          >
+                                          {{$t('pages.resize.button.save')}}
+                                      </ui-button>
+                                      <ui-select
+                                          has-search
+                                          :options="templateStrings"
+                                          :value="$t('pages.resize.button.load')"
+                                          @input = "onChangeTemplate(item,$event)"
+                                          >
+                                      </ui-select>
+                                  </div>
+                              </div>
+                              <div class="ui-toolbar-normal__top__selsct">
+                                  <ui-alert
+                                      :class="getItemStyleClass(ele)"
+                                      :type="ele.style.type"
+                                      :key="ele.id"
+                                      v-show="ele.style.show"
+                                      @dismiss="onRemoveRatioItem(item, ele, index)"
+                                      v-for="(ele, index) in item.ratioCommon"
+                                      >
+                                      <ui-progress-circular color="multi-color" v-show="getImageProgressShow(ele)"></ui-progress-circular>
+                                      <ui-autocomplete
+                                          :suggestions="selectRatioList"
+                                          v-model="ele.commonRatio"
+                                          @blur="checkTheInputIsCorrect(ele,$event)"
+                                          >
+                                      </ui-autocomplete>
+                                      <span class="ui-toolbar-normal__top__selsct__prompt" v-show = "ele.style.showToolTip">{{ $t('pages.resize.toolbar.tooltip')}}</span>
+                                  </ui-alert>
+                                  <ui-fab 
+                                      size="small"
+                                      :title="$t('pages.resize.toolbar.addRatio')" 
+                                      @click = "onAddRatioClick(item,event)"
+                                      >
+                                      <span class="ui-toolbar-normal__top__selsct__icon"><i class="fa fa-plus fa-lg fa-fw"></i></span>
+                                  </ui-fab>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </ui-alert>
             </div>
     
             <div :class=" ['page__footbar page__footbar-app-doc', {transferNormal: transferIsNormal}, {working: isResizeWorking}]" v-if="taskList.length >= 0">
@@ -428,7 +427,6 @@ var taskList = []
 var ratioList = []
 var taskID2taskObj = {}
 var lastResizeValue //        最终输入后台的字符串
-var originalFileName = [] //        预览时原文件名数组
 
 // 与设置相关的处理
 class Settings {
@@ -476,6 +474,8 @@ class Settings {
 
 var $LS$ = Settings.shareInstance()
 var hasInited = false // 是否初始过
+var onPreviewOutName // 预览文件名称
+var onOriginalOutName // 原文件名称
 
 export default {
   data () {
@@ -494,20 +494,30 @@ export default {
       lastOutputPath: $LS$.data.lastSelectOutputPath,
       availableOutputPathList: $LS$.data.outputPaths,
       templateStrings: $LS$.data.selectTemplate,
-      originalFileName: originalFileName,
       lastTemplateName: '',
       sequenceNumber: 1,
-      getOutputName: '',
-      lastOutputName: '',
+      beforeSequenceNumber: 1,
+      limitNumber: 13,
+      getOutputName: '<fn(d)>',
+      onPreviewOutName: onPreviewOutName,
+      onOriginalOutName: onOriginalOutName,
       availableOutputNameList: [
         that.$t('pages.resize.dialog-confirm-format.fileName'),
+        that.$t('pages.resize.dialog-confirm-format.info'),
         that.$t('pages.resize.dialog-confirm-format.uppercaseName'),
         that.$t('pages.resize.dialog-confirm-format.lowercaseName'),
-        that.$t('pages.resize.dialog-confirm-format.info'),
-        that.$t('pages.resize.dialog-confirm-format.date')
+        that.$t('pages.resize.dialog-confirm-format.dateTime'),
+        that.$t('pages.resize.dialog-confirm-format.isoDate'),
+        that.$t('pages.resize.dialog-confirm-format.isoDateTime'),
+        that.$t('pages.resize.dialog-confirm-format.isoUtcDateTime'),
+        that.$t('pages.resize.dialog-confirm-format.isoTime'),
+        that.$t('pages.resize.dialog-confirm-format.shortDate'),
+        that.$t('pages.resize.dialog-confirm-format.fullDate'),
+        that.$t('pages.resize.dialog-confirm-format.shortTime'),
+        that.$t('pages.resize.dialog-confirm-format.fullTime')
       ],
       enableAddSequence: false,
-      checkFileNme: true,
+      checkFileName: true,
       showFileNameToolTip: false,
       selectRatioList: $LS$.data.selectRatio,
       aspectType: true,
@@ -561,8 +571,8 @@ export default {
         callbackOpen: () => {},
         callbackClose: () => {}
       },
-      previewConfirmDialog: {
-        ref: 'previewConfirmDialog',
+      settingsConfirmDialog: {
+        ref: 'settingsConfirmDialog',
         autofocus: 'none',
         confirmButtonText: 'Confirm',
         denyButtonText: 'Deny',
@@ -990,6 +1000,14 @@ export default {
         return BS.b$.Notice.alert({
           message: that.$t('pages.resize.notice-no-items.message')
         })
+      } else {
+        _.each(that.taskList, taskObj => {
+          _.each(taskObj.ratioCommon, ele => {
+            ele.style.type = 'info'
+            ele.stateInfo.state = 0
+            ele.stateInfo.progress = 0
+          })
+        })
       }
       console.log('-------------------- call export dir')
       that.__checkTheLastOutputPathIsExist()
@@ -997,10 +1015,12 @@ export default {
 
     __checkTheLastOutputPathIsExist () {
       var that = this
-      that.getOutputName = ''
+      const fileName = BS.b$.App.getFileNameWithoutExt(that.taskList[0].path)
+      that.getOutputName = '<fn(d)>'
+      that.onPreviewOutName = fileName + '.gif'
+      that.onOriginalOutName = fileName + '.gif'
       that.enableAddSequence = false
       that.sequenceNumber = 1
-      that.$refs['resetSelect'].reset()
       const cdg = that.outputConfigDialog
       cdg.title = that.$t('pages.resize.dialog-config-output.title')
       cdg.confirmButtonText = that.$t(
@@ -1008,7 +1028,7 @@ export default {
       )
       cdg.denyButtonText = that.$t('pages.resize.dialog-config-output.btnDeny')
       cdg.callbackConfirm = () => {
-        if (that.checkFileNme) {
+        if (that.checkFileName) {
           dialog.close()
           that.saveOutputSettings()
           that.startDo()
@@ -1476,13 +1496,6 @@ export default {
       var that = this
       let sequence = that.sequenceNumber - 1
       if (that.taskList.length > 0) {
-        _.each(that.taskList, taskObj => {
-          _.each(taskObj.ratioCommon, ele => {
-            ele.style.type = 'info'
-            ele.stateInfo.state = 0
-            ele.stateInfo.progress = 0
-          })
-        })
         _.each(that.taskList, (taskObj, index) => {
           if (taskObj.ratioCommon.length !== 0) {
             const fileName = BS.b$.App.getFileNameWithoutExt(taskObj.path)
@@ -1512,51 +1525,64 @@ export default {
                 if (that.getOutputName !== '') {
                   var list = []
                   var indexList = []
-                  const nameList = _.words(that.getOutputName, /[^<>$]*/g)
-                  const compactNameList = _.compact(nameList)
-                  _.each(compactNameList, att => {
-                    var ind = _.indexOf(that.availableOutputNameList, att)
+                  var dateFormat = require('dateformat')
+                  var now = new Date()
+                  const nameList = that.getOutputName.replace(/(<.*?>)/g, '@#$%!' + '$1' + '@#$%!').split('@#$%!').filter(x => x)
+                  const checkList = []
+                  _.each(that.availableOutputNameList, el => {
+                    const name = _.split(el, ':')
+                    checkList.push('<' + name[1] + '>')
+                  })
+                  _.each(nameList, att => {
+                    var ind = _.indexOf(checkList, att)
                     if (ind === -1) {
                       list.push(att)
                     } else if (ind === 0) {
-                      list.push(fileName)
+                      list.push(' ' + fileName)
                     } else if (ind === 1) {
-                      const name = _.toUpper(fileName)
-                      list.push(name)
+                      list.push(' ' + ele.commonRatio)
                     } else if (ind === 2) {
-                      const name = _.toLower(fileName)
-                      list.push(name)
+                      const name = _.toUpper(fileName)
+                      list.push(' ' + name)
                     } else if (ind === 3) {
-                      list.push('(' + ele.commonRatio + ')')
+                      const name = _.toLower(fileName)
+                      list.push(' ' + name)
                     } else if (ind === 4) {
-                      const thedate = new Date()
-                      const year = thedate.getFullYear()
-                      let month = thedate.getMonth()
-                      let date = thedate.getDate()
-                      let hour = thedate.getHours()
-                      let minu = thedate.getMinutes()
-                      let sec = thedate.getSeconds()
-                      month = month + 1
-                      if (month < 10) month = '0' + month
-                      if (date < 10) date = '0' + date
-                      if (hour < 10) hour = '0' + hour
-                      if (minu < 10) minu = '0' + minu
-                      if (sec < 10) sec = '0' + sec
-                      const time =
-                        year +
-                        '-' +
-                        month +
-                        '-' +
-                        date +
-                        ' ' +
-                        hour +
-                        '-' +
-                        minu +
-                        '-' +
-                        sec
-                      list.push('(' + time + ')')
+                      let time = dateFormat(now, 'default')
+                      time = time.replace(/\:/g, '-')
+                      list.push(' ' + time)
+                    } else if (ind === 5) {
+                      const time = dateFormat(now, 'isoDate')
+                      list.push(' ' + time)
+                    } else if (ind === 6) {
+                      let time = dateFormat(now, 'isoDateTime')
+                      time = time.replace(/\:/g, '-')
+                      list.push(' ' + time)
+                    } else if (ind === 7) {
+                      let time = dateFormat(now, 'isoUtcDateTime')
+                      time = time.replace(/\:/g, '-')
+                      list.push(' ' + time)
+                    } else if (ind === 8) {
+                      let time = dateFormat(now, 'isoTime')
+                      time = time.replace(/\:/g, '-')
+                      list.push(' ' + time)
+                    } else if (ind === 9) {
+                      let time = dateFormat(now, 'shortDate')
+                      time = time.replace(/\//g, '-')
+                      list.push(' ' + time)
+                    } else if (ind === 10) {
+                      const time = dateFormat(now, 'fullDate')
+                      list.push(' ' + time)
+                    } else if (ind === 11) {
+                      let time = dateFormat(now, 'shortTime')
+                      time = time.replace(/\:/g, '-')
+                      list.push(' ' + time)
+                    } else if (ind === 12) {
+                      let time = dateFormat(now, 'mediumTime')
+                      time = time.replace(/\:/g, '-')
+                      list.push(' ' + time)
                     }
-                    if (ind === 3) {
+                    if (ind === 1) {
                       indexList.push(ind)
                     }
                   })
@@ -1568,14 +1594,14 @@ export default {
                   }
                   if (that.enableAddSequence) {
                     sequence = sequence + 1
-                    list.push(sequence)
+                    list.push(' ' + sequence)
                   }
                   list.push('.gif')
-                  lastName = _.join(list, '')
+                  lastName = _.trim(_.join(list, ''))
                 } else {
                   that.enableAddSequence = true
                   sequence = sequence + 1
-                  lastName = sequence + '.gif'
+                  lastName = fileName + sequence + '.gif'
                 }
                 if (currentAspectType === true && lastWidth === 0) {
                   ele.style.type = 'error'
@@ -1781,11 +1807,19 @@ export default {
       return that
     },
 
+    getBeforeSequenceNumber () {
+      var that = this
+      that.beforeSequenceNumber = that.sequenceNumber
+    },
+
     getSequenceNumber (e) {
       var that = this
       that.sequenceNumber = e.target.value
       if (that.sequenceNumber === '') {
         that.sequenceNumber = 1
+      }
+      if (that.enableAddSequence && that.getOutputName.length > 0) {
+        that.onPreviewOutName = _.replace(that.onPreviewOutName, ' ' + that.beforeSequenceNumber + '.gif', ' ' + that.sequenceNumber + '.gif')
       }
     },
 
@@ -1793,31 +1827,30 @@ export default {
     onCheckOutputFileName () {
       var that = this
       var str = that.checkTheStrIsTrue(that.getOutputName)
+      const checkList = []
+      _.each(that.availableOutputNameList, el => {
+        const name = _.split(el, ':')
+        checkList.push(name[1])
+      })
       if (!/[<>]/.test(str)) {
         const list = that.getOutputName.match(/\<(.+?)\>/g)
-        _.each(list, ele => {
-          const name = ele.substring(ele.indexOf('<') + 1, ele.indexOf('>'))
-          const index = _.indexOf(that.availableOutputNameList, name)
-          if (index === -1) {
-            that.checkFileNme = false
-          } else {
-            that.checkFileNme = true
-            that.showFileNameToolTip = false
-          }
-        })
+        if (list == null && that.getOutputName.length > 0) {
+          that.checkFileName = true
+          that.showFileNameToolTip = false
+        } else {
+          _.each(list, ele => {
+            const name = ele.substring(ele.indexOf('<') + 1, ele.indexOf('>'))
+            const index = _.indexOf(checkList, name)
+            if (index === -1) {
+              that.checkFileName = false
+            } else {
+              that.checkFileName = true
+              that.showFileNameToolTip = false
+            }
+          })
+        }
       } else {
-        that.checkFileNme = false
-      }
-      if (that.checkFileNme) {
-        const list = that.getOutputName.match(/\<(.+?)\>/g)
-        that.$refs['resetSelect']._props.value.length = 0
-        _.each(list, ele => {
-          const name = ele.substring(ele.indexOf('<') + 1, ele.indexOf('>'))
-          const index = _.indexOf(that.availableOutputNameList, name)
-          if (index !== -1) {
-            that.$refs['resetSelect']._props.value.push(name)
-          }
-        })
+        that.checkFileName = false
       }
     },
 
@@ -1832,120 +1865,45 @@ export default {
       }
     },
 
-    onResetFileNameToolTip () {
+    onOpenSettings () {
       var that = this
-      that.showFileNameToolTip = false
+      const cdg = that.settingsConfirmDialog
+      cdg.title = that.$t('pages.resize.dialog-confirm-settings.title')
+      cdg.confirmButtonText = that.$t(
+        'pages.resize.dialog-confirm-settings.btnConfirm'
+      )
+      cdg.denyButtonText = that.$t(
+        'pages.resize.dialog-confirm-settings.btnDeny'
+      )
+      var dialog = that.$refs[cdg.ref]
+      cdg.callbackConfirm = () => {
+        if (that.checkFileName || that.getOutputName.length === 0) {
+          dialog.close()
+        }
+      }
+      cdg.callbackDeny = () => { that.resetRenameSettings() }
+      dialog.open()
     },
 
-    onOpenPreviewInfo () {
+    resetRenameSettings () {
       var that = this
-      if (that.checkFileNme) {
-        that.originalFileName = []
-        let sequence = that.sequenceNumber - 1
-        const cdg = that.previewConfirmDialog
-        cdg.title = that.$t('pages.resize.dialog-confirm-preview.title')
-        cdg.confirmButtonText = that.$t(
-          'pages.resize.dialog-confirm-preview.btnConfirm'
-        )
-        cdg.denyButtonText = that.$t(
-          'pages.resize.dialog-confirm-preview.btnDeny'
-        )
-        if (that.getOutputName !== '') {
-          _.each(that.taskList, ele => {
-            var outputName = []
-            // let fileName = ele.name
-            const fileName = BS.b$.App.getFileNameWithoutExt(ele.path)
-            var outputNameObj = {}
-            _.each(ele.ratioCommon, att => {
-              var list = []
-              var indexList = []
-              const nameList = _.words(that.getOutputName, /[^<>$]*/g)
-              const compactNameList = _.compact(nameList)
-              _.each(compactNameList, el => {
-                var index = _.indexOf(that.availableOutputNameList, el)
-                if (index === -1) {
-                  list.push(el)
-                } else if (index === 0) {
-                  list.push(fileName)
-                } else if (index === 1) {
-                  const name = _.toUpper(fileName)
-                  list.push(name)
-                } else if (index === 2) {
-                  const name = _.toLower(fileName)
-                  list.push(name)
-                } else if (index === 3) {
-                  list.push('(' + att.commonRatio + ')')
-                } else if (index === 4) {
-                  const thedate = new Date()
-                  const year = thedate.getFullYear()
-                  let month = thedate.getMonth()
-                  let date = thedate.getDate()
-                  let hour = thedate.getHours()
-                  let minu = thedate.getMinutes()
-                  let sec = thedate.getSeconds()
-                  month = month + 1
-                  if (month < 10) month = '0' + month
-                  if (date < 10) date = '0' + date
-                  if (hour < 10) hour = '0' + hour
-                  if (minu < 10) minu = '0' + minu
-                  if (sec < 10) sec = '0' + sec
-                  const time =
-                    year +
-                    '-' +
-                    month +
-                    '-' +
-                    date +
-                    ' ' +
-                    hour +
-                    '-' +
-                    minu +
-                    '-' +
-                    sec
-                  list.push('(' + time + ')')
-                }
-                if (index === 3) {
-                  indexList.push(index)
-                }
-              })
-              if (that.enableAddSequence === false && indexList.length === 0) {
-                that.enableAddSequence = true
-              }
-              if (that.enableAddSequence) {
-                sequence = sequence + 1
-                list.push(sequence)
-              }
-              list.push('.gif')
-              const lastName = _.join(list, '')
-              outputName.push(lastName)
-            })
-            outputNameObj[fileName] = outputName
-            that.originalFileName.push(outputNameObj)
-          })
-          console.log(that.originalFileName)
-        } else {
-          that.enableAddSequence = true
-          _.each(that.taskList, ele => {
-            var outputName = []
-            // let fileName = ele.name
-            const fileName = BS.b$.App.getFileNameWithoutExt(ele.path)
-            var outputNameObj = {}
-            _.each(ele.ratioCommon, att => {
-              sequence = sequence + 1
-              const lastName = sequence + '.gif'
-              outputName.push(lastName)
-            })
-            outputNameObj[fileName] = outputName
-            that.originalFileName.push(outputNameObj)
-          })
-          console.log(that.originalFileName)
-        }
-        var dialog = that.$refs[cdg.ref]
-        cdg.callbackConfirm = () => {}
-        cdg.callbackDeny = () => {}
-        dialog.open()
-      } else {
-        that.showFileNameToolTip = true
-      }
+      const fileName = BS.b$.App.getFileNameWithoutExt(that.taskList[0].path)
+      that.getOutputName = '<fn(d)>'
+      that.onPreviewOutName = fileName + '.gif'
+      that.showFileNameToolTip = false
+      that.enableAddSequence = false
+      that.sequenceNumber = 1
+    },
+
+    onOpenSelectOutputName (item) {
+      var that = this
+      const name = _.split(item, ':')
+      that.getOutputName = that.getOutputName + '<' + name[1] + '>'
+    },
+    getSuggestionsValue (e) {
+      var that = this
+      const name = _.split(e, ':')
+      that.getOutputName = '<' + name[1] + '>'
     }
   },
   watch: {
@@ -1957,15 +1915,94 @@ export default {
         that.aspectType = true
       }
     },
-    lastOutputName (newVal, oldVal) {
+    getOutputName (newVal, oldVal) {
       var that = this
-      if (newVal.length > oldVal.length) {
-        var currentName = _.differenceWith(newVal, oldVal, _.isEqual)
-        that.getOutputName = that.getOutputName + '<' + currentName[0] + '>'
+      if (newVal.length > 0) {
+        that.onCheckOutputFileName()
+        if (that.checkFileName) {
+          const ele = that.taskList[0]
+          // const fileName = ele.name
+          const fileName = BS.b$.App.getFileNameWithoutExt(ele.path)
+          const att = ele.ratioCommon[0]
+          var list = []
+          var dateFormat = require('dateformat')
+          var now = new Date()
+          const nameList = that.getOutputName.replace(/(<.*?>)/g, '@#$%!' + '$1' + '@#$%!').split('@#$%!').filter(x => x)
+          const checkList = []
+          _.each(that.availableOutputNameList, el => {
+            const name = _.split(el, ':')
+            checkList.push('<' + name[1] + '>')
+          })
+          _.each(nameList, el => {
+            var index = _.indexOf(checkList, el)
+            if (index === -1) {
+              list.push(el)
+            } else if (index === 0) {
+              list.push(' ' + fileName)
+            } else if (index === 1) {
+              list.push(' ' + att.commonRatio)
+            } else if (index === 2) {
+              const name = _.toUpper(fileName)
+              list.push(' ' + name)
+            } else if (index === 3) {
+              const name = _.toLower(fileName)
+              list.push(' ' + name)
+            } else if (index === 4) {
+              let time = dateFormat(now, 'default')
+              time = time.replace(/\:/g, '-')
+              list.push(' ' + time)
+            } else if (index === 5) {
+              const time = dateFormat(now, 'isoDate')
+              list.push(' ' + time)
+            } else if (index === 6) {
+              let time = dateFormat(now, 'isoDateTime')
+              time = time.replace(/\:/g, '-')
+              list.push(' ' + time)
+            } else if (index === 7) {
+              let time = dateFormat(now, 'isoUtcDateTime')
+              time = time.replace(/\:/g, '-')
+              list.push(' ' + time)
+            } else if (index === 8) {
+              let time = dateFormat(now, 'isoTime')
+              time = time.replace(/\:/g, '-')
+              list.push(' ' + time)
+            } else if (index === 9) {
+              let time = dateFormat(now, 'shortDate')
+              time = time.replace(/\//g, '-')
+              list.push(' ' + time)
+            } else if (index === 10) {
+              const time = dateFormat(now, 'fullDate')
+              list.push(' ' + time)
+            } else if (index === 11) {
+              let time = dateFormat(now, 'shortTime')
+              time = time.replace(/\:/g, '-')
+              list.push(' ' + time)
+            } else if (index === 12) {
+              let time = dateFormat(now, 'mediumTime')
+              time = time.replace(/\:/g, '-')
+              list.push(' ' + time)
+            }
+          })
+          list.push('.gif')
+          that.onPreviewOutName = _.join(list, '')
+        } else {
+          that.showFileNameToolTip = true
+        }
       } else {
-        var presentName = _.differenceWith(oldVal, newVal, _.isEqual)
-        var alternateFile = '<' + presentName[0] + '>'
-        that.getOutputName = that.getOutputName.replace(alternateFile, '')
+        const fileName = BS.b$.App.getFileNameWithoutExt(that.taskList[0].path)
+        that.onPreviewOutName = fileName + that.sequenceNumber + '.gif'
+        that.showFileNameToolTip = false
+      }
+    },
+    enableAddSequence (newVal, oldVal) {
+      var that = this
+      if (newVal && that.getOutputName.length > 0) {
+        that.onPreviewOutName = _.replace(that.onPreviewOutName, '.gif', ' ' + that.sequenceNumber + '.gif')
+      } else if (oldVal && that.getOutputName.length > 0) {
+        that.onPreviewOutName = _.replace(that.onPreviewOutName, ' ' + that.sequenceNumber + '.gif', '.gif')
+      } else if (oldVal && that.getOutputName.length === 0) {
+        const fileName = BS.b$.App.getFileNameWithoutExt(that.taskList[0].path)
+        that.onPreviewOutName = fileName + that.sequenceNumber + '.gif'
       }
     }
   },
