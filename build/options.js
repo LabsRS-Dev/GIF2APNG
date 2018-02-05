@@ -2,7 +2,6 @@
 
 
 const path = require('path');
-
 const packageCfg = require('../package.json');
 
 const appName = packageCfg.name;

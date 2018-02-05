@@ -34,7 +34,7 @@ const config = merge(base, {
         //     }
         // }),
 
-        // // Minify with dead-code elimination
+        // Minify with dead-code elimination
         // new webpack.optimize.UglifyJsPlugin({
         //     compress: {
         //         warnings: false
@@ -45,19 +45,13 @@ const config = merge(base, {
 
 // Fix /// <reference path="" />
 // config.resolve.modules.push(options.paths.resolve('node_modules'))
-
-// First item in module.rules array is Vue
-// config.module.rules[0].options.loaders = {
-//     scss: 'vue-style-loader!css-loader!sass-loader'
-// };
-
 config.module.rules[0].options.loaders = {
     scss: ExtractTextPlugin.extract({
         use: 'css-loader!sass-loader',
         fallback: 'vue-style-loader'
     }),
     css: ExtractTextPlugin.extract({
-        use: 'css-loader!sass-loader',
+        use: 'css-loader!sass-loader!postcss-loader',
         fallback: 'vue-style-loader'
     })
 }
@@ -65,7 +59,7 @@ config.module.rules[0].options.loaders = {
 config.module.rules.push({
     test: /\.css$/,
     loader: ExtractTextPlugin.extract({
-        use: 'css-loader',
+        use: 'css-loader!sass-loader!postcss-loader',
         fallback: 'style-loader'
     })
 });
