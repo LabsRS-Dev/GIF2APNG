@@ -519,6 +519,7 @@ export default {
       enableAddSequence: false,
       checkFileName: true,
       showFileNameToolTip: false,
+      showPercentageToolTip: false,
       selectRatioList: $LS$.data.selectRatio,
       aspectType: true,
       availableSymbolList: ['%', 'x'],
@@ -631,8 +632,8 @@ export default {
         {
           id: 'action-do',
           visiable: true,
-          color: 'black',
-          icon: 'fa fa-play-circle-o fa-lg fa-fw',
+          color: 'green',
+          icon: 'fa fa-play fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.resize.toolbar.fix'
@@ -641,7 +642,7 @@ export default {
           id: 'action-stop',
           visiable: true,
           color: 'black',
-          icon: 'fa fa-stop-circle-o fa-lg fa-fw',
+          icon: 'fa fa-stop fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.resize.toolbar.chancel'

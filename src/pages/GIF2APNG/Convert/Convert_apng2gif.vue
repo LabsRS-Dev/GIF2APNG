@@ -66,6 +66,31 @@
                         </ui-checkbox>
                         <span class="input-group-cover">{{ $t('pages.convert.dialog-config-output.cover') }}</span>
                     </div>
+                    <div class="page__toolbar-app-doc__settings">
+                        <span>{{ $t('pages.convert.dialog-config-settings.title') }}</span>
+                        <div class="page__toolbar-app-doc__settings__adjust">
+                            <span class="settings__adjust__level">{{ $t('pages.convert.dialog-config-settings.level') }}</span>
+                            <input type="range" min="1" max="255" v-model.number="percentage" class="sliderRange">
+                            <span class="settings__adjust__maximum">{{percentage}}</span>
+                            <span class="settings__adjust__default">{{ '('+ $t('pages.convert.dialog-config-settings.default') + ')' }}</span>
+                        </div>
+                        <div class="page__toolbar-app-doc__settings__color">
+                            <div class="page__toolbar-app-doc__settings__color__content">
+                                <div class="settings__color__content-checkbox">
+                                    <ui-checkbox
+                                        v-model="enableOverWriteSettings"
+                                        >
+                                    </ui-checkbox>
+                                    <span>{{ $t('pages.convert.dialog-config-settings.color') }}</span>
+                                    <a :ref="triggerColors" class="popover-trigger"></a>
+                                    <span class="settings__color__content-checkbox__colors">{{ colors.hex }}</span>                      
+                                </div>
+                                <div class="settings__color__content-hint">
+                                    {{ '('+ $t('pages.convert.dialog-config-settings.colorDefault') + ')' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </ui-confirm>
 
@@ -92,48 +117,9 @@
                 </div>
             </ui-confirm>
 
-            <ui-confirm
-                :autofocus="advancedConfigDialog.autofocus"
-                :confirm-button-text="advancedConfigDialog.confirmButtonText"
-                :deny-button-text="advancedConfigDialog.denyButtonText"
-                :ref="advancedConfigDialog.ref"
-                :title="advancedConfigDialog.title"
-
-                @confirm="advancedConfigDialog.callbackConfirm"
-                @deny="advancedConfigDialog.callbackDeny"
-                @open="advancedConfigDialog.callbackOpen"
-                @close="advancedConfigDialog.callbackClose"
-                >
-                <div class="page__toolbar-app-doc__settings">
-                    <div class="page__toolbar-app-doc__settings__adjust">
-                        <span class="settings__adjust__level">{{ $t('pages.convert.dialog-config-settings.level') }}</span>
-                        <input type="range" min="1" max="255" v-model.number="percentage" class="sliderRange">
-                        <span class="settings__adjust__maximum">{{percentage}}</span>
-                        <span class="settings__adjust__default">{{ '('+ $t('pages.convert.dialog-config-settings.default') + ')' }}</span>
-                    </div>
-                    <div class="page__toolbar-app-doc__settings__color">
-                        <div class="page__toolbar-app-doc__settings__color__content">
-                            <div class="settings__color__content-checkbox">
-                                <ui-checkbox
-                                    v-model="enableOverWriteSettings"
-                                    >
-                                </ui-checkbox>
-                                <span>{{ $t('pages.convert.dialog-config-settings.color') }}</span>
-                                <ui-alert
-                                    :dismissible="false" 
-                                    remove-icon
-                                    >
-                                    {{ colors.hex }}
-                                </ui-alert>                                    
-                            </div>
-                            <div class="settings__color__content-hint">
-                                {{ '('+ $t('pages.convert.dialog-config-settings.colorDefault') + ')' }}
-                            </div>
-                        </div>
-                        <Chrome v-model="colors"/>
-                    </div>
-                </div>
-            </ui-confirm>
+            <ui-popover class="custom-popover" :trigger="triggerColors">
+                <Chrome v-model="colors"/>
+            </ui-popover>
         </div>
 
         <div class="page__examples page__examples-app-doc">
@@ -235,7 +221,8 @@ import {
   UiAlert,
   UiToolbar,
   UiProgressLinear,
-  UiCheckbox
+  UiCheckbox,
+  UiPopover
 } from 'keen-ui'
 import { Transfer } from '../../../bridge/transfer'
 import echarts from 'echarts'
@@ -380,7 +367,6 @@ export default {
       progressInterval: null, // 进度条轮询
       lastOutputPath: $LS$.data.lastSelectOutputPath,
       availableOutputPathList: $LS$.data.outputPaths,
-
       confirmDialog: {
         ref: 'default',
         autofocus: 'none',
@@ -415,17 +401,7 @@ export default {
         callbackOpen: () => {},
         callbackClose: () => {}
       },
-      advancedConfigDialog: {
-        ref: 'advancedConfigDialog',
-        autofocus: 'none',
-        confirmButtonText: 'Confirm',
-        denyButtonText: 'Deny',
-        title: '',
-        callbackConfirm: () => {},
-        callbackDeny: () => {},
-        callbackOpen: () => {},
-        callbackClose: () => {}
-      },
+      triggerColors: 'openColors',
       curFixTaskID: null // 当前正在执行修改的整体任务ID
     }
   },
@@ -547,19 +523,10 @@ export default {
           tooltip: 'pages.convert.toolbar.remove'
         },
         {
-          id: 'action-settings',
-          visiable: true,
-          color: 'black',
-          icon: 'fa fa-cogs fa-lg fa-fw',
-          size: 'small',
-          type: 'secondary',
-          tooltip: 'pages.convert.toolbar.advancedSettings'
-        },
-        {
           id: 'action-do',
           visiable: !that.isConvertWorking,
-          color: 'black',
-          icon: 'fa fa-play-circle-o fa-lg fa-fw',
+          color: 'green',
+          icon: 'fa fa-play fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.convert.toolbar.fix'
@@ -567,8 +534,8 @@ export default {
         {
           id: 'action-stop',
           visiable: that.isConvertWorking,
-          color: 'red',
-          icon: 'fa fa-hand-paper-o fa-lg fa-fw',
+          color: 'black',
+          icon: 'fa fa-stop fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.convert.toolbar.chancel'
@@ -663,8 +630,6 @@ export default {
         this.onBtnDoClick()
       } else if (item.id === 'action-stop') {
         this.onBtnStopDoClick()
-      } else if (item.id === 'action-settings') {
-        this.onBtnSettingsClick()
       }
     },
 
@@ -806,34 +771,6 @@ export default {
         dialog.open()
       }
     },
-    onBtnSettingsClick () {
-      var that = this
-      var $ = Util.util.getJQuery$()
-      const cdg = that.advancedConfigDialog
-      cdg.title = that.$t('pages.convert.dialog-config-settings.title')
-      cdg.confirmButtonText = that.$t(
-        'pages.convert.dialog-config-settings.btnConfirm'
-      )
-      cdg.denyButtonText = that.$t(
-        'pages.convert.dialog-config-settings.btnDeny'
-      )
-      cdg.callbackConfirm = () => {
-        that.saveColorSettings()
-      }
-      cdg.callbackDeny = () => {
-        that.resetColorSettings()
-      }
-
-      var dialog = that.$refs[cdg.ref]
-      if (that.enableOverWriteSettings === false) {
-        $('.sliderRange').css(
-          'background-size',
-          that.percentage * 100 / 256 + '% 100%'
-        )
-      }
-      dialog.open()
-    },
-
     saveColorSettings () {
       var that = this
       var $ = Util.util.getJQuery$()
@@ -870,6 +807,13 @@ export default {
         })
       }
       console.log('-------------------- call export dir')
+      var $ = Util.util.getJQuery$()
+      if (that.enableOverWriteSettings === false) {
+        $('.sliderRange').css(
+          'background-size',
+          that.percentage * 100 / 256 + '% 100%'
+        )
+      }
       const cdg = that.outputConfigDialog
       cdg.title = that.$t('pages.resize.dialog-config-output.title')
       cdg.confirmButtonText = that.$t(
@@ -880,10 +824,12 @@ export default {
       )
       cdg.callbackConfirm = () => {
         that.saveOutputSettings()
+        that.saveColorSettings()
         that.startDo()
       }
       cdg.callbackDeny = () => {
         that.resetOutputSettings()
+        that.resetColorSettings()
       }
       cdg.callbackClose = () => {
         that.resetOutputSettings()
@@ -1495,7 +1441,7 @@ export default {
     },
     colors (newColors, oldColors) {
       var $ = Util.util.getJQuery$()
-      $('.settings__color__content-checkbox .ui-alert__body').css(
+      $('.popover-trigger').css(
         'background-color',
         newColors.hex
       )
@@ -1528,6 +1474,7 @@ export default {
     UiConfirm,
     UiProgressLinear,
     UiCheckbox,
+    UiPopover,
     Chrome
   }
 }

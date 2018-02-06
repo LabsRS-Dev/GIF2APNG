@@ -57,7 +57,7 @@
                 @open="outputConfigDialog.callbackOpen"
                 @close="outputConfigDialog.callbackClose"
                 >
-                <div class="page__toolbar-app-doc__input-group">
+                <div class="page__toolbar-app-doc__input-group input-group-single">
                     <div class="page__toolbar-app-doc__input-browse">
                         <span class="input-group-addon">{{ $t('pages.resize.dialog-config-output.path') }}</span>
                         <ui-select
@@ -75,7 +75,7 @@
                             <i class="fa fa-folder-open fa-lg"></i>
                         </ui-button>
                     </div>                    
-                    <div class="page__toolbar-app-doc__input-cover">
+                    <div class="page__toolbar-app-doc__input-cover__single">
                         <ui-checkbox
                             v-model="enableOverWriteOutput"
                             >
@@ -501,8 +501,8 @@ export default {
         {
           id: 'action-do',
           visiable: true,
-          color: 'black',
-          icon: 'fa fa-play-circle-o fa-lg fa-fw',
+          color: 'green',
+          icon: 'fa fa-play fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.resize.toolbar.fix'
@@ -511,7 +511,7 @@ export default {
           id: 'action-stop',
           visiable: true,
           color: 'black',
-          icon: 'fa fa-stop-circle-o fa-lg fa-fw',
+          icon: 'fa fa-stop fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.resize.toolbar.chancel'

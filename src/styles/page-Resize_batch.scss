@@ -9,15 +9,14 @@
     .page__toolbar-app-doc__change-dimensions__size{
       display: flex;
       flex-direction: column;
-      width: 55%;
+      width: 50%;
       .page__toolbar-app-doc__change-dimensions__width{
         display: flex;
         flex-direction: row;
         margin: rem-calc(10px) 0 rem-calc(5px) 0;
         align-items: center;
         .page__toolbar-app-doc__change-dimensions__width__percentage{
-          width: rem-calc(65px);
-          text-align: center;
+          width: rem-calc(50px);
         }
         input{
           width: 40%;
@@ -33,8 +32,7 @@
         margin: rem-calc(10px) 0 rem-calc(5px) 0;
         align-items: center;
         .page__toolbar-app-doc__change-dimensions__height__percentage{
-          width: rem-calc(65px);
-          text-align: center;          
+          width: rem-calc(50px);
         }
         input{
           width: 40%;
@@ -44,6 +42,14 @@
           padding-left: rem-calc(5px);
         }        
       }
+      .change-dimensions__showError{
+        margin-left: rem-calc(55px);
+        background-color: $md-grey-400;
+        border-top-left-radius: rem-calc(5px);
+        border-bottom-left-radius: rem-calc(5px);
+        color: $md-red-400;
+        text-align: center;
+      }
     }
     .page__toolbar-app-doc__change-dimensions__setting{
       display: flex;
@@ -52,7 +58,7 @@
       padding-top: 0;
       width: 45%;
       height: rem-calc(110px);  
-      border-left: rem-calc(2px) solid $md-grey-400;   
+      border-left: rem-calc(1px) solid $md-grey-400;   
       align-items: flex-start;
       .change-dimensions__setting__lock{
         display: flex;
@@ -108,8 +114,7 @@
     height: rem-calc(30px);  
     align-items: flex-end;
     .change-dimensions__adjust__percentage{
-      width: rem-calc(65px);
-      text-align: center;
+      width: rem-calc(50px);
       margin-bottom: rem-calc(3px);
       margin-right: rem-calc(5px);
     }

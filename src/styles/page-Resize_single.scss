@@ -283,3 +283,11 @@
     }
   }
 }
+.input-group-single{
+  .page__toolbar-app-doc__input-cover__single{
+    display: flex;
+    .input-group-cover{
+      margin-left: rem-calc(4px);
+    }
+  }
+}

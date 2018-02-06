@@ -66,6 +66,17 @@
                         </ui-checkbox>
                         <span class="input-group-cover">{{ $t('pages.convert.dialog-config-output.cover') }}</span>
                     </div>
+                    <div class="page__toolbar-app-doc__settings__mode">
+                        <span class="page__toolbar-app-doc__settings__selectMode">{{ $t('pages.convert.dialog-config-settings.mode') }}</span>
+                        <div class="page__toolbar-app-doc__settings__select">
+                            <span class="select-input-group-addon">{{ $t('pages.convert.dialog-config-settings.compression') }}</span>
+                            <ui-select
+                                :options="availableCompressionList"
+                                v-model="lastSelectCompression"
+                                >
+                            </ui-select>
+                        </div>
+                    </div>
                 </div>
             </ui-confirm>
 
@@ -89,31 +100,6 @@
                         <span class="preview__info__image__afrer">{{ $t('pages.convert.dialog-config-gif2apng-preview.after') }}</span>
                     </div>
                     <div class="page__toolbar-app-doc__preview__info__echart" :id='openEchartsId'></div>
-                </div>
-            </ui-confirm>
-
-            <ui-confirm
-                :autofocus="advancedConfigDialog.autofocus"
-                :confirm-button-text="advancedConfigDialog.confirmButtonText"
-                :deny-button-text="advancedConfigDialog.denyButtonText"
-                :ref="advancedConfigDialog.ref"
-                :title="advancedConfigDialog.title"
-
-                @confirm="advancedConfigDialog.callbackConfirm"
-                @deny="advancedConfigDialog.callbackDeny"
-                @open="advancedConfigDialog.callbackOpen"
-                @close="advancedConfigDialog.callbackClose"
-                >
-                <div class="page__toolbar-app-doc__settings__mode">
-                    <h3 class="page__toolbar-app-doc__settings__selectMode">{{ $t('pages.convert.dialog-config-settings.mode') }}</h3>
-                    <div class="page__toolbar-app-doc__settings__select">
-                        <span class="select-input-group-addon">{{ $t('pages.convert.dialog-config-settings.compression') }}</span>
-                        <ui-select
-                            :options="availableCompressionList"
-                            v-model="lastSelectCompression"
-                            >
-                        </ui-select>
-                    </div>
                 </div>
             </ui-confirm>
         </div>
@@ -363,17 +349,6 @@ export default {
         callbackOpen: () => {},
         callbackClose: () => {}
       },
-      advancedConfigDialog: {
-        ref: 'advancedConfigDialog',
-        autofocus: 'none',
-        confirmButtonText: 'Confirm',
-        denyButtonText: 'Deny',
-        title: '',
-        callbackConfirm: () => {},
-        callbackDeny: () => {},
-        callbackOpen: () => {},
-        callbackClose: () => {}
-      },
       curFixTaskID: null // 当前正在执行修改的整体任务ID
     }
   },
@@ -495,19 +470,10 @@ export default {
           tooltip: 'pages.convert.toolbar.remove'
         },
         {
-          id: 'action-settings',
-          visiable: true,
-          color: 'black',
-          icon: 'fa fa-cogs fa-lg fa-fw',
-          size: 'small',
-          type: 'secondary',
-          tooltip: 'pages.convert.toolbar.advancedSettings'
-        },
-        {
           id: 'action-do',
           visiable: !that.isConvertWorking,
-          color: 'black',
-          icon: 'fa fa-play-circle-o fa-lg fa-fw',
+          color: 'green',
+          icon: 'fa fa-play fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.convert.toolbar.fix'
@@ -515,8 +481,8 @@ export default {
         {
           id: 'action-stop',
           visiable: that.isConvertWorking,
-          color: 'red',
-          icon: 'fa fa-hand-paper-o fa-lg fa-fw',
+          color: 'black',
+          icon: 'fa fa-stop fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.convert.toolbar.chancel'
@@ -611,8 +577,6 @@ export default {
         this.onBtnDoClick()
       } else if (item.id === 'action-stop') {
         this.onBtnStopDoClick()
-      } else if (item.id === 'action-settings') {
-        this.onBtnSettingsClick()
       }
     },
 
@@ -754,26 +718,7 @@ export default {
         dialog.open()
       }
     },
-    onBtnSettingsClick () {
-      var that = this
-      const cdg = that.advancedConfigDialog
-      cdg.title = that.$t('pages.convert.dialog-config-settings.title')
-      cdg.confirmButtonText = that.$t(
-        'pages.convert.dialog-config-settings.btnConfirm'
-      )
-      cdg.denyButtonText = that.$t(
-        'pages.convert.dialog-config-settings.btnDeny'
-      )
-      cdg.callbackConfirm = () => {
-        that.saveSelectSettings()
-      }
-      cdg.callbackDeny = () => {
-        that.resetSelectSettings()
-      }
 
-      var dialog = that.$refs[cdg.ref]
-      dialog.open()
-    },
     saveSelectSettings () {
       var that = this
       that.beforeCompression = that.lastSelectCompression
@@ -803,13 +748,12 @@ export default {
       )
       cdg.callbackConfirm = () => {
         that.saveOutputSettings()
+        that.saveSelectSettings()
         that.startDo()
       }
       cdg.callbackDeny = () => {
         that.resetOutputSettings()
-      }
-      cdg.callbackClose = () => {
-        that.resetOutputSettings()
+        that.resetSelectSettings()
       }
       var dialog = that.$refs[cdg.ref]
       dialog.open()

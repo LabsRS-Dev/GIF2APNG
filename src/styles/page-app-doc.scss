@@ -43,10 +43,13 @@
             .page__toolbar-app-doc__input-group {
                 display: flex;
                 flex-direction: column;
+                border: rem-calc(1px) solid #adadad;
+                border-radius: rem-calc(8px);
+                padding: rem-calc(10px);
+                -webkit-box-shadow: 0 6px 10px 0 rgba(0,0,0,.1), 0 6px 10px 0 rgba(0,0,0,.1);
                 .page__toolbar-app-doc__input-browse {
                     display: flex;
                     align-items: center;
-                    margin-top: rem-calc(14px);
                     margin-bottom: rem-calc(20px);
                     .ui-button {
                         padding: 0;
@@ -94,6 +97,8 @@
                 }
                 .page__toolbar-app-doc__input-cover{
                     display: flex;
+                    border-bottom: rem-calc(1px) solid #adadad;
+                    margin-bottom: rem-calc(10px);
                     .input-group-cover{
                       margin-left: rem-calc(4px);
                     }

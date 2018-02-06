@@ -9,15 +9,18 @@
     align-items: flex-end;
     margin-bottom: rem-calc(10px);
     .settings__adjust__level{
+      color: #adadad;
       margin-right: rem-calc(5px);
       margin-bottom: rem-calc(3px);
     }
     .settings__adjust__maximum{
       width: rem-calc(25px);
+      color: #adadad;
       margin-bottom: rem-calc(3px);
       margin-left: rem-calc(5px);
     }
     .settings__adjust__default{
+      color: #adadad;
       margin-bottom: rem-calc(3px);
       margin-left: rem-calc(5px);
     }
@@ -56,28 +59,29 @@
     flex-direction: row;
     .page__toolbar-app-doc__settings__color__content{
       display: flex;
-      width: 55%;
       flex-direction: column;
       .settings__color__content-checkbox{
         display: flex;
+        flex-direction: row;
         align-items: center;
         .ui-checkbox{
           margin: 0 rem-calc(5px) 0 0;
         }
-        .ui-alert{
-          margin: 0 0 0 rem-calc(5px);
-          width: rem-calc(70px);
-          .ui-alert__body{
-            min-height: rem-calc(35px);
-            padding: 0;
-            border-radius: rem-calc(5px);
-            border:  rem-calc(1px) solid #adadad;
-            background-color: #194d33;
-            .ui-alert__content{
-              text-align: center;
-            }
-          }
+        .popover-trigger{
+          background-color:#194d33;
+          cursor: default;
+          display: inline-block;
+          text-decoration: none;
+          width: rem-calc(16px);
+          height: rem-calc(16px);
+          margin: 0 rem-calc(5px);
         }
+      }
+      span {
+        color: #adadad;
+      }
+      .settings__color__content-hint{
+        color: #adadad;
       }
     }
   }

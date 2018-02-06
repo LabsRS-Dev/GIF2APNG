@@ -30,94 +30,12 @@
             </ui-confirm>
 
             <ui-confirm
-                :autofocus="changeDirConfigDialog.autofocus"
-                :confirm-button-text="changeDirConfigDialog.confirmButtonText"
-                :deny-button-text="changeDirConfigDialog.denyButtonText"
-                :ref="changeDirConfigDialog.ref"
-                :title="changeDirConfigDialog.title"
-                class="page__toolbar-app-doc__change__batch"
-
-                @confirm="changeDirConfigDialog.callbackConfirm"
-                @deny="changeDirConfigDialog.callbackDeny"
-                @open="changeDirConfigDialog.callbackOpen"
-                @close="changeDirConfigDialog.callbackClose"
-                >
-                <div class="page__toolbar-app-doc__change-dimensions">
-                    <div class="page__toolbar-app-doc__change-dimensions__content">
-                        <div class="page__toolbar-app-doc__change-dimensions__size">
-                            <div class="page__toolbar-app-doc__change-dimensions__width">
-                                <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
-                                <input  type="text" class="widthRange"
-                                        :disabled="!applyAllFileTask" 
-                                        v-model.number ="inputWidthAll"
-                                        @focus="ValidateWidthNumber"
-                                        v-number-only 
-                                        minLength = 1 maxLength = 4        
-                                >
-                                <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
-                            </div>
-                            <div class="page__toolbar-app-doc__change-dimensions__height">
-                                <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
-                                <input  type="text" class="heightRange"
-                                        :disabled="!applyAllFileTask"  
-                                        v-model.number ="inputHeightAll"
-                                        @focus="ValidateHeightNumber"                                        
-                                        v-number-only 
-                                        minLength = 1 maxLength = 4 
-                                >
-                                <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
-                            </div>
-                        </div>
-                        <div class="page__toolbar-app-doc__change-dimensions__setting">
-                            <div class="change-dimensions__setting__second">
-                                <ui-checkbox
-                                    v-model="PercentageConversion"
-                                    @change="CheckboxPercentActive"
-                                    >
-                                    {{ $t('pages.resize.dialog-config-change.percent') }}
-                                </ui-checkbox>                                
-                            </div>   
-                            <div class="change-dimensions__setting__first">
-                                <ui-checkbox
-                                    v-model="WidthHeightConversion"
-                                    @change="CheckboxSizeActive"                                                              
-                                    >
-                                    {{ $t('pages.resize.dialog-config-change.width-height') }}
-                                </ui-checkbox>                            
-                            </div>
-                            <div class="change-dimensions__setting__third">
-                                <ui-checkbox
-                                    v-model="onHandleTheTask"
-                                    :disabled="!WidthHeightConversion"                                                            
-                                    >
-                                    {{ $t('pages.resize.dialog-config-change.handle-task') }}
-                                </ui-checkbox>                            
-                            </div>    
-                            <div class="change-dimensions__setting__lock">
-                                <ui-switch
-                                    v-model="onBtnLock"
-                                    :disabled="!WidthHeightConversion"
-                                    switch-position="right"                                                             
-                                    >
-                                </ui-switch>
-                                <span class="change-dimensions__setting__lock__title" v-show="onBtnLock">{{ $t('pages.resize.dialog-config-change.lock') }}</span>
-                                <span class="change-dimensions__setting__unlock__title" v-show="!onBtnLock">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
-                            </div>                                                   
-                        </div>
-                    </div>
-                    <div class="page__toolbar-app-doc__change-dimensions__adjust">
-                        <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
-                        <input type="range" min="1" max="100" v-model.number="percentage" class="sliderRange">
-                        <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
-                    </div>
-                </div>
-            </ui-confirm>
-            <ui-confirm
                 :autofocus="outputConfigDialog.autofocus"
                 :confirm-button-text="outputConfigDialog.confirmButtonText"
                 :deny-button-text="outputConfigDialog.denyButtonText"
                 :ref="outputConfigDialog.ref"
                 :title="outputConfigDialog.title"
+                :closeOnConfirm="false"
 
                 @confirm="outputConfigDialog.callbackConfirm"
                 @deny="outputConfigDialog.callbackDeny"
@@ -148,6 +66,76 @@
                             >
                         </ui-checkbox>
                         <span class="input-group-cover">{{ $t('pages.resize.dialog-config-output.cover') }}</span>
+                    </div>
+                    <div class="page__toolbar-app-doc__change-dimensions">
+                        <div class="page__toolbar-app-doc__change-dimensions__content">
+                            <div class="page__toolbar-app-doc__change-dimensions__size">
+                                <div class="page__toolbar-app-doc__change-dimensions__width">
+                                    <span class="page__toolbar-app-doc__change-dimensions__width__percentage">{{ $t('pages.resize.dialog-config-change.width') }}</span>
+                                    <input  type="text" class="widthRange"
+                                            :disabled="!applyAllFileTask" 
+                                            v-model.number ="inputWidthAll"
+                                            @focus="ValidateWidthNumber"
+                                            v-number-only 
+                                            minLength = 1 maxLength = 4        
+                                    >
+                                    <span class="page__toolbar-app-doc__change-dimensions__width__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
+                                </div>
+                                <div class="page__toolbar-app-doc__change-dimensions__height">
+                                    <span class="page__toolbar-app-doc__change-dimensions__height__percentage">{{ $t('pages.resize.dialog-config-change.height') }}</span>
+                                    <input  type="text" class="heightRange"
+                                            :disabled="!applyAllFileTask"  
+                                            v-model.number ="inputHeightAll"
+                                            @focus="ValidateHeightNumber"                                        
+                                            v-number-only 
+                                            minLength = 1 maxLength = 4 
+                                    >
+                                    <span class="page__toolbar-app-doc__change-dimensions__height__unit">{{ $t('pages.resize.dialog-config-change.pixel') }}</span>
+                                </div>
+                                <span class="change-dimensions__showError" v-show="showPercentageToolTip">{{ $t('pages.resize.notice-no-prompt.message') }}</span>
+                            </div>
+                            <div class="page__toolbar-app-doc__change-dimensions__setting">
+                                <div class="change-dimensions__setting__second">
+                                    <ui-checkbox
+                                        v-model="PercentageConversion"
+                                        @change="CheckboxPercentActive"
+                                        >
+                                        {{ $t('pages.resize.dialog-config-change.percent') }}
+                                    </ui-checkbox>                                
+                                </div>   
+                                <div class="change-dimensions__setting__first">
+                                    <ui-checkbox
+                                        v-model="WidthHeightConversion"
+                                        @change="CheckboxSizeActive"                                                              
+                                        >
+                                        {{ $t('pages.resize.dialog-config-change.width-height') }}
+                                    </ui-checkbox>                            
+                                </div>
+                                <div class="change-dimensions__setting__third">
+                                    <ui-checkbox
+                                        v-model="onHandleTheTask"
+                                        :disabled="!WidthHeightConversion"                                                            
+                                        >
+                                        {{ $t('pages.resize.dialog-config-change.handle-task') }}
+                                    </ui-checkbox>                            
+                                </div>    
+                                <div class="change-dimensions__setting__lock">
+                                    <ui-switch
+                                        v-model="onBtnLock"
+                                        :disabled="!WidthHeightConversion"
+                                        switch-position="right"                                                             
+                                        >
+                                    </ui-switch>
+                                    <span class="change-dimensions__setting__lock__title" v-show="onBtnLock">{{ $t('pages.resize.dialog-config-change.lock') }}</span>
+                                    <span class="change-dimensions__setting__unlock__title" v-show="!onBtnLock">{{ $t('pages.resize.dialog-config-change.unlock') }}</span>                            
+                                </div>                                                   
+                            </div>
+                        </div>
+                        <div class="page__toolbar-app-doc__change-dimensions__adjust">
+                            <span class="change-dimensions__adjust__percentage">{{ $t('pages.resize.dialog-config-change.percentage') }}</span>
+                            <input type="range" min="1" max="100" v-model.number="percentage" class="sliderRange">
+                            <span class="change-dimensions__adjust__maximum">{{percentage +'%'}}</span>
+                        </div>
                     </div>
                 </div>
             </ui-confirm>
@@ -427,7 +415,7 @@ export default {
       progressInterval: null, // 进度条轮询
       lastOutputPath: $LS$.data.lastSelectOutputPath,
       availableOutputPathList: $LS$.data.outputPaths,
-
+      showPercentageToolTip: false,
       confirmDialog: {
         ref: 'default',
         autofocus: 'none',
@@ -435,17 +423,6 @@ export default {
         denyButtonText: 'Deny',
         title: '',
         content: '',
-        callbackConfirm: () => {},
-        callbackDeny: () => {},
-        callbackOpen: () => {},
-        callbackClose: () => {}
-      },
-      changeDirConfigDialog: {
-        ref: 'changeDirConfigDialog',
-        autofocus: 'none',
-        confirmButtonText: 'Confirm',
-        denyButtonText: 'Deny',
-        title: '',
         callbackConfirm: () => {},
         callbackDeny: () => {},
         callbackOpen: () => {},
@@ -582,19 +559,10 @@ export default {
           tooltip: 'pages.resize.toolbar.importDir'
         },
         {
-          id: 'action-resize',
-          visiable: true,
-          color: 'black',
-          icon: 'fa fa-cogs fa-lg fa-fw',
-          size: 'small',
-          type: 'secondary',
-          tooltip: 'pages.resize.toolbar.adjustSize'
-        },
-        {
           id: 'action-do',
           visiable: true,
-          color: 'black',
-          icon: 'fa fa-play-circle-o fa-lg fa-fw',
+          color: 'green',
+          icon: 'fa fa-play fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.resize.toolbar.fix'
@@ -603,7 +571,7 @@ export default {
           id: 'action-stop',
           visiable: true,
           color: 'black',
-          icon: 'fa fa-stop-circle-o fa-lg fa-fw',
+          icon: 'fa fa-stop fa-lg fa-fw',
           size: 'small',
           type: 'secondary',
           tooltip: 'pages.resize.toolbar.chancel'
@@ -714,8 +682,6 @@ export default {
         this.onBtnImportDirClick()
       } else if (item.id === 'action-remove') {
         this.onBtnRemoveAllClick()
-      } else if (item.id === 'action-resize') {
-        this.onBtnFitImageClick()
       } else if (item.id === 'action-do') {
         this.onBtnDoClick()
       } else if (item.id === 'action-stop') {
@@ -864,8 +830,19 @@ export default {
         dialog.open()
       }
     },
-    onBtnFitImageClick () {
+    onBtnDoClick () {
       var that = this
+      if (that.taskList.length === 0) {
+        return BS.b$.Notice.alert({
+          message: that.$t('pages.resize.notice-no-items.message')
+        })
+      }
+      that.__checkTheLastOutputPathIsExist()
+    },
+    __checkTheLastOutputPathIsExist () {
+      var that = this
+      var $ = Util.util.getJQuery$()
+      that.showPercentageToolTip = false
       that.initialInputWidth = that.inputWidthAll
       that.initialInputHeight = that.inputHeightAll
       that.initialPercentage = that.percentage
@@ -874,76 +851,6 @@ export default {
       that.initialHandleTask = that.onHandleTheTask
       that.initialBtnLock = that.onBtnLock
       that.initialState = that.applyAllFileTask
-      var $ = Util.util.getJQuery$()
-      const cdg = that.changeDirConfigDialog
-      cdg.title = that.$t('pages.resize.dialog-config-change.title')
-      cdg.confirmButtonText = that.$t(
-        'pages.resize.dialog-config-change.btnConfirm'
-      )
-      cdg.denyButtonText = that.$t('pages.resize.dialog-config-change.btnDeny')
-      cdg.callbackConfirm = () => {
-        that.recordedDirDataValue()
-      }
-      cdg.callbackDeny = () => {
-        that.resetDirDataValue()
-      }
-
-      var dialog = that.$refs[cdg.ref]
-      if (that.PercentageConversion) {
-        $('.sliderRange').css('background-size', that.percentage + '% 100%')
-      }
-      dialog.open()
-    },
-
-    onBtnDoClick () {
-      var that = this
-      if (that.taskList.length === 0) {
-        return BS.b$.Notice.alert({
-          message: that.$t('pages.resize.notice-no-items.message')
-        })
-      }
-
-      console.log('-------------------- call export dir')
-      if (that.percentage === 100 && that.PercentageConversion) {
-        BS.b$.Notice.alert({
-          message: that.$t('pages.resize.notice-no-prompt.message')
-        })
-        that.initialInputWidth = that.inputWidthAll
-        that.initialInputHeight = that.inputHeightAll
-        that.initialPercentage = that.percentage
-        that.initialPtConversion = that.PercentageConversion
-        that.initialW_HConversion = that.WidthHeightConversion
-        that.initialHandleTask = that.onHandleTheTask
-        that.initialBtnLock = that.onBtnLock
-        that.initialState = that.applyAllFileTask
-        var $ = Util.util.getJQuery$()
-        const cdg = that.changeDirConfigDialog
-        cdg.title = that.$t('pages.resize.dialog-config-change.title')
-        cdg.confirmButtonText = that.$t(
-          'pages.resize.dialog-config-change.btnConfirm'
-        )
-        cdg.denyButtonText = that.$t(
-          'pages.resize.dialog-config-change.btnDeny'
-        )
-        cdg.callbackConfirm = () => {
-          that.recordedDirDataValue()
-          that.__checkTheLastOutputPathIsExist()
-        }
-        cdg.callbackDeny = () => {
-          that.resetDirDataValue()
-        }
-
-        var dialog = that.$refs[cdg.ref]
-        if (that.PercentageConversion) {
-          $('.sliderRange').css('background-size', that.percentage + '% 100%')
-        }
-        dialog.open()
-      } else {
-        that.__checkTheLastOutputPathIsExist()
-      }
-    },
-    __checkTheLastOutputPathIsExist () {
-      var that = this
       const cdg = that.outputConfigDialog
       cdg.title = that.$t('pages.resize.dialog-config-output.title')
       cdg.confirmButtonText = that.$t(
@@ -953,16 +860,23 @@ export default {
         'pages.resize.dialog-config-output.btnDeny'
       )
       cdg.callbackConfirm = () => {
-        that.saveOutputSettings()
-        that.startDo()
+        if (that.percentage === 100 && that.PercentageConversion) {
+          that.showPercentageToolTip = true
+        } else {
+          dialog.close()
+          that.recordedDirDataValue()
+          that.saveOutputSettings()
+          that.startDo()
+        }
       }
       cdg.callbackDeny = () => {
-        that.resetOutputSettings()
-      }
-      cdg.callbackClose = () => {
+        that.resetDirDataValue()
         that.resetOutputSettings()
       }
       var dialog = that.$refs[cdg.ref]
+      if (that.PercentageConversion) {
+        $('.sliderRange').css('background-size', that.percentage + '% 100%')
+      }
       dialog.open()
     },
 
@@ -1574,6 +1488,9 @@ export default {
       var that = this
       var $ = Util.util.getJQuery$()
       that.PercentageConversion = !e.target.checked
+      if (that.showPercentageToolTip && that.PercentageConversion === false) {
+        that.showPercentageToolTip = false
+      }
       if (e.target.checked === true) {
         $('.sliderRange').attr('disabled', true)
         $('.sliderRange').css('background-size', '0% 100%')
@@ -1700,19 +1617,23 @@ export default {
   },
   watch: {
     percentage (newSides, oldSides) {
+      var that = this
       var $ = Util.util.getJQuery$()
-      this.finalPercentage = newSides
+      that.finalPercentage = newSides
       $('.sliderRange').css('background-size', newSides + '% 100%')
       var sidesDifference = newSides - oldSides
       if (sidesDifference > 0) {
         for (var i = 1; i <= sidesDifference; i++) {
-          this.stats.push(100)
+          that.stats.push(100)
         }
       } else {
         var absoluteSidesDifference = Math.abs(sidesDifference)
         for (let i = 1; i <= absoluteSidesDifference; i++) {
-          this.stats.shift()
+          that.stats.shift()
         }
+      }
+      if (that.showPercentageToolTip && that.finalPercentage !== 100) {
+        that.showPercentageToolTip = false
       }
     },
     onBtnLock (newSwich, oldSwich) {
