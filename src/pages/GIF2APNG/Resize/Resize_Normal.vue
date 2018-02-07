@@ -311,6 +311,7 @@
                                           :suggestions="selectRatioList"
                                           v-model="ele.commonRatio"
                                           @blur="checkTheInputIsCorrect(ele,$event)"
+                                          :autofocus = "true"
                                           >
                                       </ui-autocomplete>
                                       <span class="ui-toolbar-normal__top__selsct__prompt" v-show = "ele.style.showToolTip">{{ $t('pages.resize.toolbar.tooltip')}}</span>
