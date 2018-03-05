@@ -256,10 +256,28 @@
       },
       "button":{
         "save":"Save as template",
-        "load":"Load a template"
+        "delete":"Manage Templates",
+        "load":"Load a template",
+        "edit":"View and Edit",
+        "rename":"Rename",
+        "remove":"Remove",
+        "templateName":"Template name:"
+      },
+      "dialog-confirm-manage":{
+        "title":"Manage Templates",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
+      },
+      "dialog-confirm-edit":{
+        "title":"View and Edit",
+        "btnConfirm": "OK",
+        "btnDeny": "Cancel"
       },
       "dialog-confirm-template":{
         "title":"Save as template",
+        "rename":"Rename template",
+        "remove":"Delete template",
+        "message":"Delete the current template?",
         "btnConfirm": "OK",
         "btnDeny": "Cancel",
         "name": "Template name:",

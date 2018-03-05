@@ -244,6 +244,132 @@
                         </div>
                     </div>
                 </ui-confirm>
+                <ui-confirm
+                    :autofocus="manageTemplatesConfirmDialog.autofocus"
+                    :confirm-button-text="manageTemplatesConfirmDialog.confirmButtonText"
+                    :deny-button-text="manageTemplatesConfirmDialog.denyButtonText"
+                    :ref="manageTemplatesConfirmDialog.ref"
+                    :title="manageTemplatesConfirmDialog.title"
+
+                    @confirm="manageTemplatesConfirmDialog.callbackConfirm"
+                    @deny="manageTemplatesConfirmDialog.callbackDeny"
+                    @open="manageTemplatesConfirmDialog.callbackOpen"
+                    @close="manageTemplatesConfirmDialog.callbackClose"
+                    >
+                    <ui-confirm
+                        :autofocus="editTemplateConfirmDialog.autofocus"
+                        :confirm-button-text="editTemplateConfirmDialog.confirmButtonText"
+                        :deny-button-text="editTemplateConfirmDialog.denyButtonText"
+                        :ref="editTemplateConfirmDialog.ref"
+                        :title="editTemplateConfirmDialog.title"
+
+                        @confirm="editTemplateConfirmDialog.callbackConfirm"
+                        @deny="editTemplateConfirmDialog.callbackDeny"
+                        @open="editTemplateConfirmDialog.callbackOpen"
+                        @close="editTemplateConfirmDialog.callbackClose"
+                        >
+                        <div class="page__toolbar-app-doc__edit__templates">
+                            <div class="edit__templates__title">
+                                <span class="edit__templates__title__name">{{$t('pages.resize.button.templateName')}}</span>
+                                <span class="edit__templates__title__templateName">{{ editName }}</span>
+                            </div>
+                            <div class="edit__templates__content">
+                                <ui-alert
+                                    :key="index"
+                                    v-for="(ele, index) in editValue"
+                                    removeIcon
+                                    @dismiss="onRemoveTemplateTask(index)" 
+                                    >
+                                    {{ele}}
+                                </ui-alert>
+                            </div>
+                        </div>
+                    </ui-confirm>
+                    <ui-confirm
+                        :autofocus="renameTemplateConfirmDialog.autofocus"
+                        :confirm-button-text="renameTemplateConfirmDialog.confirmButtonText"
+                        :deny-button-text="renameTemplateConfirmDialog.denyButtonText"
+                        :ref="renameTemplateConfirmDialog.ref"
+                        :title="renameTemplateConfirmDialog.title"
+
+                        @confirm="renameTemplateConfirmDialog.callbackConfirm"
+                        @deny="renameTemplateConfirmDialog.callbackDeny"
+                        @open="renameTemplateConfirmDialog.callbackOpen"
+                        @close="renameTemplateConfirmDialog.callbackClose"
+                        >
+                        <div class="page__toolbar-app-doc__rename__template">
+                            <div class="rename__template__Save">
+                                <span class="template__Save">{{ $t('pages.resize.dialog-confirm-template.name') }}</span>
+                                <ui-textbox
+                                    v-model="resetTemplateName"
+                                    :maxlength = "16"
+                                    :enforceMaxlength = "true"
+                                    :placeholder="resetName"
+                                    >
+                                </ui-textbox>
+                            </div>
+                            <div class="rename__template__Note">
+                                <span class="template__Note__icon"><i class="fa fa-exclamation-circle fa-lg fa-fw"></i></span>
+                                <span class="template__Note">{{ $t('pages.resize.dialog-confirm-template.note') }}</span>
+                                <span class="template__Note__content">{{ $t('pages.resize.dialog-confirm-template.content') }}</span>
+                            </div>
+                        </div>
+                    </ui-confirm>
+                    <ui-confirm
+                        :autofocus="removeTemplateConfirmDialog.autofocus"
+                        :confirm-button-text="removeTemplateConfirmDialog.confirmButtonText"
+                        :deny-button-text="removeTemplateConfirmDialog.denyButtonText"
+                        :ref="removeTemplateConfirmDialog.ref"
+                        :title="removeTemplateConfirmDialog.title"
+
+                        @confirm="removeTemplateConfirmDialog.callbackConfirm"
+                        @deny="removeTemplateConfirmDialog.callbackDeny"
+                        @open="removeTemplateConfirmDialog.callbackOpen"
+                        @close="removeTemplateConfirmDialog.callbackClose"
+                        >
+                        {{ removeTemplateConfirmDialog.content }}
+                    </ui-confirm>
+                    <div class="page__toolbar-app-doc__manage__templates">
+                        <div class="page__toolbar-app-doc__manage__templates__contents">
+                            <ul class="manage__templates__contents__menu">
+                                <li
+                                    :class="{'manage__templates__contents__menu__li':true, 'is-active':menuStyleClass[index]}"
+                                    v-for="(item, index) in templateStrings"
+                                    :key="index"
+                                    @click="getMenuIndexContent(item, index)"
+                                    >
+                                    {{ item }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="page__toolbar-app-doc__manage__templates__settings">
+                            <ui-button
+                                raised
+                                :disabled="enableClick"
+                                size="small"
+                                @click = "onEditTemplate()"
+                                >
+                                {{$t('pages.resize.button.edit')}}
+                            </ui-button>
+                            <ui-button
+                                raised
+                                :disabled="enableClick"
+                                size="small"
+                                @click = "onRenameTemplate()"
+                                >
+                                {{$t('pages.resize.button.rename')}}
+                            </ui-button>
+                            <ui-button
+                                raised
+                                :disabled="enableClick"
+                                size="small"
+                                @click = "onRemoveTemplate()"
+                                >
+                                {{$t('pages.resize.button.remove')}}
+                            </ui-button>
+                        </div>
+                    </div>
+                </ui-confirm>
             </div>
 
             <div class="page__examples page__examples-app-doc page__Resize-normal">
@@ -288,6 +414,13 @@
                                           >
                                           {{$t('pages.resize.button.save')}}
                                       </ui-button>
+                                      <ui-button 
+                                          raised 
+                                          size="small"
+                                          @click = "onDeleteTemplate(item)"
+                                          >
+                                          {{$t('pages.resize.button.delete')}}
+                                      </ui-button>
                                       <ui-select
                                           has-search
                                           :options="templateStrings"
@@ -308,7 +441,7 @@
                                       >
                                       <ui-progress-circular color="multi-color" v-show="getImageProgressShow(ele)"></ui-progress-circular>
                                       <ui-autocomplete
-                                          :suggestions="selectRatioList"
+                                          :suggestions="selsetRatioSuggestions"
                                           v-model="ele.commonRatio"
                                           @blur="checkTheInputIsCorrect(ele,$event)"
                                           :autofocus = "true"
@@ -521,7 +654,15 @@ export default {
       checkFileName: true,
       showFileNameToolTip: false,
       showPercentageToolTip: false,
-      selectRatioList: $LS$.data.selectRatio,
+      selectRatioList: ['10%', '50%', '75%'],
+      selsetRatioSuggestions: $LS$.data.selectRatio,
+      menuStyleClass: [], // 模板管理时列表的class
+      editName: '',
+      editValue: [],
+      resetName: '',
+      removeName: '',
+      resetTemplateName: '',
+      enableClick: true,
       aspectType: true,
       availableSymbolList: ['%', 'x'],
       lastsymbol: '%',
@@ -568,6 +709,51 @@ export default {
         confirmButtonText: 'Confirm',
         denyButtonText: 'Deny',
         title: '',
+        callbackConfirm: () => {},
+        callbackDeny: () => {},
+        callbackOpen: () => {},
+        callbackClose: () => {}
+      },
+      manageTemplatesConfirmDialog: {
+        ref: 'manageTemplatesConfirmDialog',
+        autofocus: 'none',
+        confirmButtonText: 'Confirm',
+        denyButtonText: 'Deny',
+        title: '',
+        callbackConfirm: () => {},
+        callbackDeny: () => {},
+        callbackOpen: () => {},
+        callbackClose: () => {}
+      },
+      editTemplateConfirmDialog: {
+        ref: 'editTemplateConfirmDialog',
+        autofocus: 'none',
+        confirmButtonText: 'Confirm',
+        denyButtonText: 'Deny',
+        title: '',
+        callbackConfirm: () => {},
+        callbackDeny: () => {},
+        callbackOpen: () => {},
+        callbackClose: () => {}
+      },
+      renameTemplateConfirmDialog: {
+        ref: 'renameTemplateConfirmDialog',
+        autofocus: 'none',
+        confirmButtonText: 'Confirm',
+        denyButtonText: 'Deny',
+        title: '',
+        callbackConfirm: () => {},
+        callbackDeny: () => {},
+        callbackOpen: () => {},
+        callbackClose: () => {}
+      },
+      removeTemplateConfirmDialog: {
+        ref: 'removeTemplateConfirmDialog',
+        autofocus: 'none',
+        confirmButtonText: 'Confirm',
+        denyButtonText: 'Deny',
+        title: '',
+        content: '',
         callbackConfirm: () => {},
         callbackDeny: () => {},
         callbackOpen: () => {},
@@ -747,6 +933,147 @@ export default {
         that.resetTemplateSettings()
       }
       dialog.open()
+    },
+
+    onDeleteTemplate (item) {
+      var that = this
+      that.menuStyleClass = []
+      that.enableClick = true
+      const cdg = that.manageTemplatesConfirmDialog
+      cdg.title = that.$t('pages.resize.dialog-confirm-manage.title')
+      cdg.confirmButtonText = that.$t(
+        'pages.resize.dialog-confirm-manage.btnConfirm'
+      )
+      cdg.denyButtonText = that.$t(
+        'pages.resize.dialog-confirm-manage.btnDeny'
+      )
+      var dialog = that.$refs[cdg.ref]
+      cdg.callbackConfirm = () => {
+
+      }
+      cdg.callbackDeny = () => {
+
+      }
+      dialog.open()
+    },
+
+    getMenuIndexContent (item, index) {
+      var that = this
+      that.enableClick = false
+      that.menuStyleClass = []
+      const ep = that.templateStrings.length
+      for (let i = 0; i < ep; i++) {
+        that.menuStyleClass.push(false)
+      }
+      that.menuStyleClass = _.fill(that.menuStyleClass, true, index, index + 1)
+    },
+
+    onEditTemplate () {
+      var that = this
+      const index = _.indexOf(that.menuStyleClass, true)
+      that.editValue = []
+      that.editName = that.templateStrings[index]
+      _.each($LS$.data.templateList[that.editName], (ele) => {
+        that.editValue.push(ele)
+      })
+      const cdg = that.editTemplateConfirmDialog
+      cdg.title = that.$t('pages.resize.dialog-confirm-edit.title')
+      cdg.confirmButtonText = that.$t(
+        'pages.resize.dialog-confirm-edit.btnConfirm'
+      )
+      cdg.denyButtonText = that.$t(
+        'pages.resize.dialog-confirm-edit.btnDeny'
+      )
+      var dialog = that.$refs[cdg.ref]
+      cdg.callbackConfirm = () => {
+        that.onSaveAsEditValue()
+      }
+      dialog.open()
+    },
+
+    onRenameTemplate () {
+      var that = this
+      that.resetTemplateName = ''
+      const index = _.indexOf(that.menuStyleClass, true)
+      that.resetName = that.templateStrings[index]
+      const cdg = that.renameTemplateConfirmDialog
+      cdg.title = that.$t('pages.resize.dialog-confirm-template.rename')
+      cdg.confirmButtonText = that.$t(
+        'pages.resize.dialog-confirm-template.btnConfirm'
+      )
+      cdg.denyButtonText = that.$t(
+        'pages.resize.dialog-confirm-template.btnDeny'
+      )
+      var dialog = that.$refs[cdg.ref]
+      cdg.callbackConfirm = () => {
+        that.onResetTemplateName()
+      }
+      cdg.callbackDeny = () => {
+        that.onRestoreTemplateName()
+      }
+      dialog.open()
+    },
+
+    onRemoveTemplate () {
+      var that = this
+      const index = _.indexOf(that.menuStyleClass, true)
+      that.removeName = that.templateStrings[index]
+      const cdg = that.removeTemplateConfirmDialog
+      cdg.title = that.$t('pages.resize.dialog-confirm-template.remove')
+      cdg.content = that.$t('pages.resize.dialog-confirm-template.message')
+      cdg.confirmButtonText = that.$t(
+        'pages.resize.dialog-confirm-template.btnConfirm'
+      )
+      cdg.denyButtonText = that.$t(
+        'pages.resize.dialog-confirm-template.btnDeny'
+      )
+      var dialog = that.$refs[cdg.ref]
+      cdg.callbackConfirm = () => {
+        that.onRemoveTemplateName(index)
+      }
+      dialog.open()
+    },
+
+    onRemoveTemplateName (index) {
+      var that = this
+      delete $LS$.data.templateList[that.removeName]
+      $LS$.save()
+      that.templateStrings.splice(index, 1)
+    },
+
+    onRemoveTemplateTask (index) {
+      var that = this
+      that.editValue.splice(index, 1)
+    },
+
+    onSaveAsEditValue () {
+      var that = this
+      $LS$.data.templateList[that.editName] = that.editValue
+      $LS$.save()
+    },
+
+    onResetTemplateName () {
+      var that = this
+      that.templateStrings = []
+      const index = _.indexOf(that.menuStyleClass, true)
+      $LS$.data.templateList = _.mapKeys($LS$.data.templateList, function (value, key) {
+        if (key === that.resetName) {
+          key = that.resetTemplateName
+          return key
+        } else {
+          return key
+        }
+      })
+      $LS$.data.selectTemplate = _.fill($LS$.data.selectTemplate, that.resetTemplateName, index, index + 1)
+      $LS$.save()
+      _.each($LS$.data.selectTemplate, (ele) => {
+        that.templateStrings.push(ele)
+      })
+    },
+
+    onRestoreTemplateName () {
+      var that = this
+      that.resetTemplateName = ''
     },
 
     saveTemplateSettings (item) {
@@ -1229,7 +1556,7 @@ export default {
             that.$set(item.ratioCommon, length, ratioObj)
           }
         }
-        if (that.enableAddUsualRatio && that.newWidthRatio !== 0) {
+        if (that.enableAddUsualRatio && that.newWidthRatio > 0 && that.newWidthRatio < 100) {
           const spliceString = that.newWidthRatio + that.lastsymbol
           $LS$.data.selectRatio.push(spliceString)
           $LS$.save()

@@ -256,10 +256,27 @@
       },
       "button":{
         "save":"存为模板",
-        "load":"载入模板"
+        "delete":"模板管理",
+        "load":"载入模板",
+        "edit":"查看与编辑",
+        "rename":"重命名",
+        "remove":"删除",
+        "templateName":"模板名称:"
+      },
+      "dialog-confirm-manage":{
+        "title":"模板管理",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
+      },
+      "dialog-confirm-edit":{
+        "title":"查看与编辑",
+        "btnConfirm": "确定",
+        "btnDeny": "取消"
       },
       "dialog-confirm-template":{
         "title":"保存为模板",
+        "rename":"重命名模板",
+        "remove":"删除模板",
         "btnConfirm": "确定",
         "btnDeny": "取消",
         "name": "模板名称:",
